@@ -12,26 +12,27 @@ public class Quest {
     Type type;
     ItemStack itemRequired;
     int amountRequired;
+    /* reward */
 
     /**
-     * Constructor
-     * @param type
+     * Quest constructor.
+     * @param type the type of the quest.
      */
     public Quest(Type type) {
         this.type = type;
     }
 
     /**
-     * Get total number of quests
-     * @return number of quests
+     * Get total number of quests.
+     * @return number of quests.
      */
     public final int getNumberOfQuests() {
         return totalQuests;
     }
 
     /**
-     * Get the type of a quest
-     * @return
+     * Get the type of a quest.
+     * @return the type of the quest.
      */
     public Type getType() {
         return this.type;
