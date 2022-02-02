@@ -12,6 +12,10 @@ public enum Type {
 
     private final String typeName;
 
+    /**
+     * Type constructor.
+     * @param typeName the name of the type.
+     */
     Type(String typeName) {
         this.typeName = typeName;
     }
