@@ -1,7 +1,8 @@
 package com.ordwen.odailyquests.quests;
 
+import com.ordwen.odailyquests.rewards.Reward;
 import com.ordwen.odailyquests.rewards.RewardType;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.Material;
 
 public class Quest {
 
@@ -10,23 +11,23 @@ public class Quest {
     String questName;
     String questDesc;
     QuestType questType;
-    ItemStack itemRequired;
+    Material itemRequired;
     int amountRequired;
     RewardType rewardType;
-    int amountRewarded;
+    Reward reward;
 
     /**
      * Quest constructor.
      * @param questType the type of the quest.
      */
-    public Quest(String questName, String questDesc, QuestType questType, ItemStack itemRequired, int amountRequired, RewardType rewardType, int amountRewarded) {
+    public Quest(String questName, String questDesc, QuestType questType, Material itemRequired, int amountRequired, RewardType rewardType, Reward reward) {
         this.questName = questName;
         this.questDesc = questDesc;
         this.questType = questType;
         this.itemRequired = itemRequired;
         this.amountRequired = amountRequired;
         this.rewardType = rewardType;
-        this.amountRewarded = amountRewarded;
+        this.reward = reward;
     }
 
     /**
@@ -65,7 +66,7 @@ public class Quest {
      * Get the item required by the quest.
      * @return quest item-required.
      */
-    public ItemStack getItemRequired() {
+    public Material getItemRequired() {
         return this.itemRequired;
     }
 
@@ -86,10 +87,10 @@ public class Quest {
     }
 
     /**
-     * Get the amount rewarded of the quest.
-     * @return quest amount-rewarded.
+     * Get the reward of the quest.
+     * @return quest reward.
      */
-    public int getAmountRewarded() {
-        return this.amountRewarded;
+    public Reward getReward() {
+        return this.reward;
     }
 }
