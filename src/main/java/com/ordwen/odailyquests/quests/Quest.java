@@ -13,20 +13,18 @@ public class Quest {
     QuestType questType;
     Material itemRequired;
     int amountRequired;
-    RewardType rewardType;
     Reward reward;
 
     /**
      * Quest constructor.
      * @param questType the type of the quest.
      */
-    public Quest(String questName, String questDesc, QuestType questType, Material itemRequired, int amountRequired, RewardType rewardType, Reward reward) {
+    public Quest(String questName, String questDesc, QuestType questType, Material itemRequired, int amountRequired, Reward reward) {
         this.questName = questName;
         this.questDesc = questDesc;
         this.questType = questType;
         this.itemRequired = itemRequired;
         this.amountRequired = amountRequired;
-        this.rewardType = rewardType;
         this.reward = reward;
     }
 
@@ -76,14 +74,6 @@ public class Quest {
      */
     public int getAmountRequired() {
         return this.amountRequired;
-    }
-
-    /**
-     * Get the reward type of the quest.
-     * @return quest reward-type.
-     */
-    public RewardType getRewardType() {
-        return this.rewardType;
     }
 
     /**

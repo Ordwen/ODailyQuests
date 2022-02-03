@@ -2,6 +2,7 @@ package com.ordwen.odailyquests.rewards;
 
 public class Reward {
 
+    RewardType rewardType;
     String command;
     int amount;
 
@@ -9,7 +10,8 @@ public class Reward {
      * Constructor for a reward with a command.
      * @param command the reward-command.
      */
-    public Reward(String command) {
+    public Reward(RewardType rewardType, String command) {
+        this.rewardType = rewardType;
         this.command = command;
     }
 
@@ -17,7 +19,8 @@ public class Reward {
      * Constructor for other reward.
      * @param amount the reward amount.
      */
-    public Reward(int amount) {
+    public Reward(RewardType rewardType, int amount) {
+        this.rewardType = rewardType;
         this.amount = amount;
     }
 
@@ -35,5 +38,13 @@ public class Reward {
      */
     public int getRewardAmount() {
         return this.amount;
+    }
+
+    /**
+     * Get the reward type of a reward.
+     * @return reward-type.
+     */
+    public RewardType getRewardType() {
+        return this.rewardType;
     }
 }
