@@ -1,9 +1,9 @@
-package com.ordwen.odailyquests.quest;
+package com.ordwen.odailyquests.quests;
 
 /**
  * List of all possible quests types
  */
-public enum Type {
+public enum QuestType {
     BREAK("BREAK"),
     PLACE("PLACE"),
     CRAFT("CRAFT"),
@@ -16,7 +16,7 @@ public enum Type {
      * Type constructor.
      * @param typeName the name of the type.
      */
-    Type(String typeName) {
+    QuestType(String typeName) {
         this.typeName = typeName;
     }
 
