@@ -1,7 +1,9 @@
 package com.ordwen.odailyquests;
 
 import com.ordwen.odailyquests.files.ConfigurationFiles;
+import com.ordwen.odailyquests.files.QuestsFiles;
 import org.bukkit.ChatColor;
+import org.bukkit.plugin.PluginLogger;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Logger;
@@ -9,12 +11,13 @@ import java.util.logging.Logger;
 public final class ODailyQuests extends JavaPlugin {
 
     /**
-     * Getting instance of configuration files class.
+     * Getting instance of files classes.
      */
     private ConfigurationFiles configurationFiles;
+    private QuestsFiles questsFiles;
 
     /* Technical items */
-    Logger logger = getLogger();
+    Logger logger = PluginLogger.getLogger("ODailyQuests");
     String dataPath = this.getDataFolder().getPath();
 
     @Override
@@ -22,7 +25,9 @@ public final class ODailyQuests extends JavaPlugin {
         logger.info(ChatColor.GOLD + "Plugin is starting...");
 
         this.configurationFiles = new ConfigurationFiles(this);
+        this.questsFiles = new QuestsFiles(this);
         configurationFiles.loadConfigurationFiles();
+        questsFiles.loadQuestsFiles();
 
         logger.info(ChatColor.GREEN + "Plugin is started !");
 
@@ -46,5 +51,6 @@ public final class ODailyQuests extends JavaPlugin {
     public String getPluginFolder() {
         return dataPath;
     }
+    public Logger getPluginLogger() { return logger; }
 }
 
