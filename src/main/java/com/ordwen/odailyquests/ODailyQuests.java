@@ -1,12 +1,7 @@
 package com.ordwen.odailyquests;
 
 import com.ordwen.odailyquests.files.ConfigurationFiles;
-import com.ordwen.odailyquests.quests.Quest;
-import com.ordwen.odailyquests.quests.QuestType;
-import com.ordwen.odailyquests.rewards.Reward;
-import com.ordwen.odailyquests.rewards.RewardType;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Logger;
@@ -21,10 +16,6 @@ public final class ODailyQuests extends JavaPlugin {
     /* Technical items */
     Logger logger = getLogger();
     String dataPath = this.getDataFolder().getPath();
-
-    /* test */
-    Reward reward = new Reward(RewardType.COMMAND, "msg console Hello");
-    Quest quest = new Quest("testQuest", "testDesc", QuestType.BREAK, Material.COBBLESTONE, 32, reward);
 
     @Override
     public void onEnable() {

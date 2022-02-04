@@ -1,12 +1,11 @@
 package com.ordwen.odailyquests.quests;
 
 import com.ordwen.odailyquests.rewards.Reward;
-import com.ordwen.odailyquests.rewards.RewardType;
 import org.bukkit.Material;
 
 public class Quest {
 
-    int totalQuests = 0;
+    public int totalQuests = 0;
 
     String questName;
     String questDesc;
@@ -26,6 +25,8 @@ public class Quest {
         this.itemRequired = itemRequired;
         this.amountRequired = amountRequired;
         this.reward = reward;
+
+        totalQuests++;
     }
 
     /**
