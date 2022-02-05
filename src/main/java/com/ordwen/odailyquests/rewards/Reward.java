@@ -1,18 +1,20 @@
 package com.ordwen.odailyquests.rewards;
 
+import java.util.List;
+
 public class Reward {
 
     RewardType rewardType;
-    String command;
+    List<String> commands;
     int amount;
 
     /**
      * Constructor for a reward with a command.
-     * @param command the reward-command.
+     * @param commands the reward-command.
      */
-    public Reward(RewardType rewardType, String command) {
+    public Reward(RewardType rewardType, List<String> commands) {
         this.rewardType = rewardType;
-        this.command = command;
+        this.commands = commands;
     }
 
     /**
@@ -28,8 +30,8 @@ public class Reward {
      * Get the command of a reward.
      * @return the command to perform.
      */
-    public String getRewardCommand() {
-        return this.command;
+    public List<String> getRewardCommands() {
+        return this.commands;
     }
 
     /**

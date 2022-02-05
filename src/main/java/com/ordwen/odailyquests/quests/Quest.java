@@ -2,23 +2,27 @@ package com.ordwen.odailyquests.quests;
 
 import com.ordwen.odailyquests.rewards.Reward;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.List;
 
 public class Quest {
 
     public int totalQuests = 0;
 
     String questName;
-    String questDesc;
+    List<String> questDesc;
     QuestType questType;
-    Material itemRequired;
+    ItemStack itemRequired;
     int amountRequired;
     Reward reward;
 
     /**
      * Quest constructor.
      * @param questType the type of the quest.
+     * @param itemRequired
      */
-    public Quest(String questName, String questDesc, QuestType questType, Material itemRequired, int amountRequired, Reward reward) {
+    public Quest(String questName, List<String> questDesc, QuestType questType, ItemStack itemRequired, int amountRequired, Reward reward) {
         this.questName = questName;
         this.questDesc = questDesc;
         this.questType = questType;
@@ -38,7 +42,7 @@ public class Quest {
     }
 
     /**
-     * Get the type of a quest.
+     * Get the type of quest.
      * @return the type of the quest.
      */
     public QuestType getType() {
@@ -57,7 +61,7 @@ public class Quest {
      * Get the description of the quest.
      * @return quest description.
      */
-    public String getQuestDesc() {
+    public List<String> getQuestDesc() {
         return this.questDesc;
     }
 
@@ -65,7 +69,7 @@ public class Quest {
      * Get the item required by the quest.
      * @return quest item-required.
      */
-    public Material getItemRequired() {
+    public ItemStack getItemRequired() {
         return this.itemRequired;
     }
 

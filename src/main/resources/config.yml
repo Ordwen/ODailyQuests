@@ -1,1 +1,12 @@
 prefix: "&7[O'DailyQuests&7]"
+
+# ==========================================================
+# Select the mode of the quests.
+# ==========================================================
+# 1 : only the global quests will be loaded.
+# The player's quests will only come from there.
+# ==========================================================
+# 2 : easy, medium and hard quests will be loaded.
+# One quest per difficulty will be assigned to the players.
+# ==========================================================
+mode: 1

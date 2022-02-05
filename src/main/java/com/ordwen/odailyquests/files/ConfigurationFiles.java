@@ -91,6 +91,5 @@ public class ConfigurationFiles {
             e.printStackTrace();
         }
         logger.info(ChatColor.GREEN + "Messages file successfully loaded.");
-
     }
 }
