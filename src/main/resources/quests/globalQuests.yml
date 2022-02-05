@@ -11,10 +11,10 @@ quests:
       reward_type: MONEY
       amount: 500
   test_quest_place:
-    name: "Cobblestone"
+    name: "Gold blocks"
     description:
-      - "Mine 32 cobblestones."
-      - "Win 500$."
+      - "Get 16 gold blocks."
+      - "Win 32 diamond blocks."
     quest_type: PLACE
     required_item: GOLD_BLOCK
     required_amount: 16

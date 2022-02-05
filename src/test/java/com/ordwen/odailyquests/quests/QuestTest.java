@@ -7,16 +7,14 @@ import org.bukkit.inventory.ItemStack;
 import org.junit.Test;
 
 import java.util.Arrays;
-import java.util.Objects;
-
-import static org.junit.Assert.*;
+import java.util.Collections;
 
 public class QuestTest {
 
     ItemStack itemStack = new ItemStack(Material.COBBLESTONE);
-    Reward reward1 = new Reward(RewardType.COMMAND, Arrays.asList("say Hello World !"));
+    Reward reward1 = new Reward(RewardType.COMMAND, Collections.singletonList("say Hello World !"));
     Reward reward2 = new Reward(RewardType.MONEY, 500);
-    Quest quest1 = new Quest("testQuest", Arrays.asList("testDesc"), QuestType.BREAK, itemStack, 32, reward1);
+    Quest quest1 = new Quest("testQuest", Collections.singletonList("testDesc"), QuestType.BREAK, itemStack, 32, reward1);
     Quest quest2 = new Quest("testQuest", Arrays.asList("testDesc", "testDescTwo", ""), QuestType.BREAK, itemStack, 32, reward2);
 
     @Test

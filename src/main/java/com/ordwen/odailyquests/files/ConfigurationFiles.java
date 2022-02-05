@@ -1,7 +1,6 @@
 package com.ordwen.odailyquests.files;
 
 import com.ordwen.odailyquests.ODailyQuests;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -76,8 +75,8 @@ public class ConfigurationFiles {
         try {
             config.load(configFile);
         } catch (InvalidConfigurationException | IOException e) {
-            logger.info(ChatColor.RED + "An error occured on the load of the configuration file.");
-            logger.info(ChatColor.RED + "Please inform the developper.");
+            logger.info(ChatColor.RED + "An error occurred on the load of the configuration file.");
+            logger.info(ChatColor.RED + "Please inform the developer.");
             e.printStackTrace();
         }
         logger.info(ChatColor.GREEN + "Configuration file successfully loaded.");
@@ -86,8 +85,8 @@ public class ConfigurationFiles {
         try {
             messages.load(messagesFile);
         } catch (InvalidConfigurationException | IOException e) {
-            logger.info(ChatColor.RED + "An error occured on the load of the messages file.");
-            logger.info(ChatColor.RED + "Please inform the developper.");
+            logger.info(ChatColor.RED + "An error occurred on the load of the messages file.");
+            logger.info(ChatColor.RED + "Please inform the developer.");
             e.printStackTrace();
         }
         logger.info(ChatColor.GREEN + "Messages file successfully loaded.");

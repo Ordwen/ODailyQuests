@@ -43,10 +43,11 @@ public class Reward {
     }
 
     /**
-     * Get the reward type of a reward.
+     * Get the reward type of reward.
      * @return reward-type.
      */
     public RewardType getRewardType() {
         return this.rewardType;
     }
+
 }

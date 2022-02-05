@@ -2,18 +2,16 @@ package com.ordwen.odailyquests.rewards;
 
 import org.junit.Test;
 
-import java.util.Arrays;
-
-import static org.junit.Assert.*;
+import java.util.Collections;
 
 public class RewardTest {
 
-    Reward reward1 = new Reward(RewardType.COMMAND, Arrays.asList("say Hello World !"));
+    Reward reward1 = new Reward(RewardType.COMMAND, Collections.singletonList("say Hello World !"));
     Reward reward2 = new Reward(RewardType.MONEY, 500);
 
     @Test
     public void getRewardCommand() {
-        assert reward1.getRewardCommands().equals(Arrays.asList("say Hello World !"));
+        assert reward1.getRewardCommands().equals(Collections.singletonList("say Hello World !"));
     }
 
     @Test
