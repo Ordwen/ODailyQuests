@@ -1,11 +1,16 @@
 package com.ordwen.odailyquests;
 
 import com.ordwen.odailyquests.commands.PlayerCommands;
+import com.ordwen.odailyquests.commands.interfaces.CategorizedQuestsInterfaces;
 import com.ordwen.odailyquests.commands.interfaces.GlobalQuestsInterface;
+import com.ordwen.odailyquests.commands.interfaces.InterfacesManager;
+import com.ordwen.odailyquests.commands.interfaces.PlayerQuestsInterface;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
+import com.ordwen.odailyquests.files.ProgressionFile;
 import com.ordwen.odailyquests.files.QuestsFiles;
 import com.ordwen.odailyquests.quests.LoadQuests;
 import com.ordwen.odailyquests.quests.Quest;
+import com.ordwen.odailyquests.quests.player.QuestsManager;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginLogger;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -20,8 +25,13 @@ public final class ODailyQuests extends JavaPlugin {
      */
     private ConfigurationFiles configurationFiles;
     private QuestsFiles questsFiles;
+    private ProgressionFile progressionFile;
     private LoadQuests loadQuests;
+    private InterfacesManager interfacesManager;
     private GlobalQuestsInterface globalQuestsInterface;
+    private PlayerQuestsInterface playerQuestsInterface;
+    private CategorizedQuestsInterfaces categorizedQuestsInterfaces;
+    private QuestsManager questsManager;
 
     /* Technical items */
     Logger logger = PluginLogger.getLogger("ODailyQuests");
@@ -35,25 +45,38 @@ public final class ODailyQuests extends JavaPlugin {
 
         this.configurationFiles = new ConfigurationFiles(this);
         this.questsFiles = new QuestsFiles(this);
+        this.progressionFile = new ProgressionFile(this);
         this.loadQuests = new LoadQuests(questsFiles, configurationFiles);
+        this.interfacesManager = new InterfacesManager(configurationFiles);
         this.globalQuestsInterface = new GlobalQuestsInterface(configurationFiles);
+        this.playerQuestsInterface = new PlayerQuestsInterface(configurationFiles);
+        this.categorizedQuestsInterfaces = new CategorizedQuestsInterfaces(configurationFiles);
+        this.questsManager = new QuestsManager(configurationFiles);
 
         /* Load files */
         configurationFiles.loadConfigurationFiles();
         questsFiles.loadQuestsFiles();
+        progressionFile.loadProgressionFile();
+
+        /* Load progression */
+
 
         /* Load quests */
         loadQuests.loadQuests();
         globalQuestsArray = LoadQuests.getGlobalQuests();
 
         /* Load interfaces */
-        globalQuestsInterface.loadGlobalQuestsInventory();
+        InterfacesManager.initInventoryNames();
+        playerQuestsInterface.loadPlayerQuestsInterface();
+        globalQuestsInterface.loadGlobalQuestsInterface();
+        categorizedQuestsInterfaces.loadCategorizedQuestsInterfaces();
 
         /* Load commands */
         getCommand("quests").setExecutor(new PlayerCommands());
 
         /* Load listeners */
-        getServer().getPluginManager().registerEvents(new GlobalQuestsInterface(configurationFiles), this);
+        getServer().getPluginManager().registerEvents(interfacesManager, this);
+        getServer().getPluginManager().registerEvents(questsManager, this);
 
         logger.info(ChatColor.GREEN + "Plugin is started !");
 
