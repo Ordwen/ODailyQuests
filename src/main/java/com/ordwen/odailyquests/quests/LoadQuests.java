@@ -24,7 +24,7 @@ public class LoadQuests {
     private final ConfigurationFiles configurationFiles;
 
     /**
-     * Main class instance constructor.
+     * Class instance constructor.
      * @param questsFiles quests files class.
      * @param configurationFiles configuration files class.
      */
@@ -93,7 +93,7 @@ public class LoadQuests {
                 globalQuests.add(quest);
                 logger.info(ChatColor.YELLOW + "Quest " + ChatColor.GRAY + fileQuest + ChatColor.YELLOW + " successfully loaded.");
             }
-            logger.info(ChatColor.GREEN + "Global quests successfully loaded.");
+            logger.info(ChatColor.GREEN + "Global quests array successfully loaded.");
         }
 
         else if (configurationFiles.getConfigFile().getInt("mode") == 2) {
@@ -124,7 +124,7 @@ public class LoadQuests {
                 easyQuests.add(quest);
                 logger.info(ChatColor.YELLOW + "Quest " + ChatColor.GRAY + fileQuest + ChatColor.YELLOW + " successfully loaded.");
             }
-            logger.info(ChatColor.GREEN + "Easy quests successfully loaded.");
+            logger.info(ChatColor.GREEN + "Easy quests array successfully loaded.");
 
             /* load medium quests */
             for (String fileQuest : Objects.requireNonNull(mediumQuestsFile.getConfigurationSection("quests")).getKeys(false)) {
@@ -152,7 +152,7 @@ public class LoadQuests {
                 mediumQuests.add(quest);
                 logger.info(ChatColor.YELLOW + "Quest " + ChatColor.GRAY + fileQuest + ChatColor.YELLOW + " successfully loaded.");
             }
-            logger.info(ChatColor.GREEN + "Medium quests successfully loaded.");
+            logger.info(ChatColor.GREEN + "Medium quests array successfully loaded.");
 
             /* load hard quests */
             for (String fileQuest : Objects.requireNonNull(hardQuestsFile.getConfigurationSection("quests")).getKeys(false)) {
@@ -180,7 +180,7 @@ public class LoadQuests {
                 hardQuests.add(quest);
                 logger.info(ChatColor.YELLOW + "Quest " + ChatColor.GRAY + fileQuest + ChatColor.YELLOW + " successfully loaded.");
             }
-            logger.info(ChatColor.GREEN + "Hard quests successfully loaded.");
+            logger.info(ChatColor.GREEN + "Hard quests array successfully loaded.");
         }
         else  {
             logger.info(ChatColor.RED + "Impossible to load the quests. The selected mode is incorrect.");

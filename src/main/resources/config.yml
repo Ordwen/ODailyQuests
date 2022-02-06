@@ -1,5 +1,10 @@
 prefix: "&7[O'DailyQuests&7]"
 
+interfaces:
+  global_quests:
+    inventory_name: "Quests - Global"
+    empty_item: BLACK_STAINED_GLASS_PANE
+
 # ==========================================================
 # Select the mode of the quests.
 # ==========================================================

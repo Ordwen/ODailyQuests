@@ -6,3 +6,8 @@ prefix: "O'DailyQuests"
 authors: [ Ordwen ]
 description: Add more objectives and dynamize your server !
 website: ordwen.com
+commands:
+  quests:
+    description: default player command
+    aliases:
+      - quest
