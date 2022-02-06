@@ -1,5 +1,5 @@
 quests:
-  test_quest_break:
+  1:
     name: "Cobblestone"
     description:
       - "Mine 32 cobblestones."
@@ -10,7 +10,7 @@ quests:
     reward:
       reward_type: MONEY
       amount: 500
-  test_quest_place:
+  2:
     name: "Gold blocks"
     description:
       - "Get 16 gold blocks."
@@ -23,3 +23,14 @@ quests:
       commands:
         - "msg %player% Hello !"
         - "give %player% diamond_block 32"
+  3:
+    name: "Ender pearls"
+    description:
+      - "Use 8 ender pearls."
+      - "Win 1500 EXP."
+    quest_type: USE
+    required_item: ENDER_PEARL
+    required_amount: 8
+    reward:
+      reward_type: EXP
+      amount: 1500

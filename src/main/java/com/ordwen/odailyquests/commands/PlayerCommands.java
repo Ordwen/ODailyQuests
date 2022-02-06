@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.commands;
 
 import com.ordwen.odailyquests.commands.interfaces.GlobalQuestsInterface;
+import com.ordwen.odailyquests.commands.interfaces.PlayerQuestsInterface;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.enums.QuestsPermissions;
 import org.bukkit.command.Command;
@@ -21,7 +22,7 @@ public class PlayerCommands implements CommandExecutor {
                                 if (args.length == 2) {
                                     switch (args[1]) {
                                         case "global":
-                                            ((Player) sender).openInventory(GlobalQuestsInterface.getGlobalQuestsInventory());
+                                            ((Player) sender).openInventory(GlobalQuestsInterface.getGlobalQuestsInterface());
                                             break;
                                         case "easy":
                                             break;
@@ -36,6 +37,7 @@ public class PlayerCommands implements CommandExecutor {
                                 } else sender.sendMessage(QuestsMessages.INVALID_SYNTAX.getMessage());
                                 break;
                             case "me":
+                                ((Player) sender).openInventory(PlayerQuestsInterface.getPlayerQuestsInterface(sender.getName()));
                                 break;
                             default:
                                 sender.sendMessage(QuestsMessages.INVALID_SYNTAX.getMessage());
