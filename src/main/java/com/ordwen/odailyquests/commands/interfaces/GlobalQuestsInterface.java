@@ -6,9 +6,6 @@ import com.ordwen.odailyquests.quests.Quest;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -17,7 +14,7 @@ import org.bukkit.plugin.PluginLogger;
 import java.util.Objects;
 import java.util.logging.Logger;
 
-public class GlobalQuestsInterface implements Listener {
+public class GlobalQuestsInterface {
 
     /**
      * Getting instance of classes.
@@ -38,21 +35,18 @@ public class GlobalQuestsInterface implements Listener {
     /* init items */
     private static Inventory globalQuestsInventory;
 
-    String inventoryName;
     ItemStack emptyCaseItem;
 
     ItemStack itemStack;
     ItemMeta itemMeta;
 
     /**
-     * Load global quests inventory.
+     * Load global quests interface.
      */
-    public void loadGlobalQuestsInventory() {
+    public void loadGlobalQuestsInterface() {
 
-        inventoryName = Objects.requireNonNull(configurationFiles.getConfigFile().getConfigurationSection("interfaces.global_quests")).getString(".inventory_name");
         emptyCaseItem = new ItemStack(Material.valueOf(Objects.requireNonNull(configurationFiles.getConfigFile().getConfigurationSection("interfaces.global_quests")).getString(".empty_item")));
-
-        globalQuestsInventory = Bukkit.createInventory(null, 54, ChatColor.translateAlternateColorCodes('&', inventoryName));
+        globalQuestsInventory = Bukkit.createInventory(null, 54, InterfacesManager.getGlobalQuestsInventoryName());
 
         /* add quests items on slots */
         for (Quest quest : LoadQuests.getGlobalQuests()) {
@@ -73,22 +67,14 @@ public class GlobalQuestsInterface implements Listener {
             if (globalQuestsInventory.getItem(i) == null) globalQuestsInventory.setItem(i, emptyCaseItem);
         }
 
-        logger.info(ChatColor.GREEN + "Global quests inventory successfully loaded.");
-    }
-
-    @EventHandler
-    public void onInventoryClick(InventoryClickEvent event) {
-        inventoryName = Objects.requireNonNull(configurationFiles.getConfigFile().getConfigurationSection("interfaces.global_quests")).getString(".inventory_name");
-        if (event.getView().getTitle().equals(ChatColor.translateAlternateColorCodes('&', inventoryName))) {
-            event.setCancelled(true);
-        }
+        logger.info(ChatColor.GREEN + "Global quests interface successfully loaded.");
     }
 
     /**
      * Get global quests inventory.
      * @return global quests inventory.
      */
-    public static Inventory getGlobalQuestsInventory() {
+    public static Inventory getGlobalQuestsInterface() {
         return globalQuestsInventory;
     }
 
