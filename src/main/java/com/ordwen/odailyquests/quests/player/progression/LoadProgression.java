@@ -1,7 +1,6 @@
 package com.ordwen.odailyquests.quests.player.progression;
 
 import com.ordwen.odailyquests.enums.QuestsMessages;
-import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.files.ProgressionFile;
 import com.ordwen.odailyquests.quests.LoadQuests;
 import com.ordwen.odailyquests.quests.Quest;
@@ -17,7 +16,7 @@ import java.util.logging.Logger;
 public class LoadProgression {
 
     /* Logger for stacktrace */
-    private static Logger logger = PluginLogger.getLogger("ODailyQuests");
+    private static final Logger logger = PluginLogger.getLogger("ODailyQuests");
 
     /**
      * Getting instance of classes.
@@ -41,7 +40,7 @@ public class LoadProgression {
     public static void loadPlayerQuests(String playerName, HashMap<String, PlayerQuests> activeQuests, int configMode) {
 
         /* init variables */
-        Long timestamp;
+        long timestamp;
         PlayerQuests playerQuests;
         Quest quest = null;
         Progression progression;
