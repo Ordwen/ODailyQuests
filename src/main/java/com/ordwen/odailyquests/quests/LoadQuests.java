@@ -49,6 +49,7 @@ public class LoadQuests {
 
         /* init variables (quest constructor) */
         Quest quest;
+        int questIndex;
         String questName;
         List<String> questDesc;
         QuestType questType;
@@ -71,6 +72,7 @@ public class LoadQuests {
             for (String fileQuest : Objects.requireNonNull(globalQuestsFile.getConfigurationSection("quests")).getKeys(false)) {
 
                 /* init quest items */
+                questIndex = Integer.parseInt(fileQuest) - 1;
                 questName = ChatColor.translateAlternateColorCodes('&', globalQuestsFile.getConfigurationSection("quests." + fileQuest).getString(".name"));
                 questDesc = Objects.requireNonNull(globalQuestsFile.getConfigurationSection("quests." + fileQuest)).getStringList(".description");
                 for (String string : questDesc) {
@@ -91,7 +93,7 @@ public class LoadQuests {
                 }
 
                 /* init quest */
-                quest = new Quest(questName, questDesc, questType, requiredItem, requiredAmount, reward);
+                quest = new Quest(questIndex, questName, questDesc, questType, requiredItem, requiredAmount, reward);
 
                 /* add quest to the list */
                 globalQuests.add(quest);
@@ -106,6 +108,7 @@ public class LoadQuests {
             for (String fileQuest : Objects.requireNonNull(easyQuestsFile.getConfigurationSection("quests")).getKeys(false)) {
 
                 /* init quest items */
+                questIndex = Integer.parseInt(fileQuest) - 1;
                 questName = Objects.requireNonNull(easyQuestsFile.getConfigurationSection("quests." + fileQuest)).getString(".name");
                 questDesc = Objects.requireNonNull(easyQuestsFile.getConfigurationSection("quests." + fileQuest)).getStringList(".description");
                 questType = QuestType.valueOf(Objects.requireNonNull(easyQuestsFile.getConfigurationSection("quests." + fileQuest)).getString(".quest_type"));
@@ -122,7 +125,7 @@ public class LoadQuests {
                 }
 
                 /* init quest */
-                quest = new Quest(questName, questDesc, questType, requiredItem, requiredAmount, reward);
+                quest = new Quest(questIndex, questName, questDesc, questType, requiredItem, requiredAmount, reward);
 
                 /* add quest to the list */
                 easyQuests.add(quest);
@@ -134,6 +137,7 @@ public class LoadQuests {
             for (String fileQuest : Objects.requireNonNull(mediumQuestsFile.getConfigurationSection("quests")).getKeys(false)) {
 
                 /* init quest items */
+                questIndex = Integer.parseInt(fileQuest) - 1;
                 questName = Objects.requireNonNull(mediumQuestsFile.getConfigurationSection("quests." + fileQuest)).getString(".name");
                 questDesc = Objects.requireNonNull(mediumQuestsFile.getConfigurationSection("quests." + fileQuest)).getStringList(".description");
                 questType = QuestType.valueOf(Objects.requireNonNull(mediumQuestsFile.getConfigurationSection("quests." + fileQuest)).getString(".quest_type"));
@@ -150,7 +154,7 @@ public class LoadQuests {
                 }
 
                 /* init quest */
-                quest = new Quest(questName, questDesc, questType, requiredItem, requiredAmount, reward);
+                quest = new Quest(questIndex, questName, questDesc, questType, requiredItem, requiredAmount, reward);
 
                 /* add quest to the list */
                 mediumQuests.add(quest);
@@ -162,10 +166,9 @@ public class LoadQuests {
             for (String fileQuest : Objects.requireNonNull(hardQuestsFile.getConfigurationSection("quests")).getKeys(false)) {
 
                 /* init quest items */
+                questIndex = Integer.parseInt(fileQuest) - 1;
                 questName = Objects.requireNonNull(hardQuestsFile.getConfigurationSection("quests." + fileQuest)).getString(".name");
-
                 questDesc = Objects.requireNonNull(hardQuestsFile.getConfigurationSection("quests." + fileQuest)).getStringList(".description");
-
                 questType = QuestType.valueOf(Objects.requireNonNull(hardQuestsFile.getConfigurationSection("quests." + fileQuest)).getString(".quest_type"));
                 requiredItem = new ItemStack(Material.valueOf(Objects.requireNonNull(hardQuestsFile.getConfigurationSection("quests." + fileQuest)).getString(".required_item")));
                 requiredAmount = Objects.requireNonNull(hardQuestsFile.getConfigurationSection("quests." + fileQuest)).getInt(".required_amount");
@@ -180,7 +183,7 @@ public class LoadQuests {
                 }
 
                 /* init quest */
-                quest = new Quest(questName, questDesc, questType, requiredItem, requiredAmount, reward);
+                quest = new Quest(questIndex, questName, questDesc, questType, requiredItem, requiredAmount, reward);
 
                 /* add quest to the list */
                 hardQuests.add(quest);

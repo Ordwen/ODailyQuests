@@ -19,9 +19,7 @@ public class Progression {
      * Get the progression of quest.
      * @return progression.
      */
-    public Integer getProgression() {
-        return this.progression;
-    }
+    public int getProgression() { return this.progression; }
 
     /**
      * Get status of quest.
@@ -30,4 +28,5 @@ public class Progression {
     public boolean isAchieved() {
         return this.isAchieved;
     }
+
 }

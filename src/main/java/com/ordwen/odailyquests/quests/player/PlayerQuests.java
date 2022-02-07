@@ -13,7 +13,7 @@ public class PlayerQuests {
     /* Quest active quest, Boolean quest status */
     HashMap<Quest, Progression> playerQuests;
 
-    PlayerQuests(Long timestamp, HashMap<Quest, Progression> playerQuests) {
+    public PlayerQuests(Long timestamp, HashMap<Quest, Progression> playerQuests) {
         this.timestamp = timestamp;
         this.playerQuests = playerQuests;
     }

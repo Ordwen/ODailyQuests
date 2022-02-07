@@ -10,6 +10,7 @@ public class Quest {
 
     public int totalQuests = 0;
 
+    int questIndex;
     String questName;
     List<String> questDesc;
     QuestType questType;
@@ -26,7 +27,8 @@ public class Quest {
      * @param amountRequired required amount of the item.
      * @param reward reward of the quest.
      */
-    public Quest(String questName, List<String> questDesc, QuestType questType, ItemStack itemRequired, int amountRequired, Reward reward) {
+    public Quest(int questIndex, String questName, List<String> questDesc, QuestType questType, ItemStack itemRequired, int amountRequired, Reward reward) {
+        this.questIndex = questIndex;
         this.questName = questName;
         this.questDesc = questDesc;
         this.questType = questType;
@@ -91,5 +93,13 @@ public class Quest {
      */
     public Reward getReward() {
         return this.reward;
+    }
+
+    /**
+     * Get index of quest.
+     * @return quest index.
+     */
+    public int getQuestIndex() {
+        return this.questIndex;
     }
 }
