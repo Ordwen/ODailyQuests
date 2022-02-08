@@ -8,6 +8,7 @@ import com.ordwen.odailyquests.quests.LoadQuests;
 import com.ordwen.odailyquests.quests.Quest;
 import com.ordwen.odailyquests.quests.player.progression.LoadProgression;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
+import com.ordwen.odailyquests.quests.player.progression.SaveProgression;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -24,7 +25,7 @@ import java.util.logging.Logger;
 public class QuestsManager implements Listener {
 
     /* Logger for stacktrace */
-    Logger logger = PluginLogger.getLogger("ODailyQuests");
+    Logger logger = PluginLogger.getLogger("O'DailyQuests");
 
     /**
      * Getting instance of classes.
@@ -57,7 +58,10 @@ public class QuestsManager implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        activeQuests.remove(event.getPlayer().getName());
+        String playerName = event.getPlayer().getName();
+
+        SaveProgression.saveProgression(playerName, activeQuests);
+        activeQuests.remove(playerName);
     }
 
     /**

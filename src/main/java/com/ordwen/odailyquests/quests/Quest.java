@@ -1,7 +1,6 @@
 package com.ordwen.odailyquests.quests;
 
 import com.ordwen.odailyquests.rewards.Reward;
-import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;

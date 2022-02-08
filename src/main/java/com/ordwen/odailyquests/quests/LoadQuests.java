@@ -34,7 +34,7 @@ public class LoadQuests {
     }
 
     /* Logger for stacktrace */
-    Logger logger = PluginLogger.getLogger("ODailyQuests");
+    Logger logger = PluginLogger.getLogger("O'DailyQuests");
 
     /* Init quests lists */
     private static final ArrayList<Quest> globalQuests = new ArrayList<>();

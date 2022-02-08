@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 public class LoadProgression {
 
     /* Logger for stacktrace */
-    private static final Logger logger = PluginLogger.getLogger("ODailyQuests");
+    private static final Logger logger = PluginLogger.getLogger("O'DailyQuests");
 
     /**
      * Getting instance of classes.
@@ -50,9 +50,9 @@ public class LoadProgression {
         HashMap<Quest, Progression> quests = new HashMap<>();
 
         /* check if player has data */
-        if (progressionFile.getProgressionFile().getString(playerName) != null) {
+        if (progressionFile.getProgressionFileConfiguration().getString(playerName) != null) {
 
-            timestamp = progressionFile.getProgressionFile().getConfigurationSection(playerName).getLong(".timestamp");
+            timestamp = progressionFile.getProgressionFileConfiguration().getConfigurationSection(playerName).getLong(".timestamp");
 
             /* DEBUG */
             //logger.info("Current timestamp : " + System.currentTimeMillis());
@@ -72,10 +72,10 @@ public class LoadProgression {
             }
             /* load non-achieved quests */
             else {
-                for (String string : progressionFile.getProgressionFile().getConfigurationSection(playerName + ".quests").getKeys(false)) {
-                    questIndex = progressionFile.getProgressionFile().getConfigurationSection(playerName + ".quests." + string).getInt(".index");
-                    advancement = progressionFile.getProgressionFile().getConfigurationSection(playerName + ".quests." + string).getInt(".progression");
-                    isAchieved = progressionFile.getProgressionFile().getConfigurationSection(playerName + ".quests." + string).getBoolean(".isAchieved");
+                for (String string : progressionFile.getProgressionFileConfiguration().getConfigurationSection(playerName + ".quests").getKeys(false)) {
+                    questIndex = progressionFile.getProgressionFileConfiguration().getConfigurationSection(playerName + ".quests." + string).getInt(".index");
+                    advancement = progressionFile.getProgressionFileConfiguration().getConfigurationSection(playerName + ".quests." + string).getInt(".progression");
+                    isAchieved = progressionFile.getProgressionFileConfiguration().getConfigurationSection(playerName + ".quests." + string).getBoolean(".isAchieved");
 
                     progression = new Progression(advancement, isAchieved);
 

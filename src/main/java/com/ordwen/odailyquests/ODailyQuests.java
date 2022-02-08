@@ -12,6 +12,7 @@ import com.ordwen.odailyquests.quests.LoadQuests;
 import com.ordwen.odailyquests.quests.Quest;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.LoadProgression;
+import com.ordwen.odailyquests.quests.player.progression.SaveProgression;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginLogger;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -34,9 +35,10 @@ public final class ODailyQuests extends JavaPlugin {
     private CategorizedQuestsInterfaces categorizedQuestsInterfaces;
     private QuestsManager questsManager;
     private LoadProgression loadProgression;
+    private SaveProgression saveProgression;
 
     /* Technical items */
-    Logger logger = PluginLogger.getLogger("ODailyQuests");
+    Logger logger = PluginLogger.getLogger("O'DailyQuests");
     String dataPath = this.getDataFolder().getPath();
 
     ArrayList<Quest> globalQuestsArray = new ArrayList<>();
@@ -55,6 +57,7 @@ public final class ODailyQuests extends JavaPlugin {
         this.categorizedQuestsInterfaces = new CategorizedQuestsInterfaces(configurationFiles);
         this.questsManager = new QuestsManager(configurationFiles);
         this.loadProgression = new LoadProgression(progressionFile);
+        this.saveProgression = new SaveProgression(progressionFile);
 
         /* Load files */
         configurationFiles.loadConfigurationFiles();
