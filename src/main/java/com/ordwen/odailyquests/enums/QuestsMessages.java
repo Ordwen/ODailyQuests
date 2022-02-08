@@ -1,5 +1,7 @@
 package com.ordwen.odailyquests.enums;
 
+import org.bukkit.ChatColor;
+
 public enum QuestsMessages {
 
     NO_PERMISSION("You don't have permission."),
@@ -7,8 +9,8 @@ public enum QuestsMessages {
 
     INVALID_CATEGORY("Invalid quest category"),
 
-    QUESTS_IN_PROGRESS("You still have daily quests to complete !"),
-    QUESTS_RENEWED("You have new daily quests to complete !");
+    QUESTS_IN_PROGRESS("&eYou still have daily quests to complete !"),
+    QUESTS_RENEWED("&aYou have new daily quests to complete !");
 
     private String message;
 
@@ -25,6 +27,6 @@ public enum QuestsMessages {
      * @return message.
      */
     public String getMessage() {
-        return this.message;
+        return ChatColor.translateAlternateColorCodes('&', this.message);
     }
 }

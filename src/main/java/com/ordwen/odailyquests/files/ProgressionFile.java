@@ -27,24 +27,31 @@ public class ProgressionFile {
     }
 
     /* Logger for stacktrace */
-    Logger logger = PluginLogger.getLogger("ODailyQuests");
+    Logger logger = PluginLogger.getLogger("O'DailyQuests");
 
+    private File progressionFile;
     private FileConfiguration progression;
 
     /**
      * Get the configuration file.
      * @return config file.
      */
-    public FileConfiguration getProgressionFile() {
+    public FileConfiguration getProgressionFileConfiguration() {
         return this.progression;
     }
+
+    /**
+     * Get the file.
+     * @return file.
+     */
+    public File getProgressionFile() { return this.progressionFile; }
 
     /**
      * Init progression file.
      */
     public void loadProgressionFile() {
 
-        File progressionFile = new File(oDailyQuests.getDataFolder(), "progression.yml");
+        progressionFile = new File(oDailyQuests.getDataFolder(), "progression.yml");
 
         if (!progressionFile.exists()) {
             oDailyQuests.saveResource("progression.yml", false);

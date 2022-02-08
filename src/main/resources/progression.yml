@@ -14,12 +14,3 @@ SamuDu24:
       index: 2
       progression: 0
       isAchieved: false
-
-# BUG : PlayerQuestsInterface place aléatoirement les quêtes, pas dans le bon ordre (mais avec les bonnes infos)
-
-    # PROGRESSION:
-    # questIndex, progression, isAchieved
-    #
-    # PLAYERQUESTS
-    # timestamp,
-    # HashMap<Quest, Progression>

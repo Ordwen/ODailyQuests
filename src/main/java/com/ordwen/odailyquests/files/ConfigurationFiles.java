@@ -27,7 +27,7 @@ public class ConfigurationFiles {
     }
 
     /* Logger for stacktrace */
-    Logger logger = PluginLogger.getLogger("ODailyQuests");
+    Logger logger = PluginLogger.getLogger("O'DailyQuests");
 
     private FileConfiguration config;
     private FileConfiguration messages;
