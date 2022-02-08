@@ -33,7 +33,7 @@ public class PlayerQuestsInterface {
     }
 
     /* Logger for stacktrace */
-    private static Logger logger = PluginLogger.getLogger("ODailyQuests");
+    private static Logger logger = PluginLogger.getLogger("O'DailyQuests");
 
     /* init variables */
     private static Inventory playerQuestsInventory;

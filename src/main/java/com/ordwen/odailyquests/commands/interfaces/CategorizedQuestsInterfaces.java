@@ -22,7 +22,7 @@ public class CategorizedQuestsInterfaces {
     }
 
     /* Logger for stacktrace */
-    Logger logger = PluginLogger.getLogger("ODailyQuests");
+    Logger logger = PluginLogger.getLogger("O'DailyQuests");
 
     /**
      * Load categorized quests interfaces.

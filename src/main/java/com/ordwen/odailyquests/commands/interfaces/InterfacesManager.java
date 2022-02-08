@@ -13,7 +13,7 @@ public class InterfacesManager implements Listener {
 
 
     /* Logger for stacktrace */
-    private static Logger logger = PluginLogger.getLogger("ODailyQuests");
+    private static Logger logger = PluginLogger.getLogger("O'DailyQuests");
 
     /**
      * Getting instance of classes.
