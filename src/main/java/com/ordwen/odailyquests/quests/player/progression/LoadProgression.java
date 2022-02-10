@@ -60,7 +60,6 @@ public class LoadProgression {
             //logger.info("Difference : " + (System.currentTimeMillis() - timestamp));
              */
 
-
             /* check if last quests renewed is older than 24 hours */
             if (System.currentTimeMillis() - timestamp >= 86400000) {
                 activeQuests.remove(playerName);

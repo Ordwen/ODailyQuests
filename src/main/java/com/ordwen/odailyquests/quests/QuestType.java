@@ -7,7 +7,7 @@ public enum QuestType {
     BREAK("BREAK"),
     PLACE("PLACE"),
     CRAFT("CRAFT"),
-    GET("GET"),
+    PICKUP("PICKUP"),
     LAUNCH("LAUNCH"),
     CONSUME("CONSUME"),
     ;

@@ -11,6 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
@@ -28,6 +29,13 @@ public class ProgressionManager implements Listener {
     @EventHandler
     public void onBlockPlaceEvent(BlockPlaceEvent event) {
         setPlayerQuestProgression(event.getPlayer().getName(), event.getBlock().getType(), QuestType.PLACE);
+    }
+
+    @EventHandler
+    public void onPickupItemEvent(EntityPickupItemEvent event) {
+        if (event.getEntity() instanceof Player) {
+            setPlayerQuestProgression(event.getEntity().getName(), event.getItem().getItemStack().getType(), QuestType.PICKUP);
+        }
     }
 
     @EventHandler
