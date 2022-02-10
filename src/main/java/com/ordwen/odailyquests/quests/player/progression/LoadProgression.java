@@ -54,10 +54,11 @@ public class LoadProgression {
 
             timestamp = progressionFile.getProgressionFileConfiguration().getConfigurationSection(playerName).getLong(".timestamp");
 
-            /* DEBUG */
+            /* DEBUG
             //logger.info("Current timestamp : " + System.currentTimeMillis());
             //logger.info(playerName + " timestamp : " + timestamp);
             //logger.info("Difference : " + (System.currentTimeMillis() - timestamp));
+             */
 
 
             /* check if last quests renewed is older than 24 hours */
@@ -66,7 +67,7 @@ public class LoadProgression {
                 QuestsManager.selectRandomQuests(quests);
                 playerQuests = new PlayerQuests(System.currentTimeMillis(), quests);
                 activeQuests.put(playerName, playerQuests);
-                Bukkit.getPlayer(playerName).sendMessage(QuestsMessages.QUESTS_RENEWED.getMessage());
+                Bukkit.getPlayer(playerName).sendMessage(QuestsMessages.QUESTS_RENEWED.toString());
 
                 logger.info(ChatColor.GOLD + playerName + ChatColor.YELLOW + "'s quests have been renewed.");
             }
@@ -110,7 +111,7 @@ public class LoadProgression {
                 activeQuests.put(playerName, playerQuests);
 
                 logger.info(ChatColor.GOLD + playerName + ChatColor.YELLOW + "'s quests have been loaded.");
-                Bukkit.getPlayer(playerName).sendMessage(QuestsMessages.QUESTS_IN_PROGRESS.getMessage());
+                Bukkit.getPlayer(playerName).sendMessage(QuestsMessages.QUESTS_IN_PROGRESS.toString());
             }
         } else {
             QuestsManager.selectRandomQuests(quests);
@@ -118,7 +119,7 @@ public class LoadProgression {
             activeQuests.put(playerName, playerQuests);
 
             logger.info(ChatColor.GREEN + playerName + ChatColor.YELLOW + " inserted into the array.");
-            Bukkit.getPlayer(playerName).sendMessage(QuestsMessages.QUESTS_RENEWED.getMessage());
+            Bukkit.getPlayer(playerName).sendMessage(QuestsMessages.QUESTS_RENEWED.toString());
         }
     }
 }

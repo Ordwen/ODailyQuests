@@ -31,21 +31,21 @@ public class PlayerCommands implements CommandExecutor {
                                         case "hard":
                                             break;
                                         default:
-                                            sender.sendMessage(QuestsMessages.INVALID_CATEGORY.getMessage());
+                                            sender.sendMessage(QuestsMessages.INVALID_CATEGORY.toString());
                                             break;
                                     }
-                                } else sender.sendMessage(QuestsMessages.INVALID_SYNTAX.getMessage());
+                                } else sender.sendMessage(QuestsMessages.INVALID_SYNTAX.toString());
                                 break;
                             case "me":
                                 ((Player) sender).openInventory(PlayerQuestsInterface.getPlayerQuestsInterface(sender.getName()));
                                 break;
                             default:
-                                sender.sendMessage(QuestsMessages.INVALID_SYNTAX.getMessage());
+                                sender.sendMessage(QuestsMessages.INVALID_SYNTAX.toString());
                                 break;
                         }
-                    } else sender.sendMessage(QuestsMessages.INVALID_SYNTAX.getMessage());
+                    } else sender.sendMessage(QuestsMessages.INVALID_SYNTAX.toString());
 
-                } else sender.sendMessage(QuestsMessages.NO_PERMISSION.getMessage());
+                } else sender.sendMessage(QuestsMessages.NO_PERMISSION.toString());
             }
         }
         return false;

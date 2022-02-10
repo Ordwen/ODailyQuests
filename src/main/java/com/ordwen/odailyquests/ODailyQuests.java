@@ -12,11 +12,14 @@ import com.ordwen.odailyquests.quests.LoadQuests;
 import com.ordwen.odailyquests.quests.Quest;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.LoadProgression;
+import com.ordwen.odailyquests.quests.player.progression.ProgressionManager;
 import com.ordwen.odailyquests.quests.player.progression.SaveProgression;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginLogger;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
@@ -36,6 +39,7 @@ public final class ODailyQuests extends JavaPlugin {
     private QuestsManager questsManager;
     private LoadProgression loadProgression;
     private SaveProgression saveProgression;
+    private ProgressionManager progressionManager;
 
     /* Technical items */
     Logger logger = PluginLogger.getLogger("O'DailyQuests");
@@ -58,9 +62,11 @@ public final class ODailyQuests extends JavaPlugin {
         this.questsManager = new QuestsManager(configurationFiles);
         this.loadProgression = new LoadProgression(progressionFile);
         this.saveProgression = new SaveProgression(progressionFile);
+        this.progressionManager = new ProgressionManager();
 
         /* Load files */
         configurationFiles.loadConfigurationFiles();
+        configurationFiles.loadMessagesFiles();
         questsFiles.loadQuestsFiles();
         progressionFile.loadProgressionFile();
 
@@ -80,6 +86,7 @@ public final class ODailyQuests extends JavaPlugin {
         /* Load listeners */
         getServer().getPluginManager().registerEvents(interfacesManager, this);
         getServer().getPluginManager().registerEvents(questsManager, this);
+        getServer().getPluginManager().registerEvents(progressionManager, this);
 
         logger.info(ChatColor.GREEN + "Plugin is started !");
 

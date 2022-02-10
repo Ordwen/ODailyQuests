@@ -8,7 +8,9 @@ public enum QuestType {
     PLACE("PLACE"),
     CRAFT("CRAFT"),
     GET("GET"),
-    USE("USE");
+    LAUNCH("LAUNCH"),
+    CONSUME("CONSUME"),
+    ;
 
     private final String typeName;
 

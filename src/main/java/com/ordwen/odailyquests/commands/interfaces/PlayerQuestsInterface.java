@@ -9,7 +9,9 @@ import com.ordwen.odailyquests.quests.player.progression.Progression;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.PluginLogger;
@@ -38,8 +40,9 @@ public class PlayerQuestsInterface {
     /* init variables */
     private static Inventory playerQuestsInventory;
 
-    private static String inProgress;
     private static String achieved;
+    private static String status;
+    private static String progression;
     private static ItemStack emptyCaseItem;
 
     private static ItemStack itemStack;
@@ -52,6 +55,10 @@ public class PlayerQuestsInterface {
 
         emptyCaseItem = new ItemStack(Material.valueOf(Objects.requireNonNull(configurationFiles.getConfigFile().getConfigurationSection("interfaces.player_quests")).getString(".empty_item")));
         playerQuestsInventory = Bukkit.createInventory(null, 27, InterfacesManager.getPlayerQuestsInventoryName());
+
+        achieved = Objects.requireNonNull(configurationFiles.getConfigFile().getConfigurationSection("interfaces.player_quests")).getString(".achieved");
+        status = Objects.requireNonNull(configurationFiles.getConfigFile().getConfigurationSection("interfaces.player_quests")).getString(".status");
+        progression = Objects.requireNonNull(configurationFiles.getConfigFile().getConfigurationSection("interfaces.player_quests")).getString(".progress");
 
         /* fill empty slots */
         for (int i = 0; i < playerQuestsInventory.getSize(); i++) {
@@ -67,9 +74,6 @@ public class PlayerQuestsInterface {
      */
     public static Inventory getPlayerQuestsInterface(String playerName) {
 
-        inProgress = Objects.requireNonNull(configurationFiles.getConfigFile().getConfigurationSection("interfaces.player_quests")).getString(".quest_in_progress");
-        achieved = Objects.requireNonNull(configurationFiles.getConfigFile().getConfigurationSection("interfaces.player_quests")).getString(".quest_achieved");
-
         HashMap<String, PlayerQuests> activeQuests = QuestsManager.getActiveQuests();
         HashMap<Quest, Progression> playerQuests = activeQuests.get(playerName).getPlayerQuests();
 
@@ -83,14 +87,19 @@ public class PlayerQuestsInterface {
             itemMeta.setDisplayName(quest.getQuestName());
 
             List<String> lore = new ArrayList<>(quest.getQuestDesc());
-            lore.add(ChatColor.GRAY + "Status :");
+            lore.add(ChatColor.translateAlternateColorCodes('&', status));
 
             if (playerQuests.get(quest).isAchieved()) {
+                itemMeta.addEnchant(Enchantment.SILK_TOUCH, 1, false);
+                itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                 lore.add(ChatColor.translateAlternateColorCodes('&', achieved));
             } else {
-                lore.add(ChatColor.translateAlternateColorCodes('&', inProgress));
+                lore.add(ChatColor.translateAlternateColorCodes('&',  progression)
+                        .replace("%progress%", String.valueOf(playerQuests.get(quest).getProgression()))
+                        .replace("%required%", String.valueOf(quest.getAmountRequired())));
             }
 
+            itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
             itemMeta.setLore(lore);
             itemStack.setItemMeta(itemMeta);
 

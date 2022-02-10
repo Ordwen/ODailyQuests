@@ -1,3 +1,8 @@
+# LAUNCH: ENDER_PEARL, EGG, ARROW
+# CONSUME: POTION, FOOD, MILK
+#
+#
+#
 quests:
   1:
     name: "Cobblestone"
@@ -28,7 +33,7 @@ quests:
     description:
       - "Use 8 ender pearls."
       - "Win 1500 EXP."
-    quest_type: USE
+    quest_type: LAUNCH
     required_item: ENDER_PEARL
     required_amount: 8
     reward:
@@ -50,7 +55,7 @@ quests:
     description:
       - "Use 2 potions."
       - "Win 1500$."
-    quest_type: USE
+    quest_type: CONSUME
     required_item: POTION
     required_amount: 8
     reward:

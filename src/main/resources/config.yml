@@ -1,11 +1,13 @@
+# NEVER DELETE A %variable%
 prefix: "&7[O'DailyQuests&7]"
 storage_mode: "YAML"
 interfaces:
   player_quests:
     inventory_name: "&bMy quests"
     empty_item: GREEN_STAINED_GLASS_PANE
-    quest_in_progress: "&cIN PROGRESS"
-    quest_achieved: "&aACHIEVED"
+    progress: "&eIN PROGRESS (&a%progress%&e/&c%required%&e)"
+    status: "&eStatus :"
+    achieved: "&aACHIEVED"
   global_quests:
     inventory_name: "Quests - Global"
     empty_item: BLACK_STAINED_GLASS_PANE
@@ -18,6 +20,7 @@ interfaces:
   hard_quests:
     inventory_name: "Quests - Global"
     empty_item: BLACK_STAINED_GLASS_PANE
+
 # ==========================================================
 # Select the mode of the quests.
 # ==========================================================
