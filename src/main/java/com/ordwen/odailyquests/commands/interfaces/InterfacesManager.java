@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.commands.interfaces;
 
 import com.ordwen.odailyquests.files.ConfigurationFiles;
+import com.ordwen.odailyquests.quests.player.progression.ProgressionManager;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -13,7 +14,7 @@ public class InterfacesManager implements Listener {
 
 
     /* Logger for stacktrace */
-    private static Logger logger = PluginLogger.getLogger("O'DailyQuests");
+    private static final Logger logger = PluginLogger.getLogger("O'DailyQuests");
 
     /**
      * Getting instance of classes.
@@ -58,6 +59,11 @@ public class InterfacesManager implements Listener {
                 || inventoryName.equals(mediumQuestsInventoryName)
                 || inventoryName.equals(hardQuestsInventoryName)) {
             event.setCancelled(true);
+
+            if (event.getCurrentItem() != null && !event.getCurrentItem().getType().equals(PlayerQuestsInterface.getEmptyCaseItem()))  {
+                ProgressionManager.validateGetQuestType(event.getWhoClicked().getName(), event.getCurrentItem().getType());
+                event.getWhoClicked().closeInventory();
+            }
         }
     }
 

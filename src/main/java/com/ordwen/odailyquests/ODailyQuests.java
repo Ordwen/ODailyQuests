@@ -1,5 +1,7 @@
 package com.ordwen.odailyquests;
 
+import com.ordwen.odailyquests.apis.TokenManagerAPI;
+import com.ordwen.odailyquests.apis.VaultAPI;
 import com.ordwen.odailyquests.commands.PlayerCommands;
 import com.ordwen.odailyquests.commands.interfaces.CategorizedQuestsInterfaces;
 import com.ordwen.odailyquests.commands.interfaces.GlobalQuestsInterface;
@@ -8,18 +10,18 @@ import com.ordwen.odailyquests.commands.interfaces.PlayerQuestsInterface;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.files.ProgressionFile;
 import com.ordwen.odailyquests.files.QuestsFiles;
+import com.ordwen.odailyquests.metrics.Metrics;
 import com.ordwen.odailyquests.quests.LoadQuests;
 import com.ordwen.odailyquests.quests.Quest;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.LoadProgression;
 import com.ordwen.odailyquests.quests.player.progression.ProgressionManager;
 import com.ordwen.odailyquests.quests.player.progression.SaveProgression;
+import net.milkbowl.vault.chat.Chat;
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginLogger;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
@@ -51,6 +53,26 @@ public final class ODailyQuests extends JavaPlugin {
     public void onEnable() {
         logger.info(ChatColor.GOLD + "Plugin is starting...");
 
+        /* Load Metrics */
+        // https://bstats.org/what-is-my-plugin-id
+        int pluginId = 14277;
+        Metrics metrics = new Metrics(this, pluginId);
+
+        /* Load dependencies */
+        if (!VaultAPI.setupEconomy()) {
+            logger.severe("Plugin disabled due to no Vault dependency found !");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        } else {
+            logger.info(ChatColor.YELLOW + "Vault" + ChatColor.GREEN + " successfully hooked.");
+        }
+        if (!TokenManagerAPI.setupTokenManager()) {
+            logger.info(ChatColor.YELLOW + "TokenManager" + ChatColor.RED + " not detected. Quests with type 'GET' will not work.");
+        } else {
+            logger.info(ChatColor.YELLOW + "TokenManager" + ChatColor.GREEN + " successfully hooked.");
+        }
+
+        /* Load class instances */
         this.configurationFiles = new ConfigurationFiles(this);
         this.questsFiles = new QuestsFiles(this);
         this.progressionFile = new ProgressionFile(this);
@@ -89,29 +111,6 @@ public final class ODailyQuests extends JavaPlugin {
         getServer().getPluginManager().registerEvents(progressionManager, this);
 
         logger.info(ChatColor.GREEN + "Plugin is started !");
-
-        /*
-        logger.info("FIRST QUEST");
-        logger.info("Name of first quest is : " + globalQuestsArray.get(0).getQuestName());
-        logger.info("Description of first quest is : " + globalQuestsArray.get(0).getQuestDesc());
-        logger.info("Type of first quest is : " + globalQuestsArray.get(0).getType().getTypeName());
-        logger.info("Item required of first quest is : " + globalQuestsArray.get(0).getItemRequired());
-        logger.info("Amount required of first quest is : " + globalQuestsArray.get(0).getAmountRequired());
-        logger.info("Reward type of first quest is : " + globalQuestsArray.get(0).getReward().getRewardType());
-        logger.info("Reward of first quest is : " + globalQuestsArray.get(0).getReward().getRewardAmount());
-
-        logger.info("SECOND QUEST");
-        logger.info("Name of second quest is : " + globalQuestsArray.get(1).getQuestName());
-        logger.info("Description of second quest is : " + globalQuestsArray.get(1).getQuestDesc());
-        logger.info("Type of second quest is : " + globalQuestsArray.get(1).getType().getTypeName());
-        logger.info("Item required of second quest is : " + globalQuestsArray.get(1).getItemRequired());
-        logger.info("Amount required of second quest is : " + globalQuestsArray.get(1).getAmountRequired());
-        logger.info("Reward type of second quest is : " + globalQuestsArray.get(1).getReward().getRewardType());
-        logger.info("Reward of second quest is : " + globalQuestsArray.get(1).getReward().getRewardCommands());
-        for (String cmd : globalQuestsArray.get(1).getReward().getRewardCommands()) {
-            this.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd.replace("%player%", "Console"));
-        }
-         */
     }
 
     @Override

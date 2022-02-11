@@ -3,6 +3,7 @@ package com.ordwen.odailyquests.enums;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 
+@SuppressWarnings("SpellCheckingInspection")
 public enum QuestsMessages {
 
     NO_PERMISSION("no_permission", "You don't have permission."),
@@ -11,9 +12,13 @@ public enum QuestsMessages {
 
     QUESTS_IN_PROGRESS("quests_in_progress", "&eYou still have daily quests to complete !"),
     QUESTS_RENEWED("quests_renewed", "&aYou have new daily quests to complete !"),
+    QUEST_ACHIEVED("quest_achieved", "&aYou finished the quest &e%questName%&a, well done !"),
+    NOT_ENOUGH_ITEM("not_enough_items","&cYou don't have the required amount to complete this quest."),
 
-    QUEST_ACHIEVED("quest_achieved", "&aYou finished the quest &e%questName% &a, well done !"),
-    QUEST_REWARDED("quest_rewarded", "&aYou receive &e%rewardAmount% &b%rewardTypeLabel%&a."),
+    REWARD_COMMAND("reward_command", "&aYou receive some rewards commands."),
+    REWARD_EXP("reward_exp", "&aYou receive &e%rewardAmount% &bEXP&a."),
+    REWARD_MONEY("reward_money", "&aYou receive &e%rewardAmount% &b$&a."),
+    REWARD_POINTS("reward_points", "&aYou receive &e%rewardAmount% &bpoints&a."),
     ;
 
     private final String path;

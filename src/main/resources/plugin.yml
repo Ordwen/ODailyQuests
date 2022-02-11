@@ -6,6 +6,10 @@ prefix: "O'DailyQuests"
 authors: [ Ordwen ]
 description: Add more objectives and dynamize your server !
 website: ordwen.com
+depend:
+  - Vault
+softdepend:
+  - TokenManager
 commands:
   quests:
     description: default player command

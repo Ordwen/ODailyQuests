@@ -1,8 +1,8 @@
 package com.ordwen.odailyquests.commands.interfaces;
 
 import com.ordwen.odailyquests.files.ConfigurationFiles;
-import com.ordwen.odailyquests.quests.LoadQuests;
 import com.ordwen.odailyquests.quests.Quest;
+import com.ordwen.odailyquests.quests.QuestType;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
@@ -35,7 +35,7 @@ public class PlayerQuestsInterface {
     }
 
     /* Logger for stacktrace */
-    private static Logger logger = PluginLogger.getLogger("O'DailyQuests");
+    private static final Logger logger = PluginLogger.getLogger("O'DailyQuests");
 
     /* init variables */
     private static Inventory playerQuestsInventory;
@@ -43,10 +43,8 @@ public class PlayerQuestsInterface {
     private static String achieved;
     private static String status;
     private static String progression;
+    private static String completeGetType;
     private static ItemStack emptyCaseItem;
-
-    private static ItemStack itemStack;
-    private static ItemMeta itemMeta;
 
     /**
      * Load player quests interface.
@@ -59,6 +57,7 @@ public class PlayerQuestsInterface {
         achieved = Objects.requireNonNull(configurationFiles.getConfigFile().getConfigurationSection("interfaces.player_quests")).getString(".achieved");
         status = Objects.requireNonNull(configurationFiles.getConfigFile().getConfigurationSection("interfaces.player_quests")).getString(".status");
         progression = Objects.requireNonNull(configurationFiles.getConfigFile().getConfigurationSection("interfaces.player_quests")).getString(".progress");
+        completeGetType = Objects.requireNonNull(configurationFiles.getConfigFile().getConfigurationSection("interfaces.player_quests")).getString(".complete_get_type");
 
         /* fill empty slots */
         for (int i = 0; i < playerQuestsInventory.getSize(); i++) {
@@ -80,8 +79,8 @@ public class PlayerQuestsInterface {
         int i = 2;
         for (Quest quest : playerQuests.keySet()) {
 
-            itemStack = quest.getItemRequired();
-            itemMeta = itemStack.getItemMeta();
+            ItemStack itemStack = quest.getItemRequired();
+            ItemMeta itemMeta = itemStack.getItemMeta();
 
             assert itemMeta != null;
             itemMeta.setDisplayName(quest.getQuestName());
@@ -94,9 +93,13 @@ public class PlayerQuestsInterface {
                 itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                 lore.add(ChatColor.translateAlternateColorCodes('&', achieved));
             } else {
-                lore.add(ChatColor.translateAlternateColorCodes('&',  progression)
-                        .replace("%progress%", String.valueOf(playerQuests.get(quest).getProgression()))
-                        .replace("%required%", String.valueOf(quest.getAmountRequired())));
+                if (quest.getType() == QuestType.GET) {
+                    lore.add(ChatColor.translateAlternateColorCodes('&', completeGetType));
+                } else {
+                    lore.add(ChatColor.translateAlternateColorCodes('&', progression)
+                            .replace("%progress%", String.valueOf(playerQuests.get(quest).getProgression()))
+                            .replace("%required%", String.valueOf(quest.getAmountRequired())));
+                }
             }
 
             itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
@@ -109,5 +112,13 @@ public class PlayerQuestsInterface {
         }
 
         return playerQuestsInventory;
+    }
+
+    /**
+     * Get empty case item material.
+     * @return material.
+     */
+    public static Material getEmptyCaseItem() {
+        return emptyCaseItem.getType();
     }
 }

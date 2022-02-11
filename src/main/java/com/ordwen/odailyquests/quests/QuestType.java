@@ -10,6 +10,7 @@ public enum QuestType {
     PICKUP("PICKUP"),
     LAUNCH("LAUNCH"),
     CONSUME("CONSUME"),
+    GET("GET"),
     ;
 
     private final String typeName;

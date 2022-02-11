@@ -8,6 +8,7 @@ interfaces:
     progress: "&eIN PROGRESS (&a%progress%&e/&c%required%&e)"
     status: "&eStatus :"
     achieved: "&aACHIEVED"
+    complete_get_type: "&eClick to complete this quest !"
   global_quests:
     inventory_name: "Quests - Global"
     empty_item: BLACK_STAINED_GLASS_PANE
