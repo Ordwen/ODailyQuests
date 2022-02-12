@@ -3,7 +3,7 @@ package com.ordwen.odailyquests.quests.player.progression;
 public class Progression {
 
     int progression;
-    boolean isAchieved;
+    public boolean isAchieved;
 
     /**
      * Progression constructor.

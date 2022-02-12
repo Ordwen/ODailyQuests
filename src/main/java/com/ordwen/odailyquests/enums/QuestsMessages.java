@@ -7,10 +7,12 @@ import org.bukkit.configuration.file.FileConfiguration;
 public enum QuestsMessages {
 
     NO_PERMISSION("no_permission", "&cYou don't have permission."),
+    PLAYER_ONLY("player_only", "&cOnly player can execute this command."),
     INVALID_SYNTAX("invalid_syntax", "&cInvalid syntax."),
     INVALID_CATEGORY("invalid_category", "&cInvalid quest category."),
     CATEGORIZED_DISABLED("categorized_disabled","&cCategorized quests are disabled, only the global menu is available."),
     INVALID_PLAYER("invalid_player", "&cThis player doesn't exist, or is offline."),
+    INVALID_QUEST_ID("invalid_quest_id","&cYou must specify a valid quest ID, between 1 and 3."),
 
     QUESTS_IN_PROGRESS("quests_in_progress", "&eYou still have daily quests to complete !"),
     QUESTS_RENEWED("quests_renewed", "&aYou have new daily quests to complete !"),
