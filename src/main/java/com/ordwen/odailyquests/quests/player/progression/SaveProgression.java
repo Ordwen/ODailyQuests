@@ -4,7 +4,6 @@ import com.ordwen.odailyquests.files.ProgressionFile;
 import com.ordwen.odailyquests.quests.Quest;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginLogger;
 
 import java.io.IOException;
@@ -65,6 +64,7 @@ public class SaveProgression {
             }
             logger.info(ChatColor.GOLD + playerName + ChatColor.YELLOW + " added to file data.");
         }
+
         /* save the file */
         try {
             progressionFile.getProgressionFileConfiguration().save(progressionFile.getProgressionFile());

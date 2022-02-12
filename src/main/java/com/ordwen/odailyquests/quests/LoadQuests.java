@@ -13,6 +13,7 @@ import org.bukkit.plugin.PluginLogger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class LoadQuests {
@@ -105,94 +106,101 @@ public class LoadQuests {
         else if (configurationFiles.getConfigFile().getInt("mode") == 2) {
 
             /* load easy quests */
-            for (String fileQuest : Objects.requireNonNull(easyQuestsFile.getConfigurationSection("quests")).getKeys(false)) {
+            if (easyQuestsFile.getConfigurationSection("quests") != null) {
+                for (String fileQuest : easyQuestsFile.getConfigurationSection("quests").getKeys(false)) {
 
-                /* init quest items */
-                questIndex = Integer.parseInt(fileQuest) - 1;
-                questName = Objects.requireNonNull(easyQuestsFile.getConfigurationSection("quests." + fileQuest)).getString(".name");
-                questDesc = Objects.requireNonNull(easyQuestsFile.getConfigurationSection("quests." + fileQuest)).getStringList(".description");
-                questType = QuestType.valueOf(Objects.requireNonNull(easyQuestsFile.getConfigurationSection("quests." + fileQuest)).getString(".quest_type"));
-                requiredItem = new ItemStack(Material.valueOf(Objects.requireNonNull(easyQuestsFile.getConfigurationSection("quests." + fileQuest)).getString(".required_item")));
-                requiredAmount = Objects.requireNonNull(easyQuestsFile.getConfigurationSection("quests." + fileQuest)).getInt(".required_amount");
+                    /* init quest items */
+                    questIndex = Integer.parseInt(fileQuest) - 1;
+                    questName = Objects.requireNonNull(easyQuestsFile.getConfigurationSection("quests." + fileQuest)).getString(".name");
+                    questDesc = Objects.requireNonNull(easyQuestsFile.getConfigurationSection("quests." + fileQuest)).getStringList(".description");
+                    questType = QuestType.valueOf(Objects.requireNonNull(easyQuestsFile.getConfigurationSection("quests." + fileQuest)).getString(".quest_type"));
+                    requiredItem = new ItemStack(Material.valueOf(Objects.requireNonNull(easyQuestsFile.getConfigurationSection("quests." + fileQuest)).getString(".required_item")));
+                    requiredAmount = Objects.requireNonNull(easyQuestsFile.getConfigurationSection("quests." + fileQuest)).getInt(".required_amount");
 
-                /* init reward */
-                rewardType = RewardType.valueOf(Objects.requireNonNull(easyQuestsFile.getConfigurationSection("quests." + fileQuest + ".reward")).getString(".reward_type"));
+                    /* init reward */
+                    rewardType = RewardType.valueOf(Objects.requireNonNull(easyQuestsFile.getConfigurationSection("quests." + fileQuest + ".reward")).getString(".reward_type"));
 
-                if (rewardType == RewardType.COMMAND) {
-                    reward = new Reward(rewardType, Objects.requireNonNull(easyQuestsFile.getConfigurationSection("quests." + fileQuest + ".reward")).getStringList(".commands"));
-                } else {
-                    reward = new Reward(rewardType, Objects.requireNonNull(easyQuestsFile.getConfigurationSection("quests." + fileQuest + ".reward")).getInt(".amount"));
+                    if (rewardType == RewardType.COMMAND) {
+                        reward = new Reward(rewardType, Objects.requireNonNull(easyQuestsFile.getConfigurationSection("quests." + fileQuest + ".reward")).getStringList(".commands"));
+                    } else {
+                        reward = new Reward(rewardType, Objects.requireNonNull(easyQuestsFile.getConfigurationSection("quests." + fileQuest + ".reward")).getInt(".amount"));
+                    }
+
+                    /* init quest */
+                    quest = new Quest(questIndex, questName, questDesc, questType, requiredItem, requiredAmount, reward);
+
+                    /* add quest to the list */
+                    easyQuests.add(quest);
+
+                    logger.info(ChatColor.YELLOW + "Quest " + ChatColor.GRAY + fileQuest + ChatColor.YELLOW + " successfully loaded.");
                 }
-
-                /* init quest */
-                quest = new Quest(questIndex, questName, questDesc, questType, requiredItem, requiredAmount, reward);
-
-                /* add quest to the list */
-                easyQuests.add(quest);
-                logger.info(ChatColor.YELLOW + "Quest " + ChatColor.GRAY + fileQuest + ChatColor.YELLOW + " successfully loaded.");
-            }
-            logger.info(ChatColor.GREEN + "Easy quests array successfully loaded.");
+                logger.info(ChatColor.GREEN + "Easy quests array successfully loaded.");
+            } else logger.log(Level.SEVERE, ChatColor.RED + "Impossible to load easy quests : there is no quests in easyQuests.yml file !");
 
             /* load medium quests */
-            for (String fileQuest : Objects.requireNonNull(mediumQuestsFile.getConfigurationSection("quests")).getKeys(false)) {
+            if (easyQuestsFile.getConfigurationSection("quests") != null) {
+                for (String fileQuest : mediumQuestsFile.getConfigurationSection("quests").getKeys(false)) {
 
-                /* init quest items */
-                questIndex = Integer.parseInt(fileQuest) - 1;
-                questName = Objects.requireNonNull(mediumQuestsFile.getConfigurationSection("quests." + fileQuest)).getString(".name");
-                questDesc = Objects.requireNonNull(mediumQuestsFile.getConfigurationSection("quests." + fileQuest)).getStringList(".description");
-                questType = QuestType.valueOf(Objects.requireNonNull(mediumQuestsFile.getConfigurationSection("quests." + fileQuest)).getString(".quest_type"));
-                requiredItem = new ItemStack(Material.valueOf(Objects.requireNonNull(mediumQuestsFile.getConfigurationSection("quests." + fileQuest)).getString(".required_item")));
-                requiredAmount = Objects.requireNonNull(mediumQuestsFile.getConfigurationSection("quests." + fileQuest)).getInt(".required_amount");
+                    /* init quest items */
+                    questIndex = Integer.parseInt(fileQuest) - 1;
+                    questName = Objects.requireNonNull(mediumQuestsFile.getConfigurationSection("quests." + fileQuest)).getString(".name");
+                    questDesc = Objects.requireNonNull(mediumQuestsFile.getConfigurationSection("quests." + fileQuest)).getStringList(".description");
+                    questType = QuestType.valueOf(Objects.requireNonNull(mediumQuestsFile.getConfigurationSection("quests." + fileQuest)).getString(".quest_type"));
+                    requiredItem = new ItemStack(Material.valueOf(Objects.requireNonNull(mediumQuestsFile.getConfigurationSection("quests." + fileQuest)).getString(".required_item")));
+                    requiredAmount = Objects.requireNonNull(mediumQuestsFile.getConfigurationSection("quests." + fileQuest)).getInt(".required_amount");
 
-                /* init reward */
-                rewardType = RewardType.valueOf(Objects.requireNonNull(mediumQuestsFile.getConfigurationSection("quests." + fileQuest + ".reward")).getString(".reward_type"));
+                    /* init reward */
+                    rewardType = RewardType.valueOf(Objects.requireNonNull(mediumQuestsFile.getConfigurationSection("quests." + fileQuest + ".reward")).getString(".reward_type"));
 
-                if (rewardType == RewardType.COMMAND) {
-                    reward = new Reward(rewardType, Objects.requireNonNull(mediumQuestsFile.getConfigurationSection("quests." + fileQuest + ".reward")).getStringList(".commands"));
-                } else {
-                    reward = new Reward(rewardType, Objects.requireNonNull(mediumQuestsFile.getConfigurationSection("quests." + fileQuest + ".reward")).getInt(".amount"));
+                    if (rewardType == RewardType.COMMAND) {
+                        reward = new Reward(rewardType, Objects.requireNonNull(mediumQuestsFile.getConfigurationSection("quests." + fileQuest + ".reward")).getStringList(".commands"));
+                    } else {
+                        reward = new Reward(rewardType, Objects.requireNonNull(mediumQuestsFile.getConfigurationSection("quests." + fileQuest + ".reward")).getInt(".amount"));
+                    }
+
+                    /* init quest */
+                    quest = new Quest(questIndex, questName, questDesc, questType, requiredItem, requiredAmount, reward);
+
+                    /* add quest to the list */
+                    mediumQuests.add(quest);
+                    logger.info(ChatColor.YELLOW + "Quest " + ChatColor.GRAY + fileQuest + ChatColor.YELLOW + " successfully loaded.");
                 }
-
-                /* init quest */
-                quest = new Quest(questIndex, questName, questDesc, questType, requiredItem, requiredAmount, reward);
-
-                /* add quest to the list */
-                mediumQuests.add(quest);
-                logger.info(ChatColor.YELLOW + "Quest " + ChatColor.GRAY + fileQuest + ChatColor.YELLOW + " successfully loaded.");
-            }
-            logger.info(ChatColor.GREEN + "Medium quests array successfully loaded.");
+                logger.info(ChatColor.GREEN + "Medium quests array successfully loaded.");
+            } else logger.log(Level.SEVERE, ChatColor.RED + "Impossible to load medium quests : there is no quests in mediumQuests.yml file !");
 
             /* load hard quests */
-            for (String fileQuest : Objects.requireNonNull(hardQuestsFile.getConfigurationSection("quests")).getKeys(false)) {
+            if (easyQuestsFile.getConfigurationSection("quests") != null) {
+                for (String fileQuest : hardQuestsFile.getConfigurationSection("quests").getKeys(false)) {
 
-                /* init quest items */
-                questIndex = Integer.parseInt(fileQuest) - 1;
-                questName = Objects.requireNonNull(hardQuestsFile.getConfigurationSection("quests." + fileQuest)).getString(".name");
-                questDesc = Objects.requireNonNull(hardQuestsFile.getConfigurationSection("quests." + fileQuest)).getStringList(".description");
-                questType = QuestType.valueOf(Objects.requireNonNull(hardQuestsFile.getConfigurationSection("quests." + fileQuest)).getString(".quest_type"));
-                requiredItem = new ItemStack(Material.valueOf(Objects.requireNonNull(hardQuestsFile.getConfigurationSection("quests." + fileQuest)).getString(".required_item")));
-                requiredAmount = Objects.requireNonNull(hardQuestsFile.getConfigurationSection("quests." + fileQuest)).getInt(".required_amount");
+                    /* init quest items */
+                    questIndex = Integer.parseInt(fileQuest) - 1;
+                    questName = Objects.requireNonNull(hardQuestsFile.getConfigurationSection("quests." + fileQuest)).getString(".name");
+                    questDesc = Objects.requireNonNull(hardQuestsFile.getConfigurationSection("quests." + fileQuest)).getStringList(".description");
+                    questType = QuestType.valueOf(Objects.requireNonNull(hardQuestsFile.getConfigurationSection("quests." + fileQuest)).getString(".quest_type"));
+                    requiredItem = new ItemStack(Material.valueOf(Objects.requireNonNull(hardQuestsFile.getConfigurationSection("quests." + fileQuest)).getString(".required_item")));
+                    requiredAmount = Objects.requireNonNull(hardQuestsFile.getConfigurationSection("quests." + fileQuest)).getInt(".required_amount");
 
-                /* init reward */
-                rewardType = RewardType.valueOf(Objects.requireNonNull(hardQuestsFile.getConfigurationSection("quests." + fileQuest + ".reward")).getString(".reward_type"));
+                    /* init reward */
+                    rewardType = RewardType.valueOf(Objects.requireNonNull(hardQuestsFile.getConfigurationSection("quests." + fileQuest + ".reward")).getString(".reward_type"));
 
-                if (rewardType == RewardType.COMMAND) {
-                    reward = new Reward(rewardType, Objects.requireNonNull(hardQuestsFile.getConfigurationSection("quests." + fileQuest + ".reward")).getStringList(".commands"));
-                } else {
-                    reward = new Reward(rewardType, Objects.requireNonNull(hardQuestsFile.getConfigurationSection("quests." + fileQuest + ".reward")).getInt(".amount"));
+                    if (rewardType == RewardType.COMMAND) {
+                        reward = new Reward(rewardType, Objects.requireNonNull(hardQuestsFile.getConfigurationSection("quests." + fileQuest + ".reward")).getStringList(".commands"));
+                    } else {
+                        reward = new Reward(rewardType, Objects.requireNonNull(hardQuestsFile.getConfigurationSection("quests." + fileQuest + ".reward")).getInt(".amount"));
+                    }
+
+                    /* init quest */
+                    quest = new Quest(questIndex, questName, questDesc, questType, requiredItem, requiredAmount, reward);
+
+                    /* add quest to the list */
+                    hardQuests.add(quest);
+                    logger.info(ChatColor.YELLOW + "Quest " + ChatColor.GRAY + fileQuest + ChatColor.YELLOW + " successfully loaded.");
                 }
-
-                /* init quest */
-                quest = new Quest(questIndex, questName, questDesc, questType, requiredItem, requiredAmount, reward);
-
-                /* add quest to the list */
-                hardQuests.add(quest);
-                logger.info(ChatColor.YELLOW + "Quest " + ChatColor.GRAY + fileQuest + ChatColor.YELLOW + " successfully loaded.");
-            }
-            logger.info(ChatColor.GREEN + "Hard quests array successfully loaded.");
+                logger.info(ChatColor.GREEN + "Hard quests array successfully loaded.");
+            } else logger.log(Level.SEVERE, ChatColor.RED + "Impossible to load hard quests : there is no quests in hardQuests.yml file !");
         }
         else  {
-            logger.info(ChatColor.RED + "Impossible to load the quests. The selected mode is incorrect.");
+            logger.log(Level.SEVERE, ChatColor.RED + "Impossible to load the quests. The selected mode is incorrect.");
         }
     }
 

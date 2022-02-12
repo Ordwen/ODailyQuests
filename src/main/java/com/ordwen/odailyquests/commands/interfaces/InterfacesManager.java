@@ -62,7 +62,6 @@ public class InterfacesManager implements Listener {
 
             if (event.getCurrentItem() != null && !event.getCurrentItem().getType().equals(PlayerQuestsInterface.getEmptyCaseItem()))  {
                 ProgressionManager.validateGetQuestType(event.getWhoClicked().getName(), event.getCurrentItem().getType());
-                event.getWhoClicked().closeInventory();
             }
         }
     }

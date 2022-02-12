@@ -15,3 +15,8 @@ commands:
     description: default player command
     aliases:
       - quest
+  questsadmin:
+    description: admin command
+    aliases:
+      - questadmin
+      - qadmin

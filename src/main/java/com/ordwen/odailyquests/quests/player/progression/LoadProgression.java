@@ -11,6 +11,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginLogger;
 
 import java.util.HashMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class LoadProgression {
@@ -81,7 +82,7 @@ public class LoadProgression {
 
                     if (configMode == 1) {
                         quest = LoadQuests.getGlobalQuests().get(questIndex);
-                    } else {
+                    } else if (configMode == 2) {
                         switch(Integer.parseInt(string)) {
                             case 1:
                                 quest = LoadQuests.getEasyQuests().get(questIndex);
@@ -93,7 +94,7 @@ public class LoadProgression {
                                 quest = LoadQuests.getHardQuests().get(questIndex);
                                 break;
                         }
-                    }
+                    } else logger.log(Level.SEVERE, ChatColor.RED + "Impossible to load player quests. The selected mode is incorrect.");
 
                     if (quest == null) {
                         logger.info(ChatColor.RED + "An error occurred while loading " + ChatColor.GOLD + playerName + ChatColor.RED + "'s quests.");

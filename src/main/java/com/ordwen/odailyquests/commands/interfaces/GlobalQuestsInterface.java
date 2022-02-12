@@ -77,8 +77,4 @@ public class GlobalQuestsInterface {
     public static Inventory getGlobalQuestsInterface() {
         return globalQuestsInventory;
     }
-
-    // si trop de quêtes pour un seul menu
-    // pouvoir config les menus
-
 }

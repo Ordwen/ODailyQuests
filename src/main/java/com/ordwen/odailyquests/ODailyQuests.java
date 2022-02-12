@@ -2,6 +2,7 @@ package com.ordwen.odailyquests;
 
 import com.ordwen.odailyquests.apis.TokenManagerAPI;
 import com.ordwen.odailyquests.apis.VaultAPI;
+import com.ordwen.odailyquests.commands.AdminCommands;
 import com.ordwen.odailyquests.commands.PlayerCommands;
 import com.ordwen.odailyquests.commands.interfaces.CategorizedQuestsInterfaces;
 import com.ordwen.odailyquests.commands.interfaces.GlobalQuestsInterface;
@@ -12,17 +13,14 @@ import com.ordwen.odailyquests.files.ProgressionFile;
 import com.ordwen.odailyquests.files.QuestsFiles;
 import com.ordwen.odailyquests.metrics.Metrics;
 import com.ordwen.odailyquests.quests.LoadQuests;
-import com.ordwen.odailyquests.quests.Quest;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.LoadProgression;
 import com.ordwen.odailyquests.quests.player.progression.ProgressionManager;
 import com.ordwen.odailyquests.quests.player.progression.SaveProgression;
-import net.milkbowl.vault.chat.Chat;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginLogger;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
 import java.util.logging.Logger;
 
 public final class ODailyQuests extends JavaPlugin {
@@ -46,8 +44,6 @@ public final class ODailyQuests extends JavaPlugin {
     /* Technical items */
     Logger logger = PluginLogger.getLogger("O'DailyQuests");
     String dataPath = this.getDataFolder().getPath();
-
-    ArrayList<Quest> globalQuestsArray = new ArrayList<>();
 
     @Override
     public void onEnable() {
@@ -94,16 +90,17 @@ public final class ODailyQuests extends JavaPlugin {
 
         /* Load quests */
         loadQuests.loadQuests();
-        globalQuestsArray = LoadQuests.getGlobalQuests();
 
         /* Load interfaces */
         InterfacesManager.initInventoryNames();
         playerQuestsInterface.loadPlayerQuestsInterface();
-        globalQuestsInterface.loadGlobalQuestsInterface();
-        categorizedQuestsInterfaces.loadCategorizedQuestsInterfaces();
+
+        if (configurationFiles.getConfigFile().getInt("mode") == 2) categorizedQuestsInterfaces.loadCategorizedInterfaces();
+        else globalQuestsInterface.loadGlobalQuestsInterface();
 
         /* Load commands */
-        getCommand("quests").setExecutor(new PlayerCommands());
+        getCommand("quests").setExecutor(new PlayerCommands(configurationFiles));
+        getCommand("questsadmin").setExecutor(new AdminCommands());
 
         /* Load listeners */
         getServer().getPluginManager().registerEvents(interfacesManager, this);
@@ -118,9 +115,5 @@ public final class ODailyQuests extends JavaPlugin {
         logger.info(ChatColor.RED + "Plugin is shutting down...");
     }
 
-    public String getPluginFolder() {
-        return dataPath;
-    }
-    public Logger getPluginLogger() { return logger; }
 }
 

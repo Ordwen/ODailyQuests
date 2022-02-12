@@ -1,0 +1,13 @@
+# EASY QUESTS FILE
+quests:
+  1:
+    name: "Cobblestone"
+    description:
+      - "Mine 32 cobblestones."
+      - "Win 500$."
+    quest_type: BREAK
+    required_item: COBBLESTONE
+    required_amount: 32
+    reward:
+      reward_type: MONEY
+      amount: 500

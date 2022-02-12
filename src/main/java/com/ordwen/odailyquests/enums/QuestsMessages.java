@@ -6,9 +6,11 @@ import org.bukkit.configuration.file.FileConfiguration;
 @SuppressWarnings("SpellCheckingInspection")
 public enum QuestsMessages {
 
-    NO_PERMISSION("no_permission", "You don't have permission."),
-    INVALID_SYNTAX("invalid_syntax", "Invalid syntax."),
-    INVALID_CATEGORY("invalid_category", "Invalid quest category."),
+    NO_PERMISSION("no_permission", "&cYou don't have permission."),
+    INVALID_SYNTAX("invalid_syntax", "&cInvalid syntax."),
+    INVALID_CATEGORY("invalid_category", "&cInvalid quest category."),
+    CATEGORIZED_DISABLED("categorized_disabled","&cCategorized quests are disabled, only the global menu is available."),
+    INVALID_PLAYER("invalid_player", "&cThis player doesn't exist, or is offline."),
 
     QUESTS_IN_PROGRESS("quests_in_progress", "&eYou still have daily quests to complete !"),
     QUESTS_RENEWED("quests_renewed", "&aYou have new daily quests to complete !"),
