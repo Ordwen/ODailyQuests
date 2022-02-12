@@ -59,7 +59,7 @@ public class SaveProgression {
             for (Quest quest : quests.keySet()) {
                 progressionFile.getProgressionFileConfiguration().set(playerName + ".quests." + index + ".index", quest.getQuestIndex());
                 progressionFile.getProgressionFileConfiguration().set(playerName + ".quests." + index + ".progression", quests.get(quest).getProgression());
-                progressionFile.getProgressionFileConfiguration().set(playerName + ".quests." + index + ".insAchieved", quests.get(quest).isAchieved());
+                progressionFile.getProgressionFileConfiguration().set(playerName + ".quests." + index + ".isAchieved", quests.get(quest).isAchieved());
                 index++;
             }
             logger.info(ChatColor.GOLD + playerName + ChatColor.YELLOW + " added to file data.");

@@ -51,23 +51,26 @@ public class AdminCommands implements CommandExecutor {
                             break;
                         case "complete":
                             if (Bukkit.getPlayer(args[1]) != null) {
-                                if (args[2] != null) {
+                                if (args[2] != null && Integer.parseInt(args[2]) >= 1 && Integer.parseInt(args[2]) <= 3) {
                                     HashMap<Quest, Progression> playerQuests = QuestsManager.getActiveQuests().get(args[1]).getPlayerQuests();
-                                    // quest id = numéro de quête de la HashMap du joueur concerné
-                                    // donc récup la quête au numéro de la HashMap, set isAchieved sur true, et send reward
+                                    for (Quest quest : playerQuests.keySet()) {
+                                        System.out.println(quest.getQuestName());
+                                    }
                                     int index = 0;
                                     for (Quest quest : playerQuests.keySet()) {
-                                        if (index == Integer.parseInt(args[2])) {
-                                            Progression progression = playerQuests.get(quest);
-                                            progression.isAchieved = true;
-                                            Bukkit.getPlayer(args[1]).sendMessage(QuestsMessages.QUEST_ACHIEVED.toString().replace("%questName%", quest.getQuestName()));
-                                            RewardManager.sendQuestReward(args[1], quest.getReward());
-                                            break;
+                                        Progression progression = playerQuests.get(quest);
+                                        if (index == Integer.parseInt(args[2])-1) {
+                                            if (!playerQuests.get(quest).isAchieved()) {
+                                                progression.isAchieved = true;
+                                                Bukkit.getPlayer(args[1]).sendMessage(QuestsMessages.QUEST_ACHIEVED.toString().replace("%questName%", quest.getQuestName()));
+                                                RewardManager.sendQuestReward(args[1], quest.getReward());
+                                                playerQuests.replace(quest, progression);
+                                                break;
+                                            } else sender.sendMessage(QuestsMessages.QUEST_ALREADY_ACHIEVED.toString());
                                         }
                                         index++;
-                                        // TESTER
                                     }
-                                } else sender.sendMessage();
+                                } else sender.sendMessage(QuestsMessages.INVALID_QUEST_ID.toString());
                             } else sender.sendMessage(QuestsMessages.INVALID_PLAYER.toString());
                             break;
                         default:

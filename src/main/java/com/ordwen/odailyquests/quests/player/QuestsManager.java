@@ -66,7 +66,6 @@ public class QuestsManager implements Listener {
      * @param quests array of quests.
      */
     public static void selectRandomQuests(HashMap<Quest, Progression> quests) {
-        Progression progression = new Progression(0, false);
         if (configurationFiles.getConfigFile().getInt("mode") == 1) {
             ArrayList<Quest> globalQuests = LoadQuests.getGlobalQuests();
             for (int i = 0; i < 3; i++) {
@@ -74,6 +73,7 @@ public class QuestsManager implements Listener {
                 do {
                     quest = getRandomQuest(globalQuests);
                 } while (quests.containsKey(quest));
+                Progression progression = new Progression(0, false);
                 quests.put(quest, progression);
             }
         }
@@ -93,6 +93,7 @@ public class QuestsManager implements Listener {
                     default:
                         throw new IllegalStateException("Unexpected value: " + i);
                 }
+                Progression progression = new Progression(0, false);
                 quests.put(quest, progression);
             }
         } else logger.log(Level.SEVERE, ChatColor.RED + "Impossible to select quests for player. The selected mode is incorrect.");
