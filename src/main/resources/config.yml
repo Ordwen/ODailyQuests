@@ -1,6 +1,26 @@
-# NEVER DELETE A %variable%
+# plugin prefix for messaging
 prefix: "&7[O'DailyQuests&7]"
+
+# storage mode for quests & progression
+# AVAILABLE MODES: YAML
 storage_mode: "YAML"
+
+# Select the mode of the quests.
+# ==========================================================
+# 1 : only the global quests will be loaded.
+# The player's quests will only come from there.
+# ==========================================================
+# 2 : easy, medium and hard quests will be loaded.
+# One quest per difficulty will be assigned to the players.
+# ==========================================================
+# We recommend to reset progression file if you change mode.
+# If not, wrong quests will be loaded at player connexion.
+mode: 1
+
+# interfaces settings
+# NEVER DELETE A %variable%
+# %progress% is replaced by the progression of the quest.
+# %required% is replaced by the required amount to complete the quest.
 interfaces:
   player_quests:
     inventory_name: "&bMy quests"
@@ -13,23 +33,11 @@ interfaces:
     inventory_name: "Quests - Global"
     empty_item: BLACK_STAINED_GLASS_PANE
   easy_quests:
-    inventory_name: "Quests - Global"
-    empty_item: BLACK_STAINED_GLASS_PANE
+    inventory_name: "Quests - Easy"
+    empty_item: GREEN_STAINED_GLASS_PANE
   medium_quests:
-    inventory_name: "Quests - Global"
-    empty_item: BLACK_STAINED_GLASS_PANE
+    inventory_name: "Quests - Medium"
+    empty_item: YELLOW_STAINED_GLASS_PANE
   hard_quests:
-    inventory_name: "Quests - Global"
-    empty_item: BLACK_STAINED_GLASS_PANE
-
-# ==========================================================
-# Select the mode of the quests.
-# ==========================================================
-# 1 : only the global quests will be loaded.
-# The player's quests will only come from there.
-# ==========================================================
-# 2 : easy, medium and hard quests will be loaded.
-# One quest per difficulty will be assigned to the players.
-# ==========================================================
-# We recommend to reset progression file if you change mode.
-mode: 1
+    inventory_name: "Quests - Hard"
+    empty_item: RED_STAINED_GLASS_PANE

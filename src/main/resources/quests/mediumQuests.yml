@@ -1,4 +1,23 @@
-# MEDIUM QUESTS FILE
+# ==============================================================
+#                        MEDIUM QUESTS FILE
+# ==============================================================
+# Quests must be numbered and increment from 1 to 1.
+# Please be attentive to the indentation and respect the scheme.
+# This could cause several bugs.
+# ==============================================================
+# AVAILABLE QUESTS TYPES:
+# [ BREAK , PLACE , CRAFT , PICKUP , LAUNCH , CONSUME ]
+# Type LAUNCH only affects : ENDER_PEARL, EGG, ARROW.
+# Type CONSUME only affects : potions, food, milk-buckets.
+# ==============================================================
+# AVAILABLE REWARDS TYPES :
+# [ COMMAND , EXP , MONEY , POINTS ]
+# ==============================================================
+# More tips available on Wiki :
+# xxx.xxxx.xx
+# Need help ? https://discord.gg/Nem5HSCwEn
+# For more affected objects or types, please make suggestion.
+# ==============================================================
 quests:
   1:
     name: "Cobblestone"
@@ -11,3 +30,27 @@ quests:
     reward:
       reward_type: MONEY
       amount: 500
+  2:
+    name: "Gold blocks"
+    description:
+      - "Get 16 gold blocks."
+      - "Win 32 diamond blocks."
+    quest_type: PLACE
+    required_item: GOLD_BLOCK
+    required_amount: 16
+    reward:
+      reward_type: COMMAND
+      commands:
+        - "msg %player% Hello !"
+        - "give %player% diamond_block 32"
+  3:
+    name: "Potions"
+    description:
+      - "Use 2 potions."
+      - "Win 1500$."
+    quest_type: CONSUME
+    required_item: POTION
+    required_amount: 8
+    reward:
+      reward_type: MONEY
+      amount: 1500

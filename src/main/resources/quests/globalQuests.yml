@@ -1,8 +1,24 @@
-# LAUNCH: ENDER_PEARL, EGG, ARROW
-# CONSUME: POTION, FOOD, MILK
-#
-#
-#
+# ==============================================================
+#                       GLOBAL QUESTS FILE
+# ==============================================================
+# Quests must be numbered and increment from 1 to 1.
+# Please be attentive to the indentation and respect the scheme.
+# This could cause several bugs.
+# ==============================================================
+# AVAILABLE QUESTS TYPES:
+# [ BREAK , PLACE , CRAFT , PICKUP , LAUNCH , CONSUME ]
+# Type LAUNCH only affects : ENDER_PEARL, EGG, ARROW.
+# Type CONSUME only affects : potions, food, milk-buckets.
+# ==============================================================
+# AVAILABLE REWARDS TYPES :
+# [ COMMAND , EXP , MONEY , POINTS ]
+# ==============================================================
+# More tips available on Wiki :
+# xxx.xxxx.xx
+# Need help ? https://discord.gg/Nem5HSCwEn
+# For more affected objects or types, please make suggestion.
+# ==============================================================
+# Please have at least 3 quests for global mode.
 quests:
   1:
     name: "Cobblestone"
@@ -29,28 +45,6 @@ quests:
         - "msg %player% Hello !"
         - "give %player% diamond_block 32"
   3:
-    name: "Ender pearls"
-    description:
-      - "Use 8 ender pearls."
-      - "Win 1500 EXP."
-    quest_type: LAUNCH
-    required_item: ENDER_PEARL
-    required_amount: 8
-    reward:
-      reward_type: EXP
-      amount: 1500
-  4:
-    name: "Planks"
-    description:
-      - "Get 128 oak planks."
-      - "Win 15 000 EXP."
-    quest_type: GET
-    required_item: OAK_PLANKS
-    required_amount: 128
-    reward:
-      reward_type: EXP
-      amount: 15000
-  5:
     name: "Potions"
     description:
       - "Use 2 potions."
@@ -61,49 +55,3 @@ quests:
     reward:
       reward_type: MONEY
       amount: 1500
-  6:
-    name: "Diamonds"
-    description:
-      - "Mine 16 diamonds."
-      - "Win 6 diamond blocks."
-    quest_type: BREAK
-    required_item: DIAMOND
-    required_amount: 8
-    reward:
-      reward_type: COMMAND
-      commands:
-        - "give %player% diamond_block 6"
-  7:
-    name: "Redstone"
-    description:
-      - "Place 32 redstone."
-      - "Win 16 sticky pistons."
-    quest_type: PLACE
-    required_item: REDSTONE
-    required_amount: 32
-    reward:
-      reward_type: COMMAND
-      commands:
-        - "give %player% sticky_piston 16"
-  8:
-    name: "Golden pickaxe"
-    description:
-      - "Craft a golden pickaxe."
-      - "Win 4 000$."
-    quest_type: CRAFT
-    required_item: GOLDEN_PICKAXE
-    required_amount: 1
-    reward:
-      reward_type: MONEY
-      amount: 4000
-  9:
-    name: "Beacon"
-    description:
-      - "Place a beacon."
-      - "Win 15 000 EXP."
-    quest_type: PLACE
-    required_item: BEACON
-    required_amount: 1
-    reward:
-      reward_type: EXP
-      amount: 15 000
