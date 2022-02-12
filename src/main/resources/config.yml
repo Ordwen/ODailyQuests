@@ -31,4 +31,5 @@ interfaces:
 # 2 : easy, medium and hard quests will be loaded.
 # One quest per difficulty will be assigned to the players.
 # ==========================================================
+# We recommend to reset progression file if you change mode.
 mode: 1
