@@ -6,6 +6,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.plugin.PluginLogger;
 
 import java.util.logging.Logger;
@@ -60,7 +61,11 @@ public class InterfacesManager implements Listener {
                 || inventoryName.equals(hardQuestsInventoryName)) {
             event.setCancelled(true);
 
-            if (event.getCurrentItem() != null && !event.getCurrentItem().getType().equals(PlayerQuestsInterface.getEmptyCaseItem()))  {
+            if (event.getCurrentItem() != null
+                    && !event.getCurrentItem().getType().equals(PlayerQuestsInterface.getEmptyCaseItem())
+                    && event.getClick().isLeftClick()
+                    && event.getSlot() < event.getView().getTopInventory().getSize()
+                    && !event.getSlotType().equals(InventoryType.SlotType.QUICKBAR)) {
                 ProgressionManager.validateGetQuestType(event.getWhoClicked().getName(), event.getCurrentItem().getType());
             }
         }

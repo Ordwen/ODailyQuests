@@ -64,7 +64,8 @@ public class AdminCommands implements CommandExecutor {
                                                 progression.isAchieved = true;
                                                 Bukkit.getPlayer(args[1]).sendMessage(QuestsMessages.QUEST_ACHIEVED.toString().replace("%questName%", quest.getQuestName()));
                                                 RewardManager.sendQuestReward(args[1], quest.getReward());
-                                                playerQuests.replace(quest, progression);
+                                                playerQuests.remove(quest);
+                                                playerQuests.put(quest, progression);
                                                 break;
                                             } else sender.sendMessage(QuestsMessages.QUEST_ALREADY_ACHIEVED.toString());
                                         }

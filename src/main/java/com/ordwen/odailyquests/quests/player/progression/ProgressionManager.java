@@ -126,7 +126,7 @@ public class ProgressionManager implements Listener {
         int amount = 0;
         for (ItemStack itemStack : playerInventory.getContents()) {
             if (itemStack != null && itemStack.getType().equals(material)) {
-                amount++;
+                amount += itemStack.getAmount();
             }
         }
         return amount;
