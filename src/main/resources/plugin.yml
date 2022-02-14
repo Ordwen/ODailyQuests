@@ -10,6 +10,7 @@ depend:
   - Vault
 softdepend:
   - TokenManager
+  - Citizens
 commands:
   quests:
     description: default player command

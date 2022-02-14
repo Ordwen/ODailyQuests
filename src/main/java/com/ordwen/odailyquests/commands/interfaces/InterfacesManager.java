@@ -2,6 +2,7 @@ package com.ordwen.odailyquests.commands.interfaces;
 
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.quests.player.progression.ProgressionManager;
+import net.citizensnpcs.api.event.NPCClickEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -69,6 +70,11 @@ public class InterfacesManager implements Listener {
                 ProgressionManager.validateGetQuestType(event.getWhoClicked().getName(), event.getCurrentItem().getType());
             }
         }
+    }
+
+    @EventHandler
+    public void onNPCClickEvent(NPCClickEvent event) {
+        // TO DO
     }
 
     public static String getPlayerQuestsInventoryName() {

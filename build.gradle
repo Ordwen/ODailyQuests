@@ -14,8 +14,12 @@ repositories {
     maven {
         name = 'sonatype'
         url = 'https://oss.sonatype.org/content/groups/public/'
+    }
+    maven {
         name = 'jitpack-repo'
         url = 'https://jitpack.io'
+    }
+    maven {
         name = 'citizens'
         url = 'https://repo.citizensnpcs.co/'
     }
@@ -29,9 +33,7 @@ dependencies {
     compileOnly (group: 'com.github.Realizedd', name: 'TokenManager', version: '3.2.4') {
         transitive = false
     }
-    //compileOnly (group: 'net.citizensnpcs', name: 'citizens-main', version: '2.0.29-b2466') {
-    //    transitive = false
-    //}
+    compileOnly (group: 'net.citizensnpcs', name: 'citizens-main', version: '2.0.29-SNAPSHOT')
 }
 
 def targetJavaVersion = 8
