@@ -89,9 +89,7 @@ public class InterfacesManager implements Listener {
         return easyQuestsInventoryName;
     }
 
-    public static String getMediumQuestsInventoryName() {
-        return mediumQuestsInventoryName;
-    }
+    public static String getMediumQuestsInventoryName() { return mediumQuestsInventoryName; }
 
     public static String getHardQuestsInventoryName() {
         return hardQuestsInventoryName;

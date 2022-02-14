@@ -52,11 +52,11 @@ public class CategorizedQuestsInterfaces {
 
         /* Medium quests inventory */
         emptyCaseItem = new ItemStack(Material.valueOf(configurationFiles.getConfigFile().getConfigurationSection("interfaces.medium_quests").getString(".empty_item")));
-        mediumQuestsInventory = loadSelectedInterface(InterfacesManager.getEasyQuestsInventoryName(), emptyCaseItem, LoadQuests.getMediumQuests());
+        mediumQuestsInventory = loadSelectedInterface(InterfacesManager.getMediumQuestsInventoryName(), emptyCaseItem, LoadQuests.getMediumQuests());
 
         /* Hard quests inventory */
         emptyCaseItem = new ItemStack(Material.valueOf(configurationFiles.getConfigFile().getConfigurationSection("interfaces.hard_quests").getString(".empty_item")));
-        hardQuestsInventory = loadSelectedInterface(InterfacesManager.getEasyQuestsInventoryName(), emptyCaseItem, LoadQuests.getHardQuests());
+        hardQuestsInventory = loadSelectedInterface(InterfacesManager.getHardQuestsInventoryName(), emptyCaseItem, LoadQuests.getHardQuests());
     }
 
     /**
