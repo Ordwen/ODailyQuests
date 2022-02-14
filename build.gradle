@@ -16,6 +16,8 @@ repositories {
         url = 'https://oss.sonatype.org/content/groups/public/'
         name = 'jitpack-repo'
         url = 'https://jitpack.io'
+        name = 'citizens'
+        url = 'https://repo.citizensnpcs.co/'
     }
 }
 
@@ -27,6 +29,9 @@ dependencies {
     compileOnly (group: 'com.github.Realizedd', name: 'TokenManager', version: '3.2.4') {
         transitive = false
     }
+    //compileOnly (group: 'net.citizensnpcs', name: 'citizens-main', version: '2.0.29-b2466') {
+    //    transitive = false
+    //}
 }
 
 def targetJavaVersion = 8
