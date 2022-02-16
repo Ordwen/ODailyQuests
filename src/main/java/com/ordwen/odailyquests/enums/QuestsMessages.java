@@ -7,6 +7,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 public enum QuestsMessages {
 
     NO_PERMISSION("no_permission", "&cYou don't have permission."),
+    NO_PERMISSION_CATEGORY("no_permission_category", "&cYou don't have permission to see this category."),
     PLAYER_ONLY("player_only", "&cOnly player can execute this command."),
     INVALID_SYNTAX("invalid_syntax", "&cInvalid syntax."),
     INVALID_CATEGORY("invalid_category", "&cInvalid quest category."),

@@ -45,7 +45,8 @@ interfaces:
 # Citizens Implementation
 # Here you can select NPCs names for each category.
 # The player have to interact with the NPC to open an interface.
-npc_name_global: "Global Quests"
-npc_name_easy: "Easy Quests"
-npc_name_medium: "Medium Quests"
-npc_name_hard: "Hard Quests"
+npcs:
+  name_global: "Global Quests"
+  name_easy: "Easy Quests"
+  name_medium: "Medium Quests"
+  name_hard: "Hard Quests"

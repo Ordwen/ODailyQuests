@@ -37,27 +37,35 @@ public class PlayerCommands implements CommandExecutor {
                                     if (args.length == 2) {
                                         switch (args[1]) {
                                             case "global":
-                                                ((Player) sender).openInventory(GlobalQuestsInterface.getGlobalQuestsInterface());
+                                                if (sender.hasPermission(QuestsPermissions.QUESTS_SHOW_GLOBAL.getPermission())) {
+                                                    ((Player) sender).openInventory(GlobalQuestsInterface.getGlobalQuestsInterface());
+                                                } else sender.sendMessage(QuestsMessages.NO_PERMISSION_CATEGORY.toString());
                                                 break;
                                             case "easy":
                                                 if (configurationFiles.getConfigFile().getInt("mode") != 2) {
                                                     sender.sendMessage(QuestsMessages.CATEGORIZED_DISABLED.toString());
                                                 } else {
-                                                    ((Player) sender).openInventory(CategorizedQuestsInterfaces.getEasyQuestsInterface());
+                                                    if (sender.hasPermission(QuestsPermissions.QUESTS_SHOW_EASY.getPermission())) {
+                                                        ((Player) sender).openInventory(CategorizedQuestsInterfaces.getEasyQuestsInterface());
+                                                    } else sender.sendMessage(QuestsMessages.NO_PERMISSION_CATEGORY.toString());
                                                 }
                                                 break;
                                             case "medium":
                                                 if (configurationFiles.getConfigFile().getInt("mode") != 2) {
                                                     sender.sendMessage(QuestsMessages.CATEGORIZED_DISABLED.toString());
                                                 } else {
-                                                    ((Player) sender).openInventory(CategorizedQuestsInterfaces.getMediumQuestsInterface());
+                                                    if (sender.hasPermission(QuestsPermissions.QUESTS_SHOW_MEDIUM.getPermission())) {
+                                                        ((Player) sender).openInventory(CategorizedQuestsInterfaces.getMediumQuestsInterface());
+                                                    } else sender.sendMessage(QuestsMessages.NO_PERMISSION_CATEGORY.toString());
                                                 }
                                                 break;
                                             case "hard":
                                                 if (configurationFiles.getConfigFile().getInt("mode") != 2) {
                                                     sender.sendMessage(QuestsMessages.CATEGORIZED_DISABLED.toString());
                                                 } else {
-                                                    ((Player) sender).openInventory(CategorizedQuestsInterfaces.getHardQuestsInterface());
+                                                    if (sender.hasPermission(QuestsPermissions.QUESTS_SHOW_HARD.getPermission())) {
+                                                        ((Player) sender).openInventory(CategorizedQuestsInterfaces.getHardQuestsInterface());
+                                                    } else sender.sendMessage(QuestsMessages.NO_PERMISSION_CATEGORY.toString());
                                                 }
                                                 break;
                                             default:
