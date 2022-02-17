@@ -44,7 +44,7 @@ public class QuestsManager implements Listener {
         String playerName = event.getPlayer().getName();
 
         if (!activeQuests.containsKey(playerName)) {
-            LoadProgression.loadPlayerQuests(playerName, activeQuests, configurationFiles.getConfigFile().getInt("mode"));
+            LoadProgression.loadPlayerQuests(playerName, activeQuests, configurationFiles.getConfigFile().getInt("quests_mode"), configurationFiles.getConfigFile().getInt("timestamp_mode"));
         } else {
             logger.info(ChatColor.GOLD + playerName + ChatColor.RED + " detected into the array.");
             logger.info(ChatColor.RED + "THAT IS NOT NORMAL.");
@@ -66,7 +66,7 @@ public class QuestsManager implements Listener {
      * @param quests array of quests.
      */
     public static void selectRandomQuests(HashMap<Quest, Progression> quests) {
-        if (configurationFiles.getConfigFile().getInt("mode") == 1) {
+        if (configurationFiles.getConfigFile().getInt("quests_mode") == 1) {
             ArrayList<Quest> globalQuests = LoadQuests.getGlobalQuests();
             for (int i = 0; i < 3; i++) {
                 Quest quest;
@@ -77,7 +77,7 @@ public class QuestsManager implements Listener {
                 quests.put(quest, progression);
             }
         }
-        else if (configurationFiles.getConfigFile().getInt("mode") == 2) {
+        else if (configurationFiles.getConfigFile().getInt("quests_mode") == 2) {
             for (int i = 0; i < 3; i++) {
                 Quest quest;
                 switch (i) {

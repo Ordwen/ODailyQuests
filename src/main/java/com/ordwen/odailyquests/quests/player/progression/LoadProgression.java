@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginLogger;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,7 +39,7 @@ public class LoadProgression {
      * @param playerName player.
      * @param activeQuests list of active players.
      */
-    public static void loadPlayerQuests(String playerName, HashMap<String, PlayerQuests> activeQuests, int configMode) {
+    public static void loadPlayerQuests(String playerName, HashMap<String, PlayerQuests> activeQuests, int questsConfigMode, int timestampConfigMode) {
 
         /* init variables */
         long timestamp;
@@ -54,6 +55,7 @@ public class LoadProgression {
         if (progressionFile.getProgressionFileConfiguration().getString(playerName) != null) {
 
             timestamp = progressionFile.getProgressionFileConfiguration().getConfigurationSection(playerName).getLong(".timestamp");
+            boolean timeToRedraw = false;
 
             /* DEBUG
             //logger.info("Current timestamp : " + System.currentTimeMillis());
@@ -61,11 +63,38 @@ public class LoadProgression {
             //logger.info("Difference : " + (System.currentTimeMillis() - timestamp));
              */
 
+            /* check if last quests renewed day before */
+            if (timestampConfigMode == 1) {
+                Calendar oldCal = Calendar.getInstance();
+                Calendar currentCal = Calendar.getInstance();
+                oldCal.setTimeInMillis(timestamp);
+                currentCal.setTimeInMillis(System.currentTimeMillis());
+                if (oldCal.get(Calendar.DATE) < currentCal.get(Calendar.DATE)) {
+                    timeToRedraw = true;
+                }
+                /* DEBUG
+                logger.info("OLD DATE : " + oldCal.get(Calendar.DATE));
+                logger.info("CURRENT DATE : " + currentCal.get(Calendar.DATE));
+                logger.info("CURRENT DATE IN MILLIS : " + Calendar.getInstance().getTimeInMillis());
+                 */
+            }
             /* check if last quests renewed is older than 24 hours */
-            if (System.currentTimeMillis() - timestamp >= 86400000) {
+            else if (timestampConfigMode == 2) {
+                if (System.currentTimeMillis() - timestamp >= 86400000) {
+                    timeToRedraw = true;
+                }
+            }
+            else logger.log(Level.SEVERE, ChatColor.RED + "Impossible to load player quests timestamp. The selected mode is incorrect.");
+
+            /* renew quests */
+            if (timeToRedraw) {
                 activeQuests.remove(playerName);
                 QuestsManager.selectRandomQuests(quests);
-                playerQuests = new PlayerQuests(System.currentTimeMillis(), quests);
+                if (timestampConfigMode == 1) {
+                    playerQuests = new PlayerQuests(Calendar.getInstance().getTimeInMillis(), quests);
+                } else {
+                    playerQuests = new PlayerQuests(System.currentTimeMillis(), quests);
+                }
                 activeQuests.put(playerName, playerQuests);
                 Bukkit.getPlayer(playerName).sendMessage(QuestsMessages.QUESTS_RENEWED.toString());
 
@@ -80,9 +109,9 @@ public class LoadProgression {
 
                     progression = new Progression(advancement, isAchieved);
 
-                    if (configMode == 1) {
+                    if (questsConfigMode == 1) {
                         quest = LoadQuests.getGlobalQuests().get(questIndex);
-                    } else if (configMode == 2) {
+                    } else if (questsConfigMode == 2) {
                         switch(Integer.parseInt(string)) {
                             case 1:
                                 quest = LoadQuests.getEasyQuests().get(questIndex);
@@ -115,7 +144,11 @@ public class LoadProgression {
             }
         } else {
             QuestsManager.selectRandomQuests(quests);
-            playerQuests = new PlayerQuests(System.currentTimeMillis(), quests);
+            if (timestampConfigMode == 1) {
+                playerQuests = new PlayerQuests(Calendar.getInstance().getTimeInMillis(), quests);
+            } else {
+                playerQuests = new PlayerQuests(System.currentTimeMillis(), quests);
+            }
             activeQuests.put(playerName, playerQuests);
 
             logger.info(ChatColor.GREEN + playerName + ChatColor.YELLOW + " inserted into the array.");

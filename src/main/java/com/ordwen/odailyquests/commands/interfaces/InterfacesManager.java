@@ -1,9 +1,7 @@
 package com.ordwen.odailyquests.commands.interfaces;
 
-import com.ordwen.odailyquests.enums.QuestsPermissions;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.quests.player.progression.ProgressionManager;
-import net.citizensnpcs.api.event.NPCClickEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -69,39 +67,6 @@ public class InterfacesManager implements Listener {
                     && event.getSlot() < event.getView().getTopInventory().getSize()
                     && !event.getSlotType().equals(InventoryType.SlotType.QUICKBAR)) {
                 ProgressionManager.validateGetQuestType(event.getWhoClicked().getName(), event.getCurrentItem().getType());
-            }
-        }
-    }
-
-    @EventHandler
-    public void onNPCClickEvent(NPCClickEvent event) {
-        String npcName = event.getNPC().getName();
-
-        /* Global interface */
-        if (npcName.equals(configurationFiles.getConfigFile().getConfigurationSection("npcs").getString(".name_global"))) {
-            if (event.getClicker().hasPermission(QuestsPermissions.QUESTS_SHOW_GLOBAL.getPermission())) {
-                event.getClicker().openInventory(GlobalQuestsInterface.getGlobalQuestsInterface());
-            }
-        }
-
-        /* Easy interface */
-        if (npcName.equals(configurationFiles.getConfigFile().getConfigurationSection("npcs").getString(".name_easy"))) {
-            if (event.getClicker().hasPermission(QuestsPermissions.QUESTS_SHOW_EASY.getPermission())) {
-                event.getClicker().openInventory(CategorizedQuestsInterfaces.getEasyQuestsInterface());
-            }
-        }
-
-        /* Medium interface */
-        if (npcName.equals(configurationFiles.getConfigFile().getConfigurationSection("npcs").getString(".name_medium"))) {
-            if (event.getClicker().hasPermission(QuestsPermissions.QUESTS_SHOW_MEDIUM.getPermission())) {
-                event.getClicker().openInventory(CategorizedQuestsInterfaces.getMediumQuestsInterface());
-            }
-        }
-
-        /* Hard interface */
-        if (npcName.equals(configurationFiles.getConfigFile().getConfigurationSection("npcs").getString(".name_hard"))) {
-            if (event.getClicker().hasPermission(QuestsPermissions.QUESTS_SHOW_HARD.getPermission())) {
-                event.getClicker().openInventory(CategorizedQuestsInterfaces.getHardQuestsInterface());
             }
         }
     }

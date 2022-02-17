@@ -67,7 +67,7 @@ public class LoadQuests {
         FileConfiguration mediumQuestsFile = questsFiles.getMediumQuestsFile();
         FileConfiguration hardQuestsFile = questsFiles.getHardQuestsFile();
 
-        if (configurationFiles.getConfigFile().getInt("mode") == 1) {
+        if (configurationFiles.getConfigFile().getInt("quests_mode") == 1) {
 
             /* load global quests */
             for (String fileQuest : Objects.requireNonNull(globalQuestsFile.getConfigurationSection("quests")).getKeys(false)) {
@@ -103,7 +103,7 @@ public class LoadQuests {
             logger.info(ChatColor.GREEN + "Global quests array successfully loaded.");
         }
 
-        else if (configurationFiles.getConfigFile().getInt("mode") == 2) {
+        else if (configurationFiles.getConfigFile().getInt("quests_mode") == 2) {
 
             /* load easy quests */
             if (easyQuestsFile.getConfigurationSection("quests") != null) {

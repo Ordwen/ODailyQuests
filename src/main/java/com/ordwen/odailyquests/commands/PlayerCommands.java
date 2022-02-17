@@ -42,7 +42,7 @@ public class PlayerCommands implements CommandExecutor {
                                                 } else sender.sendMessage(QuestsMessages.NO_PERMISSION_CATEGORY.toString());
                                                 break;
                                             case "easy":
-                                                if (configurationFiles.getConfigFile().getInt("mode") != 2) {
+                                                if (configurationFiles.getConfigFile().getInt("quests_mode") != 2) {
                                                     sender.sendMessage(QuestsMessages.CATEGORIZED_DISABLED.toString());
                                                 } else {
                                                     if (sender.hasPermission(QuestsPermissions.QUESTS_SHOW_EASY.getPermission())) {
@@ -51,7 +51,7 @@ public class PlayerCommands implements CommandExecutor {
                                                 }
                                                 break;
                                             case "medium":
-                                                if (configurationFiles.getConfigFile().getInt("mode") != 2) {
+                                                if (configurationFiles.getConfigFile().getInt("quests_mode") != 2) {
                                                     sender.sendMessage(QuestsMessages.CATEGORIZED_DISABLED.toString());
                                                 } else {
                                                     if (sender.hasPermission(QuestsPermissions.QUESTS_SHOW_MEDIUM.getPermission())) {
@@ -60,7 +60,7 @@ public class PlayerCommands implements CommandExecutor {
                                                 }
                                                 break;
                                             case "hard":
-                                                if (configurationFiles.getConfigFile().getInt("mode") != 2) {
+                                                if (configurationFiles.getConfigFile().getInt("quests_mode") != 2) {
                                                     sender.sendMessage(QuestsMessages.CATEGORIZED_DISABLED.toString());
                                                 } else {
                                                     if (sender.hasPermission(QuestsPermissions.QUESTS_SHOW_HARD.getPermission())) {
