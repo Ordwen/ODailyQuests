@@ -19,8 +19,8 @@ repositories {
         name = 'jitpack-repo'
         url = 'https://jitpack.io'
     }
-    maven {
-        name = 'citizens'
+   maven {
+        name = 'everything'
         url = 'https://repo.citizensnpcs.co/'
     }
 }

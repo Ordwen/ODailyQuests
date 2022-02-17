@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests;
 
+import com.ordwen.odailyquests.apis.CitizensAPI;
 import com.ordwen.odailyquests.apis.TokenManagerAPI;
 import com.ordwen.odailyquests.apis.VaultAPI;
 import com.ordwen.odailyquests.commands.AdminCommands;
@@ -17,6 +18,7 @@ import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.LoadProgression;
 import com.ordwen.odailyquests.quests.player.progression.ProgressionManager;
 import com.ordwen.odailyquests.quests.player.progression.SaveProgression;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginLogger;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -40,6 +42,7 @@ public final class ODailyQuests extends JavaPlugin {
     private LoadProgression loadProgression;
     private SaveProgression saveProgression;
     private ProgressionManager progressionManager;
+    private CitizensAPI citizensAPI;
 
     /* Technical items */
     Logger logger = PluginLogger.getLogger("O'DailyQuests");
@@ -67,6 +70,10 @@ public final class ODailyQuests extends JavaPlugin {
         } else {
             logger.info(ChatColor.YELLOW + "TokenManager" + ChatColor.GREEN + " successfully hooked.");
         }
+        if (CitizensAPI.setupCitizens()) {
+            getServer().getPluginManager().registerEvents(citizensAPI, this);
+            logger.info(ChatColor.YELLOW + "Citizens" + ChatColor.GREEN + " successfully hooked.");
+        }
 
         /* Load class instances */
         this.configurationFiles = new ConfigurationFiles(this);
@@ -81,6 +88,7 @@ public final class ODailyQuests extends JavaPlugin {
         this.loadProgression = new LoadProgression(progressionFile);
         this.saveProgression = new SaveProgression(progressionFile);
         this.progressionManager = new ProgressionManager();
+        this.citizensAPI = new CitizensAPI(configurationFiles);
 
         /* Load files */
         configurationFiles.loadConfigurationFiles();
@@ -95,7 +103,7 @@ public final class ODailyQuests extends JavaPlugin {
         InterfacesManager.initInventoryNames();
         playerQuestsInterface.loadPlayerQuestsInterface();
 
-        if (configurationFiles.getConfigFile().getInt("mode") == 2) categorizedQuestsInterfaces.loadCategorizedInterfaces();
+        if (configurationFiles.getConfigFile().getInt("quests_mode") == 2) categorizedQuestsInterfaces.loadCategorizedInterfaces();
         else globalQuestsInterface.loadGlobalQuestsInterface();
 
         /* Load commands */
