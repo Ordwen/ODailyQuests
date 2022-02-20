@@ -21,3 +21,8 @@ commands:
     aliases:
       - questadmin
       - qadmin
+  questsreload:
+    description: reload command
+    aliases:
+      - questreload
+      - qreload
