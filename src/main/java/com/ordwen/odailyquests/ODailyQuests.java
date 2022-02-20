@@ -5,6 +5,10 @@ import com.ordwen.odailyquests.apis.TokenManagerAPI;
 import com.ordwen.odailyquests.apis.VaultAPI;
 import com.ordwen.odailyquests.commands.AdminCommands;
 import com.ordwen.odailyquests.commands.PlayerCommands;
+import com.ordwen.odailyquests.commands.ReloadCommand;
+import com.ordwen.odailyquests.commands.completers.AdminCompleter;
+import com.ordwen.odailyquests.commands.completers.PlayerCompleter;
+import com.ordwen.odailyquests.commands.completers.ReloadCompleter;
 import com.ordwen.odailyquests.commands.interfaces.CategorizedQuestsInterfaces;
 import com.ordwen.odailyquests.commands.interfaces.GlobalQuestsInterface;
 import com.ordwen.odailyquests.commands.interfaces.InterfacesManager;
@@ -18,8 +22,8 @@ import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.LoadProgression;
 import com.ordwen.odailyquests.quests.player.progression.ProgressionManager;
 import com.ordwen.odailyquests.quests.player.progression.SaveProgression;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.PluginLogger;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -57,6 +61,21 @@ public final class ODailyQuests extends JavaPlugin {
         int pluginId = 14277;
         Metrics metrics = new Metrics(this, pluginId);
 
+        /* Load class instances */
+        this.configurationFiles = new ConfigurationFiles(this);
+        this.questsFiles = new QuestsFiles(this);
+        this.progressionFile = new ProgressionFile(this);
+        this.loadQuests = new LoadQuests(questsFiles, configurationFiles);
+        this.interfacesManager = new InterfacesManager(configurationFiles);
+        this.globalQuestsInterface = new GlobalQuestsInterface(configurationFiles);
+        this.playerQuestsInterface = new PlayerQuestsInterface(configurationFiles);
+        this.categorizedQuestsInterfaces = new CategorizedQuestsInterfaces(configurationFiles);
+        this.questsManager = new QuestsManager(configurationFiles);
+        this.loadProgression = new LoadProgression(progressionFile);
+        this.saveProgression = new SaveProgression(progressionFile);
+        this.progressionManager = new ProgressionManager();
+        this.citizensAPI = new CitizensAPI(configurationFiles);
+
         /* Load dependencies */
         if (!VaultAPI.setupEconomy()) {
             logger.severe("Plugin disabled due to no Vault dependency found !");
@@ -74,21 +93,6 @@ public final class ODailyQuests extends JavaPlugin {
             getServer().getPluginManager().registerEvents(citizensAPI, this);
             logger.info(ChatColor.YELLOW + "Citizens" + ChatColor.GREEN + " successfully hooked.");
         }
-
-        /* Load class instances */
-        this.configurationFiles = new ConfigurationFiles(this);
-        this.questsFiles = new QuestsFiles(this);
-        this.progressionFile = new ProgressionFile(this);
-        this.loadQuests = new LoadQuests(questsFiles, configurationFiles);
-        this.interfacesManager = new InterfacesManager(configurationFiles);
-        this.globalQuestsInterface = new GlobalQuestsInterface(configurationFiles);
-        this.playerQuestsInterface = new PlayerQuestsInterface(configurationFiles);
-        this.categorizedQuestsInterfaces = new CategorizedQuestsInterfaces(configurationFiles);
-        this.questsManager = new QuestsManager(configurationFiles);
-        this.loadProgression = new LoadProgression(progressionFile);
-        this.saveProgression = new SaveProgression(progressionFile);
-        this.progressionManager = new ProgressionManager();
-        this.citizensAPI = new CitizensAPI(configurationFiles);
 
         /* Load files */
         configurationFiles.loadConfigurationFiles();
@@ -109,6 +113,12 @@ public final class ODailyQuests extends JavaPlugin {
         /* Load commands */
         getCommand("quests").setExecutor(new PlayerCommands(configurationFiles));
         getCommand("questsadmin").setExecutor(new AdminCommands());
+        getCommand("questsreload").setExecutor(new ReloadCommand(configurationFiles, questsFiles, playerQuestsInterface, globalQuestsInterface, categorizedQuestsInterfaces));
+
+        /* Load Tab Completers */
+        getCommand("quests").setTabCompleter(new PlayerCompleter());
+        getCommand("questsadmin").setTabCompleter(new AdminCompleter());
+        getCommand("questsreload").setTabCompleter(new ReloadCompleter());
 
         /* Load listeners */
         getServer().getPluginManager().registerEvents(interfacesManager, this);
