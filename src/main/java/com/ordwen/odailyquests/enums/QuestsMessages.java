@@ -11,9 +11,11 @@ public enum QuestsMessages {
     PLAYER_ONLY("player_only", "&cOnly player can execute this command."),
     INVALID_SYNTAX("invalid_syntax", "&cInvalid syntax."),
     INVALID_CATEGORY("invalid_category", "&cInvalid quest category."),
-    CATEGORIZED_DISABLED("categorized_disabled","&cCategorized quests are disabled, only the global menu is available."),
     INVALID_PLAYER("invalid_player", "&cThis player doesn't exist, or is offline."),
     INVALID_QUEST_ID("invalid_quest_id","&cYou must specify a valid quest ID, between 1 and 3."),
+
+    CATEGORIZED_DISABLED("categorized_disabled","&cCategorized quests are disabled, only the global menu is available."),
+    GLOBAL_DISABLED("global_disabled", "&cGlobal quests are disabled, only the categorized menus are available."),
     QUEST_ALREADY_ACHIEVED("already_achieved", "&cThis quest is already achieved."),
 
     QUESTS_IN_PROGRESS("quests_in_progress", "&eYou still have daily quests to complete !"),
