@@ -29,7 +29,7 @@ public class AdminCommands implements CommandExecutor {
         if (command.getName().equalsIgnoreCase("questsadmin")) {
             if (sender.hasPermission(QuestsPermissions.QUESTS_ADMIN.getPermission())) {
                 if (args.length >= 2) {
-                    switch (label) {
+                    switch (args[0]) {
                         case "reset":
                             if (Bukkit.getPlayer(args[1]) != null) {
                                 QuestsManager.getActiveQuests().remove(args[1]);

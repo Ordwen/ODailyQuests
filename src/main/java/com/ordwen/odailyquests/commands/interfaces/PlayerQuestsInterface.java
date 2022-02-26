@@ -79,7 +79,7 @@ public class PlayerQuestsInterface {
         int i = 2;
         for (Quest quest : playerQuests.keySet()) {
 
-            ItemStack itemStack = quest.getItemRequired();
+            ItemStack itemStack = quest.getMenuItem();
             ItemMeta itemMeta = itemStack.getItemMeta();
 
             assert itemMeta != null;

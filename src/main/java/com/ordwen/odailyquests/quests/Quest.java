@@ -1,24 +1,26 @@
 package com.ordwen.odailyquests.quests;
 
 import com.ordwen.odailyquests.rewards.Reward;
+import org.bukkit.Material;
+import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
 public class Quest {
 
-    public int totalQuests = 0;
-
     int questIndex;
     String questName;
     List<String> questDesc;
     QuestType questType;
     ItemStack itemRequired;
+    ItemStack menuItem;
+    EntityType entityType;
     int amountRequired;
     Reward reward;
 
     /**
-     * Quest constructor.
+     * Quest constructor (for itemstack type).
      * @param questName name of the quest.
      * @param questDesc description of the quest.
      * @param questType type of the quest.
@@ -26,24 +28,35 @@ public class Quest {
      * @param amountRequired required amount of the item.
      * @param reward reward of the quest.
      */
-    public Quest(int questIndex, String questName, List<String> questDesc, QuestType questType, ItemStack itemRequired, int amountRequired, Reward reward) {
+    public Quest(int questIndex, String questName, List<String> questDesc, QuestType questType, ItemStack itemRequired, ItemStack menuItem, int amountRequired, Reward reward) {
         this.questIndex = questIndex;
         this.questName = questName;
         this.questDesc = questDesc;
         this.questType = questType;
         this.itemRequired = itemRequired;
+        this.menuItem = menuItem;
         this.amountRequired = amountRequired;
         this.reward = reward;
-
-        totalQuests++;
     }
 
     /**
-     * Get total number of quests.
-     * @return number of quests.
+     * Quest constructor (for entity type).
+     * @param questName name of the quest.
+     * @param questDesc description of the quest.
+     * @param questType type of the quest.
+     * @param entityType required entity to complete the quest.
+     * @param amountRequired required amount of the item.
+     * @param reward reward of the quest.
      */
-    public final int getNumberOfQuests() {
-        return totalQuests;
+    public Quest(int questIndex, String questName, List<String> questDesc, QuestType questType, EntityType entityType, ItemStack menuItem, int amountRequired, Reward reward) {
+        this.questIndex = questIndex;
+        this.questName = questName;
+        this.questDesc = questDesc;
+        this.questType = questType;
+        this.entityType = entityType;
+        this.menuItem = menuItem;
+        this.amountRequired = amountRequired;
+        this.reward = reward;
     }
 
     /**
@@ -63,6 +76,13 @@ public class Quest {
     }
 
     /**
+     * Get menu item.
+     * @return menu item.
+     */
+    public ItemStack getMenuItem() {
+        return this.menuItem;
+    }
+    /**
      * Get the description of the quest.
      * @return quest description.
      */
@@ -76,6 +96,14 @@ public class Quest {
      */
     public ItemStack getItemRequired() {
         return this.itemRequired;
+    }
+
+    /**
+     * Get the entity required by the quest.
+     * @return quest item-required.
+     */
+    public EntityType getEntityType() {
+        return this.entityType;
     }
 
     /**

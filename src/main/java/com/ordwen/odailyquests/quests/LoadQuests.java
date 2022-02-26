@@ -7,6 +7,7 @@ import com.ordwen.odailyquests.rewards.RewardType;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginLogger;
 
@@ -44,6 +45,16 @@ public class LoadQuests {
     private static final ArrayList<Quest> hardQuests = new ArrayList<>();
 
     /**
+     * Clear all quests lists.
+     */
+    public void clearQuestsLists() {
+        globalQuests.clear();
+        easyQuests.clear();
+        mediumQuests.clear();
+        hardQuests.clear();
+    }
+
+    /**
      * Load all quests from files.
      */
     public void loadQuests() {
@@ -54,7 +65,9 @@ public class LoadQuests {
         String questName;
         List<String> questDesc;
         QuestType questType;
-        ItemStack requiredItem;
+        ItemStack requiredItem = null;
+        EntityType entityType = null;
+        ItemStack menuItem;
         int requiredAmount;
 
         /* init variables (reward constructor) */
@@ -75,13 +88,20 @@ public class LoadQuests {
                 /* init quest items */
                 questIndex = Integer.parseInt(fileQuest) - 1;
                 questName = ChatColor.translateAlternateColorCodes('&', globalQuestsFile.getConfigurationSection("quests." + fileQuest).getString(".name"));
+                menuItem = new ItemStack(Material.valueOf(globalQuestsFile.getConfigurationSection("quests." + fileQuest).getString(".menu_item")));
                 questDesc = Objects.requireNonNull(globalQuestsFile.getConfigurationSection("quests." + fileQuest)).getStringList(".description");
                 for (String string : questDesc) {
                     questDesc.set(questDesc.indexOf(string), ChatColor.translateAlternateColorCodes('&', string));
                 }
-
+                
                 questType = QuestType.valueOf(Objects.requireNonNull(globalQuestsFile.getConfigurationSection("quests." + fileQuest)).getString(".quest_type"));
-                requiredItem = new ItemStack(Material.valueOf(Objects.requireNonNull(globalQuestsFile.getConfigurationSection("quests." + fileQuest)).getString(".required_item")));
+
+                if (questType == QuestType.KILL) {
+                    entityType = EntityType.valueOf(globalQuestsFile.getConfigurationSection("quests." + fileQuest).getString(".entity_type"));
+                } else {
+                    requiredItem = new ItemStack(Material.valueOf(Objects.requireNonNull(globalQuestsFile.getConfigurationSection("quests." + fileQuest)).getString(".required_item")));
+                }
+
                 requiredAmount = Objects.requireNonNull(globalQuestsFile.getConfigurationSection("quests." + fileQuest)).getInt(".required_amount");
 
                 /* init reward */
@@ -94,7 +114,11 @@ public class LoadQuests {
                 }
 
                 /* init quest */
-                quest = new Quest(questIndex, questName, questDesc, questType, requiredItem, requiredAmount, reward);
+                if (questType == QuestType.KILL) {
+                    quest = new Quest(questIndex, questName, questDesc, questType, entityType, menuItem, requiredAmount, reward);
+                } else {
+                    quest = new Quest(questIndex, questName, questDesc, questType, requiredItem, menuItem, requiredAmount, reward);
+                }
 
                 /* add quest to the list */
                 globalQuests.add(quest);
@@ -111,10 +135,20 @@ public class LoadQuests {
 
                     /* init quest items */
                     questIndex = Integer.parseInt(fileQuest) - 1;
-                    questName = Objects.requireNonNull(easyQuestsFile.getConfigurationSection("quests." + fileQuest)).getString(".name");
+                    questName = ChatColor.translateAlternateColorCodes('&', easyQuestsFile.getConfigurationSection("quests." + fileQuest).getString(".name"));
+                    menuItem = new ItemStack(Material.valueOf(easyQuestsFile.getConfigurationSection("quests." + fileQuest).getString(".menu_item")));
                     questDesc = Objects.requireNonNull(easyQuestsFile.getConfigurationSection("quests." + fileQuest)).getStringList(".description");
+                    for (String string : questDesc) {
+                        questDesc.set(questDesc.indexOf(string), ChatColor.translateAlternateColorCodes('&', string));
+                    }
+
                     questType = QuestType.valueOf(Objects.requireNonNull(easyQuestsFile.getConfigurationSection("quests." + fileQuest)).getString(".quest_type"));
-                    requiredItem = new ItemStack(Material.valueOf(Objects.requireNonNull(easyQuestsFile.getConfigurationSection("quests." + fileQuest)).getString(".required_item")));
+
+                    if (questType == QuestType.KILL) {
+                        entityType = EntityType.valueOf(easyQuestsFile.getConfigurationSection("quests." + fileQuest).getString(".entity_type"));
+                    } else {
+                        requiredItem = new ItemStack(Material.valueOf(Objects.requireNonNull(easyQuestsFile.getConfigurationSection("quests." + fileQuest)).getString(".required_item")));
+                    }
                     requiredAmount = Objects.requireNonNull(easyQuestsFile.getConfigurationSection("quests." + fileQuest)).getInt(".required_amount");
 
                     /* init reward */
@@ -127,7 +161,11 @@ public class LoadQuests {
                     }
 
                     /* init quest */
-                    quest = new Quest(questIndex, questName, questDesc, questType, requiredItem, requiredAmount, reward);
+                    if (questType == QuestType.KILL) {
+                        quest = new Quest(questIndex, questName, questDesc, questType, entityType, menuItem, requiredAmount, reward);
+                    } else {
+                        quest = new Quest(questIndex, questName, questDesc, questType, requiredItem, menuItem, requiredAmount, reward);
+                    }
 
                     /* add quest to the list */
                     easyQuests.add(quest);
@@ -143,10 +181,21 @@ public class LoadQuests {
 
                     /* init quest items */
                     questIndex = Integer.parseInt(fileQuest) - 1;
-                    questName = Objects.requireNonNull(mediumQuestsFile.getConfigurationSection("quests." + fileQuest)).getString(".name");
+                    questName = ChatColor.translateAlternateColorCodes('&', mediumQuestsFile.getConfigurationSection("quests." + fileQuest).getString(".name"));
+                    menuItem = new ItemStack(Material.valueOf(mediumQuestsFile.getConfigurationSection("quests." + fileQuest).getString(".menu_item")));
                     questDesc = Objects.requireNonNull(mediumQuestsFile.getConfigurationSection("quests." + fileQuest)).getStringList(".description");
+                    for (String string : questDesc) {
+                        questDesc.set(questDesc.indexOf(string), ChatColor.translateAlternateColorCodes('&', string));
+                    }
+
                     questType = QuestType.valueOf(Objects.requireNonNull(mediumQuestsFile.getConfigurationSection("quests." + fileQuest)).getString(".quest_type"));
-                    requiredItem = new ItemStack(Material.valueOf(Objects.requireNonNull(mediumQuestsFile.getConfigurationSection("quests." + fileQuest)).getString(".required_item")));
+
+                    if (questType == QuestType.KILL) {
+                        entityType = EntityType.valueOf(mediumQuestsFile.getConfigurationSection("quests." + fileQuest).getString(".entity_type"));
+                    } else {
+                        requiredItem = new ItemStack(Material.valueOf(Objects.requireNonNull(mediumQuestsFile.getConfigurationSection("quests." + fileQuest)).getString(".required_item")));
+                    }
+
                     requiredAmount = Objects.requireNonNull(mediumQuestsFile.getConfigurationSection("quests." + fileQuest)).getInt(".required_amount");
 
                     /* init reward */
@@ -159,7 +208,11 @@ public class LoadQuests {
                     }
 
                     /* init quest */
-                    quest = new Quest(questIndex, questName, questDesc, questType, requiredItem, requiredAmount, reward);
+                    if (questType == QuestType.KILL) {
+                        quest = new Quest(questIndex, questName, questDesc, questType, entityType, menuItem, requiredAmount, reward);
+                    } else {
+                        quest = new Quest(questIndex, questName, questDesc, questType, requiredItem, menuItem, requiredAmount, reward);
+                    }
 
                     /* add quest to the list */
                     mediumQuests.add(quest);
@@ -174,10 +227,21 @@ public class LoadQuests {
 
                     /* init quest items */
                     questIndex = Integer.parseInt(fileQuest) - 1;
-                    questName = Objects.requireNonNull(hardQuestsFile.getConfigurationSection("quests." + fileQuest)).getString(".name");
+                    questName = ChatColor.translateAlternateColorCodes('&', hardQuestsFile.getConfigurationSection("quests." + fileQuest).getString(".name"));
+                    menuItem = new ItemStack(Material.valueOf(hardQuestsFile.getConfigurationSection("quests." + fileQuest).getString(".menu_item")));
                     questDesc = Objects.requireNonNull(hardQuestsFile.getConfigurationSection("quests." + fileQuest)).getStringList(".description");
+                    for (String string : questDesc) {
+                        questDesc.set(questDesc.indexOf(string), ChatColor.translateAlternateColorCodes('&', string));
+                    }
+
                     questType = QuestType.valueOf(Objects.requireNonNull(hardQuestsFile.getConfigurationSection("quests." + fileQuest)).getString(".quest_type"));
-                    requiredItem = new ItemStack(Material.valueOf(Objects.requireNonNull(hardQuestsFile.getConfigurationSection("quests." + fileQuest)).getString(".required_item")));
+
+                    if (questType == QuestType.KILL) {
+                        entityType = EntityType.valueOf(hardQuestsFile.getConfigurationSection("quests." + fileQuest).getString(".entity_type"));
+                    } else {
+                        requiredItem = new ItemStack(Material.valueOf(Objects.requireNonNull(hardQuestsFile.getConfigurationSection("quests." + fileQuest)).getString(".required_item")));
+                    }
+
                     requiredAmount = Objects.requireNonNull(hardQuestsFile.getConfigurationSection("quests." + fileQuest)).getInt(".required_amount");
 
                     /* init reward */
@@ -190,8 +254,12 @@ public class LoadQuests {
                     }
 
                     /* init quest */
-                    quest = new Quest(questIndex, questName, questDesc, questType, requiredItem, requiredAmount, reward);
-
+                    if (questType == QuestType.KILL) {
+                        quest = new Quest(questIndex, questName, questDesc, questType, entityType, menuItem, requiredAmount, reward);
+                    } else {
+                        quest = new Quest(questIndex, questName, questDesc, questType, requiredItem, menuItem, requiredAmount, reward);
+                    }
+                    
                     /* add quest to the list */
                     hardQuests.add(quest);
                     logger.info(ChatColor.YELLOW + "Quest " + ChatColor.GRAY + fileQuest + ChatColor.YELLOW + " successfully loaded.");

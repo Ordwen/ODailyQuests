@@ -13,6 +13,7 @@ import com.ordwen.odailyquests.commands.interfaces.CategorizedQuestsInterfaces;
 import com.ordwen.odailyquests.commands.interfaces.GlobalQuestsInterface;
 import com.ordwen.odailyquests.commands.interfaces.InterfacesManager;
 import com.ordwen.odailyquests.commands.interfaces.PlayerQuestsInterface;
+import com.ordwen.odailyquests.commands.interfaces.pagination.Items;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.files.ProgressionFile;
 import com.ordwen.odailyquests.files.QuestsFiles;
@@ -23,7 +24,7 @@ import com.ordwen.odailyquests.quests.player.progression.LoadProgression;
 import com.ordwen.odailyquests.quests.player.progression.ProgressionManager;
 import com.ordwen.odailyquests.quests.player.progression.SaveProgression;
 import org.bukkit.ChatColor;
-import org.bukkit.command.PluginCommand;
+import org.bukkit.entity.Item;
 import org.bukkit.plugin.PluginLogger;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -38,6 +39,7 @@ public final class ODailyQuests extends JavaPlugin {
     private QuestsFiles questsFiles;
     private ProgressionFile progressionFile;
     private LoadQuests loadQuests;
+    private Items items;
     private InterfacesManager interfacesManager;
     private GlobalQuestsInterface globalQuestsInterface;
     private PlayerQuestsInterface playerQuestsInterface;
@@ -66,15 +68,16 @@ public final class ODailyQuests extends JavaPlugin {
         this.questsFiles = new QuestsFiles(this);
         this.progressionFile = new ProgressionFile(this);
         this.loadQuests = new LoadQuests(questsFiles, configurationFiles);
-        this.interfacesManager = new InterfacesManager(configurationFiles);
+        this.items = new Items(configurationFiles);
         this.globalQuestsInterface = new GlobalQuestsInterface(configurationFiles);
         this.playerQuestsInterface = new PlayerQuestsInterface(configurationFiles);
         this.categorizedQuestsInterfaces = new CategorizedQuestsInterfaces(configurationFiles);
+        this.interfacesManager = new InterfacesManager(configurationFiles, globalQuestsInterface, categorizedQuestsInterfaces);
         this.questsManager = new QuestsManager(configurationFiles);
         this.loadProgression = new LoadProgression(progressionFile);
         this.saveProgression = new SaveProgression(progressionFile);
         this.progressionManager = new ProgressionManager();
-        this.citizensAPI = new CitizensAPI(configurationFiles);
+        this.citizensAPI = new CitizensAPI(configurationFiles, globalQuestsInterface, categorizedQuestsInterfaces);
 
         /* Load dependencies */
         if (!VaultAPI.setupEconomy()) {
@@ -104,16 +107,17 @@ public final class ODailyQuests extends JavaPlugin {
         loadQuests.loadQuests();
 
         /* Load interfaces */
-        InterfacesManager.initInventoryNames();
+        items.initItems();
+        interfacesManager.initInventoryNames();
         playerQuestsInterface.loadPlayerQuestsInterface();
 
         if (configurationFiles.getConfigFile().getInt("quests_mode") == 2) categorizedQuestsInterfaces.loadCategorizedInterfaces();
         else globalQuestsInterface.loadGlobalQuestsInterface();
 
         /* Load commands */
-        getCommand("quests").setExecutor(new PlayerCommands(configurationFiles));
+        getCommand("quests").setExecutor(new PlayerCommands(configurationFiles, globalQuestsInterface, categorizedQuestsInterfaces));
         getCommand("questsadmin").setExecutor(new AdminCommands());
-        getCommand("questsreload").setExecutor(new ReloadCommand(configurationFiles, questsFiles, playerQuestsInterface, globalQuestsInterface, categorizedQuestsInterfaces));
+        getCommand("questsreload").setExecutor(new ReloadCommand(configurationFiles, questsFiles, loadQuests, interfacesManager, playerQuestsInterface, globalQuestsInterface, categorizedQuestsInterfaces));
 
         /* Load Tab Completers */
         getCommand("quests").setTabCompleter(new PlayerCompleter());

@@ -29,24 +29,19 @@ public class CategorizedQuestsInterfaces {
     }
 
     /* Logger for stacktrace */
-    Logger logger = PluginLogger.getLogger("O'DailyQuests");
+    private final Logger logger = PluginLogger.getLogger("O'DailyQuests");
 
     /* init items */
-    private static Inventory easyQuestsInventory;
-    private static Inventory mediumQuestsInventory;
-    private static Inventory hardQuestsInventory;
-
-    ItemStack emptyCaseItem;
-
-    ItemStack itemStack;
-    ItemMeta itemMeta;
+    private Inventory easyQuestsInventory;
+    private Inventory mediumQuestsInventory;
+    private Inventory hardQuestsInventory;
 
     /**
      * Load all categorized interfaces.
      */
     public void loadCategorizedInterfaces() {
         /* Easy quests inventory */
-        emptyCaseItem = new ItemStack(Material.valueOf(configurationFiles.getConfigFile().getConfigurationSection("interfaces.easy_quests").getString(".empty_item")));
+        ItemStack emptyCaseItem = new ItemStack(Material.valueOf(configurationFiles.getConfigFile().getConfigurationSection("interfaces.easy_quests").getString(".empty_item")));
         easyQuestsInventory = loadSelectedInterface(InterfacesManager.getEasyQuestsInventoryName(), emptyCaseItem, LoadQuests.getEasyQuests());
 
         /* Medium quests inventory */
@@ -70,8 +65,9 @@ public class CategorizedQuestsInterfaces {
 
         /* add quests items on slots */
         for (Quest quest : quests) {
-            itemStack = quest.getItemRequired();
-            itemMeta = itemStack.getItemMeta();
+
+            ItemStack itemStack = quest.getMenuItem();
+            ItemMeta itemMeta = itemStack.getItemMeta();
 
             assert itemMeta != null;
             itemMeta.setDisplayName(quest.getQuestName());
@@ -93,7 +89,7 @@ public class CategorizedQuestsInterfaces {
      * Get easy quests inventory.
      * @return easy quests inventory.
      */
-    public static Inventory getEasyQuestsInterface() {
+    public Inventory getEasyQuestsInterface() {
         return easyQuestsInventory;
     }
 
@@ -101,7 +97,7 @@ public class CategorizedQuestsInterfaces {
      * Get medium quests inventory.
      * @return medium quests inventory.
      */
-    public static Inventory getMediumQuestsInterface() {
+    public Inventory getMediumQuestsInterface() {
         return mediumQuestsInventory;
     }
 
@@ -109,7 +105,7 @@ public class CategorizedQuestsInterfaces {
      * Get hard quests inventory.
      * @return hard quests inventory.
      */
-    public static Inventory getHardQuestsInterface() {
+    public Inventory getHardQuestsInterface() {
         return hardQuestsInventory;
     }
 }

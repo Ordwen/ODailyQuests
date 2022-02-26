@@ -11,6 +11,10 @@ public enum QuestType {
     LAUNCH("LAUNCH"),
     CONSUME("CONSUME"),
     GET("GET"),
+    COOK("COOK"),
+    ENCHANT("ENCHANT"),
+    KILL("KILL"),
+    FISH("FISH"),
     ;
 
     private final String typeName;

@@ -2,6 +2,7 @@ package com.ordwen.odailyquests.apis;
 
 import com.ordwen.odailyquests.commands.interfaces.CategorizedQuestsInterfaces;
 import com.ordwen.odailyquests.commands.interfaces.GlobalQuestsInterface;
+import com.ordwen.odailyquests.commands.interfaces.PlayerQuestsInterface;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.enums.QuestsPermissions;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
@@ -14,6 +15,8 @@ import org.bukkit.event.Listener;
 public class CitizensAPI implements Listener {
 
     private final ConfigurationFiles configurationFiles;
+    private GlobalQuestsInterface globalQuestsInterface;
+    private CategorizedQuestsInterfaces categorizedQuestsInterfaces;
 
     /**
      * Setup CitizensAPI.
@@ -25,21 +28,33 @@ public class CitizensAPI implements Listener {
 
     /**
      * Class instance constructor.
+     *
      * @param configurationFiles configuration files class.
      */
-    public CitizensAPI(ConfigurationFiles configurationFiles) {
+    public CitizensAPI(ConfigurationFiles configurationFiles,
+                       GlobalQuestsInterface globalQuestsInterface,
+                       CategorizedQuestsInterfaces categorizedQuestsInterfaces) {
         this.configurationFiles = configurationFiles;
+        this.globalQuestsInterface = globalQuestsInterface;
+        this.categorizedQuestsInterfaces = categorizedQuestsInterfaces;
     }
 
     @EventHandler
     public void onNPCClickEvent(NPCRightClickEvent event) {
         String npcName = event.getNPC().getName();
 
+        /* Player interface */
+        if (npcName.equals(configurationFiles.getConfigFile().getConfigurationSection("npcs").getString(".name_player"))) {
+            if (event.getClicker().hasPermission(QuestsPermissions.QUESTS_SHOW_PLAYER.getPermission())) {
+                event.getClicker().openInventory(PlayerQuestsInterface.getPlayerQuestsInterface(event.getClicker().getName()));
+            } else event.getClicker().sendMessage(QuestsMessages.NO_PERMISSION_CATEGORY.toString());
+        }
+
         /* Global interface */
         if (npcName.equals(configurationFiles.getConfigFile().getConfigurationSection("npcs").getString(".name_global"))) {
             if (configurationFiles.getConfigFile().getInt("quests_mode") == 1) {
                 if (event.getClicker().hasPermission(QuestsPermissions.QUESTS_SHOW_GLOBAL.getPermission())) {
-                    event.getClicker().openInventory(GlobalQuestsInterface.getGlobalQuestsInterface());
+                    event.getClicker().openInventory(globalQuestsInterface.getGlobalQuestsInterfaceFirstPage());
                 } else event.getClicker().sendMessage(QuestsMessages.NO_PERMISSION_CATEGORY.toString());
             } else event.getClicker().sendMessage(QuestsMessages.GLOBAL_DISABLED.toString());
         }
@@ -48,7 +63,7 @@ public class CitizensAPI implements Listener {
         if (npcName.equals(configurationFiles.getConfigFile().getConfigurationSection("npcs").getString(".name_easy"))) {
             if (configurationFiles.getConfigFile().getInt("quests_mode") == 2) {
                 if (event.getClicker().hasPermission(QuestsPermissions.QUESTS_SHOW_EASY.getPermission())) {
-                    event.getClicker().openInventory(CategorizedQuestsInterfaces.getEasyQuestsInterface());
+                    event.getClicker().openInventory(categorizedQuestsInterfaces.getEasyQuestsInterface());
                 } else event.getClicker().sendMessage(QuestsMessages.NO_PERMISSION_CATEGORY.toString());
             } else event.getClicker().sendMessage(QuestsMessages.CATEGORIZED_DISABLED.toString());
         }
@@ -57,7 +72,7 @@ public class CitizensAPI implements Listener {
         if (npcName.equals(configurationFiles.getConfigFile().getConfigurationSection("npcs").getString(".name_medium"))) {
             if (configurationFiles.getConfigFile().getInt("quests_mode") == 2) {
                 if (event.getClicker().hasPermission(QuestsPermissions.QUESTS_SHOW_MEDIUM.getPermission())) {
-                    event.getClicker().openInventory(CategorizedQuestsInterfaces.getMediumQuestsInterface());
+                    event.getClicker().openInventory(categorizedQuestsInterfaces.getMediumQuestsInterface());
                 } else event.getClicker().sendMessage(QuestsMessages.NO_PERMISSION_CATEGORY.toString());
             } else event.getClicker().sendMessage(QuestsMessages.CATEGORIZED_DISABLED.toString());
         }
@@ -66,7 +81,7 @@ public class CitizensAPI implements Listener {
         if (npcName.equals(configurationFiles.getConfigFile().getConfigurationSection("npcs").getString(".name_hard"))) {
             if (configurationFiles.getConfigFile().getInt("quests_mode") == 2) {
                 if (event.getClicker().hasPermission(QuestsPermissions.QUESTS_SHOW_HARD.getPermission())) {
-                    event.getClicker().openInventory(CategorizedQuestsInterfaces.getHardQuestsInterface());
+                    event.getClicker().openInventory(categorizedQuestsInterfaces.getHardQuestsInterface());
                 } else event.getClicker().sendMessage(QuestsMessages.NO_PERMISSION_CATEGORY.toString());
             } else event.getClicker().sendMessage(QuestsMessages.CATEGORIZED_DISABLED.toString());
         }

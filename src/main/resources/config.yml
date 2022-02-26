@@ -34,6 +34,8 @@ timestamp_mode: 1
 # %progress% is replaced by the progression of the quest.
 # %required% is replaced by the required amount to complete the quest.
 interfaces:
+  next_item_name: "&a&lNext Page"
+  previous_item_name: "&e&lPrevious Page"
   player_quests:
     inventory_name: "&bMy quests"
     empty_item: GREEN_STAINED_GLASS_PANE
@@ -58,6 +60,7 @@ interfaces:
 # Here you can select NPCs names for each category.
 # The player have to interact with the NPC to open an interface.
 npcs:
+  name_player: "Player Quests"
   name_global: "Global Quests"
   name_easy: "Easy Quests"
   name_medium: "Medium Quests"

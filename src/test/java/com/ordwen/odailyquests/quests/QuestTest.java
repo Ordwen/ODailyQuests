@@ -12,10 +12,11 @@ import java.util.Collections;
 public class QuestTest {
 
     ItemStack itemStack = new ItemStack(Material.COBBLESTONE);
+    ItemStack menuItem = new ItemStack(Material.COBBLESTONE);
     Reward reward1 = new Reward(RewardType.COMMAND, Collections.singletonList("say Hello World !"));
     Reward reward2 = new Reward(RewardType.MONEY, 500);
-    Quest quest1 = new Quest(0, "testQuest", Collections.singletonList("testDesc"), QuestType.BREAK, itemStack, 32, reward1);
-    Quest quest2 = new Quest(1, "testQuest", Arrays.asList("testDesc", "testDescTwo", ""), QuestType.BREAK, itemStack, 32, reward2);
+    Quest quest1 = new Quest(0, "testQuest", Collections.singletonList("testDesc"), QuestType.BREAK, itemStack, menuItem, 32, reward1);
+    Quest quest2 = new Quest(1, "testQuest", Arrays.asList("testDesc", "testDescTwo", ""), QuestType.BREAK, itemStack, menuItem, 32, reward2);
 
     @Test
     public void getType() {

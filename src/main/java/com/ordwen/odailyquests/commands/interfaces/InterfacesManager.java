@@ -3,6 +3,7 @@ package com.ordwen.odailyquests.commands.interfaces;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.quests.player.progression.ProgressionManager;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -20,15 +21,21 @@ public class InterfacesManager implements Listener {
     /**
      * Getting instance of classes.
      */
-    private static ConfigurationFiles configurationFiles;
+    private ConfigurationFiles configurationFiles;
+    private GlobalQuestsInterface globalQuestsInterface;
+    private CategorizedQuestsInterfaces categorizedQuestsInterfaces;
 
     /**
      * Class instance constructor.
      *
      * @param configurationFiles configuration files class.
      */
-    public InterfacesManager(ConfigurationFiles configurationFiles) {
-        InterfacesManager.configurationFiles = configurationFiles;
+    public InterfacesManager(ConfigurationFiles configurationFiles,
+                             GlobalQuestsInterface globalQuestsInterface,
+                             CategorizedQuestsInterfaces categorizedQuestsInterfaces) {
+        this.configurationFiles = configurationFiles;
+        this.globalQuestsInterface = globalQuestsInterface;
+        this.categorizedQuestsInterfaces = categorizedQuestsInterfaces;
     }
 
     /* variables */
@@ -41,7 +48,7 @@ public class InterfacesManager implements Listener {
     /**
      * Init variables.
      */
-    public static void initInventoryNames() {
+    public void initInventoryNames() {
         playerQuestsInventoryName = ChatColor.translateAlternateColorCodes('&', configurationFiles.getConfigFile().getConfigurationSection("interfaces.player_quests").getString(".inventory_name"));
         globalQuestsInventoryName = ChatColor.translateAlternateColorCodes('&', configurationFiles.getConfigFile().getConfigurationSection("interfaces.global_quests").getString(".inventory_name"));
         easyQuestsInventoryName = ChatColor.translateAlternateColorCodes('&', configurationFiles.getConfigFile().getConfigurationSection("interfaces.easy_quests").getString(".inventory_name"));
@@ -54,11 +61,11 @@ public class InterfacesManager implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         String inventoryName = event.getView().getTitle();
-        if (inventoryName.equals(playerQuestsInventoryName)
-                || inventoryName.equals(globalQuestsInventoryName)
-                || inventoryName.equals(easyQuestsInventoryName)
-                || inventoryName.equals(mediumQuestsInventoryName)
-                || inventoryName.equals(hardQuestsInventoryName)) {
+        if (inventoryName.startsWith(playerQuestsInventoryName)
+                || inventoryName.startsWith(globalQuestsInventoryName)
+                || inventoryName.startsWith(easyQuestsInventoryName)
+                || inventoryName.startsWith(mediumQuestsInventoryName)
+                || inventoryName.startsWith(hardQuestsInventoryName)) {
             event.setCancelled(true);
 
             if (event.getCurrentItem() != null
@@ -66,7 +73,21 @@ public class InterfacesManager implements Listener {
                     && event.getClick().isLeftClick()
                     && event.getSlot() < event.getView().getTopInventory().getSize()
                     && !event.getSlotType().equals(InventoryType.SlotType.QUICKBAR)) {
-                ProgressionManager.validateGetQuestType(event.getWhoClicked().getName(), event.getCurrentItem().getType());
+                if (event.getCurrentItem().getType() != Material.PLAYER_HEAD) {
+                    ProgressionManager.validateGetQuestType(event.getWhoClicked().getName(), event.getCurrentItem().getType());
+                } else {
+                    int page = Integer.parseInt(inventoryName.substring(inventoryName.length() - 1));
+                    if (event.getCurrentItem().getItemMeta() != null) {
+                        if (event.getCurrentItem().getItemMeta().getDisplayName().equals(ChatColor.translateAlternateColorCodes('&', configurationFiles.getConfigFile().getConfigurationSection("interfaces").getString(".next_item_name")))) {
+                            event.getWhoClicked().closeInventory();
+                            event.getWhoClicked().openInventory(globalQuestsInterface.getGlobalQuestsNextPage(page));
+                        }
+                        if (event.getCurrentItem().getItemMeta().getDisplayName().equals(ChatColor.translateAlternateColorCodes('&', configurationFiles.getConfigFile().getConfigurationSection("interfaces").getString(".previous_item_name")))) {
+                            event.getWhoClicked().closeInventory();
+                            event.getWhoClicked().openInventory(globalQuestsInterface.getGlobalQuestsPreviousPage(page));
+                        }
+                    }
+                }
             }
         }
     }
@@ -83,7 +104,9 @@ public class InterfacesManager implements Listener {
         return easyQuestsInventoryName;
     }
 
-    public static String getMediumQuestsInventoryName() { return mediumQuestsInventoryName; }
+    public static String getMediumQuestsInventoryName() {
+        return mediumQuestsInventoryName;
+    }
 
     public static String getHardQuestsInventoryName() {
         return hardQuestsInventoryName;
