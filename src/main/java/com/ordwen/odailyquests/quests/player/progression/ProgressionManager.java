@@ -150,6 +150,7 @@ public class ProgressionManager implements Listener {
                         if (getAmount(playerInventory, quest.getItemRequired().getType()) >= quest.getAmountRequired()) {
                             questProgression.isAchieved = true;
                             Bukkit.getPlayer(playerName).sendMessage(QuestsMessages.QUEST_ACHIEVED.toString().replace("%questName%", quest.getQuestName()));
+                            Bukkit.getPlayer(playerName).closeInventory();
                             RewardManager.sendQuestReward(playerName, quest.getReward());
                         } else {
                             Objects.requireNonNull(Bukkit.getPlayer(playerName)).sendMessage(QuestsMessages.NOT_ENOUGH_ITEM.toString());

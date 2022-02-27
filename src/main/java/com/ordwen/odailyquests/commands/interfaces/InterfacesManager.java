@@ -21,9 +21,9 @@ public class InterfacesManager implements Listener {
     /**
      * Getting instance of classes.
      */
-    private ConfigurationFiles configurationFiles;
-    private GlobalQuestsInterface globalQuestsInterface;
-    private CategorizedQuestsInterfaces categorizedQuestsInterfaces;
+    private final ConfigurationFiles configurationFiles;
+    private final GlobalQuestsInterface globalQuestsInterface;
+    private final CategorizedQuestsInterfaces categorizedQuestsInterfaces;
 
     /**
      * Class instance constructor.
@@ -80,11 +80,33 @@ public class InterfacesManager implements Listener {
                     if (event.getCurrentItem().getItemMeta() != null) {
                         if (event.getCurrentItem().getItemMeta().getDisplayName().equals(ChatColor.translateAlternateColorCodes('&', configurationFiles.getConfigFile().getConfigurationSection("interfaces").getString(".next_item_name")))) {
                             event.getWhoClicked().closeInventory();
-                            event.getWhoClicked().openInventory(globalQuestsInterface.getGlobalQuestsNextPage(page));
+                            if (inventoryName.startsWith(globalQuestsInventoryName)) {
+                                event.getWhoClicked().openInventory(globalQuestsInterface.getGlobalQuestsNextPage(page));
+                            }
+                            else if (inventoryName.startsWith(easyQuestsInventoryName)) {
+                                event.getWhoClicked().openInventory(categorizedQuestsInterfaces.getInterfaceNextPage(categorizedQuestsInterfaces.getEasyQuestsInventories(), page));
+                            }
+                            else if (inventoryName.startsWith(mediumQuestsInventoryName)) {
+                                event.getWhoClicked().openInventory(categorizedQuestsInterfaces.getInterfaceNextPage(categorizedQuestsInterfaces.getMediumQuestsInventories(), page));
+                            }
+                            else if (inventoryName.startsWith(hardQuestsInventoryName)) {
+                                event.getWhoClicked().openInventory(categorizedQuestsInterfaces.getInterfaceNextPage(categorizedQuestsInterfaces.getHardQuestsInventories(), page));
+                            }
                         }
                         if (event.getCurrentItem().getItemMeta().getDisplayName().equals(ChatColor.translateAlternateColorCodes('&', configurationFiles.getConfigFile().getConfigurationSection("interfaces").getString(".previous_item_name")))) {
                             event.getWhoClicked().closeInventory();
-                            event.getWhoClicked().openInventory(globalQuestsInterface.getGlobalQuestsPreviousPage(page));
+                            if (inventoryName.startsWith(globalQuestsInventoryName)) {
+                                event.getWhoClicked().openInventory(globalQuestsInterface.getGlobalQuestsPreviousPage(page));
+                            }
+                            else if (inventoryName.startsWith(easyQuestsInventoryName)) {
+                                event.getWhoClicked().openInventory(categorizedQuestsInterfaces.getInterfacePreviousPage(categorizedQuestsInterfaces.getEasyQuestsInventories(), page));
+                            }
+                            else if (inventoryName.startsWith(mediumQuestsInventoryName)) {
+                                event.getWhoClicked().openInventory(categorizedQuestsInterfaces.getInterfacePreviousPage(categorizedQuestsInterfaces.getMediumQuestsInventories(), page));
+                            }
+                            else if (inventoryName.startsWith(hardQuestsInventoryName)) {
+                                event.getWhoClicked().openInventory(categorizedQuestsInterfaces.getInterfacePreviousPage(categorizedQuestsInterfaces.getHardQuestsInventories(), page));
+                            }
                         }
                     }
                 }

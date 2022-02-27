@@ -63,7 +63,7 @@ public class CitizensAPI implements Listener {
         if (npcName.equals(configurationFiles.getConfigFile().getConfigurationSection("npcs").getString(".name_easy"))) {
             if (configurationFiles.getConfigFile().getInt("quests_mode") == 2) {
                 if (event.getClicker().hasPermission(QuestsPermissions.QUESTS_SHOW_EASY.getPermission())) {
-                    event.getClicker().openInventory(categorizedQuestsInterfaces.getEasyQuestsInterface());
+                    event.getClicker().openInventory(categorizedQuestsInterfaces.getEasyQuestsInterfaceFirstPage());
                 } else event.getClicker().sendMessage(QuestsMessages.NO_PERMISSION_CATEGORY.toString());
             } else event.getClicker().sendMessage(QuestsMessages.CATEGORIZED_DISABLED.toString());
         }
@@ -72,7 +72,7 @@ public class CitizensAPI implements Listener {
         if (npcName.equals(configurationFiles.getConfigFile().getConfigurationSection("npcs").getString(".name_medium"))) {
             if (configurationFiles.getConfigFile().getInt("quests_mode") == 2) {
                 if (event.getClicker().hasPermission(QuestsPermissions.QUESTS_SHOW_MEDIUM.getPermission())) {
-                    event.getClicker().openInventory(categorizedQuestsInterfaces.getMediumQuestsInterface());
+                    event.getClicker().openInventory(categorizedQuestsInterfaces.getMediumQuestsInterfaceFirstPage());
                 } else event.getClicker().sendMessage(QuestsMessages.NO_PERMISSION_CATEGORY.toString());
             } else event.getClicker().sendMessage(QuestsMessages.CATEGORIZED_DISABLED.toString());
         }
@@ -81,7 +81,7 @@ public class CitizensAPI implements Listener {
         if (npcName.equals(configurationFiles.getConfigFile().getConfigurationSection("npcs").getString(".name_hard"))) {
             if (configurationFiles.getConfigFile().getInt("quests_mode") == 2) {
                 if (event.getClicker().hasPermission(QuestsPermissions.QUESTS_SHOW_HARD.getPermission())) {
-                    event.getClicker().openInventory(categorizedQuestsInterfaces.getHardQuestsInterface());
+                    event.getClicker().openInventory(categorizedQuestsInterfaces.getHardQuestsInterfaceFirstPage());
                 } else event.getClicker().sendMessage(QuestsMessages.NO_PERMISSION_CATEGORY.toString());
             } else event.getClicker().sendMessage(QuestsMessages.CATEGORIZED_DISABLED.toString());
         }

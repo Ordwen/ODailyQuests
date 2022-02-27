@@ -6,6 +6,7 @@ import com.ordwen.odailyquests.quests.LoadQuests;
 import com.ordwen.odailyquests.quests.Quest;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -35,8 +36,6 @@ public class GlobalQuestsInterface {
     private final Logger logger = PluginLogger.getLogger("O'DailyQuests");
 
     /* init items */
-    //private Inventory globalQuestsInventory;
-
     List<Inventory> inventories = new ArrayList<>();
     float invSize = 45;
 
@@ -45,7 +44,12 @@ public class GlobalQuestsInterface {
      */
     public void loadGlobalQuestsInterface() {
 
+        boolean allQuestsLoaded = false;
+        int currentQuestIndex = 0;
+
+        ItemStack emptyCaseItem = new ItemStack(Material.valueOf(configurationFiles.getConfigFile().getConfigurationSection("interfaces.global_quests").getString(".empty_item")));
         int neededInventories = (int) Math.ceil(LoadQuests.getGlobalQuests().size() / invSize);
+
         for (int i = 0; i < neededInventories; i++) {
             Inventory inv = Bukkit.createInventory(null, 54, InterfacesManager.getGlobalQuestsInventoryName() + " - " + (i + 1));
 
@@ -61,9 +65,8 @@ public class GlobalQuestsInterface {
 
         for (Inventory inv : inventories) {
             int i = 0;
-            boolean allQuestsLoaded = false;
-            int currentQuestIndex = 0;
 
+            /* add quests items on slots */
             while (i < invSize && !allQuestsLoaded) {
 
                 if (currentQuestIndex < LoadQuests.getGlobalQuests().size()) {
@@ -84,12 +87,18 @@ public class GlobalQuestsInterface {
                     allQuestsLoaded = true;
                 }
             }
+
+            /* fill empty slots */
+            for (int j = 0; j < inv.getSize(); j++) {
+                if (inv.getItem(j) == null) inv.setItem(j, emptyCaseItem);
+            }
         }
         logger.info(ChatColor.GREEN + "Global quests interface successfully loaded.");
     }
 
     /**
      * Get global quests inventory first page.
+     *
      * @return global quests inventory first page.
      */
     public Inventory getGlobalQuestsInterfaceFirstPage() {
@@ -98,6 +107,7 @@ public class GlobalQuestsInterface {
 
     /**
      * Get global quests inventory next page.
+     *
      * @return global quests inventory next page.
      */
     public Inventory getGlobalQuestsNextPage(int page) {
@@ -106,9 +116,10 @@ public class GlobalQuestsInterface {
 
     /**
      * Get global quests inventory previous page.
+     *
      * @return global quests inventory previous page.
      */
     public Inventory getGlobalQuestsPreviousPage(int page) {
-        return inventories.get(page-2);
+        return inventories.get(page - 2);
     }
 }
