@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests;
 
 import com.ordwen.odailyquests.apis.CitizensAPI;
+import com.ordwen.odailyquests.apis.PlaceholderAPI;
 import com.ordwen.odailyquests.apis.TokenManagerAPI;
 import com.ordwen.odailyquests.apis.VaultAPI;
 import com.ordwen.odailyquests.commands.AdminCommands;
@@ -95,9 +96,13 @@ public final class ODailyQuests extends JavaPlugin {
         if (CitizensAPI.setupCitizens()) {
             getServer().getPluginManager().registerEvents(citizensAPI, this);
             logger.info(ChatColor.YELLOW + "Citizens" + ChatColor.GREEN + " successfully hooked.");
-        }
+        } else logger.info(ChatColor.YELLOW + "Citizens" + ChatColor.GOLD + " not detected. NPCs will not work.");
+        if (PlaceholderAPI.setupPlaceholderAPI()) {
+            logger.info(ChatColor.YELLOW + "PlaceholderAPI" + ChatColor.GREEN + " successfully hooked.");
+        } else logger.info(ChatColor.YELLOW + "PlaceholderAPI" + ChatColor.GOLD + " not detected. Placeholders will not work.");
 
-        /* Load files */
+
+    /* Load files */
         configurationFiles.loadConfigurationFiles();
         configurationFiles.loadMessagesFiles();
         questsFiles.loadQuestsFiles();
