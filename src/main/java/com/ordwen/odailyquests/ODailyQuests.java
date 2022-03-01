@@ -1,7 +1,7 @@
 package com.ordwen.odailyquests;
 
 import com.ordwen.odailyquests.apis.CitizensAPI;
-import com.ordwen.odailyquests.apis.PlaceholderAPI;
+import com.ordwen.odailyquests.apis.PlaceholderAPIHook;
 import com.ordwen.odailyquests.apis.TokenManagerAPI;
 import com.ordwen.odailyquests.apis.VaultAPI;
 import com.ordwen.odailyquests.commands.AdminCommands;
@@ -24,6 +24,7 @@ import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.LoadProgression;
 import com.ordwen.odailyquests.quests.player.progression.ProgressionManager;
 import com.ordwen.odailyquests.quests.player.progression.SaveProgression;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Item;
 import org.bukkit.plugin.PluginLogger;
@@ -97,10 +98,6 @@ public final class ODailyQuests extends JavaPlugin {
             getServer().getPluginManager().registerEvents(citizensAPI, this);
             logger.info(ChatColor.YELLOW + "Citizens" + ChatColor.GREEN + " successfully hooked.");
         } else logger.info(ChatColor.YELLOW + "Citizens" + ChatColor.GOLD + " not detected. NPCs will not work.");
-        if (PlaceholderAPI.setupPlaceholderAPI()) {
-            logger.info(ChatColor.YELLOW + "PlaceholderAPI" + ChatColor.GREEN + " successfully hooked.");
-        } else logger.info(ChatColor.YELLOW + "PlaceholderAPI" + ChatColor.GOLD + " not detected. Placeholders will not work.");
-
 
     /* Load files */
         configurationFiles.loadConfigurationFiles();
@@ -118,6 +115,10 @@ public final class ODailyQuests extends JavaPlugin {
 
         if (configurationFiles.getConfigFile().getInt("quests_mode") == 2) categorizedQuestsInterfaces.loadCategorizedInterfaces();
         else globalQuestsInterface.loadGlobalQuestsInterface();
+
+        if (PlaceholderAPIHook.setupPlaceholderAPI()) {
+            logger.info(ChatColor.YELLOW + "PlaceholderAPI" + ChatColor.GREEN + " successfully hooked.");
+        } else logger.info(ChatColor.YELLOW + "PlaceholderAPI" + ChatColor.GOLD + " not detected. Placeholders will not work.");
 
         /* Load commands */
         getCommand("quests").setExecutor(new PlayerCommands(configurationFiles, globalQuestsInterface, categorizedQuestsInterfaces));
