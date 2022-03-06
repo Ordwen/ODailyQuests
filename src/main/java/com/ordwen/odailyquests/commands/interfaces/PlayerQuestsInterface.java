@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.commands.interfaces;
 
+import com.ordwen.odailyquests.commands.interfaces.pagination.Items;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.quests.Quest;
 import com.ordwen.odailyquests.quests.QuestType;
@@ -76,6 +77,10 @@ public class PlayerQuestsInterface {
         HashMap<String, PlayerQuests> activeQuests = QuestsManager.getActiveQuests();
         HashMap<Quest, Progression> playerQuests = activeQuests.get(playerName).getPlayerQuests();
 
+        /* load player head */
+        playerQuestsInventory.setItem(4, Items.getPlayerHead(Bukkit.getPlayer(playerName)));
+
+        /* load quests */
         int i = 2;
         for (Quest quest : playerQuests.keySet()) {
 
@@ -120,5 +125,50 @@ public class PlayerQuestsInterface {
      */
     public static Material getEmptyCaseItem() {
         return emptyCaseItem.getType();
+    }
+
+    /**
+     * Get the time remain before the next quests draw.
+     * @param playerName player to consider.
+     * @return the time remain before the next quests draw, in String.
+     */
+    public static String timeRemain(String playerName) {
+
+        long timestamp = QuestsManager.getActiveQuests().get(playerName).getTimestamp();
+        long diff;
+
+        if (configurationFiles.getConfigFile().getInt("timestamp_mode") == 1) {
+            Calendar oldCal = Calendar.getInstance();
+            oldCal.setTimeInMillis(timestamp);
+            oldCal.set(Calendar.HOUR_OF_DAY, oldCal.getActualMinimum(Calendar.HOUR_OF_DAY));
+            oldCal.set(Calendar.MINUTE, oldCal.getActualMinimum(Calendar.MINUTE));
+            oldCal.set(Calendar.SECOND, oldCal.getActualMinimum(Calendar.SECOND));
+            oldCal.set(Calendar.MILLISECOND, oldCal.getActualMinimum(Calendar.MILLISECOND));
+
+            Calendar currentCal = Calendar.getInstance();
+            currentCal.setTimeInMillis(System.currentTimeMillis());
+
+            diff = currentCal.getTimeInMillis() - oldCal.getTimeInMillis();
+        } else {
+            diff = System.currentTimeMillis() - timestamp;
+        }
+
+        String timeRemain = "";
+
+        if (diff <= 86400000) {
+            long rest = (long) 86400000 - diff;
+            int minutes = (int) ((rest / (1000 * 60)) % 60);
+            int hours = (int) ((rest / (1000 * 60 * 60)) % 24);
+
+            if (hours != 0) {
+                timeRemain = String.format("%dh%dm", hours, minutes);
+            } else if (minutes != 0) {
+                timeRemain = String.format("%dm", minutes);
+            } else {
+                timeRemain = "Few seconds.";
+            }
+        }
+
+        return timeRemain;
     }
 }

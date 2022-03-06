@@ -25,6 +25,7 @@ import com.ordwen.odailyquests.quests.player.progression.LoadProgression;
 import com.ordwen.odailyquests.quests.player.progression.ProgressionManager;
 import com.ordwen.odailyquests.quests.player.progression.SaveProgression;
 import me.clip.placeholderapi.PlaceholderAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Item;
 import org.bukkit.plugin.PluginLogger;
@@ -116,7 +117,8 @@ public final class ODailyQuests extends JavaPlugin {
         if (configurationFiles.getConfigFile().getInt("quests_mode") == 2) categorizedQuestsInterfaces.loadCategorizedInterfaces();
         else globalQuestsInterface.loadGlobalQuestsInterface();
 
-        if (PlaceholderAPIHook.setupPlaceholderAPI()) {
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new PlaceholderAPIHook(this).register();
             logger.info(ChatColor.YELLOW + "PlaceholderAPI" + ChatColor.GREEN + " successfully hooked.");
         } else logger.info(ChatColor.YELLOW + "PlaceholderAPI" + ChatColor.GOLD + " not detected. Placeholders will not work.");
 

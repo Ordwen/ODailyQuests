@@ -8,14 +8,17 @@ import java.util.HashMap;
 public class PlayerQuests {
 
     /* Timestamp of last quests renew */
-    Long timestamp;
+    private final Long timestamp;
+
+    private int achievedQuests;
 
     /* Quest active quest, Boolean quest status */
-    HashMap<Quest, Progression> playerQuests;
+    private final HashMap<Quest, Progression> playerQuests;
 
     public PlayerQuests(Long timestamp, HashMap<Quest, Progression> playerQuests) {
         this.timestamp = timestamp;
         this.playerQuests = playerQuests;
+        this.achievedQuests = 0;
     }
 
     /**
@@ -25,22 +28,22 @@ public class PlayerQuests {
     public Long getTimestamp() {
         return this.timestamp;
     }
+
     /**
-     * Get the progression of quest.
-     * @param quest quest to check.
-     * @return progression.
+     * Increase number of achieved quests.
      */
-    public Integer getPlayerProgression(Quest quest) {
-        return playerQuests.get(quest).getProgression();
+    public void increaseAchievedQuests() {
+        this.achievedQuests++;
+
+        // TO DO
+        // check if == 3
     }
 
     /**
-     * Get status of quest.
-     * @param quest quest to checK.
-     * @return status.
+     * Get number of achieved quests.
      */
-    public boolean getQuestStatus(Quest quest) {
-        return playerQuests.get(quest).isAchieved();
+    public int getAchievedQuests() {
+        return this.achievedQuests;
     }
 
     /**
@@ -50,4 +53,5 @@ public class PlayerQuests {
     public HashMap<Quest, Progression> getPlayerQuests() {
         return this.playerQuests;
     }
+
 }

@@ -2,38 +2,54 @@ package com.ordwen.odailyquests.commands.interfaces.pagination;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import com.ordwen.odailyquests.commands.interfaces.PlayerQuestsInterface;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
+import com.ordwen.odailyquests.quests.player.QuestsManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.block.Skull;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.lang.reflect.Field;
 import java.net.MalformedURLException;
-import java.util.Base64;
-import java.util.UUID;
+import java.util.*;
 
 public class Items {
 
-    private final ConfigurationFiles configurationFiles;
+    /* instance */
+    private static ConfigurationFiles configurationFiles;
 
+    /**
+     * Constructor.
+     *
+     * @param configurationFiles configuration files class.
+     */
     public Items(ConfigurationFiles configurationFiles) {
-        this.configurationFiles = configurationFiles;
+        Items.configurationFiles = configurationFiles;
     }
 
+    /* init items */
     private static ItemStack previous;
     private static ItemStack next;
 
+    private static ItemStack playerHead;
+    private static SkullMeta skullMeta;
+
+    /**
+     * Load all items.
+     */
     public void initItems() {
-        try {
-            initPreviousButton();
-            initNextButton();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
+        initPreviousButton();
+        initNextButton();
+        initPlayerHead();
     }
 
-    private void initPreviousButton() throws MalformedURLException {
+    /**
+     * Init previous button.
+     */
+    private void initPreviousButton() {
         previous = new ItemStack(Material.PLAYER_HEAD, 1);
         SkullMeta previousMeta = (SkullMeta) previous.getItemMeta();
 
@@ -57,6 +73,9 @@ public class Items {
         previous.setItemMeta(previousMeta);
     }
 
+    /**
+     * Init next button.
+     */
     private void initNextButton() {
         next = new ItemStack(Material.PLAYER_HEAD, 1);
         SkullMeta nextMeta = (SkullMeta) next.getItemMeta();
@@ -81,12 +100,52 @@ public class Items {
         next.setItemMeta(nextMeta);
     }
 
+    /**
+     * Init player head.
+     */
+    private void initPlayerHead() {
+        playerHead = new ItemStack(Material.PLAYER_HEAD, 1);
+        skullMeta = (SkullMeta) playerHead.getItemMeta();
+        skullMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&',
+                configurationFiles.getConfigFile().getConfigurationSection("interfaces.player_quests.player_head").getString(".item_name")));
+    }
+
+    /**
+     * Get previous button.
+     *
+     * @return previous button.
+     */
     public static ItemStack getPreviousButton() {
         return previous;
     }
 
+    /**
+     * Get next button.
+     *
+     * @return next button.
+     */
     public static ItemStack getNextButton() {
         return next;
     }
 
+    /**
+     * Get player head.
+     *
+     * @return player head.
+     */
+    public static ItemStack getPlayerHead(Player player) {
+
+        skullMeta.setOwnerProfile(player.getPlayerProfile());
+
+        List<String> itemDesc = configurationFiles.getConfigFile().getConfigurationSection("interfaces.player_quests.player_head").getStringList(".item_description");
+        for (String string : itemDesc) {
+            itemDesc.set(itemDesc.indexOf(string), ChatColor.translateAlternateColorCodes('&', string
+                    .replace("%achieved%", String.valueOf(QuestsManager.getActiveQuests().get(player.getName()).getAchievedQuests()))
+                    .replace("%drawIn%", PlayerQuestsInterface.timeRemain(player.getName()))));
+        }
+
+        skullMeta.setLore(itemDesc);
+        playerHead.setItemMeta(skullMeta);
+        return playerHead;
+    }
 }

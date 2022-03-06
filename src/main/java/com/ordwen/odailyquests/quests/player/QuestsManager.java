@@ -52,10 +52,6 @@ public class QuestsManager implements Listener {
             logger.info(ChatColor.RED + "The player quests will be never renewed.");
             logger.info(ChatColor.RED + "Please inform developer.");
         }
-
-        event.getPlayer().sendMessage("LA TETE PREVIOUS");
-        event.getPlayer().getInventory().addItem(Items.getPreviousButton());
-        event.getPlayer().getInventory().addItem(Items.getNextButton());
     }
 
     @EventHandler
@@ -121,4 +117,5 @@ public class QuestsManager implements Listener {
     public static HashMap<String, PlayerQuests> getActiveQuests() {
         return activeQuests;
     }
+
 }

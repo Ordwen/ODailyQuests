@@ -1,9 +1,11 @@
 package com.ordwen.odailyquests.commands.interfaces;
 
+import com.ordwen.odailyquests.commands.interfaces.pagination.Items;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.quests.player.progression.ProgressionManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -75,7 +77,7 @@ public class InterfacesManager implements Listener {
                     && !event.getSlotType().equals(InventoryType.SlotType.QUICKBAR)) {
                 if (event.getCurrentItem().getType() != Material.PLAYER_HEAD) {
                     ProgressionManager.validateGetQuestType(event.getWhoClicked().getName(), event.getCurrentItem().getType());
-                } else {
+                } else if (!event.getCurrentItem().equals(Items.getPlayerHead((Player) event.getWhoClicked()))){
                     int page = Integer.parseInt(inventoryName.substring(inventoryName.length() - 1));
                     if (event.getCurrentItem().getItemMeta() != null) {
                         if (event.getCurrentItem().getItemMeta().getDisplayName().equals(ChatColor.translateAlternateColorCodes('&', configurationFiles.getConfigFile().getConfigurationSection("interfaces").getString(".next_item_name")))) {
