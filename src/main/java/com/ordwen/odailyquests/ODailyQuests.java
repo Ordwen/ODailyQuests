@@ -24,6 +24,7 @@ import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.LoadProgression;
 import com.ordwen.odailyquests.quests.player.progression.ProgressionManager;
 import com.ordwen.odailyquests.quests.player.progression.SaveProgression;
+import com.ordwen.odailyquests.quests.player.progression.sql.SQLManager;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -52,6 +53,7 @@ public final class ODailyQuests extends JavaPlugin {
     private SaveProgression saveProgression;
     private ProgressionManager progressionManager;
     private CitizensAPI citizensAPI;
+    private SQLManager sqlManager;
 
     /* Technical items */
     Logger logger = PluginLogger.getLogger("O'DailyQuests");
@@ -81,6 +83,7 @@ public final class ODailyQuests extends JavaPlugin {
         this.saveProgression = new SaveProgression(progressionFile);
         this.progressionManager = new ProgressionManager();
         this.citizensAPI = new CitizensAPI(configurationFiles, globalQuestsInterface, categorizedQuestsInterfaces);
+        this.sqlManager = new SQLManager(configurationFiles, "", 20);
 
         /* Load dependencies */
         if (!VaultAPI.setupEconomy()) {

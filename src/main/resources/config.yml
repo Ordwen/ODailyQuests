@@ -5,6 +5,13 @@ prefix: "&7[O'DailyQuests&7]"
 # AVAILABLE MODES: YAML
 storage_mode: "YAML"
 
+# SQL Database Connection
+database:
+  host: "127.0.0.1"
+  user: "admin"
+  password: "1234"
+  port: "3306"
+
 # Select the mode of the quests.
 # ==========================================================
 # 1 : only the global quests will be loaded.
