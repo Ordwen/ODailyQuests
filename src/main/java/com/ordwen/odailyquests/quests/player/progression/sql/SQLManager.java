@@ -16,8 +16,8 @@ public class SQLManager {
     private String user;
     private String port;
 
-    private String database;
-    private int poolSize;
+    private final String dbName;
+    private final int poolSize;
 
     private final ConfigurationFiles configurationFiles;
     private HikariDataSource hikariDataSource;
@@ -28,11 +28,14 @@ public class SQLManager {
      */
     public SQLManager(ConfigurationFiles configurationFiles, String database, int poolSize) {
         this.configurationFiles = configurationFiles;
-        this.database = database;
+        this.dbName = database;
         this.poolSize = poolSize;
     }
 
-    public void initSQLConnection() {
+    /**
+     * Load identifiers for database connection.
+     */
+    public void initCredentials() {
 
         ConfigurationSection sqlSection= configurationFiles.getConfigFile().getConfigurationSection("database");
 
@@ -42,23 +45,36 @@ public class SQLManager {
         port = sqlSection.getString("port");
     }
 
-    public void connect(){
+    /**
+     * Connect to database.
+     */
+    public void initHikariCP(){
+
         HikariConfig hikariConfig = new HikariConfig();
+
         hikariConfig.setMaximumPoolSize(this.poolSize);
         hikariConfig.setJdbcUrl(this.toUri());
         hikariConfig.setUsername(user);
         hikariConfig.setPassword(password);
-        hikariConfig.setMaxLifetime(300000);
-        hikariConfig.setLeakDetectionThreshold(3000);
-        hikariConfig.setConnectionTimeout(10000);
+        hikariConfig.setIdleTimeout(300000L);
+        hikariConfig.setMaxLifetime(300000L);
+        hikariConfig.setLeakDetectionThreshold(3000L);
+        hikariConfig.setConnectionTimeout(10000L);
 
         this.hikariDataSource = new HikariDataSource(hikariConfig);
     }
 
+    /**
+     * Close database connection.
+     */
     public void close(){
         this.hikariDataSource.close();
     }
 
+    /**
+     * Get database connection.
+     * @return database Connection.
+     */
     public Connection getConnection() {
         if(this.hikariDataSource != null && !this.hikariDataSource.isClosed()){
             try {
@@ -70,7 +86,11 @@ public class SQLManager {
         return null;
     }
 
+    /**
+     * Setup JdbcUrl.
+     * @return JdcbUrl.
+     */
     private String toUri(){
-        return "jdbc:mysql://" + host + ":" + port + "/" + this.database + "";
+        return "jdbc:mysql://" + host + ":" + port + "/" + this.dbName;
     }
 }

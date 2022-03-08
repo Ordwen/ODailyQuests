@@ -24,11 +24,11 @@ import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.LoadProgression;
 import com.ordwen.odailyquests.quests.player.progression.ProgressionManager;
 import com.ordwen.odailyquests.quests.player.progression.SaveProgression;
+import com.ordwen.odailyquests.quests.player.progression.sql.LoadProgressionSQL;
 import com.ordwen.odailyquests.quests.player.progression.sql.SQLManager;
-import me.clip.placeholderapi.PlaceholderAPI;
+import com.ordwen.odailyquests.quests.player.progression.sql.SaveProgressionSQL;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Item;
 import org.bukkit.plugin.PluginLogger;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -54,6 +54,8 @@ public final class ODailyQuests extends JavaPlugin {
     private ProgressionManager progressionManager;
     private CitizensAPI citizensAPI;
     private SQLManager sqlManager;
+    private LoadProgressionSQL loadProgressionSQL;
+    private SaveProgressionSQL saveProgressionSQL;
 
     /* Technical items */
     Logger logger = PluginLogger.getLogger("O'DailyQuests");
@@ -83,7 +85,14 @@ public final class ODailyQuests extends JavaPlugin {
         this.saveProgression = new SaveProgression(progressionFile);
         this.progressionManager = new ProgressionManager();
         this.citizensAPI = new CitizensAPI(configurationFiles, globalQuestsInterface, categorizedQuestsInterfaces);
-        this.sqlManager = new SQLManager(configurationFiles, "", 20);
+
+        if (configurationFiles.getConfigFile().getString("storage_mode").equals("MySQL")) {
+            this.sqlManager = new SQLManager(configurationFiles, "", 10);
+            this.loadProgressionSQL = new LoadProgressionSQL(sqlManager);
+            this.saveProgressionSQL = new SaveProgressionSQL(sqlManager);
+
+            logger.info(ChatColor.GREEN + "MySQL database successfully connected.");
+        }
 
         /* Load dependencies */
         if (!VaultAPI.setupEconomy()) {

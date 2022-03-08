@@ -57,12 +57,6 @@ public class LoadProgression {
             timestamp = progressionFile.getProgressionFileConfiguration().getConfigurationSection(playerName).getLong(".timestamp");
             boolean timeToRedraw = false;
 
-            /* DEBUG
-            //logger.info("Current timestamp : " + System.currentTimeMillis());
-            //logger.info(playerName + " timestamp : " + timestamp);
-            //logger.info("Difference : " + (System.currentTimeMillis() - timestamp));
-             */
-
             /* check if last quests renewed day before */
             if (timestampConfigMode == 1) {
                 Calendar oldCal = Calendar.getInstance();
@@ -72,12 +66,8 @@ public class LoadProgression {
                 if (oldCal.get(Calendar.DATE) < currentCal.get(Calendar.DATE)) {
                     timeToRedraw = true;
                 }
-                /* DEBUG
-                logger.info("OLD DATE : " + oldCal.get(Calendar.DATE));
-                logger.info("CURRENT DATE : " + currentCal.get(Calendar.DATE));
-                logger.info("CURRENT DATE IN MILLIS : " + Calendar.getInstance().getTimeInMillis());
-                 */
             }
+
             /* check if last quests renewed is older than 24 hours */
             else if (timestampConfigMode == 2) {
                 if (System.currentTimeMillis() - timestamp >= 86400000) {
