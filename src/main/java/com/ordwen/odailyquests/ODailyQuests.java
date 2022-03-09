@@ -21,9 +21,9 @@ import com.ordwen.odailyquests.files.QuestsFiles;
 import com.ordwen.odailyquests.metrics.Metrics;
 import com.ordwen.odailyquests.quests.LoadQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
-import com.ordwen.odailyquests.quests.player.progression.LoadProgression;
+import com.ordwen.odailyquests.quests.player.progression.yaml.LoadProgressionYAML;
 import com.ordwen.odailyquests.quests.player.progression.ProgressionManager;
-import com.ordwen.odailyquests.quests.player.progression.SaveProgression;
+import com.ordwen.odailyquests.quests.player.progression.yaml.SaveProgressionYAML;
 import com.ordwen.odailyquests.quests.player.progression.sql.LoadProgressionSQL;
 import com.ordwen.odailyquests.quests.player.progression.sql.SQLManager;
 import com.ordwen.odailyquests.quests.player.progression.sql.SaveProgressionSQL;
@@ -49,13 +49,13 @@ public final class ODailyQuests extends JavaPlugin {
     private PlayerQuestsInterface playerQuestsInterface;
     private CategorizedQuestsInterfaces categorizedQuestsInterfaces;
     private QuestsManager questsManager;
-    private LoadProgression loadProgression;
-    private SaveProgression saveProgression;
+    private LoadProgressionYAML loadProgressionYAML;
+    private SaveProgressionYAML saveProgressionYAML;
     private ProgressionManager progressionManager;
     private CitizensAPI citizensAPI;
     private SQLManager sqlManager;
-    private LoadProgressionSQL loadProgressionSQL;
-    private SaveProgressionSQL saveProgressionSQL;
+    private LoadProgressionSQL loadProgressionSQL = null;
+    private SaveProgressionSQL saveProgressionSQL = null;
 
     /* Technical items */
     Logger logger = PluginLogger.getLogger("O'DailyQuests");
@@ -71,6 +71,14 @@ public final class ODailyQuests extends JavaPlugin {
         Metrics metrics = new Metrics(this, pluginId);
 
         /* Load class instances */
+        if (configurationFiles.getConfigFile().getString("storage_mode").equals("MySQL")) {
+            this.sqlManager = new SQLManager(configurationFiles, "", 10);
+            this.loadProgressionSQL = new LoadProgressionSQL(sqlManager);
+            this.saveProgressionSQL = new SaveProgressionSQL(sqlManager);
+
+            logger.info(ChatColor.GREEN + "MySQL database successfully connected.");
+        }
+
         this.configurationFiles = new ConfigurationFiles(this);
         this.questsFiles = new QuestsFiles(this);
         this.progressionFile = new ProgressionFile(this);
@@ -80,19 +88,11 @@ public final class ODailyQuests extends JavaPlugin {
         this.playerQuestsInterface = new PlayerQuestsInterface(configurationFiles);
         this.categorizedQuestsInterfaces = new CategorizedQuestsInterfaces(configurationFiles);
         this.interfacesManager = new InterfacesManager(configurationFiles, globalQuestsInterface, categorizedQuestsInterfaces);
-        this.questsManager = new QuestsManager(configurationFiles);
-        this.loadProgression = new LoadProgression(progressionFile);
-        this.saveProgression = new SaveProgression(progressionFile);
+        this.questsManager = new QuestsManager(configurationFiles, loadProgressionSQL, saveProgressionSQL);
+        this.loadProgressionYAML = new LoadProgressionYAML(progressionFile);
+        this.saveProgressionYAML = new SaveProgressionYAML(progressionFile);
         this.progressionManager = new ProgressionManager();
         this.citizensAPI = new CitizensAPI(configurationFiles, globalQuestsInterface, categorizedQuestsInterfaces);
-
-        if (configurationFiles.getConfigFile().getString("storage_mode").equals("MySQL")) {
-            this.sqlManager = new SQLManager(configurationFiles, "", 10);
-            this.loadProgressionSQL = new LoadProgressionSQL(sqlManager);
-            this.saveProgressionSQL = new SaveProgressionSQL(sqlManager);
-
-            logger.info(ChatColor.GREEN + "MySQL database successfully connected.");
-        }
 
         /* Load dependencies */
         if (!VaultAPI.setupEconomy()) {

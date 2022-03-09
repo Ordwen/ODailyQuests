@@ -1,12 +1,13 @@
 package com.ordwen.odailyquests.quests.player;
 
-import com.ordwen.odailyquests.commands.interfaces.pagination.Items;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.quests.LoadQuests;
 import com.ordwen.odailyquests.quests.Quest;
-import com.ordwen.odailyquests.quests.player.progression.LoadProgression;
+import com.ordwen.odailyquests.quests.player.progression.sql.LoadProgressionSQL;
+import com.ordwen.odailyquests.quests.player.progression.sql.SaveProgressionSQL;
+import com.ordwen.odailyquests.quests.player.progression.yaml.LoadProgressionYAML;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
-import com.ordwen.odailyquests.quests.player.progression.SaveProgression;
+import com.ordwen.odailyquests.quests.player.progression.yaml.SaveProgressionYAML;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -29,13 +30,18 @@ public class QuestsManager implements Listener {
      * Getting instance of classes.
      */
     private static ConfigurationFiles configurationFiles;
+    private LoadProgressionSQL loadProgressionSQL;
+    private SaveProgressionSQL saveProgressionSQL;
 
     /**
      * Class instance constructor.
+     *
      * @param configurationFiles configuration files class.
      */
-    public QuestsManager(ConfigurationFiles configurationFiles) {
+    public QuestsManager(ConfigurationFiles configurationFiles, LoadProgressionSQL loadProgressionSQL, SaveProgressionSQL saveProgressionSQL) {
         QuestsManager.configurationFiles = configurationFiles;
+        this.loadProgressionSQL = loadProgressionSQL;
+        this.saveProgressionSQL = saveProgressionSQL;
     }
 
     private static final HashMap<String, PlayerQuests> activeQuests = new HashMap<>();
@@ -45,7 +51,17 @@ public class QuestsManager implements Listener {
         String playerName = event.getPlayer().getName();
 
         if (!activeQuests.containsKey(playerName)) {
-            LoadProgression.loadPlayerQuests(playerName, activeQuests, configurationFiles.getConfigFile().getInt("quests_mode"), configurationFiles.getConfigFile().getInt("timestamp_mode"));
+            switch (configurationFiles.getConfigFile().getString("storage_mode")) {
+                case "YAML":
+                    LoadProgressionYAML.loadPlayerQuests(playerName, activeQuests, configurationFiles.getConfigFile().getInt("quests_mode"), configurationFiles.getConfigFile().getInt("timestamp_mode"));
+                    break;
+                case "MySQL":
+                    loadProgressionSQL.loadProgression(playerName, activeQuests, configurationFiles.getConfigFile().getInt("quests_mode"), configurationFiles.getConfigFile().getInt("timestamp_mode"));
+                    break;
+                default:
+                    logger.log(Level.SEVERE, "Impossible to load player quests : the selected storage mode is incorrect !");
+                    break;
+            }
         } else {
             logger.info(ChatColor.GOLD + playerName + ChatColor.RED + " detected into the array.");
             logger.info(ChatColor.RED + "THAT IS NOT NORMAL.");
@@ -58,12 +74,22 @@ public class QuestsManager implements Listener {
     public void onPlayerQuit(PlayerQuitEvent event) {
         String playerName = event.getPlayer().getName();
 
-        SaveProgression.saveProgression(playerName, activeQuests);
+        switch (configurationFiles.getConfigFile().getString("storage_mode")) {
+            case "YAML":
+                SaveProgressionYAML.saveProgression(playerName, activeQuests);
+                break;
+            case "MySQL":
+                break;
+            default:
+                logger.log(Level.SEVERE, "Impossible to save player quests : the selected storage mode is incorrect !");
+                break;
+        }
         activeQuests.remove(playerName);
     }
 
     /**
      * Select 3 random quests.
+     *
      * @param quests array of quests.
      */
     public static void selectRandomQuests(HashMap<Quest, Progression> quests) {
@@ -77,8 +103,7 @@ public class QuestsManager implements Listener {
                 Progression progression = new Progression(0, false);
                 quests.put(quest, progression);
             }
-        }
-        else if (configurationFiles.getConfigFile().getInt("quests_mode") == 2) {
+        } else if (configurationFiles.getConfigFile().getInt("quests_mode") == 2) {
             for (int i = 0; i < 3; i++) {
                 Quest quest;
                 switch (i) {
@@ -97,11 +122,13 @@ public class QuestsManager implements Listener {
                 Progression progression = new Progression(0, false);
                 quests.put(quest, progression);
             }
-        } else logger.log(Level.SEVERE, ChatColor.RED + "Impossible to select quests for player. The selected mode is incorrect.");
+        } else
+            logger.log(Level.SEVERE, ChatColor.RED + "Impossible to select quests for player. The selected mode is incorrect.");
     }
 
     /**
      * Get random quest.
+     *
      * @param quests array of quests
      * @return a quest.
      */
@@ -112,6 +139,7 @@ public class QuestsManager implements Listener {
 
     /**
      * Get active quests map.
+     *
      * @return quests map.
      */
     public static HashMap<String, PlayerQuests> getActiveQuests() {

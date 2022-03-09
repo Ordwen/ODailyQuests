@@ -1,8 +1,9 @@
-package com.ordwen.odailyquests.quests.player.progression;
+package com.ordwen.odailyquests.quests.player.progression.yaml;
 
 import com.ordwen.odailyquests.files.ProgressionFile;
 import com.ordwen.odailyquests.quests.Quest;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
+import com.ordwen.odailyquests.quests.player.progression.Progression;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginLogger;
 
@@ -10,7 +11,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
-public class SaveProgression {
+public class SaveProgressionYAML {
 
     /* Logger for stacktrace */
     private static final Logger logger = PluginLogger.getLogger("O'DailyQuests");
@@ -25,8 +26,8 @@ public class SaveProgression {
      *
      * @param progressionFile progression file class.
      */
-    public SaveProgression(ProgressionFile progressionFile) {
-        SaveProgression.progressionFile = progressionFile;
+    public SaveProgressionYAML(ProgressionFile progressionFile) {
+        SaveProgressionYAML.progressionFile = progressionFile;
     }
 
     /**
