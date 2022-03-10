@@ -32,6 +32,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginLogger;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.sql.SQLException;
 import java.util.logging.Logger;
 
 public final class ODailyQuests extends JavaPlugin {
@@ -70,16 +71,28 @@ public final class ODailyQuests extends JavaPlugin {
         int pluginId = 14277;
         Metrics metrics = new Metrics(this, pluginId);
 
-        /* Load class instances */
+        /* Load configuration files */
+        this.configurationFiles = new ConfigurationFiles(this);
+        configurationFiles.loadConfigurationFiles();
+        configurationFiles.loadMessagesFiles();
+
+        /* Load SQL Support */
         if (configurationFiles.getConfigFile().getString("storage_mode").equals("MySQL")) {
             this.sqlManager = new SQLManager(configurationFiles, "", 10);
             this.loadProgressionSQL = new LoadProgressionSQL(sqlManager);
             this.saveProgressionSQL = new SaveProgressionSQL(sqlManager);
 
-            logger.info(ChatColor.GREEN + "MySQL database successfully connected.");
+            sqlManager.initCredentials();
+            sqlManager.initHikariCP();
+            try {
+                sqlManager.testConnection();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            //logger.info(ChatColor.GREEN + "MySQL database successfully connected.");
         }
 
-        this.configurationFiles = new ConfigurationFiles(this);
+        /* Load class instances */
         this.questsFiles = new QuestsFiles(this);
         this.progressionFile = new ProgressionFile(this);
         this.loadQuests = new LoadQuests(questsFiles, configurationFiles);
@@ -112,9 +125,7 @@ public final class ODailyQuests extends JavaPlugin {
             logger.info(ChatColor.YELLOW + "Citizens" + ChatColor.GREEN + " successfully hooked.");
         } else logger.info(ChatColor.YELLOW + "Citizens" + ChatColor.GOLD + " not detected. NPCs will not work.");
 
-    /* Load files */
-        configurationFiles.loadConfigurationFiles();
-        configurationFiles.loadMessagesFiles();
+        /* Load files */
         questsFiles.loadQuestsFiles();
         progressionFile.loadProgressionFile();
 

@@ -3,10 +3,13 @@ package com.ordwen.odailyquests.quests.player.progression.sql;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.plugin.PluginLogger;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.logging.Logger;
 
 public class SQLManager {
 
@@ -21,6 +24,9 @@ public class SQLManager {
 
     private final ConfigurationFiles configurationFiles;
     private HikariDataSource hikariDataSource;
+
+    /* init variables */
+    private static final Logger logger = PluginLogger.getLogger("O'DailyQuests");
 
     /**
      * Constructor.
@@ -43,6 +49,13 @@ public class SQLManager {
         password = sqlSection.getString("password");
         user = sqlSection.getString("user");
         port = sqlSection.getString("port");
+    }
+
+    public void testConnection() throws SQLException {
+        Connection con = getConnection();
+        if (con.isValid(1)) {
+            logger.info(ChatColor.BLUE + "CONNECTION TO DATABASE ESTABLISHED");
+        } else logger.info(ChatColor.DARK_RED + "IMPOSSIBLE TO CONNECT TO DATABASE");
     }
 
     /**
