@@ -55,6 +55,7 @@ public class SQLManager {
         Connection con = getConnection();
         if (con.isValid(1)) {
             logger.info(ChatColor.BLUE + "CONNECTION TO DATABASE ESTABLISHED");
+            close();
         } else logger.info(ChatColor.DARK_RED + "IMPOSSIBLE TO CONNECT TO DATABASE");
     }
 

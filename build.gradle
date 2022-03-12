@@ -1,4 +1,5 @@
 plugins {
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
     id 'java'
 }
 
@@ -33,7 +34,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.zaxxer:HikariCP:5.0.1'
+    implementation 'com.zaxxer:HikariCP:4.0.3'
     implementation 'junit:junit:4.13.2'
     testImplementation 'org.spigotmc:spigot-api:1.18.1-R0.1-SNAPSHOT'
     compileOnly 'org.spigotmc:spigot-api:1.18.1-R0.1-SNAPSHOT'
@@ -46,7 +47,7 @@ dependencies {
     compileOnly 'me.clip:placeholderapi:2.10.0'
 }
 
-def targetJavaVersion = 11
+def targetJavaVersion = 8
 java {
     def javaVersion = JavaVersion.toVersion(targetJavaVersion)
     sourceCompatibility = javaVersion
@@ -59,6 +60,16 @@ java {
 tasks.withType(JavaCompile).configureEach {
     if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
         options.release = targetJavaVersion
+    }
+}
+
+shadowJar {
+    manifest {
+        attributes 'Main-Class': 'com.ordwen.odailyquests.ODailyQuests'
+    }
+
+    dependencies {
+        exclude(dependency('junit:junit:4.13.2'))
     }
 }
 
