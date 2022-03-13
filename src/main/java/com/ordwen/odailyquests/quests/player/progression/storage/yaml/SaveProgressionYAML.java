@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.quests.player.progression.yaml;
+package com.ordwen.odailyquests.quests.player.progression.storage.yaml;
 
 import com.ordwen.odailyquests.files.ProgressionFile;
 import com.ordwen.odailyquests.quests.Quest;

@@ -21,12 +21,12 @@ import com.ordwen.odailyquests.files.QuestsFiles;
 import com.ordwen.odailyquests.metrics.Metrics;
 import com.ordwen.odailyquests.quests.LoadQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
-import com.ordwen.odailyquests.quests.player.progression.yaml.LoadProgressionYAML;
+import com.ordwen.odailyquests.quests.player.progression.storage.yaml.LoadProgressionYAML;
 import com.ordwen.odailyquests.quests.player.progression.ProgressionManager;
-import com.ordwen.odailyquests.quests.player.progression.yaml.SaveProgressionYAML;
-import com.ordwen.odailyquests.quests.player.progression.sql.LoadProgressionSQL;
-import com.ordwen.odailyquests.quests.player.progression.sql.SQLManager;
-import com.ordwen.odailyquests.quests.player.progression.sql.SaveProgressionSQL;
+import com.ordwen.odailyquests.quests.player.progression.storage.yaml.SaveProgressionYAML;
+import com.ordwen.odailyquests.quests.player.progression.storage.mysql.LoadProgressionSQL;
+import com.ordwen.odailyquests.quests.player.progression.storage.mysql.MySQLManager;
+import com.ordwen.odailyquests.quests.player.progression.storage.mysql.SaveProgressionSQL;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginLogger;
@@ -54,7 +54,7 @@ public final class ODailyQuests extends JavaPlugin {
     private SaveProgressionYAML saveProgressionYAML;
     private ProgressionManager progressionManager;
     private CitizensAPI citizensAPI;
-    private SQLManager sqlManager;
+    private MySQLManager mySqlManager;
     private LoadProgressionSQL loadProgressionSQL = null;
     private SaveProgressionSQL saveProgressionSQL = null;
 
@@ -78,18 +78,11 @@ public final class ODailyQuests extends JavaPlugin {
 
         /* Load SQL Support */
         if (configurationFiles.getConfigFile().getString("storage_mode").equals("MySQL")) {
-            this.sqlManager = new SQLManager(configurationFiles, "", 10);
-            this.loadProgressionSQL = new LoadProgressionSQL(sqlManager);
-            this.saveProgressionSQL = new SaveProgressionSQL(sqlManager);
+            this.mySqlManager = new MySQLManager(configurationFiles, 10);
+            this.loadProgressionSQL = new LoadProgressionSQL(mySqlManager);
+            this.saveProgressionSQL = new SaveProgressionSQL(mySqlManager);
 
-            sqlManager.initCredentials();
-            sqlManager.initHikariCP();
-            try {
-                sqlManager.testConnection();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            //logger.info(ChatColor.GREEN + "MySQL database successfully connected.");
+            mySqlManager.setupDatabase();
         }
 
         /* Load class instances */
@@ -166,6 +159,7 @@ public final class ODailyQuests extends JavaPlugin {
     @Override
     public void onDisable() {
         logger.info(ChatColor.RED + "Plugin is shutting down...");
+        mySqlManager.close();
     }
 
 }

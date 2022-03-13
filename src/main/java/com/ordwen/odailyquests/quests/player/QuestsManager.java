@@ -3,11 +3,11 @@ package com.ordwen.odailyquests.quests.player;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.quests.LoadQuests;
 import com.ordwen.odailyquests.quests.Quest;
-import com.ordwen.odailyquests.quests.player.progression.sql.LoadProgressionSQL;
-import com.ordwen.odailyquests.quests.player.progression.sql.SaveProgressionSQL;
-import com.ordwen.odailyquests.quests.player.progression.yaml.LoadProgressionYAML;
+import com.ordwen.odailyquests.quests.player.progression.storage.mysql.LoadProgressionSQL;
+import com.ordwen.odailyquests.quests.player.progression.storage.mysql.SaveProgressionSQL;
+import com.ordwen.odailyquests.quests.player.progression.storage.yaml.LoadProgressionYAML;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
-import com.ordwen.odailyquests.quests.player.progression.yaml.SaveProgressionYAML;
+import com.ordwen.odailyquests.quests.player.progression.storage.yaml.SaveProgressionYAML;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -79,6 +79,7 @@ public class QuestsManager implements Listener {
                 SaveProgressionYAML.saveProgression(playerName, activeQuests);
                 break;
             case "MySQL":
+                logger.info("AAAAAAAA");
                 break;
             default:
                 logger.log(Level.SEVERE, "Impossible to save player quests : the selected storage mode is incorrect !");

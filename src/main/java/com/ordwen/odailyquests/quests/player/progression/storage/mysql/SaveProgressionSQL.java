@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.quests.player.progression.sql;
+package com.ordwen.odailyquests.quests.player.progression.storage.mysql;
 
 import org.bukkit.plugin.PluginLogger;
 
@@ -8,14 +8,14 @@ import java.util.logging.Logger;
 public class SaveProgressionSQL {
 
     /* instance of SQLManager */
-    private final SQLManager sqlManager;
+    private final MySQLManager mySqlManager;
 
     /**
      * Constructor.
-     * @param sqlManager SQLManager instance.
+     * @param mySqlManager SQLManager instance.
      */
-    public SaveProgressionSQL(SQLManager sqlManager) {
-        this.sqlManager = sqlManager;
+    public SaveProgressionSQL(MySQLManager mySqlManager) {
+        this.mySqlManager = mySqlManager;
     }
 
     /* Logger */
@@ -29,7 +29,7 @@ public class SaveProgressionSQL {
      */
     public void saveProgression(String playerName) {
 
-        final Connection connection = sqlManager.getConnection();
+        final Connection connection = mySqlManager.getConnection();
 
     }
 }

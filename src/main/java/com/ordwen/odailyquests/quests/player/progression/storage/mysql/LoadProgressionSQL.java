@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.quests.player.progression.sql;
+package com.ordwen.odailyquests.quests.player.progression.storage.mysql;
 
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.quests.LoadQuests;
@@ -22,25 +22,19 @@ import java.util.logging.Logger;
 public class LoadProgressionSQL {
 
     /* instance of SQLManager */
-    private final SQLManager sqlManager;
+    private final MySQLManager mySqlManager;
 
     /**
      * Constructor.
      *
-     * @param sqlManager SQLManager instance.
+     * @param mySqlManager SQLManager instance.
      */
-    public LoadProgressionSQL(SQLManager sqlManager) {
-        this.sqlManager = sqlManager;
+    public LoadProgressionSQL(MySQLManager mySqlManager) {
+        this.mySqlManager = mySqlManager;
     }
 
     /* init variables */
     private static final Logger logger = PluginLogger.getLogger("O'DailyQuests");
-
-    private long timestamp;
-    private PlayerQuests playerQuests;
-    private Quest quest;
-
-    private final HashMap<Quest, Progression> quests = new HashMap<>();
 
     /**
      * Load player quests progression.
@@ -49,46 +43,59 @@ public class LoadProgressionSQL {
      */
     public void loadProgression(String playerName, HashMap<String, PlayerQuests> activeQuests, int questsConfigMode, int timestampConfigMode) {
 
+        HashMap<Quest, Progression> quests = new HashMap<>();
+        long timestamp = 0;
         boolean hasStoredData = false;
 
         try {
-            Connection connection = sqlManager.getConnection();
-            String getTimestampQuery = "SELECT timestamp FROM Players WHERE playerName = ";
-            PreparedStatement preparedStatement = connection.prepareStatement(getTimestampQuery + playerName);
-            /* requests */
+            Connection connection = mySqlManager.getConnection();
+            String getTimestampQuery = "SELECT playerTimestamp FROM Player WHERE playerName = '";
+            PreparedStatement preparedStatement = connection.prepareStatement(getTimestampQuery + playerName + "'");
+
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
                 hasStoredData = true;
-                timestamp = resultSet.getLong("timestamp");
+                timestamp = resultSet.getLong("playerTimestamp");
             }
+
+            connection.close();
+            resultSet.close();
+            preparedStatement.close();
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
         if (hasStoredData) {
             if (checkTimestamp(timestampConfigMode, timestamp)) {
-                loadNewPlayerQuests(playerName, activeQuests, timestampConfigMode);
+                loadNewPlayerQuests(playerName, activeQuests, timestampConfigMode, quests);
             }
             else {
-                loadPlayerQuests(playerName, questsConfigMode);
+                loadPlayerQuests(playerName, questsConfigMode, quests);
 
-                playerQuests = new PlayerQuests(timestamp, quests);
+                PlayerQuests playerQuests = new PlayerQuests(timestamp, quests);
                 activeQuests.put(playerName, playerQuests);
 
                 logger.info(ChatColor.GOLD + playerName + ChatColor.YELLOW + "'s quests have been loaded.");
                 Bukkit.getPlayer(playerName).sendMessage(QuestsMessages.QUESTS_IN_PROGRESS.toString());
             }
         } else {
-            loadNewPlayerQuests(playerName, activeQuests, timestampConfigMode);
+            loadNewPlayerQuests(playerName, activeQuests, timestampConfigMode, quests);
         }
     }
 
-    private void loadPlayerQuests(String playerName, int questsConfigMode) {
+    /**
+     *
+     * @param playerName
+     * @param questsConfigMode
+     * @param quests
+     */
+    private void loadPlayerQuests(String playerName, int questsConfigMode, HashMap<Quest, Progression> quests) {
 
         try {
-            Connection connection = sqlManager.getConnection();
-            String getQuestProgressionQuery = "SELECT * FROM Progressions WHERE playerName = ";
+            Connection connection = mySqlManager.getConnection();
+            String getQuestProgressionQuery = "SELECT * FROM Progression WHERE playerName = ";
             PreparedStatement preparedStatement = connection.prepareStatement(getQuestProgressionQuery + playerName);
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -100,7 +107,7 @@ public class LoadProgressionSQL {
                 boolean isAchieved = resultSet.getBoolean("isAchieved1");
 
                 Progression progression = new Progression(advancement, isAchieved);
-                quest = findQuest(playerName, questsConfigMode, questIndex, id);
+                Quest quest = findQuest(playerName, questsConfigMode, questIndex, id);
 
                 quests.put(quest, progression);
 
@@ -121,20 +128,20 @@ public class LoadProgressionSQL {
      * @return quest of index.
      */
     private Quest findQuest(String playerName, int questsConfigMode, int questIndex, int id) {
-        Quest res = null;
+        Quest quest = null;
 
         if (questsConfigMode == 1) {
-            res = LoadQuests.getGlobalQuests().get(questIndex);
+            quest = LoadQuests.getGlobalQuests().get(questIndex);
         } else if (questsConfigMode == 2) {
             switch(id) {
                 case 1:
-                    res = LoadQuests.getEasyQuests().get(questIndex);
+                    quest = LoadQuests.getEasyQuests().get(questIndex);
                     break;
                 case 2:
-                    res = LoadQuests.getMediumQuests().get(questIndex);
+                    quest = LoadQuests.getMediumQuests().get(questIndex);
                     break;
                 case 3:
-                    res = LoadQuests.getHardQuests().get(questIndex);
+                    quest = LoadQuests.getHardQuests().get(questIndex);
                     break;
             }
         } else logger.log(Level.SEVERE, ChatColor.RED + "Impossible to load player quests. The selected mode is incorrect.");
@@ -147,7 +154,7 @@ public class LoadProgressionSQL {
             logger.info(ChatColor.RED + "If the problem persists, contact the developer.");
         }
 
-        return res;
+        return quest;
     }
 
     /**
@@ -182,11 +189,14 @@ public class LoadProgressionSQL {
      * @param activeQuests all active quests.
      * @param timestampConfigMode timestamp mode.
      */
-    private void loadNewPlayerQuests(String playerName, HashMap<String, PlayerQuests> activeQuests, int timestampConfigMode) {
+    private void loadNewPlayerQuests(String playerName, HashMap<String, PlayerQuests> activeQuests, int timestampConfigMode, HashMap<Quest, Progression> quests) {
 
         activeQuests.remove(playerName);
 
         QuestsManager.selectRandomQuests(quests);
+
+        PlayerQuests playerQuests;
+
         if (timestampConfigMode == 1) {
             playerQuests = new PlayerQuests(Calendar.getInstance().getTimeInMillis(), quests);
         } else {
