@@ -79,7 +79,7 @@ public class QuestsManager implements Listener {
                 SaveProgressionYAML.saveProgression(playerName, activeQuests);
                 break;
             case "MySQL":
-                logger.info("AAAAAAAA");
+                saveProgressionSQL.saveProgression(playerName, activeQuests);
                 break;
             default:
                 logger.log(Level.SEVERE, "Impossible to save player quests : the selected storage mode is incorrect !");

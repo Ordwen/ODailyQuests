@@ -130,7 +130,6 @@ public class MySQLManager {
                         "     ISACHIEVED bit  not null  \n" +
                         "     ,\n" +
                         "     primary key (PRIMARYKEY),\n" +
-                        "     foreign key (PLAYERNAME) references PLAYER(PLAYERNAME)\n" +
                         "  ); ";
 
                 PreparedStatement preparedStatement = connection.prepareStatement(str);

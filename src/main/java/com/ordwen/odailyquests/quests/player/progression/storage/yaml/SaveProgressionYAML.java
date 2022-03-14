@@ -31,8 +31,10 @@ public class SaveProgressionYAML {
     }
 
     /**
-     * @param playerName
-     * @param activeQuests
+     * Save player progression in YAML file.
+     *
+     * @param playerName player name.
+     * @param activeQuests player quests.
      */
     public static void saveProgression(String playerName, HashMap<String, PlayerQuests> activeQuests) {
 

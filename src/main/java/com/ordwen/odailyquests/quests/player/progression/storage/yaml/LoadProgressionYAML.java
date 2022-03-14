@@ -5,13 +5,12 @@ import com.ordwen.odailyquests.files.ProgressionFile;
 import com.ordwen.odailyquests.quests.LoadQuests;
 import com.ordwen.odailyquests.quests.Quest;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
-import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
+import com.ordwen.odailyquests.quests.player.progression.storage.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginLogger;
 
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,7 +36,8 @@ public class LoadProgressionYAML {
 
     /**
      * Load or renewed quotidian quests of player.
-     * @param playerName player.
+     *
+     * @param playerName   player.
      * @param activeQuests list of active players.
      */
     public static void loadPlayerQuests(String playerName, HashMap<String, PlayerQuests> activeQuests, int questsConfigMode, int timestampConfigMode) {
@@ -56,40 +56,11 @@ public class LoadProgressionYAML {
         if (progressionFile.getProgressionFileConfiguration().getString(playerName) != null) {
 
             timestamp = progressionFile.getProgressionFileConfiguration().getConfigurationSection(playerName).getLong(".timestamp");
-            boolean timeToRedraw = false;
 
-            /* check if last quests renewed day before */
-            if (timestampConfigMode == 1) {
-                Calendar oldCal = Calendar.getInstance();
-                Calendar currentCal = Calendar.getInstance();
-                oldCal.setTimeInMillis(timestamp);
-                currentCal.setTimeInMillis(System.currentTimeMillis());
-                if (oldCal.get(Calendar.DATE) < currentCal.get(Calendar.DATE)) {
-                    timeToRedraw = true;
-                }
-            }
-
-            /* check if last quests renewed is older than 24 hours */
-            else if (timestampConfigMode == 2) {
-                if (System.currentTimeMillis() - timestamp >= 86400000) {
-                    timeToRedraw = true;
-                }
-            }
-            else logger.log(Level.SEVERE, ChatColor.RED + "Impossible to load player quests timestamp. The selected mode is incorrect.");
 
             /* renew quests */
-            if (timeToRedraw) {
-                activeQuests.remove(playerName);
-                QuestsManager.selectRandomQuests(quests);
-                if (timestampConfigMode == 1) {
-                    playerQuests = new PlayerQuests(Calendar.getInstance().getTimeInMillis(), quests);
-                } else {
-                    playerQuests = new PlayerQuests(System.currentTimeMillis(), quests);
-                }
-                activeQuests.put(playerName, playerQuests);
-                Bukkit.getPlayer(playerName).sendMessage(QuestsMessages.QUESTS_RENEWED.toString());
-
-                logger.info(ChatColor.GOLD + playerName + ChatColor.YELLOW + "'s quests have been renewed.");
+            if (Utils.checkTimestamp(timestampConfigMode, timestamp)) {
+                Utils.loadNewPlayerQuests(playerName, activeQuests, timestampConfigMode, quests);
             }
             /* load non-achieved quests */
             else {
@@ -103,7 +74,7 @@ public class LoadProgressionYAML {
                     if (questsConfigMode == 1) {
                         quest = LoadQuests.getGlobalQuests().get(questIndex);
                     } else if (questsConfigMode == 2) {
-                        switch(Integer.parseInt(string)) {
+                        switch (Integer.parseInt(string)) {
                             case 1:
                                 quest = LoadQuests.getEasyQuests().get(questIndex);
                                 break;
@@ -114,7 +85,8 @@ public class LoadProgressionYAML {
                                 quest = LoadQuests.getHardQuests().get(questIndex);
                                 break;
                         }
-                    } else logger.log(Level.SEVERE, ChatColor.RED + "Impossible to load player quests. The selected mode is incorrect.");
+                    } else
+                        logger.log(Level.SEVERE, ChatColor.RED + "Impossible to load player quests. The selected mode is incorrect.");
 
                     if (quest == null) {
                         logger.info(ChatColor.RED + "An error occurred while loading " + ChatColor.GOLD + playerName + ChatColor.RED + "'s quests.");
@@ -134,16 +106,7 @@ public class LoadProgressionYAML {
                 Bukkit.getPlayer(playerName).sendMessage(QuestsMessages.QUESTS_IN_PROGRESS.toString());
             }
         } else {
-            QuestsManager.selectRandomQuests(quests);
-            if (timestampConfigMode == 1) {
-                playerQuests = new PlayerQuests(Calendar.getInstance().getTimeInMillis(), quests);
-            } else {
-                playerQuests = new PlayerQuests(System.currentTimeMillis(), quests);
-            }
-            activeQuests.put(playerName, playerQuests);
-
-            logger.info(ChatColor.GREEN + playerName + ChatColor.YELLOW + " inserted into the array.");
-            Bukkit.getPlayer(playerName).sendMessage(QuestsMessages.QUESTS_RENEWED.toString());
+            Utils.loadNewPlayerQuests(playerName, activeQuests, timestampConfigMode, quests);
         }
     }
 }
