@@ -122,9 +122,8 @@ public class LoadQuests {
 
                 /* add quest to the list */
                 globalQuests.add(quest);
-                logger.info(ChatColor.YELLOW + "Quest " + ChatColor.GRAY + fileQuest + ChatColor.YELLOW + " successfully loaded.");
             }
-            logger.info(ChatColor.GREEN + "Global quests array successfully loaded.");
+            logger.info(ChatColor.GREEN + "Global quests array successfully loaded (" + ChatColor.YELLOW + globalQuests.size() + ChatColor.GREEN + ").");
         }
 
         else if (configurationFiles.getConfigFile().getInt("quests_mode") == 2) {
@@ -169,10 +168,8 @@ public class LoadQuests {
 
                     /* add quest to the list */
                     easyQuests.add(quest);
-
-                    logger.info(ChatColor.YELLOW + "Quest " + ChatColor.GRAY + fileQuest + ChatColor.YELLOW + " successfully loaded.");
                 }
-                logger.info(ChatColor.GREEN + "Easy quests array successfully loaded.");
+                logger.info(ChatColor.GREEN + "Easy quests array successfully loaded (" + ChatColor.YELLOW + easyQuests.size() + ChatColor.GREEN + ").");
             } else logger.log(Level.SEVERE, ChatColor.RED + "Impossible to load easy quests : there is no quests in easyQuests.yml file !");
 
             /* load medium quests */
@@ -216,9 +213,8 @@ public class LoadQuests {
 
                     /* add quest to the list */
                     mediumQuests.add(quest);
-                    logger.info(ChatColor.YELLOW + "Quest " + ChatColor.GRAY + fileQuest + ChatColor.YELLOW + " successfully loaded.");
                 }
-                logger.info(ChatColor.GREEN + "Medium quests array successfully loaded.");
+                logger.info(ChatColor.GREEN + "Medium quests array successfully loaded (" + ChatColor.YELLOW + mediumQuests.size() + ChatColor.GREEN + ").");
             } else logger.log(Level.SEVERE, ChatColor.RED + "Impossible to load medium quests : there is no quests in mediumQuests.yml file !");
 
             /* load hard quests */
@@ -262,9 +258,8 @@ public class LoadQuests {
                     
                     /* add quest to the list */
                     hardQuests.add(quest);
-                    logger.info(ChatColor.YELLOW + "Quest " + ChatColor.GRAY + fileQuest + ChatColor.YELLOW + " successfully loaded.");
                 }
-                logger.info(ChatColor.GREEN + "Hard quests array successfully loaded.");
+                logger.info(ChatColor.GREEN + "Hard quests array successfully loaded (" + ChatColor.YELLOW + hardQuests.size() + ChatColor.GREEN + ").");
             } else logger.log(Level.SEVERE, ChatColor.RED + "Impossible to load hard quests : there is no quests in hardQuests.yml file !");
         }
         else  {

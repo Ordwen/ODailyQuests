@@ -107,7 +107,7 @@ public class MySQLManager {
                 String str = "create table PLAYER\n" +
                         "  (\n" +
                         "     PLAYERNAME char(32)  not null  ,\n" +
-                        "     PLAYERTIMESTAMP int  not null  \n" +
+                        "     PLAYERTIMESTAMP bigint not null  \n" +
                         "     ,\n" +
                         "     constraint PK_PLAYER primary key (PLAYERNAME)\n" +
                         "  );";
@@ -129,7 +129,7 @@ public class MySQLManager {
                         "     ADVANCEMENT int  not null  ,\n" +
                         "     ISACHIEVED bit  not null  \n" +
                         "     ,\n" +
-                        "     primary key (PRIMARYKEY),\n" +
+                        "     primary key (PRIMARYKEY)\n" +
                         "  ); ";
 
                 PreparedStatement preparedStatement = connection.prepareStatement(str);

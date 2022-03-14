@@ -53,9 +53,6 @@ public class AdminCommands implements CommandExecutor {
                             if (Bukkit.getPlayer(args[1]) != null) {
                                 if (args[2] != null && Integer.parseInt(args[2]) >= 1 && Integer.parseInt(args[2]) <= 3) {
                                     HashMap<Quest, Progression> playerQuests = QuestsManager.getActiveQuests().get(args[1]).getPlayerQuests();
-                                    for (Quest quest : playerQuests.keySet()) {
-                                        System.out.println(quest.getQuestName());
-                                    }
                                     int index = 0;
                                     for (Quest quest : playerQuests.keySet()) {
                                         Progression progression = playerQuests.get(quest);
@@ -66,6 +63,7 @@ public class AdminCommands implements CommandExecutor {
                                                 RewardManager.sendQuestReward(args[1], quest.getReward());
                                                 playerQuests.remove(quest);
                                                 playerQuests.put(quest, progression);
+                                                QuestsManager.getActiveQuests().get(args[1]).increaseAchievedQuests();
                                                 break;
                                             } else sender.sendMessage(QuestsMessages.QUEST_ALREADY_ACHIEVED.toString());
                                         }

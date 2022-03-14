@@ -45,7 +45,7 @@ public class SaveProgressionSQL {
 
         Connection connection = mySqlManager.getConnection();
 
-        String test = "SELECT * FROM Player WHERE playerName = '" + playerName + "'";
+        String test = "SELECT * FROM PLAYER WHERE PLAYERNAME = '" + playerName + "'";
 
         try {
             PreparedStatement testQuery = connection.prepareStatement(test);
@@ -57,29 +57,32 @@ public class SaveProgressionSQL {
                 String query = "UPDATE PLAYER\n" +
                         "SET PLAYERTIMESTAMP = " + timestamp + "\n" +
                         "WHERE PLAYERNAME = '" + playerName + "'";
-                connection.prepareStatement(query).executeQuery();
+                connection.prepareStatement(query).execute();
 
                 int index = 0;
                 for (Quest quest : quests.keySet()) {
-                    String update = "UPDATE Progression\n" +
-                            "SET questIndex = " + quest.getQuestIndex() + ", advancement = " + quests.get(quest).getProgression() + ", isAchieved = " + quests.get(quest).isAchieved() + "\n"
-                            + "WHERE playerName = '" + playerName + "' AND playerQuestId = " + index;
-                    connection.prepareStatement(update).executeQuery();
+                    String update = "UPDATE PROGRESSION\n" +
+                            "SET QUESTINDEX = " + quest.getQuestIndex() + ", ADVANCEMENT = " + quests.get(quest).getProgression() + ", ISACHIEVED = " + quests.get(quest).isAchieved() + "\n"
+                            + "WHERE PLAYERNAME = '" + playerName + "' AND PLAYERQUESTID = " + index;
+                    connection.prepareStatement(update).execute();
                     index++;
                 }
 
             } else {
+                logger.info(ChatColor.GOLD + playerName + "" + timestamp);
+
                 String query = "INSERT INTO PLAYER\n" +
                         "VALUES\n" +
                         "('" + playerName + "', " + timestamp + ")";
-                connection.prepareStatement(query).executeQuery();
+
+                connection.prepareStatement(query).execute();
 
                 int index = 0;
                 for (Quest quest : quests.keySet()) {
-                    String update = "INSERT INTO PROGRESSION\n" +
+                    String update = "INSERT INTO PROGRESSION(PLAYERNAME, PLAYERQUESTID, QUESTINDEX, ADVANCEMENT, ISACHIEVED)\n" +
                             "VALUES\n" +
                             "('" + playerName + "', " + index + ", " + quest.getQuestIndex() + ", " + quests.get(quest).getProgression() + ", " + quests.get(quest).isAchieved() + ")";
-                    connection.prepareStatement(update).executeQuery();
+                    connection.prepareStatement(update).execute();
                     index++;
                 }
 
@@ -88,6 +91,7 @@ public class SaveProgressionSQL {
 
             testQuery.close();
             result.close();
+            connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
