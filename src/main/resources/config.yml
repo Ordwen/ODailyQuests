@@ -2,16 +2,16 @@
 prefix: "&7[O'DailyQuests&7]"
 
 # storage mode for quests & progression
-# AVAILABLE MODES: YAML
+# AVAILABLE MODES: YAML, MySQL
 storage_mode: "YAML"
 
-# SQL Database Connection
+# MySQL Database Connection
 database:
-  name: "MyDatabase"
-  host: "127.0.0.1"
-  user: "admin"
-  password: "1234"
-  port: "3306"
+  name: "MyDatabase"   # Database name
+  host: "127.0.0.1"    # Database host
+  user: "admin"        # Database user
+  password: "1234"     # Database password
+  port: "3306"         # Database port
 
 # Select the mode of the quests.
 # ==========================================================
@@ -75,8 +75,8 @@ interfaces:
 # Here you can select NPCs names for each category.
 # The player have to interact with the NPC to open an interface.
 npcs:
-  name_player: "Player Quests"
-  name_global: "Global Quests"
-  name_easy: "Easy Quests"
-  name_medium: "Medium Quests"
-  name_hard: "Hard Quests"
+  name_player: "&7Player Quests"
+  name_global: "&4Global Quests"
+  name_easy: "&a&lEasy &mQuests"
+  name_medium: "&e&lMedium &rQuests"
+  name_hard: "&cHard &b&lQuests"

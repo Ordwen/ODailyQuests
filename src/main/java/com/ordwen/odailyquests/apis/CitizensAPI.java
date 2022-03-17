@@ -15,8 +15,8 @@ import org.bukkit.event.Listener;
 public class CitizensAPI implements Listener {
 
     private final ConfigurationFiles configurationFiles;
-    private GlobalQuestsInterface globalQuestsInterface;
-    private CategorizedQuestsInterfaces categorizedQuestsInterfaces;
+    private final GlobalQuestsInterface globalQuestsInterface;
+    private final CategorizedQuestsInterfaces categorizedQuestsInterfaces;
 
     /**
      * Setup CitizensAPI.

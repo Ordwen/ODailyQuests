@@ -14,17 +14,18 @@
 # [ COMMAND , EXP , MONEY , POINTS ]
 # ==============================================================
 # More tips available on Wiki :
-# xxx.xxxx.xx
+# https://ordwenplugins.gitbook.io/odailyquests/
 # Need help ? https://discord.gg/Nem5HSCwEn
 # For more affected objects or types, please make suggestion.
 # ==============================================================
 # Please have at least 3 quests for global mode.
 quests:
   1:
-    name: "Cobblestone"
+    name: "&aCobblestone"
+    menu_item: COBBLESTONE
     description:
-      - "Mine 32 cobblestones."
-      - "Win 500$."
+      - "&bMine 32 cobblestones."
+      - "&bWin &c500$&b."
     quest_type: BREAK
     required_item: COBBLESTONE
     required_amount: 32
@@ -32,11 +33,12 @@ quests:
       reward_type: MONEY
       amount: 500
   2:
-    name: "Gold blocks"
+    name: "&6&lGold blocks"
+    menu_item: GOLD_BLOCK
     description:
-      - "Get 16 gold blocks."
-      - "Win 32 diamond blocks."
-    quest_type: PLACE
+      - "&eGet 16 gold blocks."
+      - "&eWin &b&m32 diamond blocks."
+    quest_type: GET
     required_item: GOLD_BLOCK
     required_amount: 16
     reward:
@@ -45,13 +47,14 @@ quests:
         - "msg %player% Hello !"
         - "give %player% diamond_block 32"
   3:
-    name: "Potions"
+    name: "Too many zombies"
+    menu_item: ZOMBIE_HEAD
     description:
-      - "Use 2 potions."
-      - "Win 1500$."
-    quest_type: CONSUME
-    required_item: POTION
-    required_amount: 8
+      - "&cKill &65 &czombies."
+      - "&aWin &b500 &aTokens."
+    quest_type: KILL
+    entity_type: ZOMBIE
+    required_amount: 5
     reward:
-      reward_type: MONEY
-      amount: 1500
+      reward_type: POINTS
+      amount: 500

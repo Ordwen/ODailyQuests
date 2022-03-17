@@ -76,6 +76,12 @@ public class LoadProgressionSQL {
                 loadPlayerQuests(playerName, questsConfigMode, quests);
 
                 PlayerQuests playerQuests = new PlayerQuests(timestamp, quests);
+
+                for (Progression progression : quests.values()) {
+                    if (progression.isAchieved())
+                        playerQuests.increaseAchievedQuests();
+                }
+
                 activeQuests.put(playerName, playerQuests);
 
                 logger.info(ChatColor.GOLD + playerName + ChatColor.YELLOW + "'s quests have been loaded.");

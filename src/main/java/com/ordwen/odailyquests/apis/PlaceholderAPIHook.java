@@ -1,25 +1,11 @@
 package com.ordwen.odailyquests.apis;
 
-import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.commands.interfaces.PlayerQuestsInterface;
-import com.ordwen.odailyquests.commands.interfaces.pagination.Items;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
-import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
 public class PlaceholderAPIHook extends PlaceholderExpansion {
-
-    private final ODailyQuests oDailyQuests;
-
-    /**
-     * Constructor.
-     * @param oDailyQuests main class.
-     */
-    public PlaceholderAPIHook(ODailyQuests oDailyQuests) {
-        this.oDailyQuests = oDailyQuests;
-    }
 
     @Override
     public String getIdentifier() {

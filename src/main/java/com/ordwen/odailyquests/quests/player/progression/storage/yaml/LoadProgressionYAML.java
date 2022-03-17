@@ -57,7 +57,6 @@ public class LoadProgressionYAML {
 
             timestamp = progressionFile.getProgressionFileConfiguration().getConfigurationSection(playerName).getLong(".timestamp");
 
-
             /* renew quests */
             if (Utils.checkTimestamp(timestampConfigMode, timestamp)) {
                 Utils.loadNewPlayerQuests(playerName, activeQuests, timestampConfigMode, quests);
@@ -100,6 +99,12 @@ public class LoadProgressionYAML {
                 }
 
                 playerQuests = new PlayerQuests(timestamp, quests);
+
+                for (Progression prog : quests.values()) {
+                    if (prog.isAchieved())
+                        playerQuests.increaseAchievedQuests();
+                }
+
                 activeQuests.put(playerName, playerQuests);
 
                 logger.info(ChatColor.GOLD + playerName + ChatColor.YELLOW + "'s quests have been loaded.");

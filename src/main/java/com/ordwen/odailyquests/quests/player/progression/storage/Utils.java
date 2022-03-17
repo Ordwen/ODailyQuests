@@ -63,6 +63,7 @@ public class Utils {
         } else {
             playerQuests = new PlayerQuests(System.currentTimeMillis(), quests);
         }
+
         activeQuests.put(playerName, playerQuests);
 
         Bukkit.getPlayer(playerName).sendMessage(QuestsMessages.QUESTS_RENEWED.toString());

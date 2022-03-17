@@ -134,7 +134,7 @@ public final class ODailyQuests extends JavaPlugin {
         else globalQuestsInterface.loadGlobalQuestsInterface();
 
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            new PlaceholderAPIHook(this).register();
+            new PlaceholderAPIHook().register();
             logger.info(ChatColor.YELLOW + "PlaceholderAPI" + ChatColor.GREEN + " successfully hooked.");
         } else logger.info(ChatColor.YELLOW + "PlaceholderAPI" + ChatColor.GOLD + " not detected. Placeholders will not work.");
 
@@ -159,7 +159,6 @@ public final class ODailyQuests extends JavaPlugin {
     @Override
     public void onDisable() {
         logger.info(ChatColor.RED + "Plugin is shutting down...");
-        mySqlManager.close();
     }
 
 }

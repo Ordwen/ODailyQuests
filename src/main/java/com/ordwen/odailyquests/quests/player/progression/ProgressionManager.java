@@ -144,9 +144,9 @@ public class ProgressionManager implements Listener {
         if (QuestsManager.getActiveQuests().containsKey(playerName)) {
             HashMap<Quest, Progression> playerQuests = QuestsManager.getActiveQuests().get(playerName).getPlayerQuests();
             for (Quest quest : playerQuests.keySet()) {
-                if (quest.getItemRequired().getType().equals(material)) {
+                if (quest.getType() == QuestType.GET && quest.getItemRequired().getType().equals(material)) {
                     Progression questProgression = playerQuests.get(quest);
-                    if (!questProgression.isAchieved() && quest.getType() == QuestType.GET) {
+                    if (!questProgression.isAchieved()) {
                         PlayerInventory playerInventory = Bukkit.getPlayer(playerName).getInventory();
                         if (getAmount(playerInventory, quest.getItemRequired().getType()) >= quest.getAmountRequired()) {
                             questProgression.isAchieved = true;
