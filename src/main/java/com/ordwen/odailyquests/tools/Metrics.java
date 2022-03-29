@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.metrics;
+package com.ordwen.odailyquests.tools;
 
 /*
  * This Metrics class was auto-generated and can be copied into your project if you are

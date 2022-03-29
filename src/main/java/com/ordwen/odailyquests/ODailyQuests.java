@@ -18,7 +18,7 @@ import com.ordwen.odailyquests.commands.interfaces.pagination.Items;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.files.ProgressionFile;
 import com.ordwen.odailyquests.files.QuestsFiles;
-import com.ordwen.odailyquests.metrics.Metrics;
+import com.ordwen.odailyquests.tools.Metrics;
 import com.ordwen.odailyquests.quests.LoadQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.yaml.LoadProgressionYAML;
@@ -27,12 +27,13 @@ import com.ordwen.odailyquests.quests.player.progression.storage.yaml.SaveProgre
 import com.ordwen.odailyquests.quests.player.progression.storage.mysql.LoadProgressionSQL;
 import com.ordwen.odailyquests.quests.player.progression.storage.mysql.MySQLManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.mysql.SaveProgressionSQL;
+import com.ordwen.odailyquests.tools.UpdateChecker;
+import net.milkbowl.vault.chat.Chat;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginLogger;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.sql.SQLException;
 import java.util.logging.Logger;
 
 public final class ODailyQuests extends JavaPlugin {
@@ -60,11 +61,23 @@ public final class ODailyQuests extends JavaPlugin {
 
     /* Technical items */
     Logger logger = PluginLogger.getLogger("O'DailyQuests");
-    String dataPath = this.getDataFolder().getPath();
 
     @Override
     public void onEnable() {
         logger.info(ChatColor.GOLD + "Plugin is starting...");
+
+        /* Check for update */
+        logger.info(ChatColor.GOLD + "Checking for update...");
+        new UpdateChecker(this, 100990).getVersion(version -> {
+            if (this.getDescription().getVersion().equals(version)) {
+               logger.info(ChatColor.GREEN + "Plugin is up to date.");
+            } else {
+                logger.info(ChatColor.GOLD + "A new update is available !");
+                logger.info(ChatColor.GOLD + "Current version : " + ChatColor.RED + this.getDescription().getVersion() + ChatColor.GOLD + ", Available version : " + ChatColor.GREEN + version);
+                logger.info(ChatColor.GOLD + "Please download latest version :");
+                logger.info(ChatColor.GOLD + "https://www.spigotmc.org/resources/odailyquests.100990/");
+            }
+        });
 
         /* Load Metrics */
         // https://bstats.org/what-is-my-plugin-id
