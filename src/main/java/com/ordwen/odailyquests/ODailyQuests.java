@@ -18,6 +18,7 @@ import com.ordwen.odailyquests.commands.interfaces.pagination.Items;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.files.ProgressionFile;
 import com.ordwen.odailyquests.files.QuestsFiles;
+import com.ordwen.odailyquests.rewards.GlobalReward;
 import com.ordwen.odailyquests.tools.Metrics;
 import com.ordwen.odailyquests.quests.LoadQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
@@ -56,6 +57,7 @@ public final class ODailyQuests extends JavaPlugin {
     private ProgressionManager progressionManager;
     private CitizensAPI citizensAPI;
     private MySQLManager mySqlManager;
+    private GlobalReward globalReward;
     private LoadProgressionSQL loadProgressionSQL = null;
     private SaveProgressionSQL saveProgressionSQL = null;
 
@@ -108,6 +110,7 @@ public final class ODailyQuests extends JavaPlugin {
         this.categorizedQuestsInterfaces = new CategorizedQuestsInterfaces(configurationFiles);
         this.interfacesManager = new InterfacesManager(configurationFiles, globalQuestsInterface, categorizedQuestsInterfaces);
         this.questsManager = new QuestsManager(configurationFiles, loadProgressionSQL, saveProgressionSQL);
+        this.globalReward = new GlobalReward(configurationFiles);
         this.loadProgressionYAML = new LoadProgressionYAML(progressionFile);
         this.saveProgressionYAML = new SaveProgressionYAML(progressionFile);
         this.progressionManager = new ProgressionManager();
@@ -137,6 +140,9 @@ public final class ODailyQuests extends JavaPlugin {
 
         /* Load quests */
         loadQuests.loadQuests();
+
+        /* Load global reward */
+        globalReward.initGlobalReward();
 
         /* Load interfaces */
         items.initItems();

@@ -107,9 +107,8 @@ public class MySQLManager {
                 String str = "create table PLAYER\n" +
                         "  (\n" +
                         "     PLAYERNAME char(32)  not null  ,\n" +
-                        "     PLAYERTIMESTAMP bigint not null  \n" +
+                        "     PLAYERTIMESTAMP bigint not null,  \n" +
                         "     ACHIEVEDQUESTS tinyint not null, \n" +
-                        "     ,\n" +
                         "     constraint PK_PLAYER primary key (PLAYERNAME)\n" +
                         "  );";
 

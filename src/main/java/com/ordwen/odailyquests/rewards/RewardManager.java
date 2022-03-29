@@ -26,7 +26,7 @@ public class RewardManager {
                 for (String cmd : reward.getRewardCommands()) {
                     Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd.replace("%player%", playerName));
                 }
-                Objects.requireNonNull(Bukkit.getPlayer(playerName)).sendMessage(QuestsMessages.REWARD_COMMAND.toString().replace("%rewardAmount%", String.valueOf(reward.getRewardAmount())));
+                Objects.requireNonNull(Bukkit.getPlayer(playerName)).sendMessage(QuestsMessages.REWARD_COMMAND.toString());
                 break;
             case EXP:
                 Objects.requireNonNull(Bukkit.getPlayer(playerName)).giveExpLevels(reward.getRewardAmount());

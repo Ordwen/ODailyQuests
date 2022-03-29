@@ -3,6 +3,7 @@ package com.ordwen.odailyquests.quests.player;
 import com.ordwen.odailyquests.quests.Quest;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.player.progression.Utils;
+import com.ordwen.odailyquests.rewards.GlobalReward;
 
 import java.util.HashMap;
 
@@ -37,7 +38,7 @@ public class PlayerQuests {
         this.achievedQuests++;
 
         if (this.achievedQuests == 3) {
-            Utils.sendGlobalReward(playerName);
+            GlobalReward.sendGlobalReward(playerName);
         }
     }
 

@@ -71,7 +71,6 @@ public class SaveProgressionSQL {
                 }
 
             } else {
-                logger.info(ChatColor.GOLD + playerName + "" + timestamp);
 
                 String query = "INSERT INTO PLAYER\n" +
                         "VALUES\n" +

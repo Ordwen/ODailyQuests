@@ -44,6 +44,7 @@ public class LoadProgressionYAML {
 
         /* init variables */
         long timestamp;
+        int achievedQuests;
         PlayerQuests playerQuests;
         Quest quest = null;
         Progression progression;
@@ -56,6 +57,7 @@ public class LoadProgressionYAML {
         if (progressionFile.getProgressionFileConfiguration().getString(playerName) != null) {
 
             timestamp = progressionFile.getProgressionFileConfiguration().getConfigurationSection(playerName).getLong(".timestamp");
+            achievedQuests = progressionFile.getProgressionFileConfiguration().getConfigurationSection(playerName).getInt(".achievedQuests");
 
             /* renew quests */
             if (Utils.checkTimestamp(timestampConfigMode, timestamp)) {
@@ -99,13 +101,7 @@ public class LoadProgressionYAML {
                 }
 
                 playerQuests = new PlayerQuests(timestamp, quests);
-
-                /*
-                for (Progression prog : quests.values()) {
-                    if (prog.isAchieved())
-                        playerQuests.increaseAchievedQuests(playerName);
-                }
-                */
+                playerQuests.setAchievedQuests(achievedQuests);
 
                 activeQuests.put(playerName, playerQuests);
 

@@ -37,6 +37,15 @@ quests_mode: 1
 # You need to reset progression file if you change this mode.
 timestamp_mode: 1
 
+# Global Reward
+# Will be given when the player has completed all their daily quests.
+# The syntax is the same as for quest rewards.
+global_reward:
+  reward_type: COMMAND
+  commands:
+    - "eco give %player% 5000"
+    - "give %player% diamond_block 32"
+
 # interfaces settings
 # NEVER DELETE A %variable%
 # %progress% is replaced by the progression of the quest.
