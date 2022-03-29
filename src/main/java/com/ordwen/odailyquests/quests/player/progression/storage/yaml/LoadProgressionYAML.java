@@ -6,7 +6,7 @@ import com.ordwen.odailyquests.quests.LoadQuests;
 import com.ordwen.odailyquests.quests.Quest;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
-import com.ordwen.odailyquests.quests.player.progression.storage.Utils;
+import com.ordwen.odailyquests.quests.player.progression.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginLogger;
@@ -100,10 +100,12 @@ public class LoadProgressionYAML {
 
                 playerQuests = new PlayerQuests(timestamp, quests);
 
+                /*
                 for (Progression prog : quests.values()) {
                     if (prog.isAchieved())
-                        playerQuests.increaseAchievedQuests();
+                        playerQuests.increaseAchievedQuests(playerName);
                 }
+                */
 
                 activeQuests.put(playerName, playerQuests);
 

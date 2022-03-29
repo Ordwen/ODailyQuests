@@ -63,7 +63,7 @@ public class AdminCommands implements CommandExecutor {
                                                 RewardManager.sendQuestReward(args[1], quest.getReward());
                                                 playerQuests.remove(quest);
                                                 playerQuests.put(quest, progression);
-                                                QuestsManager.getActiveQuests().get(args[1]).increaseAchievedQuests();
+                                                QuestsManager.getActiveQuests().get(args[1]).increaseAchievedQuests(args[1]);
                                                 break;
                                             } else sender.sendMessage(QuestsMessages.QUEST_ALREADY_ACHIEVED.toString());
                                         }

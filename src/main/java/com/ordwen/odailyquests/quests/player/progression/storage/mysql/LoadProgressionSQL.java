@@ -1,12 +1,10 @@
 package com.ordwen.odailyquests.quests.player.progression.storage.mysql;
 
 import com.ordwen.odailyquests.enums.QuestsMessages;
-import com.ordwen.odailyquests.quests.LoadQuests;
 import com.ordwen.odailyquests.quests.Quest;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
-import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
-import com.ordwen.odailyquests.quests.player.progression.storage.Utils;
+import com.ordwen.odailyquests.quests.player.progression.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginLogger;
@@ -15,9 +13,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Calendar;
 import java.util.HashMap;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class LoadProgressionSQL {
@@ -46,6 +42,7 @@ public class LoadProgressionSQL {
 
         HashMap<Quest, Progression> quests = new HashMap<>();
         long timestamp = 0;
+        int achievedQuests = 0;
         boolean hasStoredData = false;
 
         try {
@@ -58,6 +55,7 @@ public class LoadProgressionSQL {
             if (resultSet.next()) {
                 hasStoredData = true;
                 timestamp = resultSet.getLong("PLAYERTIMESTAMP");
+                achievedQuests = resultSet.getInt("ACHIEVEDQUESTS");
             }
 
             connection.close();
@@ -76,11 +74,7 @@ public class LoadProgressionSQL {
                 loadPlayerQuests(playerName, questsConfigMode, quests);
 
                 PlayerQuests playerQuests = new PlayerQuests(timestamp, quests);
-
-                for (Progression progression : quests.values()) {
-                    if (progression.isAchieved())
-                        playerQuests.increaseAchievedQuests();
-                }
+                playerQuests.setAchievedQuests(achievedQuests);
 
                 activeQuests.put(playerName, playerQuests);
 

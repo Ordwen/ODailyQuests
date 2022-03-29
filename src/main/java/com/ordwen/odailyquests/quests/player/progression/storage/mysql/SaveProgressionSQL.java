@@ -41,6 +41,7 @@ public class SaveProgressionSQL {
         /* init variables */
         PlayerQuests playerQuests = activeQuests.get(playerName);
         long timestamp = playerQuests.getTimestamp();
+        int achievedQuests = playerQuests.getAchievedQuests();
         HashMap<Quest, Progression> quests = playerQuests.getPlayerQuests();
 
         Connection connection = mySqlManager.getConnection();
@@ -55,8 +56,9 @@ public class SaveProgressionSQL {
                 logger.info(ChatColor.GOLD + playerName + ChatColor.YELLOW + " detected into database.");
 
                 String query = "UPDATE PLAYER\n" +
-                        "SET PLAYERTIMESTAMP = " + timestamp + "\n" +
-                        "WHERE PLAYERNAME = '" + playerName + "'";
+                        "SET PLAYERTIMESTAMP = " + timestamp + ", ACHIEVEDQUESTS = " + achievedQuests + "\n" +
+                        "WHERE PLAYERNAME = '" + playerName + "'"
+                        ;
                 connection.prepareStatement(query).execute();
 
                 int index = 0;
@@ -73,7 +75,7 @@ public class SaveProgressionSQL {
 
                 String query = "INSERT INTO PLAYER\n" +
                         "VALUES\n" +
-                        "('" + playerName + "', " + timestamp + ")";
+                        "('" + playerName + "', " + timestamp + ", " + achievedQuests + ")";
 
                 connection.prepareStatement(query).execute();
 

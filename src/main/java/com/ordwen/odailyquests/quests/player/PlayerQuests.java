@@ -2,6 +2,7 @@ package com.ordwen.odailyquests.quests.player;
 
 import com.ordwen.odailyquests.quests.Quest;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
+import com.ordwen.odailyquests.quests.player.progression.Utils;
 
 import java.util.HashMap;
 
@@ -32,11 +33,16 @@ public class PlayerQuests {
     /**
      * Increase number of achieved quests.
      */
-    public void increaseAchievedQuests() {
+    public void increaseAchievedQuests(String playerName) {
         this.achievedQuests++;
 
-        // TO DO
-        // check if == 3
+        if (this.achievedQuests == 3) {
+            Utils.sendGlobalReward(playerName);
+        }
+    }
+
+    public void setAchievedQuests(int i) {
+        this.achievedQuests = i;
     }
 
     /**

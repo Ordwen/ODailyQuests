@@ -21,6 +21,7 @@ public enum QuestsMessages {
     QUESTS_IN_PROGRESS("quests_in_progress", "&eYou still have daily quests to complete !"),
     QUESTS_RENEWED("quests_renewed", "&aYou have new daily quests to complete !"),
     QUEST_ACHIEVED("quest_achieved", "&aYou finished the quest &e%questName%&a, well done !"),
+    ALL_QUESTS_ACHIEVED("all_quests_achieved", "&aYou have finished all your daily quests, well done !"),
     NOT_ENOUGH_ITEM("not_enough_items","&cYou don't have the required amount to complete this quest."),
 
     REWARD_COMMAND("reward_command", "&aYou receive some rewards commands."),

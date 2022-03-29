@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.quests.player.progression.storage;
+package com.ordwen.odailyquests.quests.player.progression;
 
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.quests.LoadQuests;
@@ -109,5 +109,13 @@ public class Utils {
         }
 
         return quest;
+    }
+
+    /**
+     * Give reward when players have completed all their quests.
+     * @param playerName player name.
+     */
+    public static void sendGlobalReward(String playerName) {
+        Bukkit.getPlayer(playerName).sendMessage(QuestsMessages.ALL_QUESTS_ACHIEVED.toString());
     }
 }

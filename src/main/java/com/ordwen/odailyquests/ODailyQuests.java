@@ -80,7 +80,7 @@ public final class ODailyQuests extends JavaPlugin {
         });
 
         /* Load Metrics */
-        // https://bstats.org/what-is-my-plugin-id
+        // https://bstats.org/plugin/bukkit/ODailyQuests/14277
         int pluginId = 14277;
         Metrics metrics = new Metrics(this, pluginId);
 

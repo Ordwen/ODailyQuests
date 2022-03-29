@@ -30,8 +30,8 @@ public class QuestsManager implements Listener {
      * Getting instance of classes.
      */
     private static ConfigurationFiles configurationFiles;
-    private LoadProgressionSQL loadProgressionSQL;
-    private SaveProgressionSQL saveProgressionSQL;
+    private final LoadProgressionSQL loadProgressionSQL;
+    private final SaveProgressionSQL saveProgressionSQL;
 
     /**
      * Class instance constructor.
