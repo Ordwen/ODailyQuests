@@ -41,12 +41,14 @@ public class SaveProgressionYAML {
         /* init variables */
         PlayerQuests playerQuests = activeQuests.get(playerName);
         long timestamp = playerQuests.getTimestamp();
+        int achievedQuests = playerQuests.getAchievedQuests();
         HashMap<Quest, Progression> quests = playerQuests.getPlayerQuests();
 
         /* check if player has data */
         if (progressionFile.getProgressionFileConfiguration().getString(playerName) != null) {
             logger.info(ChatColor.GOLD + playerName + ChatColor.YELLOW + " detected into file data.");
             progressionFile.getProgressionFileConfiguration().getConfigurationSection(playerName).set(".timestamp", timestamp);
+            progressionFile.getProgressionFileConfiguration().getConfigurationSection(playerName).set(".achievedQuests", achievedQuests);
 
             int index = 1;
             for (Quest quest : quests.keySet()) {
@@ -57,6 +59,7 @@ public class SaveProgressionYAML {
             }
         } else {
             progressionFile.getProgressionFileConfiguration().set(playerName + ".timestamp", timestamp);
+            progressionFile.getProgressionFileConfiguration().set(playerName + ".achievedQuests", achievedQuests);
 
             int index = 1;
             for (Quest quest : quests.keySet()) {

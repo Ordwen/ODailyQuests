@@ -47,7 +47,7 @@ public class LoadProgressionSQL {
 
         try {
             Connection connection = mySqlManager.getConnection();
-            String getTimestampQuery = "SELECT PLAYERTIMESTAMP FROM PLAYER WHERE PLAYERNAME = '" + playerName + "'";
+            String getTimestampQuery = "SELECT PLAYERTIMESTAMP,ACHIEVEDQUESTS FROM PLAYER WHERE PLAYERNAME = '" + playerName + "'";
             PreparedStatement preparedStatement = connection.prepareStatement(getTimestampQuery);
 
             ResultSet resultSet = preparedStatement.executeQuery();
