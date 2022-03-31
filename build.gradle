@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'com.ordwen'
-version = '1.1.0-beta'
+version = '1.1.1-beta'
 
 repositories {
     mavenCentral()
@@ -15,6 +15,9 @@ repositories {
     maven {
         name = 'sonatype'
         url = 'https://oss.sonatype.org/content/groups/public/'
+    }
+    maven {
+        url = 'https://repo.rosewooddev.io/repository/public/'
     }
     maven {
         name = 'jitpack-repo'
@@ -45,6 +48,7 @@ dependencies {
     compileOnly(group: 'net.citizensnpcs', name: 'citizens-main', version: '2.0.29-SNAPSHOT')
     compileOnly 'com.mojang:authlib:1.5.21'
     compileOnly 'me.clip:placeholderapi:2.10.0'
+    compileOnly 'org.black_ixx:playerpoints:3.2.2'
 }
 
 def targetJavaVersion = 8

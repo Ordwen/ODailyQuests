@@ -60,7 +60,7 @@ quests:
       amount: 500
   4:
     name: "Best friend"
-    menu_item: LEASH
+    menu_item: LEAD
     description:
       - "&aTame a wolf."
       - "&aWin &b500 &a$."
@@ -72,7 +72,7 @@ quests:
       amount: 500
   5:
     name: "More sheeps !"
-    menu_item: ZOMBIE_HEAD
+    menu_item: WHITE_WOOL
     description:
       - "&eBreed two sheeps."
       - "&aWin &b5 000 &a$."
@@ -82,3 +82,27 @@ quests:
     reward:
       reward_type: MONEY
       amount: 5000
+  6:
+    name: "Mushrooms..."
+    menu_item: RED_MUSHROOM
+    description:
+      - "&eShear a mooshroom."
+      - "&aWin &b5 levels of EXP&a."
+    quest_type: SHEAR
+    entity_type: MUSHROOM_COW
+    required_amount: 1
+    reward:
+      reward_type: EXP
+      amount: 5
+  7:
+    name: "Emeralds !"
+    menu_item: EMERALD
+    description:
+      - "&eGet 3 emeralds from villager."
+      - "&aWin &b5 levels of EXP&a."
+    quest_type: TRADE
+    required_item: EMERALD
+    required_amount: 1
+    reward:
+      reward_type: EXP
+      amount: 5

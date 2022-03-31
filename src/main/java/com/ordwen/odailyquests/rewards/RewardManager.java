@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.rewards;
 
+import com.ordwen.odailyquests.apis.PlayerPoints;
 import com.ordwen.odailyquests.apis.TokenManagerAPI;
 import com.ordwen.odailyquests.apis.VaultAPI;
 import com.ordwen.odailyquests.enums.QuestsMessages;
@@ -17,8 +18,9 @@ public class RewardManager {
 
     /**
      * Give quest-reward to player.
+     *
      * @param playerName name of player to give the reward.
-     * @param reward quest reward.
+     * @param reward     quest reward.
      */
     public static void sendQuestReward(String playerName, Reward reward) {
         switch (reward.getRewardType()) {
@@ -39,7 +41,10 @@ public class RewardManager {
             case POINTS:
                 if (TokenManagerAPI.getTokenManagerAPI() != null) {
                     TokenManagerAPI.getTokenManagerAPI().addTokens(Bukkit.getPlayer(playerName), reward.getRewardAmount());
-                    Objects.requireNonNull(Bukkit.getPlayer(playerName)).sendMessage(QuestsMessages.REWARD_POINTS.toString().replace("%rewardAmount%", String.valueOf(reward.getRewardAmount())));
+                    Bukkit.getPlayer(playerName).sendMessage(QuestsMessages.REWARD_POINTS.toString().replace("%rewardAmount%", String.valueOf(reward.getRewardAmount())));
+                } else if (PlayerPoints.isPlayerPointsSetup()) {
+                    PlayerPoints.getPlayerPointsAPI().give(Bukkit.getPlayer(playerName).getUniqueId(), reward.getRewardAmount());
+                    Bukkit.getPlayer(playerName).sendMessage(QuestsMessages.REWARD_POINTS.toString().replace("%rewardAmount%", String.valueOf(reward.getRewardAmount())));
                 } else {
                     logger.info(ChatColor.RED + "Impossible to give reward to " + ChatColor.GOLD + playerName + ChatColor.RED + ".");
                     logger.info(ChatColor.RED + "Reward type is " + reward.getRewardType().getRewardTypeName() + " but TokenManager is not hooked.");

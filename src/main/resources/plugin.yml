@@ -12,6 +12,7 @@ softdepend:
   - TokenManager
   - Citizens
   - PlaceholderAPI
+  - PlayerPoints
 commands:
   quests:
     description: default player command

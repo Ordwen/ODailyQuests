@@ -16,14 +16,11 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.*;
-import org.bukkit.event.inventory.BrewEvent;
-import org.bukkit.event.inventory.CraftItemEvent;
-import org.bukkit.event.inventory.FurnaceExtractEvent;
-import org.bukkit.event.inventory.TradeSelectEvent;
+import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.event.player.PlayerShearEntityEvent;
+import org.bukkit.inventory.*;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -109,6 +106,11 @@ public class ProgressionManager implements Listener {
         setPlayerQuestProgression(event.getBreeder().getName(), null, event.getEntityType(), 1, QuestType.BREED);
     }
 
+    @EventHandler
+    public void onBrewEvent(PlayerShearEntityEvent event) {
+        setPlayerQuestProgression(event.getPlayer().getName(), null, event.getEntity().getType(), 1, QuestType.SHEAR);
+    }
+
     /**
      * Increase player quest progression.
      * @param playerName player name.
@@ -124,7 +126,8 @@ public class ProgressionManager implements Listener {
                     boolean isRequiredItem = false;
                     if (type == QuestType.KILL
                             || type == QuestType.BREED
-                            || type == QuestType.TAME) {
+                            || type == QuestType.TAME
+                            || type == QuestType.SHEAR) {
                         if (quest.getEntityType().equals(entity)) {
                             isRequiredItem = true;
                         }

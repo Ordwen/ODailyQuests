@@ -1,9 +1,6 @@
 package com.ordwen.odailyquests;
 
-import com.ordwen.odailyquests.apis.CitizensAPI;
-import com.ordwen.odailyquests.apis.PlaceholderAPIHook;
-import com.ordwen.odailyquests.apis.TokenManagerAPI;
-import com.ordwen.odailyquests.apis.VaultAPI;
+import com.ordwen.odailyquests.apis.*;
 import com.ordwen.odailyquests.commands.AdminCommands;
 import com.ordwen.odailyquests.commands.PlayerCommands;
 import com.ordwen.odailyquests.commands.ReloadCommand;
@@ -125,7 +122,13 @@ public final class ODailyQuests extends JavaPlugin {
             logger.info(ChatColor.YELLOW + "Vault" + ChatColor.GREEN + " successfully hooked.");
         }
         if (!TokenManagerAPI.setupTokenManager()) {
-            logger.info(ChatColor.YELLOW + "TokenManager" + ChatColor.RED + " not detected. Quests with type 'GET' will not work.");
+            PlayerPoints.setupPlayerPointsAPI();
+            if (PlayerPoints.isPlayerPointsSetup()) {
+                logger.info(ChatColor.YELLOW + "PlayerPoints" + ChatColor.GREEN + " successfully hooked.");
+            }
+            else {
+                logger.info(ChatColor.YELLOW + "TokenManager" + ChatColor.RED + " and " + ChatColor.YELLOW + "PlayerPoints" + ChatColor.RED + " not detected. Quests with reward type 'POINTS' will not work.");
+            }
         } else {
             logger.info(ChatColor.YELLOW + "TokenManager" + ChatColor.GREEN + " successfully hooked.");
         }

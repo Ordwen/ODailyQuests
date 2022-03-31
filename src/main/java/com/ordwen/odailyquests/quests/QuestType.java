@@ -17,6 +17,8 @@ public enum QuestType {
     FISH("FISH"),
     TAME("TAME"),
     BREED("BREED"),
+    SHEAR("SHEAR"),
+    TRADE("TRADE"),
     ;
 
     private final String typeName;

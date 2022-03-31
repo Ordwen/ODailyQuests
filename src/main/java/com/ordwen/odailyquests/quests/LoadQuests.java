@@ -96,7 +96,12 @@ public class LoadQuests {
                 
                 questType = QuestType.valueOf(Objects.requireNonNull(globalQuestsFile.getConfigurationSection("quests." + fileQuest)).getString(".quest_type"));
 
-                if (questType == QuestType.KILL) {
+                boolean isEntityType = questType == QuestType.KILL
+                        || questType == QuestType.BREED
+                        || questType == QuestType.TAME
+                        || questType == QuestType.SHEAR;
+
+                if (isEntityType) {
                     entityType = EntityType.valueOf(globalQuestsFile.getConfigurationSection("quests." + fileQuest).getString(".entity_type"));
                 } else {
                     requiredItem = new ItemStack(Material.valueOf(globalQuestsFile.getConfigurationSection("quests." + fileQuest).getString(".required_item")));
@@ -114,7 +119,7 @@ public class LoadQuests {
                 }
 
                 /* init quest */
-                if (questType == QuestType.KILL) {
+                if (isEntityType) {
                     quest = new Quest(questIndex, questName, questDesc, questType, entityType, menuItem, requiredAmount, reward);
                 } else {
                     quest = new Quest(questIndex, questName, questDesc, questType, requiredItem, menuItem, requiredAmount, reward);
