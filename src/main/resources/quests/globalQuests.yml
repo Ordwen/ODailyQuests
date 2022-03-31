@@ -58,3 +58,27 @@ quests:
     reward:
       reward_type: POINTS
       amount: 500
+  4:
+    name: "Best friend"
+    menu_item: LEASH
+    description:
+      - "&aTame a wolf."
+      - "&aWin &b500 &a$."
+    quest_type: TAME
+    entity_type: WOLF
+    required_amount: 1
+    reward:
+      reward_type: MONEY
+      amount: 500
+  5:
+    name: "More sheeps !"
+    menu_item: ZOMBIE_HEAD
+    description:
+      - "&eBreed two sheeps."
+      - "&aWin &b5 000 &a$."
+    quest_type: BREED
+    entity_type: SHEEP
+    required_amount: 2
+    reward:
+      reward_type: MONEY
+      amount: 5000

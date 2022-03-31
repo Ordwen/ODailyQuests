@@ -15,11 +15,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.enchantment.EnchantItemEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityPickupItemEvent;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.entity.*;
+import org.bukkit.event.inventory.BrewEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.FurnaceExtractEvent;
+import org.bukkit.event.inventory.TradeSelectEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
@@ -97,20 +97,34 @@ public class ProgressionManager implements Listener {
         }
     }
 
+    /* QUESTS TYPES UPDATE */
+    @EventHandler
+    public void onEntityTameEvent(EntityTameEvent event) {
+        setPlayerQuestProgression(event.getOwner().getName(), null, event.getEntityType(), 1, QuestType.TAME);
+    }
+
+    @EventHandler
+    public void onEntityBreadEvent(EntityBreedEvent event) {
+        assert event.getBreeder() instanceof Player;
+        setPlayerQuestProgression(event.getBreeder().getName(), null, event.getEntityType(), 1, QuestType.BREED);
+    }
+
     /**
      * Increase player quest progression.
      * @param playerName player name.
      * @param material the material of the event-block.
-     * @param TYPE quest type.
+     * @param type quest type.
      */
-    public void setPlayerQuestProgression(String playerName, Material material, EntityType entity, int quantity, QuestType TYPE) {
+    public void setPlayerQuestProgression(String playerName, Material material, EntityType entity, int quantity, QuestType type) {
         if (QuestsManager.getActiveQuests().containsKey(playerName)) {
             HashMap<Quest, Progression> playerQuests = QuestsManager.getActiveQuests().get(playerName).getPlayerQuests();
             for (Quest quest : playerQuests.keySet()) {
                 Progression questProgression = playerQuests.get(quest);
-                if (!questProgression.isAchieved() && quest.getType() == TYPE) {
+                if (!questProgression.isAchieved() && quest.getType() == type) {
                     boolean isRequiredItem = false;
-                    if (TYPE == QuestType.KILL) {
+                    if (type == QuestType.KILL
+                            || type == QuestType.BREED
+                            || type == QuestType.TAME) {
                         if (quest.getEntityType().equals(entity)) {
                             isRequiredItem = true;
                         }
