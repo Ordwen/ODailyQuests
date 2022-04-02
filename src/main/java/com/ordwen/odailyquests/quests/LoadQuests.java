@@ -95,11 +95,13 @@ public class LoadQuests {
                 try {
                     menuItem = new ItemStack(Material.valueOf(globalQuestsFile.getConfigurationSection("quests." + fileQuest).getString(".menu_item")));
                 } catch (Exception e) {
+                    logger.log(Level.SEVERE, "-----------------------------------");
                     logger.log(Level.SEVERE, "Invalid material type detected.");
                     logger.log(Level.SEVERE, "File : globalQuests.yml");
-                    logger.log(Level.SEVERE, "Quest number :" + questIndex);
+                    logger.log(Level.SEVERE, "Quest number : " + (questIndex+1));
                     logger.log(Level.SEVERE, "Parameter : menu_item");
                     logger.log(Level.SEVERE, "Value : " + globalQuestsFile.getConfigurationSection("quests." + fileQuest).getString(".menu_item"));
+                    logger.log(Level.SEVERE, "-----------------------------------");
                 }
 
                 questDesc = Objects.requireNonNull(globalQuestsFile.getConfigurationSection("quests." + fileQuest)).getStringList(".description");
@@ -117,21 +119,25 @@ public class LoadQuests {
                     try {
                         entityType = EntityType.valueOf(globalQuestsFile.getConfigurationSection("quests." + fileQuest).getString(".entity_type"));
                     } catch (Exception e) {
+                        logger.log(Level.SEVERE, "-----------------------------------");
                         logger.log(Level.SEVERE, "Invalid entity type detected.");
                         logger.log(Level.SEVERE, "File : globalQuests.yml");
-                        logger.log(Level.SEVERE, "Quest number :" + questIndex);
+                        logger.log(Level.SEVERE, "Quest number : " + (questIndex+1));
                         logger.log(Level.SEVERE, "Parameter : entity_type");
                         logger.log(Level.SEVERE, "Value : " + globalQuestsFile.getConfigurationSection("quests." + fileQuest).getString(".entity_type"));
+                        logger.log(Level.SEVERE, "-----------------------------------");
                     }
                 } else {
                     try {
                         requiredItem = new ItemStack(Material.valueOf(globalQuestsFile.getConfigurationSection("quests." + fileQuest).getString(".required_item")));
                     } catch (Exception e) {
+                        logger.log(Level.SEVERE, "-----------------------------------");
                         logger.log(Level.SEVERE, "Invalid material type detected.");
                         logger.log(Level.SEVERE, "File : globalQuests.yml");
-                        logger.log(Level.SEVERE, "Quest number :" + questIndex);
+                        logger.log(Level.SEVERE, "Quest number : " + (questIndex+1));
                         logger.log(Level.SEVERE, "Parameter : required_item");
                         logger.log(Level.SEVERE, "Value : " + globalQuestsFile.getConfigurationSection("quests." + fileQuest).getString(".required_item"));
+                        logger.log(Level.SEVERE, "-----------------------------------");
                     }
                 }
 
@@ -171,11 +177,13 @@ public class LoadQuests {
                     try {
                         menuItem = new ItemStack(Material.valueOf(easyQuestsFile.getConfigurationSection("quests." + fileQuest).getString(".menu_item")));
                     } catch (Exception e) {
+                        logger.log(Level.SEVERE, "-----------------------------------");
                         logger.log(Level.SEVERE, "Invalid material type detected.");
                         logger.log(Level.SEVERE, "File : easyQuests.yml");
-                        logger.log(Level.SEVERE, "Quest number :" + questIndex);
+                        logger.log(Level.SEVERE, "Quest number : " + (questIndex+1));
                         logger.log(Level.SEVERE, "Parameter : menu_item");
                         logger.log(Level.SEVERE, "Value : " + easyQuestsFile.getConfigurationSection("quests." + fileQuest).getString(".menu_item"));
+                        logger.log(Level.SEVERE, "-----------------------------------");
                     }
 
                     questDesc = Objects.requireNonNull(easyQuestsFile.getConfigurationSection("quests." + fileQuest)).getStringList(".description");
@@ -193,21 +201,25 @@ public class LoadQuests {
                         try {
                             entityType = EntityType.valueOf(easyQuestsFile.getConfigurationSection("quests." + fileQuest).getString(".entity_type"));
                         } catch (Exception e) {
+                            logger.log(Level.SEVERE, "-----------------------------------");
                             logger.log(Level.SEVERE, "Invalid entity type detected.");
                             logger.log(Level.SEVERE, "File : easyQuests.yml");
-                            logger.log(Level.SEVERE, "Quest number :" + questIndex);
+                            logger.log(Level.SEVERE, "Quest number : " + (questIndex+1));
                             logger.log(Level.SEVERE, "Parameter : entity_type");
                             logger.log(Level.SEVERE, "Value : " + easyQuestsFile.getConfigurationSection("quests." + fileQuest).getString(".entity_type"));
+                            logger.log(Level.SEVERE, "-----------------------------------");
                         }
                     } else {
                         try {
                             requiredItem = new ItemStack(Material.valueOf(Objects.requireNonNull(easyQuestsFile.getConfigurationSection("quests." + fileQuest)).getString(".required_item")));
                         } catch (Exception e) {
+                            logger.log(Level.SEVERE, "-----------------------------------");
                             logger.log(Level.SEVERE, "Invalid material type detected.");
                             logger.log(Level.SEVERE, "File : easyQuests.yml");
-                            logger.log(Level.SEVERE, "Quest number :" + questIndex);
+                            logger.log(Level.SEVERE, "Quest number : " + (questIndex+1));
                             logger.log(Level.SEVERE, "Parameter : required_item");
                             logger.log(Level.SEVERE, "Value : " + easyQuestsFile.getConfigurationSection("quests." + fileQuest).getString(".required_item"));
+                            logger.log(Level.SEVERE, "-----------------------------------");
                         }
                     }
 
@@ -248,11 +260,13 @@ public class LoadQuests {
                     try {
                         menuItem = new ItemStack(Material.valueOf(mediumQuestsFile.getConfigurationSection("quests." + fileQuest).getString(".menu_item")));
                     } catch (Exception e) {
+                        logger.log(Level.SEVERE, "-----------------------------------");
                         logger.log(Level.SEVERE, "Invalid material type detected.");
                         logger.log(Level.SEVERE, "File : mediumQuests.yml");
-                        logger.log(Level.SEVERE, "Quest number :" + questIndex);
+                        logger.log(Level.SEVERE, "Quest number : " + (questIndex+1));
                         logger.log(Level.SEVERE, "Parameter : required_item");
                         logger.log(Level.SEVERE, "Value : " + mediumQuestsFile.getConfigurationSection("quests." + fileQuest).getString(".menu_item"));
+                        logger.log(Level.SEVERE, "-----------------------------------");
                     }
 
                     questDesc = Objects.requireNonNull(mediumQuestsFile.getConfigurationSection("quests." + fileQuest)).getStringList(".description");
@@ -270,21 +284,25 @@ public class LoadQuests {
                         try {
                             entityType = EntityType.valueOf(mediumQuestsFile.getConfigurationSection("quests." + fileQuest).getString(".entity_type"));
                         } catch (Exception e) {
+                            logger.log(Level.SEVERE, "-----------------------------------");
                             logger.log(Level.SEVERE, "Invalid entity type detected.");
                             logger.log(Level.SEVERE, "File : mediumQuests.yml");
-                            logger.log(Level.SEVERE, "Quest number :" + questIndex);
+                            logger.log(Level.SEVERE, "Quest number : " + (questIndex+1));
                             logger.log(Level.SEVERE, "Parameter : entity_type");
                             logger.log(Level.SEVERE, "Value : " + mediumQuestsFile.getConfigurationSection("quests." + fileQuest).getString(".entity_type"));
+                            logger.log(Level.SEVERE, "-----------------------------------");
                         }
                     } else {
                         try {
                             requiredItem = new ItemStack(Material.valueOf(Objects.requireNonNull(mediumQuestsFile.getConfigurationSection("quests." + fileQuest)).getString(".required_item")));
                         } catch (Exception e) {
+                            logger.log(Level.SEVERE, "-----------------------------------");
                             logger.log(Level.SEVERE, "Invalid material type detected.");
                             logger.log(Level.SEVERE, "File : mediumQuests.yml");
-                            logger.log(Level.SEVERE, "Quest number :" + questIndex);
+                            logger.log(Level.SEVERE, "Quest number : " + (questIndex+1));
                             logger.log(Level.SEVERE, "Parameter : required_item");
                             logger.log(Level.SEVERE, "Value : " + mediumQuestsFile.getConfigurationSection("quests." + fileQuest).getString(".required_item"));
+                            logger.log(Level.SEVERE, "-----------------------------------");
                         }
                     }
 
@@ -325,11 +343,13 @@ public class LoadQuests {
                     try {
                         menuItem = new ItemStack(Material.valueOf(hardQuestsFile.getConfigurationSection("quests." + fileQuest).getString(".menu_item")));
                     } catch (Exception e) {
+                        logger.log(Level.SEVERE, "-----------------------------------");
                         logger.log(Level.SEVERE, "Invalid material type detected.");
                         logger.log(Level.SEVERE, "File : hardQuests.yml");
-                        logger.log(Level.SEVERE, "Quest number :" + questIndex);
+                        logger.log(Level.SEVERE, "Quest number : " + (questIndex+1));
                         logger.log(Level.SEVERE, "Parameter : menu_item");
                         logger.log(Level.SEVERE, "Value : " + hardQuestsFile.getConfigurationSection("quests." + fileQuest).getString(".menu_item"));
+                        logger.log(Level.SEVERE, "-----------------------------------");
                     }
 
                     questDesc = Objects.requireNonNull(hardQuestsFile.getConfigurationSection("quests." + fileQuest)).getStringList(".description");
@@ -347,21 +367,25 @@ public class LoadQuests {
                         try {
                             entityType = EntityType.valueOf(hardQuestsFile.getConfigurationSection("quests." + fileQuest).getString(".entity_type"));
                         } catch (Exception e) {
+                            logger.log(Level.SEVERE, "-----------------------------------");
                             logger.log(Level.SEVERE, "Invalid entity type detected.");
                             logger.log(Level.SEVERE, "File : hardQuests.yml");
-                            logger.log(Level.SEVERE, "Quest number :" + questIndex);
+                            logger.log(Level.SEVERE, "Quest number : " + (questIndex+1));
                             logger.log(Level.SEVERE, "Parameter : entity_type");
                             logger.log(Level.SEVERE, "Value : " + hardQuestsFile.getConfigurationSection("quests." + fileQuest).getString(".entity_type"));
+                            logger.log(Level.SEVERE, "-----------------------------------");
                         }
                     } else {
                         try {
                             requiredItem = new ItemStack(Material.valueOf(Objects.requireNonNull(hardQuestsFile.getConfigurationSection("quests." + fileQuest)).getString(".required_item")));
                         } catch (Exception e) {
+                            logger.log(Level.SEVERE, "-----------------------------------");
                             logger.log(Level.SEVERE, "Invalid material type detected.");
                             logger.log(Level.SEVERE, "File : hardQuests.yml");
-                            logger.log(Level.SEVERE, "Quest number :" + questIndex);
+                            logger.log(Level.SEVERE, "Quest number : " + (questIndex+1));
                             logger.log(Level.SEVERE, "Parameter : required_item");
                             logger.log(Level.SEVERE, "Value : " + hardQuestsFile.getConfigurationSection("quests." + fileQuest).getString(".required_item"));
+                            logger.log(Level.SEVERE, "-----------------------------------");
                         }
                     }
 
