@@ -114,24 +114,30 @@ public final class ODailyQuests extends JavaPlugin {
         this.citizensAPI = new CitizensAPI(configurationFiles, globalQuestsInterface, categorizedQuestsInterfaces);
 
         /* Load dependencies */
+
+        // VAULT - CMI
         if (!VaultAPI.setupEconomy()) {
-            logger.severe("Plugin disabled due to no Vault dependency found !");
-            getServer().getPluginManager().disablePlugin(this);
-            return;
+            logger.info(ChatColor.RED + "No compatible plugin detected for reward type 'MONEY'.");
+            logger.info(ChatColor.RED + "Quests with reward type 'MONEY' will not work.");
         } else {
             logger.info(ChatColor.YELLOW + "Vault" + ChatColor.GREEN + " successfully hooked.");
         }
+
+        // TOKENMANAGER - PLAYERPOINTS
         if (!TokenManagerAPI.setupTokenManager()) {
             PlayerPoints.setupPlayerPointsAPI();
             if (PlayerPoints.isPlayerPointsSetup()) {
                 logger.info(ChatColor.YELLOW + "PlayerPoints" + ChatColor.GREEN + " successfully hooked.");
             }
             else {
-                logger.info(ChatColor.YELLOW + "TokenManager" + ChatColor.RED + " and " + ChatColor.YELLOW + "PlayerPoints" + ChatColor.RED + " not detected. Quests with reward type 'POINTS' will not work.");
+                logger.info(ChatColor.RED + "No compatible plugin detected for reward type 'POINTS'.");
+                logger.info(ChatColor.RED + "Quests with reward type 'POINTS' will not work.");
             }
         } else {
             logger.info(ChatColor.YELLOW + "TokenManager" + ChatColor.GREEN + " successfully hooked.");
         }
+
+        // CITIZENS
         if (CitizensAPI.setupCitizens()) {
             getServer().getPluginManager().registerEvents(citizensAPI, this);
             logger.info(ChatColor.YELLOW + "Citizens" + ChatColor.GREEN + " successfully hooked.");
