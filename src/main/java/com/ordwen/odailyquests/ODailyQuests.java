@@ -189,5 +189,8 @@ public final class ODailyQuests extends JavaPlugin {
         logger.info(ChatColor.RED + "Plugin is shutting down...");
     }
 
+    public ODailyQuests getInstance() {
+        return this;
+    }
 }
 

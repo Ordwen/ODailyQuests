@@ -153,6 +153,23 @@ public class ProgressionManager implements Listener {
     }
 
     /**
+     *
+     * @param player
+     * @param merchantInventory
+     * @param recipe
+     */
+    public static void validateTradeQuestType(Player player, MerchantInventory merchantInventory, MerchantRecipe recipe) {
+        if (QuestsManager.getActiveQuests().containsKey(player.getName())) {
+            HashMap<Quest, Progression> playerQuests = QuestsManager.getActiveQuests().get(player.getName()).getPlayerQuests();
+            for (Quest quest : playerQuests.keySet()) {
+                if (quest.getType() == QuestType.TRADE && quest.getItemRequired().getType() == recipe.getResult().getType()) {
+                    System.out.println("GOOD ITEM");
+                }
+            }
+        }
+    }
+
+    /**
      * Check if player can validate a quest with type GET.
      * @param playerName player to check.
      * @param material material to check.

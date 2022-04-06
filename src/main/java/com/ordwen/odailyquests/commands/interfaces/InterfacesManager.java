@@ -10,6 +10,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.MerchantInventory;
+import org.bukkit.inventory.MerchantRecipe;
 import org.bukkit.plugin.PluginLogger;
 
 import java.util.logging.Logger;
@@ -62,6 +64,13 @@ public class InterfacesManager implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
+
+        // check if player is trading
+        if (event.getInventory().getType() == InventoryType.MERCHANT) {
+            MerchantInventory merchant = (MerchantInventory) event.getInventory();
+            ProgressionManager.validateTradeQuestType((Player) event.getWhoClicked(), merchant, merchant.getSelectedRecipe());
+        }
+
         String inventoryName = event.getView().getTitle();
         if (inventoryName.startsWith(playerQuestsInventoryName)
                 || inventoryName.startsWith(globalQuestsInventoryName)
