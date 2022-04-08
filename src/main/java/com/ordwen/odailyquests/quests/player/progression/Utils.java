@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.quests.player.progression;
 
 import com.ordwen.odailyquests.enums.QuestsMessages;
+import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.quests.LoadQuests;
 import com.ordwen.odailyquests.quests.Quest;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
@@ -16,6 +17,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Utils {
+
+    private static ConfigurationFiles configurationFiles;
+
+    public Utils(ConfigurationFiles configurationFiles) {
+        Utils.configurationFiles = configurationFiles;
+    }
 
     /* init variables */
     private static final Logger logger = PluginLogger.getLogger("O'DailyQuests");
@@ -39,10 +46,19 @@ public class Utils {
 
         /* check if last quests renewed is older than 24 hours */
         else if (timestampConfigMode == 2) {
-            return System.currentTimeMillis() - timestamp >= 86400000;
+            switch (configurationFiles.getConfigFile().getInt("temporality_mode")) {
+                case 1:
+                    return System.currentTimeMillis() - timestamp >= 86400000L;
+                case 2:
+                    return System.currentTimeMillis() - timestamp >= 604800000L;
+                case 3:
+                    return System.currentTimeMillis() - timestamp >= 2678400000L;
+                default:
+                    logger.log(Level.SEVERE, ChatColor.RED + "Impossible to check player quests timestamp. The selected mode is incorrect.");
+                    break;
+            }
         }
         else logger.log(Level.SEVERE, ChatColor.RED + "Impossible to load player quests timestamp. The selected mode is incorrect.");
-
         return false;
     }
 

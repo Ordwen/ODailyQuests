@@ -21,21 +21,34 @@ database:
 # 2 : easy, medium and hard quests will be loaded.
 # One quest per difficulty will be assigned to the players.
 # ==========================================================
-# You need to reset progression file if you change this mode.
+# You need to reset progressions if you change this mode.
 quests_mode: 1
 
 # Select the mode of timestamp.
 # ============================================================================
-# 1 : quests will be reloaded every day at midnight for all players.
+# 1 : quests will be reloaded at midnight for all players.
 # ============================================================================
-# 2 : player quests will be reloaded if active quests are older than 24 hours.
+# 2 : player quests will be reloaded if active quests are older
+# than the duration selected temporality mode.
 # This means that each player will have new quests at a different login time.
 # ============================================================================
 # The timestamp depends on the machine on which your server is installed.
 # Set the right time zone!
-# ==========================================================
-# You need to reset progression file if you change this mode.
+# ============================================================================
+# You need to reset progressions if you change this mode.
 timestamp_mode: 1
+
+# Select the mode of temporality.
+# ===================================
+# 1 : daily quests.
+# ===================================
+# 2 : weekly quests.
+# ===================================
+# 3 : monthly quests.
+# ===================================
+# You need to reset progressions
+# if you change this mode.
+temporality_mode: 1
 
 # Global Reward
 # Will be given when the player has completed all their daily quests.
