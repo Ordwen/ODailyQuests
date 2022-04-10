@@ -68,7 +68,9 @@ public class InterfacesManager implements Listener {
         // check if player is trading
         if (event.getInventory().getType() == InventoryType.MERCHANT) {
             MerchantInventory merchant = (MerchantInventory) event.getInventory();
-            ProgressionManager.validateTradeQuestType((Player) event.getWhoClicked(), merchant, merchant.getSelectedRecipe());
+            if (merchant.getSelectedRecipe() != null) {
+                ProgressionManager.validateTradeQuestType((Player) event.getWhoClicked(), merchant, merchant.getSelectedRecipe());
+            }
         }
 
         String inventoryName = event.getView().getTitle();

@@ -50,6 +50,14 @@ timestamp_mode: 1
 # if you change this mode.
 temporality_mode: 1
 
+# Initials that will be displayed
+# between the values on the placeholders.
+# ex: 6d9h24m
+temporality_initials:
+  days: "d"
+  hours: "h"
+  minutes: "m"
+
 # Global Reward
 # Will be given when the player has completed all their daily quests.
 # The syntax is the same as for quest rewards.

@@ -11,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -22,6 +23,9 @@ import java.util.logging.Logger;
 
 public class PlayerQuestsInterface {
 
+    /* active interfaces */
+    public static HashMap<Player, Inventory> activeInterfaces = new HashMap<>();
+
     /**
      * Getting instance of classes.
      */
@@ -29,6 +33,7 @@ public class PlayerQuestsInterface {
 
     /**
      * Class instance constructor.
+     *
      * @param configurationFiles configuration files class.
      */
     public PlayerQuestsInterface(ConfigurationFiles configurationFiles) {
@@ -39,7 +44,7 @@ public class PlayerQuestsInterface {
     private static final Logger logger = PluginLogger.getLogger("O'DailyQuests");
 
     /* init variables */
-    private static Inventory playerQuestsInventory;
+    private static Inventory playerQuestsInventoryBase;
 
     private static String achieved;
     private static String status;
@@ -53,7 +58,7 @@ public class PlayerQuestsInterface {
     public void loadPlayerQuestsInterface() {
 
         emptyCaseItem = new ItemStack(Material.valueOf(Objects.requireNonNull(configurationFiles.getConfigFile().getConfigurationSection("interfaces.player_quests")).getString(".empty_item")));
-        playerQuestsInventory = Bukkit.createInventory(null, 27, InterfacesManager.getPlayerQuestsInventoryName());
+        playerQuestsInventoryBase = Bukkit.createInventory(null, 27, "BASIC");
 
         achieved = Objects.requireNonNull(configurationFiles.getConfigFile().getConfigurationSection("interfaces.player_quests")).getString(".achieved");
         status = Objects.requireNonNull(configurationFiles.getConfigFile().getConfigurationSection("interfaces.player_quests")).getString(".status");
@@ -61,8 +66,8 @@ public class PlayerQuestsInterface {
         completeGetType = Objects.requireNonNull(configurationFiles.getConfigFile().getConfigurationSection("interfaces.player_quests")).getString(".complete_get_type");
 
         /* fill empty slots */
-        for (int i = 0; i < playerQuestsInventory.getSize(); i++) {
-            if (playerQuestsInventory.getItem(i) == null) playerQuestsInventory.setItem(i, emptyCaseItem);
+        for (int i = 0; i < playerQuestsInventoryBase.getSize(); i++) {
+            if (playerQuestsInventoryBase.getItem(i) == null) playerQuestsInventoryBase.setItem(i, emptyCaseItem);
         }
 
         logger.info(ChatColor.GREEN + "Player quests interface successfully loaded.");
@@ -70,15 +75,19 @@ public class PlayerQuestsInterface {
 
     /**
      * Get player quests inventory.
+     *
      * @return player quests inventory.
      */
     public static Inventory getPlayerQuestsInterface(String playerName) {
+
+        Inventory playerQuestsInventoryIndividual = Bukkit.createInventory(null, 27, InterfacesManager.getPlayerQuestsInventoryName());
+        playerQuestsInventoryIndividual.setContents(playerQuestsInventoryBase.getContents());
 
         HashMap<String, PlayerQuests> activeQuests = QuestsManager.getActiveQuests();
         HashMap<Quest, Progression> playerQuests = activeQuests.get(playerName).getPlayerQuests();
 
         /* load player head */
-        playerQuestsInventory.setItem(4, Items.getPlayerHead(Bukkit.getPlayer(playerName)));
+        playerQuestsInventoryIndividual.setItem(4, Items.getPlayerHead(Bukkit.getPlayer(playerName)));
 
         /* load quests */
         int i = 2;
@@ -111,16 +120,17 @@ public class PlayerQuestsInterface {
             itemMeta.setLore(lore);
             itemStack.setItemMeta(itemMeta);
 
-            playerQuestsInventory.setItem(i+9, itemStack);
+            playerQuestsInventoryIndividual.setItem(i + 9, itemStack);
 
             i = i + 2;
         }
 
-        return playerQuestsInventory;
+        return playerQuestsInventoryIndividual;
     }
 
     /**
      * Get empty case item material.
+     *
      * @return material.
      */
     public static Material getEmptyCaseItem() {
@@ -129,6 +139,7 @@ public class PlayerQuestsInterface {
 
     /**
      * Get the time remain before the next quests draw.
+     *
      * @param playerName player to consider.
      * @return the time remain before the next quests draw, in String.
      */
@@ -155,18 +166,63 @@ public class PlayerQuestsInterface {
 
         String timeRemain = "";
 
-        if (diff <= 86400000) {
-            long rest = (long) 86400000 - diff;
-            int minutes = (int) ((rest / (1000 * 60)) % 60);
-            int hours = (int) ((rest / (1000 * 60 * 60)) % 24);
+        long rest;
+        int minutes;
+        int hours;
+        int days;
 
-            if (hours != 0) {
-                timeRemain = String.format("%dh%dm", hours, minutes);
-            } else if (minutes != 0) {
-                timeRemain = String.format("%dm", minutes);
-            } else {
-                timeRemain = "Few seconds.";
-            }
+        String d = configurationFiles.getConfigFile().getConfigurationSection("temporality_initials").getString("days");
+        String h = configurationFiles.getConfigFile().getConfigurationSection("temporality_initials").getString("hours");
+        String m = configurationFiles.getConfigFile().getConfigurationSection("temporality_initials").getString("minutes");
+
+        switch (configurationFiles.getConfigFile().getInt("temporality_mode")) {
+            case 1:
+                rest = 86400000L - diff;
+                minutes = (int) ((rest / (1000 * 60)) % 60);
+                hours = (int) ((rest / (1000 * 60 * 60)) % 24);
+
+                if (hours != 0) {
+                    timeRemain = String.format("%d" + d + "%d" + m, hours, minutes);
+                } else if (minutes != 0) {
+                    timeRemain = String.format("%d" + m, minutes);
+                } else {
+                    timeRemain = "Few seconds.";
+                }
+                break;
+            case 2:
+                rest = 604800000L - diff;
+                minutes = (int) ((rest / (1000 * 60)) % 60);
+                hours = (int) ((rest / (1000 * 60 * 60)) % 24);
+                days = (int) (rest / (1000 * 60 * 60 * 24));
+
+                if (days != 0) {
+                    timeRemain = String.format("%d" + d + "%d" + h + "%d" + m, days, hours, minutes);
+                }
+                else if (hours != 0) {
+                    timeRemain = String.format("%d" + h + "%d" + m, hours, minutes);
+                } else if (minutes != 0) {
+                    timeRemain = String.format("%d" + m, minutes);
+                } else {
+                    timeRemain = "Few seconds.";
+                }
+                break;
+            case 3:
+                rest = 2678400000L - diff;
+                minutes = (int) ((rest / (1000 * 60)) % 60);
+                hours = (int) ((rest / (1000 * 60 * 60)) % 24);
+                days = (int) (rest / (1000 * 60 * 60 * 24));
+
+                if (days != 0) {
+                    timeRemain = String.format("%d" + d + "%d" + h + "%d" + m, days, hours, minutes);
+                }
+                else if (hours != 0) {
+                    timeRemain = String.format("%d" + h + "%d" + m, hours, minutes);
+                } else if (minutes != 0) {
+                    timeRemain = String.format("%d" + m, minutes);
+                } else {
+                    timeRemain = "Few seconds.";
+                }
+                break;
         }
 
         return timeRemain;

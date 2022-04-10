@@ -53,10 +53,16 @@ public class QuestsManager implements Listener {
         if (!activeQuests.containsKey(playerName)) {
             switch (configurationFiles.getConfigFile().getString("storage_mode")) {
                 case "YAML":
-                    LoadProgressionYAML.loadPlayerQuests(playerName, activeQuests, configurationFiles.getConfigFile().getInt("quests_mode"), configurationFiles.getConfigFile().getInt("timestamp_mode"));
+                    LoadProgressionYAML.loadPlayerQuests(playerName, activeQuests,
+                            configurationFiles.getConfigFile().getInt("quests_mode"),
+                            configurationFiles.getConfigFile().getInt("timestamp_mode"),
+                            configurationFiles.getConfigFile().getInt("temporality_mode"));
                     break;
                 case "MySQL":
-                    loadProgressionSQL.loadProgression(playerName, activeQuests, configurationFiles.getConfigFile().getInt("quests_mode"), configurationFiles.getConfigFile().getInt("timestamp_mode"));
+                    loadProgressionSQL.loadProgression(playerName, activeQuests,
+                            configurationFiles.getConfigFile().getInt("quests_mode"),
+                            configurationFiles.getConfigFile().getInt("timestamp_mode"),
+                            configurationFiles.getConfigFile().getInt("temporality_mode"));
                     break;
                 default:
                     logger.log(Level.SEVERE, "Impossible to load player quests : the selected storage mode is incorrect !");

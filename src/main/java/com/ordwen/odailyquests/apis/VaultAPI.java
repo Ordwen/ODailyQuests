@@ -10,9 +10,6 @@ import java.util.logging.Logger;
 
 public class VaultAPI {
 
-    /* Logger for stacktrace */
-    private static final Logger logger = PluginLogger.getLogger("O'DailyQuests");
-
     /* Vault instances */
     private static Economy econ = null;
 

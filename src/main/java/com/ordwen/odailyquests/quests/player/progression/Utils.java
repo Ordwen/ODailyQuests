@@ -13,40 +13,49 @@ import org.bukkit.plugin.PluginLogger;
 
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Utils {
-
-    private static ConfigurationFiles configurationFiles;
-
-    public Utils(ConfigurationFiles configurationFiles) {
-        Utils.configurationFiles = configurationFiles;
-    }
 
     /* init variables */
     private static final Logger logger = PluginLogger.getLogger("O'DailyQuests");
 
     /**
      * Check if it is time to redraw quests for a player.
+     *
      * @param timestampConfigMode quests config mode.
-     * @param timestamp player timestamp.
+     * @param timestamp           player timestamp.
      * @return true if it's time to redraw quests.
      */
-    public static boolean checkTimestamp(int timestampConfigMode, long timestamp) {
+    public static boolean checkTimestamp(int timestampConfigMode, int temporalityMode, long timestamp) {
 
         /* check if last quests renewed day before */
         if (timestampConfigMode == 1) {
+
             Calendar oldCal = Calendar.getInstance();
             Calendar currentCal = Calendar.getInstance();
             oldCal.setTimeInMillis(timestamp);
-            currentCal.setTimeInMillis(System.currentTimeMillis());
-            return oldCal.get(Calendar.DATE) < currentCal.get(Calendar.DATE);
+
+            switch (temporalityMode) {
+                case 1:
+                    currentCal.setTimeInMillis(System.currentTimeMillis());
+                    return oldCal.get(Calendar.DATE) < currentCal.get(Calendar.DATE);
+                case 2:
+                    currentCal.setTimeInMillis(System.currentTimeMillis());
+                    long diffW = TimeUnit.DAYS.convert(currentCal.getTimeInMillis() - oldCal.getTimeInMillis(), TimeUnit.MILLISECONDS);
+                    return diffW >= 7;
+                case 3:
+                    currentCal.setTimeInMillis(System.currentTimeMillis());
+                    long diffM = TimeUnit.DAYS.convert(currentCal.getTimeInMillis() - oldCal.getTimeInMillis(), TimeUnit.MILLISECONDS);
+                    return diffM >= 31;
+            }
         }
 
-        /* check if last quests renewed is older than 24 hours */
+        /* check if last quests renewed is older than selected temporality */
         else if (timestampConfigMode == 2) {
-            switch (configurationFiles.getConfigFile().getInt("temporality_mode")) {
+            switch (temporalityMode) {
                 case 1:
                     return System.currentTimeMillis() - timestamp >= 86400000L;
                 case 2:
@@ -57,15 +66,16 @@ public class Utils {
                     logger.log(Level.SEVERE, ChatColor.RED + "Impossible to check player quests timestamp. The selected mode is incorrect.");
                     break;
             }
-        }
-        else logger.log(Level.SEVERE, ChatColor.RED + "Impossible to load player quests timestamp. The selected mode is incorrect.");
+        } else
+            logger.log(Level.SEVERE, ChatColor.RED + "Impossible to load player quests timestamp. The selected mode is incorrect.");
         return false;
     }
 
     /**
      * Load quests for a player with no data.
-     * @param playerName player name.
-     * @param activeQuests all active quests.
+     *
+     * @param playerName          player name.
+     * @param activeQuests        all active quests.
      * @param timestampConfigMode timestamp mode.
      */
     public static void loadNewPlayerQuests(String playerName, HashMap<String, PlayerQuests> activeQuests, int timestampConfigMode, HashMap<Quest, Progression> quests) {
@@ -91,10 +101,10 @@ public class Utils {
     /**
      * Find quest with index in arrays.
      *
-     * @param playerName player name.
+     * @param playerName       player name.
      * @param questsConfigMode quests mode.
-     * @param questIndex index of quest in array.
-     * @param id number of player quest.
+     * @param questIndex       index of quest in array.
+     * @param id               number of player quest.
      * @return quest of index.
      */
     public static Quest findQuest(String playerName, int questsConfigMode, int questIndex, int id) {
@@ -103,7 +113,7 @@ public class Utils {
         if (questsConfigMode == 1) {
             quest = LoadQuests.getGlobalQuests().get(questIndex);
         } else if (questsConfigMode == 2) {
-            switch(id) {
+            switch (id) {
                 case 1:
                     quest = LoadQuests.getEasyQuests().get(questIndex);
                     break;
@@ -114,7 +124,8 @@ public class Utils {
                     quest = LoadQuests.getHardQuests().get(questIndex);
                     break;
             }
-        } else logger.log(Level.SEVERE, ChatColor.RED + "Impossible to load player quests. The selected mode is incorrect.");
+        } else
+            logger.log(Level.SEVERE, ChatColor.RED + "Impossible to load player quests. The selected mode is incorrect.");
 
         if (quest == null) {
             logger.info(ChatColor.RED + "An error occurred while loading " + ChatColor.GOLD + playerName + ChatColor.RED + "'s quests.");

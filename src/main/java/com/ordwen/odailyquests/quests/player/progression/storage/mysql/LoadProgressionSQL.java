@@ -38,7 +38,7 @@ public class LoadProgressionSQL {
      *
      * @param playerName name of the player.
      */
-    public void loadProgression(String playerName, HashMap<String, PlayerQuests> activeQuests, int questsConfigMode, int timestampConfigMode) {
+    public void loadProgression(String playerName, HashMap<String, PlayerQuests> activeQuests, int questsConfigMode, int timestampConfigMode, int temporalityMode) {
 
         HashMap<Quest, Progression> quests = new HashMap<>();
         long timestamp = 0;
@@ -67,7 +67,7 @@ public class LoadProgressionSQL {
         }
 
         if (hasStoredData) {
-            if (Utils.checkTimestamp(timestampConfigMode, timestamp)) {
+            if (Utils.checkTimestamp(timestampConfigMode, temporalityMode, timestamp)) {
                 Utils.loadNewPlayerQuests(playerName, activeQuests, timestampConfigMode, quests);
             }
             else {

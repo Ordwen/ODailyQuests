@@ -40,7 +40,7 @@ public class LoadProgressionYAML {
      * @param playerName   player.
      * @param activeQuests list of active players.
      */
-    public static void loadPlayerQuests(String playerName, HashMap<String, PlayerQuests> activeQuests, int questsConfigMode, int timestampConfigMode) {
+    public static void loadPlayerQuests(String playerName, HashMap<String, PlayerQuests> activeQuests, int questsConfigMode, int timestampConfigMode, int temporalityMode) {
 
         /* init variables */
         long timestamp;
@@ -60,7 +60,7 @@ public class LoadProgressionYAML {
             achievedQuests = progressionFile.getProgressionFileConfiguration().getConfigurationSection(playerName).getInt(".achievedQuests");
 
             /* renew quests */
-            if (Utils.checkTimestamp(timestampConfigMode, timestamp)) {
+            if (Utils.checkTimestamp(timestampConfigMode, temporalityMode, timestamp)) {
                 Utils.loadNewPlayerQuests(playerName, activeQuests, timestampConfigMode, quests);
             }
             /* load non-achieved quests */

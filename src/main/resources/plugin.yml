@@ -12,6 +12,8 @@ softdepend:
   - Citizens
   - PlaceholderAPI
   - PlayerPoints
+loadbefore:
+  - Vault
 commands:
   quests:
     description: default player command

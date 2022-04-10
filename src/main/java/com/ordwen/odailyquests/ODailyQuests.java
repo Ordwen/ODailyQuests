@@ -56,7 +56,6 @@ public final class ODailyQuests extends JavaPlugin {
     private CitizensAPI citizensAPI;
     private MySQLManager mySqlManager;
     private GlobalReward globalReward;
-    private Utils utils;
     private LoadProgressionSQL loadProgressionSQL = null;
     private SaveProgressionSQL saveProgressionSQL = null;
 
@@ -110,7 +109,6 @@ public final class ODailyQuests extends JavaPlugin {
         this.interfacesManager = new InterfacesManager(configurationFiles, globalQuestsInterface, categorizedQuestsInterfaces);
         this.questsManager = new QuestsManager(configurationFiles, loadProgressionSQL, saveProgressionSQL);
         this.globalReward = new GlobalReward(configurationFiles);
-        this.utils = new Utils(configurationFiles);
         this.loadProgressionYAML = new LoadProgressionYAML(progressionFile);
         this.saveProgressionYAML = new SaveProgressionYAML(progressionFile);
         this.progressionManager = new ProgressionManager();
