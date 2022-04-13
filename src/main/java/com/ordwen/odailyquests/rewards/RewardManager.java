@@ -30,8 +30,12 @@ public class RewardManager {
                 }
                 Objects.requireNonNull(Bukkit.getPlayer(playerName)).sendMessage(QuestsMessages.REWARD_COMMAND.toString());
                 break;
-            case EXP:
+            case EXP_LEVELS:
                 Objects.requireNonNull(Bukkit.getPlayer(playerName)).giveExpLevels(reward.getRewardAmount());
+                Objects.requireNonNull(Bukkit.getPlayer(playerName)).sendMessage(QuestsMessages.REWARD_EXP.toString().replace("%rewardAmount%", String.valueOf(reward.getRewardAmount())));
+                break;
+            case EXP_POINTS:
+                Objects.requireNonNull(Bukkit.getPlayer(playerName)).giveExp(reward.getRewardAmount());
                 Objects.requireNonNull(Bukkit.getPlayer(playerName)).sendMessage(QuestsMessages.REWARD_EXP.toString().replace("%rewardAmount%", String.valueOf(reward.getRewardAmount())));
                 break;
             case MONEY:

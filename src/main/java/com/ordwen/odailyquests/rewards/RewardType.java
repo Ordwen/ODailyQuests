@@ -5,7 +5,8 @@ package com.ordwen.odailyquests.rewards;
  */
 public enum RewardType {
     COMMAND("COMMAND"),
-    EXP("EXP"),
+    EXP_POINTS("EXP_POINTS"),
+    EXP_LEVELS("EXP_LEVELS"),
     MONEY("MONEY"),
     POINTS("POINTS");
 
