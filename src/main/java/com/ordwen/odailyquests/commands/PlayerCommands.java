@@ -77,20 +77,18 @@ public class PlayerCommands implements CommandExecutor {
                                                 sender.sendMessage(QuestsMessages.INVALID_CATEGORY.toString());
                                                 break;
                                         }
-                                    } else sender.sendMessage(QuestsMessages.INVALID_SYNTAX.toString());
+                                    } else sender.sendMessage(QuestsMessages.PLAYER_HELP.toString());
                                 } else sender.sendMessage(QuestsMessages.NO_PERMISSION.toString());
                                 break;
                             case "me":
                                 ((Player) sender).openInventory(PlayerQuestsInterface.getPlayerQuestsInterface(sender.getName()));
                                 break;
                             case "help":
-                                break;
                             default:
-                                sender.sendMessage(QuestsMessages.INVALID_SYNTAX.toString());
+                                sender.sendMessage(QuestsMessages.PLAYER_HELP.toString());
                                 break;
                         }
-                    } else sender.sendMessage(QuestsMessages.INVALID_SYNTAX.toString());
-
+                    } else ((Player) sender).openInventory(PlayerQuestsInterface.getPlayerQuestsInterface(sender.getName()));
                 } else sender.sendMessage(QuestsMessages.NO_PERMISSION.toString());
             }
         }

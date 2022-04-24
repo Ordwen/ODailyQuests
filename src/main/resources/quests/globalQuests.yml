@@ -6,12 +6,10 @@
 # This could cause several bugs.
 # ==============================================================
 # AVAILABLE QUESTS TYPES:
-# [ BREAK , PLACE , CRAFT , PICKUP , LAUNCH , CONSUME ]
-# Type LAUNCH only affects : ENDER_PEARL, EGG, ARROW.
-# Type CONSUME only affects : potions, food, milk-buckets.
+# https://ordwenplugins.gitbook.io/odailyquests/quests/quests-types
 # ==============================================================
 # AVAILABLE REWARDS TYPES :
-# [ COMMAND , EXP , MONEY , POINTS ]
+# https://ordwenplugins.gitbook.io/odailyquests/quests/rewards-types
 # ==============================================================
 # More tips available on Wiki :
 # https://ordwenplugins.gitbook.io/odailyquests/
@@ -87,22 +85,49 @@ quests:
     menu_item: RED_MUSHROOM
     description:
       - "&eShear a mooshroom."
-      - "&aWin &b5 levels of EXP&a."
+      - "&aWin &b500 points of EXP&a."
     quest_type: SHEAR
     entity_type: MUSHROOM_COW
     required_amount: 1
     reward:
-      reward_type: EXP
+      reward_type: EXP_POINTS
       amount: 5
   7:
     name: "Emeralds !"
     menu_item: EMERALD
     description:
-      - "&eGet 3 emeralds from villager."
+      - "&eGet 2 emeralds from villager."
       - "&aWin &b5 levels of EXP&a."
-    quest_type: TRADE
+    quest_type: VILLAGER_TRADE
     required_item: EMERALD
+    required_amount: 2
+    reward:
+      reward_type: EXP_LEVELS
+      amount: 5
+  8:
+    name: "Cookieeeeees"
+    menu_item: COOKIE
+    description:
+      - "&eGet 32 cookies from"
+      - "&ea &afarmer &evillager level &b3&e."
+      - "&aWin &b5 000$&a."
+    quest_type: VILLAGER_TRADE
+    villager_profession: FARMER
+    villager_level: 3
+    required_item: COOKIE
+    required_amount: 32
+    reward:
+      reward_type: MONEY
+      amount: 5000
+  9:
+    name: "&b&lThe Big Boss Of Skeletons"
+    menu_item: SKELETON_SKULL
+    description:
+      - "&eKill the big boss of zombies."
+      - "&aWin &b50 levels of EXP&a."
+    quest_type: CUSTOM_MOBS
+    entity_name: "&6Skeleton King"
     required_amount: 1
     reward:
-      reward_type: EXP
+      reward_type: EXP_LEVELS
       amount: 5

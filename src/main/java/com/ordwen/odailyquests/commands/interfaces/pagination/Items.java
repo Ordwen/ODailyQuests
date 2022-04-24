@@ -5,6 +5,7 @@ import com.mojang.authlib.properties.Property;
 import com.ordwen.odailyquests.commands.interfaces.PlayerQuestsInterface;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
+import com.ordwen.odailyquests.tools.ColorConvert;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -67,7 +68,7 @@ public class Items {
             e.printStackTrace();
         }
 
-        previousMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', configurationFiles.getConfigFile().getConfigurationSection("interfaces").getString(".previous_item_name")));
+        previousMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(configurationFiles.getConfigFile().getConfigurationSection("interfaces").getString(".previous_item_name"))));
         previous.setItemMeta(previousMeta);
     }
 
@@ -94,7 +95,7 @@ public class Items {
             e.printStackTrace();
         }
 
-        nextMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', configurationFiles.getConfigFile().getConfigurationSection("interfaces").getString(".next_item_name")));
+        nextMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(configurationFiles.getConfigFile().getConfigurationSection("interfaces").getString(".next_item_name"))));
         next.setItemMeta(nextMeta);
     }
 
@@ -105,7 +106,7 @@ public class Items {
         playerHead = new ItemStack(Material.PLAYER_HEAD, 1);
         skullMeta = (SkullMeta) playerHead.getItemMeta();
         skullMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&',
-                configurationFiles.getConfigFile().getConfigurationSection("interfaces.player_quests.player_head").getString(".item_name")));
+                ColorConvert.convertColorCode(configurationFiles.getConfigFile().getConfigurationSection("interfaces.player_quests.player_head").getString(".item_name"))));
     }
 
     /**
@@ -137,7 +138,7 @@ public class Items {
 
         List<String> itemDesc = configurationFiles.getConfigFile().getConfigurationSection("interfaces.player_quests.player_head").getStringList(".item_description");
         for (String string : itemDesc) {
-            itemDesc.set(itemDesc.indexOf(string), ChatColor.translateAlternateColorCodes('&', string
+            itemDesc.set(itemDesc.indexOf(string), ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(string)
                     .replace("%achieved%", String.valueOf(QuestsManager.getActiveQuests().get(player.getName()).getAchievedQuests()))
                     .replace("%drawIn%", PlayerQuestsInterface.timeRemain(player.getName()))));
         }

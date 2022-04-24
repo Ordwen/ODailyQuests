@@ -38,7 +38,9 @@ public class QuestsManager implements Listener {
      *
      * @param configurationFiles configuration files class.
      */
-    public QuestsManager(ConfigurationFiles configurationFiles, LoadProgressionSQL loadProgressionSQL, SaveProgressionSQL saveProgressionSQL) {
+    public QuestsManager(ConfigurationFiles configurationFiles,
+                         LoadProgressionSQL loadProgressionSQL,
+                         SaveProgressionSQL saveProgressionSQL) {
         QuestsManager.configurationFiles = configurationFiles;
         this.loadProgressionSQL = loadProgressionSQL;
         this.saveProgressionSQL = saveProgressionSQL;

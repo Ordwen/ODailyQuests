@@ -4,6 +4,7 @@ import com.ordwen.odailyquests.apis.PlayerPoints;
 import com.ordwen.odailyquests.apis.TokenManagerAPI;
 import com.ordwen.odailyquests.apis.VaultAPI;
 import com.ordwen.odailyquests.enums.QuestsMessages;
+import com.ordwen.odailyquests.files.ConfigurationFiles;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginLogger;
@@ -15,6 +16,12 @@ public class RewardManager {
 
     /* Logger for stacktrace */
     private static final Logger logger = PluginLogger.getLogger("O'DailyQuests");
+
+    private final ConfigurationFiles configurationFiles;
+
+    public RewardManager(ConfigurationFiles configurationFiles) {
+        this.configurationFiles = configurationFiles;
+    }
 
     /**
      * Give quest-reward to player.
@@ -32,11 +39,11 @@ public class RewardManager {
                 break;
             case EXP_LEVELS:
                 Objects.requireNonNull(Bukkit.getPlayer(playerName)).giveExpLevels(reward.getRewardAmount());
-                Objects.requireNonNull(Bukkit.getPlayer(playerName)).sendMessage(QuestsMessages.REWARD_EXP.toString().replace("%rewardAmount%", String.valueOf(reward.getRewardAmount())));
+                Objects.requireNonNull(Bukkit.getPlayer(playerName)).sendMessage(QuestsMessages.REWARD_EXP_LEVELS.toString().replace("%rewardAmount%", String.valueOf(reward.getRewardAmount())));
                 break;
             case EXP_POINTS:
                 Objects.requireNonNull(Bukkit.getPlayer(playerName)).giveExp(reward.getRewardAmount());
-                Objects.requireNonNull(Bukkit.getPlayer(playerName)).sendMessage(QuestsMessages.REWARD_EXP.toString().replace("%rewardAmount%", String.valueOf(reward.getRewardAmount())));
+                Objects.requireNonNull(Bukkit.getPlayer(playerName)).sendMessage(QuestsMessages.REWARD_EXP_POINTS.toString().replace("%rewardAmount%", String.valueOf(reward.getRewardAmount())));
                 break;
             case MONEY:
                 VaultAPI.getEconomy().depositPlayer(Bukkit.getPlayer(playerName), reward.getRewardAmount());

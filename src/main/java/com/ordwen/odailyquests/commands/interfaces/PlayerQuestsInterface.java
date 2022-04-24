@@ -7,6 +7,7 @@ import com.ordwen.odailyquests.quests.QuestType;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
+import com.ordwen.odailyquests.tools.ColorConvert;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -100,17 +101,17 @@ public class PlayerQuestsInterface {
             itemMeta.setDisplayName(quest.getQuestName());
 
             List<String> lore = new ArrayList<>(quest.getQuestDesc());
-            lore.add(ChatColor.translateAlternateColorCodes('&', status));
+            lore.add(ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(status)));
 
             if (playerQuests.get(quest).isAchieved()) {
                 itemMeta.addEnchant(Enchantment.SILK_TOUCH, 1, false);
                 itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                lore.add(ChatColor.translateAlternateColorCodes('&', achieved));
+                lore.add(ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(achieved)));
             } else {
                 if (quest.getType() == QuestType.GET) {
-                    lore.add(ChatColor.translateAlternateColorCodes('&', completeGetType));
+                    lore.add(ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(completeGetType)));
                 } else {
-                    lore.add(ChatColor.translateAlternateColorCodes('&', progression)
+                    lore.add(ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(progression))
                             .replace("%progress%", String.valueOf(playerQuests.get(quest).getProgression()))
                             .replace("%required%", String.valueOf(quest.getAmountRequired())));
                 }
@@ -182,7 +183,7 @@ public class PlayerQuestsInterface {
                 hours = (int) ((rest / (1000 * 60 * 60)) % 24);
 
                 if (hours != 0) {
-                    timeRemain = String.format("%d" + d + "%d" + m, hours, minutes);
+                    timeRemain = String.format("%d" + h + "%d" + m, hours, minutes);
                 } else if (minutes != 0) {
                     timeRemain = String.format("%d" + m, minutes);
                 } else {

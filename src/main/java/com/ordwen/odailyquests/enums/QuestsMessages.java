@@ -1,15 +1,21 @@
 package com.ordwen.odailyquests.enums;
 
-import org.bukkit.ChatColor;
+import com.ordwen.odailyquests.tools.ColorConvert;
+import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @SuppressWarnings("SpellCheckingInspection")
 public enum QuestsMessages {
 
+    PLAYER_HELP("player_help", "&a&nPlayer commands:\n&e/quests me &a: see your own quests\n&e/quests show <global/easy/medium/hard> &a: see the quests of a category"),
+    ADMIN_HELP("admin_help", "&c&nAdmin commands:\n&e/qadmin complete <player> <index> &a: complete a player quest\n&e/qadmin reset <player> &a: draw new quests for a player\n&e/qadmin show <player> &a: see quests of a player"),
     NO_PERMISSION("no_permission", "&cYou don't have permission."),
     NO_PERMISSION_CATEGORY("no_permission_category", "&cYou don't have permission to see this category."),
     PLAYER_ONLY("player_only", "&cOnly player can execute this command."),
-    INVALID_SYNTAX("invalid_syntax", "&cInvalid syntax."),
     INVALID_CATEGORY("invalid_category", "&cInvalid quest category."),
     INVALID_PLAYER("invalid_player", "&cThis player doesn't exist, or is offline."),
     INVALID_QUEST_ID("invalid_quest_id","&cYou must specify a valid quest ID, between 1 and 3."),
@@ -25,7 +31,8 @@ public enum QuestsMessages {
     NOT_ENOUGH_ITEM("not_enough_items","&cYou don't have the required amount to complete this quest."),
 
     REWARD_COMMAND("reward_command", "&aYou receive some rewards commands."),
-    REWARD_EXP("reward_exp", "&aYou receive &e%rewardAmount% &bEXP&a."),
+    REWARD_EXP_LEVELS("reward_exp_levels", "&aYou receive &e%rewardAmount% &bEXP &alevels."),
+    REWARD_EXP_POINTS("reward_exp_points", "&aYou receive &e%rewardAmount% &bEXP &apoints."),
     REWARD_MONEY("reward_money", "&aYou receive &e%rewardAmount% &b$&a."),
     REWARD_POINTS("reward_points", "&aYou receive &e%rewardAmount% &bpoints&a."),
     ;
@@ -33,6 +40,8 @@ public enum QuestsMessages {
     private final String path;
     private final String defaultMessage;
     private static FileConfiguration LANG;
+
+    private final Pattern pattern = Pattern.compile("#[a-fA-F0-9]{6}");
 
     /**
      * Message constructor.
@@ -57,7 +66,8 @@ public enum QuestsMessages {
      */
     @Override
     public String toString() {
-        return ChatColor.translateAlternateColorCodes('&', LANG.getString(this.path, defaultMessage));
+        String msg = LANG.getString(this.path, defaultMessage);
+        return ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(msg));
     }
 
     /**

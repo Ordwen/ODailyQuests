@@ -18,7 +18,9 @@ public enum QuestType {
     TAME("TAME"),
     BREED("BREED"),
     SHEAR("SHEAR"),
-    TRADE("TRADE"),
+    VILLAGER_TRADE("VILLAGER_TRADE"),
+
+    CUSTOM_MOBS("CUSTOM_MOBS"),
     ;
 
     private final String typeName;

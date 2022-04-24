@@ -15,7 +15,7 @@ public class AdminCompleter implements TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         if (args.length <= 1) {
-            List<String> allCompletions = new ArrayList<>(Arrays.asList("reset", "show", "complete"));
+            List<String> allCompletions = new ArrayList<>(Arrays.asList("reload", "reset", "show", "complete", "help"));
             List<String> completions = new ArrayList<>();
 
             StringUtil.copyPartialMatches(args[0], allCompletions, completions);

@@ -1,16 +1,15 @@
 package com.ordwen.odailyquests.quests.player.progression;
 
 import com.ordwen.odailyquests.enums.QuestsMessages;
-import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.quests.LoadQuests;
 import com.ordwen.odailyquests.quests.Quest;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
-import com.ordwen.odailyquests.quests.player.progression.Progression;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginLogger;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
@@ -111,17 +110,17 @@ public class Utils {
         Quest quest = null;
 
         if (questsConfigMode == 1) {
-            quest = LoadQuests.getGlobalQuests().get(questIndex);
+            quest = getQuestAtIndex(LoadQuests.getGlobalQuests(), questIndex, playerName);
         } else if (questsConfigMode == 2) {
             switch (id) {
                 case 1:
-                    quest = LoadQuests.getEasyQuests().get(questIndex);
+                    quest = getQuestAtIndex(LoadQuests.getEasyQuests(), questIndex, playerName);
                     break;
                 case 2:
-                    quest = LoadQuests.getMediumQuests().get(questIndex);
+                    quest = getQuestAtIndex(LoadQuests.getMediumQuests(), questIndex, playerName);
                     break;
                 case 3:
-                    quest = LoadQuests.getHardQuests().get(questIndex);
+                    quest = getQuestAtIndex(LoadQuests.getHardQuests(), questIndex, playerName);
                     break;
             }
         } else
@@ -135,6 +134,31 @@ public class Utils {
             logger.info(ChatColor.RED + "If the problem persists, contact the developer.");
         }
 
+        return quest;
+    }
+
+    /**
+     * Try to get quest from index.
+     * @param questsArray the array where find the quest.
+     * @param index the supposed index of the quest in the array.
+     * @param playerName the name of the player for whom the quest is intended.
+     * @return the quest.
+     */
+    public static Quest getQuestAtIndex(ArrayList<Quest> questsArray, int index, String playerName) {
+        Quest quest;
+        try {
+            quest = questsArray.get(index);
+        } catch (IndexOutOfBoundsException e) {
+
+            quest = questsArray.get(0);
+
+            logger.log(Level.SEVERE, "A quest of the player " + playerName + " could not be loaded.");
+            logger.log(Level.SEVERE, "This happens when a previously loaded quest has been deleted from the file.");
+            logger.log(Level.SEVERE, "To avoid this problem, you should reset player progressions when you delete quests from the files.");
+            logger.log(Level.SEVERE, "The first quest in the file was loaded instead.");
+            logger.log(Level.SEVERE, "");
+            logger.log(Level.SEVERE, "To reset the player's progress, do /qadmin reset " + playerName);
+        }
         return quest;
     }
 }

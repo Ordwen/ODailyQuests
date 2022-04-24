@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'com.ordwen'
-version = '1.1.3-beta'
+version = '1.2.0-beta'
 
 repositories {
     mavenCentral()
@@ -28,16 +28,25 @@ repositories {
         url = 'https://repo.citizensnpcs.co/'
     }
     maven {
+        name = ' Lumine Releases'
+        url = 'https://mvn.lumine.io/repository/maven-public/'
+    }
+    maven {
         name = 'minecraft-repo'
         url = 'https://libraries.minecraft.net/'
     }
     maven {
         url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'
     }
+    flatDir {
+        dirs 'libs'
+    }
 }
 
 dependencies {
-    implementation 'com.zaxxer:HikariCP:4.0.3'
+    compileOnly name: 'EliteMobs'
+
+    implementation 'com.zaxxer:HikariCP:5.0.1'
     implementation 'junit:junit:4.13.2'
     testImplementation 'org.spigotmc:spigot-api:1.18.1-R0.1-SNAPSHOT'
     compileOnly 'org.spigotmc:spigot-api:1.18.1-R0.1-SNAPSHOT'
@@ -46,12 +55,13 @@ dependencies {
         transitive = false
     }
     compileOnly(group: 'net.citizensnpcs', name: 'citizens-main', version: '2.0.29-SNAPSHOT')
+    compileOnly(group: 'io.lumine', name: 'Mythic-Dist', version: '5.0.3-SNAPSHOT')
     compileOnly 'com.mojang:authlib:1.5.21'
     compileOnly 'me.clip:placeholderapi:2.10.0'
     compileOnly 'org.black_ixx:playerpoints:3.2.2'
 }
 
-def targetJavaVersion = 8
+def targetJavaVersion = 16
 java {
     def javaVersion = JavaVersion.toVersion(targetJavaVersion)
     sourceCompatibility = javaVersion
