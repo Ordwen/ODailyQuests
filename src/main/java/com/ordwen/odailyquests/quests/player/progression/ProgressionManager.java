@@ -130,7 +130,6 @@ public class ProgressionManager implements Listener {
                         if (quest.getEntityName().equals(entityName)) {
                             isRequiredItem = true;
                         }
-                        System.out.println(isRequiredItem);
                     }
                     else {
                         if (quest.getItemRequired().getType().equals(material)) {
