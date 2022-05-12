@@ -5,10 +5,9 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.plugin.PluginLogger;
 
 import java.sql.*;
-import java.util.logging.Logger;
+import com.ordwen.odailyquests.tools.PluginLogger;
 
 public class MySQLManager {
 
@@ -23,9 +22,6 @@ public class MySQLManager {
 
     private final ConfigurationFiles configurationFiles;
     private HikariDataSource hikariDataSource;
-
-    /* init variables */
-    private static final Logger logger = PluginLogger.getLogger("O'DailyQuests");
 
     /**
      * Constructor.
@@ -57,9 +53,9 @@ public class MySQLManager {
     public void testConnection() throws SQLException {
         Connection con = getConnection();
         if (con.isValid(1)) {
-            logger.info(ChatColor.BLUE + "Plugin successfully connected to database " + con.getCatalog() + ".");
+            PluginLogger.info(ChatColor.BLUE + "Plugin successfully connected to database " + con.getCatalog() + ".");
             con.close();
-        } else logger.info(ChatColor.DARK_RED + "IMPOSSIBLE TO CONNECT TO DATABASE");
+        } else PluginLogger.info(ChatColor.DARK_RED + "IMPOSSIBLE TO CONNECT TO DATABASE");
     }
 
     /**
@@ -116,7 +112,7 @@ public class MySQLManager {
                 preparedStatement.execute();
 
                 preparedStatement.close();
-                logger.info(ChatColor.BLUE + "Table 'Player' created in database.");
+                PluginLogger.info(ChatColor.BLUE + "Table 'Player' created in database.");
             }
             if (!tableExists(connection, "PROGRESSION")) {
 
@@ -136,7 +132,7 @@ public class MySQLManager {
                 preparedStatement.execute();
 
                 preparedStatement.close();
-                logger.info(ChatColor.BLUE + "Table 'Progression' created in database.");
+                PluginLogger.info(ChatColor.BLUE + "Table 'Progression' created in database.");
             }
             connection.close();
         } catch (SQLException e) {

@@ -33,9 +33,6 @@ public class PlayerCompleter implements TabCompleter {
 
             return completions;
         }
-        else {
-            sender.sendMessage("aaa");
-            return Collections.emptyList();
-        }
+        return null;
     }
 }

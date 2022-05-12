@@ -7,19 +7,14 @@ import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.plugin.PluginLogger;
+import com.ordwen.odailyquests.tools.PluginLogger;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Utils {
-
-    /* init variables */
-    private static final Logger logger = PluginLogger.getLogger("O'DailyQuests");
 
     /**
      * Check if it is time to redraw quests for a player.
@@ -62,11 +57,11 @@ public class Utils {
                 case 3:
                     return System.currentTimeMillis() - timestamp >= 2678400000L;
                 default:
-                    logger.log(Level.SEVERE, ChatColor.RED + "Impossible to check player quests timestamp. The selected mode is incorrect.");
+                    PluginLogger.error(ChatColor.RED + "Impossible to check player quests timestamp. The selected mode is incorrect.");
                     break;
             }
         } else
-            logger.log(Level.SEVERE, ChatColor.RED + "Impossible to load player quests timestamp. The selected mode is incorrect.");
+            PluginLogger.error(ChatColor.RED + "Impossible to load player quests timestamp. The selected mode is incorrect.");
         return false;
     }
 
@@ -93,8 +88,8 @@ public class Utils {
 
         Bukkit.getPlayer(playerName).sendMessage(QuestsMessages.QUESTS_RENEWED.toString());
 
-        logger.info(ChatColor.GREEN + playerName + ChatColor.YELLOW + " inserted into the array.");
-        logger.info(ChatColor.GOLD + playerName + ChatColor.YELLOW + "'s quests have been renewed.");
+        PluginLogger.info(ChatColor.GREEN + playerName + ChatColor.YELLOW + " inserted into the array.");
+        PluginLogger.info(ChatColor.GOLD + playerName + ChatColor.YELLOW + "'s quests have been renewed.");
     }
 
     /**
@@ -124,14 +119,14 @@ public class Utils {
                     break;
             }
         } else
-            logger.log(Level.SEVERE, ChatColor.RED + "Impossible to load player quests. The selected mode is incorrect.");
+            PluginLogger.error(ChatColor.RED + "Impossible to load player quests. The selected mode is incorrect.");
 
         if (quest == null) {
-            logger.info(ChatColor.RED + "An error occurred while loading " + ChatColor.GOLD + playerName + ChatColor.RED + "'s quests.");
-            logger.info(ChatColor.RED + "Quest number " + id + " of player is null.");
-            logger.info(ChatColor.RED + "Try to do the following command to reset the player's progress :");
-            logger.info(ChatColor.GOLD + "/questsadmin reset " + playerName);
-            logger.info(ChatColor.RED + "If the problem persists, contact the developer.");
+            PluginLogger.info(ChatColor.RED + "An error occurred while loading " + ChatColor.GOLD + playerName + ChatColor.RED + "'s quests.");
+            PluginLogger.info(ChatColor.RED + "Quest number " + id + " of player is null.");
+            PluginLogger.info(ChatColor.RED + "Try to do the following command to reset the player's progress :");
+            PluginLogger.info(ChatColor.GOLD + "/questsadmin reset " + playerName);
+            PluginLogger.info(ChatColor.RED + "If the problem persists, contact the developer.");
         }
 
         return quest;
@@ -152,12 +147,12 @@ public class Utils {
 
             quest = questsArray.get(0);
 
-            logger.log(Level.SEVERE, "A quest of the player " + playerName + " could not be loaded.");
-            logger.log(Level.SEVERE, "This happens when a previously loaded quest has been deleted from the file.");
-            logger.log(Level.SEVERE, "To avoid this problem, you should reset player progressions when you delete quests from the files.");
-            logger.log(Level.SEVERE, "The first quest in the file was loaded instead.");
-            logger.log(Level.SEVERE, "");
-            logger.log(Level.SEVERE, "To reset the player's progress, do /qadmin reset " + playerName);
+            PluginLogger.error("A quest of the player " + playerName + " could not be loaded.");
+            PluginLogger.error("This happens when a previously loaded quest has been deleted from the file.");
+            PluginLogger.error("To avoid this problem, you should reset player progressions when you delete quests from the files.");
+            PluginLogger.error("The first quest in the file was loaded instead.");
+            PluginLogger.error("");
+            PluginLogger.error("To reset the player's progress, do /qadmin reset " + playerName);
         }
         return quest;
     }

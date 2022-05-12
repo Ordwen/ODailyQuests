@@ -7,7 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-public class EliteMobsAPI implements Listener {
+public class EliteMobsHook implements Listener {
 
     /**
      * Check if EliteMobs is enabled.

@@ -8,23 +8,18 @@ import com.ordwen.odailyquests.quests.player.progression.storage.mysql.SaveProgr
 import com.ordwen.odailyquests.quests.player.progression.storage.yaml.LoadProgressionYAML;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.player.progression.storage.yaml.SaveProgressionYAML;
+import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.plugin.PluginLogger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class QuestsManager implements Listener {
-
-    /* Logger for stacktrace */
-    private static final Logger logger = PluginLogger.getLogger("O'DailyQuests");
 
     /**
      * Getting instance of classes.
@@ -67,14 +62,14 @@ public class QuestsManager implements Listener {
                             configurationFiles.getConfigFile().getInt("temporality_mode"));
                     break;
                 default:
-                    logger.log(Level.SEVERE, "Impossible to load player quests : the selected storage mode is incorrect !");
+                    PluginLogger.error("Impossible to load player quests : the selected storage mode is incorrect !");
                     break;
             }
         } else {
-            logger.info(ChatColor.GOLD + playerName + ChatColor.RED + " detected into the array.");
-            logger.info(ChatColor.RED + "THAT IS NOT NORMAL.");
-            logger.info(ChatColor.RED + "The player quests will be never renewed.");
-            logger.info(ChatColor.RED + "Please inform developer.");
+            PluginLogger.info(ChatColor.GOLD + playerName + ChatColor.RED + " detected into the array.");
+            PluginLogger.info(ChatColor.RED + "THAT IS NOT NORMAL.");
+            PluginLogger.info(ChatColor.RED + "The player quests will be never renewed.");
+            PluginLogger.info(ChatColor.RED + "Please inform developer.");
         }
     }
 
@@ -90,7 +85,7 @@ public class QuestsManager implements Listener {
                 saveProgressionSQL.saveProgression(playerName, activeQuests);
                 break;
             default:
-                logger.log(Level.SEVERE, "Impossible to save player quests : the selected storage mode is incorrect !");
+                PluginLogger.error("Impossible to save player quests : the selected storage mode is incorrect !");
                 break;
         }
         activeQuests.remove(playerName);
@@ -132,7 +127,7 @@ public class QuestsManager implements Listener {
                 quests.put(quest, progression);
             }
         } else
-            logger.log(Level.SEVERE, ChatColor.RED + "Impossible to select quests for player. The selected mode is incorrect.");
+            PluginLogger.error(ChatColor.RED + "Impossible to select quests for player. The selected mode is incorrect.");
     }
 
     /**

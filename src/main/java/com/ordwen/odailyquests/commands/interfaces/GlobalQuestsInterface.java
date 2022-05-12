@@ -4,17 +4,16 @@ import com.ordwen.odailyquests.commands.interfaces.pagination.Items;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.quests.LoadQuests;
 import com.ordwen.odailyquests.quests.Quest;
+import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.PluginLogger;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 public class GlobalQuestsInterface {
 
@@ -32,12 +31,9 @@ public class GlobalQuestsInterface {
         this.configurationFiles = configurationFiles;
     }
 
-    /* Logger for stacktrace */
-    private final Logger logger = PluginLogger.getLogger("O'DailyQuests");
-
     /* init items */
-    List<Inventory> inventories = new ArrayList<>();
-    float invSize = 45;
+    private final List<Inventory> inventories = new ArrayList<>();
+    private static ItemStack emptyCaseItem;
 
     /**
      * Load global quests interface.
@@ -47,7 +43,8 @@ public class GlobalQuestsInterface {
         boolean allQuestsLoaded = false;
         int currentQuestIndex = 0;
 
-        ItemStack emptyCaseItem = new ItemStack(Material.valueOf(configurationFiles.getConfigFile().getConfigurationSection("interfaces.global_quests").getString(".empty_item")));
+        emptyCaseItem = new ItemStack(Material.valueOf(configurationFiles.getConfigFile().getConfigurationSection("interfaces.global_quests").getString(".empty_item")));
+        float invSize = 45;
         int neededInventories = (int) Math.ceil(LoadQuests.getGlobalQuests().size() / invSize);
 
         for (int i = 0; i < neededInventories; i++) {
@@ -93,7 +90,7 @@ public class GlobalQuestsInterface {
                 if (inv.getItem(j) == null) inv.setItem(j, emptyCaseItem);
             }
         }
-        logger.info(ChatColor.GREEN + "Global quests interface successfully loaded.");
+        PluginLogger.info(ChatColor.GREEN + "Global quests interface successfully loaded.");
     }
 
     /**
@@ -121,5 +118,14 @@ public class GlobalQuestsInterface {
      */
     public Inventory getGlobalQuestsPreviousPage(int page) {
         return inventories.get(page - 2);
+    }
+
+    /**
+     * Get empty case item material.
+     *
+     * @return material.
+     */
+    public static ItemStack getEmptyCaseItem() {
+        return emptyCaseItem;
     }
 }

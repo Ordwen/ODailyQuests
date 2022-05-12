@@ -1,8 +1,6 @@
 package com.ordwen.odailyquests.quests;
 
 import com.ordwen.odailyquests.rewards.Reward;
-import net.citizensnpcs.trait.VillagerProfession;
-import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;
 import org.bukkit.inventory.ItemStack;

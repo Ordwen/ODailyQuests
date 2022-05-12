@@ -5,16 +5,15 @@ import com.ordwen.odailyquests.quests.Quest;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.player.progression.Utils;
+import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.plugin.PluginLogger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.logging.Logger;
 
 public class LoadProgressionSQL {
 
@@ -29,9 +28,6 @@ public class LoadProgressionSQL {
     public LoadProgressionSQL(MySQLManager mySqlManager) {
         this.mySqlManager = mySqlManager;
     }
-
-    /* init variables */
-    private static final Logger logger = PluginLogger.getLogger("O'DailyQuests");
 
     /**
      * Load player quests progression.
@@ -78,7 +74,7 @@ public class LoadProgressionSQL {
 
                 activeQuests.put(playerName, playerQuests);
 
-                logger.info(ChatColor.GOLD + playerName + ChatColor.YELLOW + "'s quests have been loaded.");
+                PluginLogger.info(ChatColor.GOLD + playerName + ChatColor.YELLOW + "'s quests have been loaded.");
                 Bukkit.getPlayer(playerName).sendMessage(QuestsMessages.QUESTS_IN_PROGRESS.toString());
             }
         } else {

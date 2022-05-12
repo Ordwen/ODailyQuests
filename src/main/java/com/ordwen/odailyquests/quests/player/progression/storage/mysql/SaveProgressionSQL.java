@@ -3,8 +3,8 @@ package com.ordwen.odailyquests.quests.player.progression.storage.mysql;
 import com.ordwen.odailyquests.quests.Quest;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
+import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.ChatColor;
-import org.bukkit.plugin.PluginLogger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -25,9 +25,6 @@ public class SaveProgressionSQL {
     public SaveProgressionSQL(MySQLManager mySqlManager) {
         this.mySqlManager = mySqlManager;
     }
-
-    /* Logger */
-    private static final Logger logger = PluginLogger.getLogger("O'DailyQuests");
 
     /* requests */
 
@@ -53,7 +50,7 @@ public class SaveProgressionSQL {
             ResultSet result = testQuery.executeQuery();
 
             if (result.next()) {
-                logger.info(ChatColor.GOLD + playerName + ChatColor.YELLOW + " detected into database.");
+                PluginLogger.info(ChatColor.GOLD + playerName + ChatColor.YELLOW + " detected into database.");
 
                 String query = "UPDATE PLAYER\n" +
                         "SET PLAYERTIMESTAMP = " + timestamp + ", ACHIEVEDQUESTS = " + achievedQuests + "\n" +
@@ -87,7 +84,7 @@ public class SaveProgressionSQL {
                     index++;
                 }
 
-                logger.info(ChatColor.GOLD + playerName + ChatColor.YELLOW + " added to database.");
+                PluginLogger.info(ChatColor.GOLD + playerName + ChatColor.YELLOW + " added to database.");
             }
 
             testQuery.close();

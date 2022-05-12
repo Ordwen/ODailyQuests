@@ -134,7 +134,7 @@ public class Items {
      */
     public static ItemStack getPlayerHead(Player player) {
 
-        skullMeta.setOwnerProfile(player.getPlayerProfile());
+        skullMeta.setOwningPlayer(player);
 
         List<String> itemDesc = configurationFiles.getConfigFile().getConfigurationSection("interfaces.player_quests.player_head").getStringList(".item_description");
         for (String string : itemDesc) {

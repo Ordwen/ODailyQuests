@@ -6,17 +6,13 @@ import com.ordwen.odailyquests.quests.Quest;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.player.progression.Utils;
+import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.plugin.PluginLogger;
 
 import java.util.HashMap;
-import java.util.logging.Logger;
 
 public class LoadProgressionYAML {
-
-    /* Logger for stacktrace */
-    private static final Logger logger = PluginLogger.getLogger("O'DailyQuests");
 
     /**
      * Getting instance of classes.
@@ -74,7 +70,7 @@ public class LoadProgressionYAML {
 
                 activeQuests.put(playerName, playerQuests);
 
-                logger.info(ChatColor.GOLD + playerName + ChatColor.YELLOW + "'s quests have been loaded.");
+                PluginLogger.info(ChatColor.GOLD + playerName + ChatColor.YELLOW + "'s quests have been loaded.");
                 Bukkit.getPlayer(playerName).sendMessage(QuestsMessages.QUESTS_IN_PROGRESS.toString());
             }
         } else {

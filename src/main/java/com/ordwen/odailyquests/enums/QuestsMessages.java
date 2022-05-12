@@ -2,10 +2,8 @@ package com.ordwen.odailyquests.enums;
 
 import com.ordwen.odailyquests.tools.ColorConvert;
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @SuppressWarnings("SpellCheckingInspection")
@@ -19,10 +17,17 @@ public enum QuestsMessages {
     INVALID_CATEGORY("invalid_category", "&cInvalid quest category."),
     INVALID_PLAYER("invalid_player", "&cThis player doesn't exist, or is offline."),
     INVALID_QUEST_ID("invalid_quest_id","&cYou must specify a valid quest ID, between 1 and 3."),
+    INVALID_QUEST_INDEX("invalid_quest_index", "&cThe specified index is invalid."),
 
+    CATEGORIZED_ENABLED("categorized_enabled", "&cCategorized quests are enabled, the global menu is not available."),
     CATEGORIZED_DISABLED("categorized_disabled","&cCategorized quests are disabled, only the global menu is available."),
     GLOBAL_DISABLED("global_disabled", "&cGlobal quests are disabled, only the categorized menus are available."),
     QUEST_ALREADY_ACHIEVED("already_achieved", "&cThis quest is already achieved."),
+
+    HOLO_CATEGORIZED_ENABLED("hologram_categorized_enabled", "&cCategorized quests are enabled, impossible to create the global hologram."),
+    HOLO_CATEGORIZED_DISABLED("hologram_categorized_disabled", "&cCategorized quests are disabled, impossible to create the categorized holograms."),
+    HOLO_DELETED("hologram_deleted","&aHologram successfully deleted."),
+    HOLO_INVALID_INDEX("hologram_invalid_index", "&cInvalid index for the hologram."),
 
     QUESTS_IN_PROGRESS("quests_in_progress", "&eYou still have daily quests to complete !"),
     QUESTS_RENEWED("quests_renewed", "&aYou have new daily quests to complete !"),

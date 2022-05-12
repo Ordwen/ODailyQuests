@@ -12,7 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-public class CitizensAPI implements Listener {
+public class CitizensHook implements Listener {
 
     private final ConfigurationFiles configurationFiles;
     private final GlobalQuestsInterface globalQuestsInterface;
@@ -31,9 +31,9 @@ public class CitizensAPI implements Listener {
      *
      * @param configurationFiles configuration files class.
      */
-    public CitizensAPI(ConfigurationFiles configurationFiles,
-                       GlobalQuestsInterface globalQuestsInterface,
-                       CategorizedQuestsInterfaces categorizedQuestsInterfaces) {
+    public CitizensHook(ConfigurationFiles configurationFiles,
+                        GlobalQuestsInterface globalQuestsInterface,
+                        CategorizedQuestsInterfaces categorizedQuestsInterfaces) {
         this.configurationFiles = configurationFiles;
         this.globalQuestsInterface = globalQuestsInterface;
         this.categorizedQuestsInterfaces = categorizedQuestsInterfaces;

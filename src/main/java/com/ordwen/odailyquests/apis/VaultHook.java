@@ -8,7 +8,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.util.logging.Logger;
 
-public class VaultAPI {
+public class VaultHook {
 
     /* Vault instances */
     private static Economy econ = null;

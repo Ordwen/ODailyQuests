@@ -10,7 +10,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 
-public class ProgressionFile {
+public class HologramsFile {
 
     /**
      * Getting instance of main class.
@@ -21,48 +21,48 @@ public class ProgressionFile {
      * Main class instance constructor.
      * @param oDailyQuests main class.
      */
-    public ProgressionFile(ODailyQuests oDailyQuests) {
+    public HologramsFile(ODailyQuests oDailyQuests) {
         this.oDailyQuests = oDailyQuests;
     }
 
-    private File progressionFile;
-    private FileConfiguration progression;
+    private File hologramsFile;
+    private FileConfiguration holograms;
 
     /**
      * Get the configuration file.
      * @return config file.
      */
-    public FileConfiguration getProgressionFileConfiguration() {
-        return this.progression;
+    public FileConfiguration getHologramsFileConfiguration() {
+        return this.holograms;
     }
 
     /**
      * Get the file.
      * @return file.
      */
-    public File getProgressionFile() { return this.progressionFile; }
+    public File getHologramsFile() { return this.hologramsFile; }
 
     /**
      * Init progression file.
      */
-    public void loadProgressionFile() {
+    public void loadHologramsFile() {
+        hologramsFile = new File(oDailyQuests.getDataFolder(), "holograms.yml");
 
-        progressionFile = new File(oDailyQuests.getDataFolder(), "progression.yml");
-
-        if (!progressionFile.exists()) {
-            oDailyQuests.saveResource("progression.yml", false);
-            PluginLogger.info(ChatColor.GREEN + "Progression file created (YAML).");
+        if (!hologramsFile.exists()) {
+            oDailyQuests.saveResource("holograms.yml", false);
+            PluginLogger.info(ChatColor.GREEN + "Holograms file created (YAML).");
         }
 
-        progression = new YamlConfiguration();
+        holograms = new YamlConfiguration();
 
         try {
-            progression.load(progressionFile);
+            holograms.load(hologramsFile);
         } catch (InvalidConfigurationException | IOException e) {
-            PluginLogger.info(ChatColor.RED + "An error occurred on the load of the progression file.");
+            PluginLogger.info(ChatColor.RED + "An error occurred on the load of the holograms file.");
             PluginLogger.info(ChatColor.RED + "Please inform the developer.");
             e.printStackTrace();
         }
-        PluginLogger.info(ChatColor.GREEN + "Progression file successfully loaded (YAML).");
+        PluginLogger.info(ChatColor.GREEN + "Holograms file successfully loaded (YAML).");
     }
+
 }

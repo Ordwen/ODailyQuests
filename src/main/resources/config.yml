@@ -62,10 +62,16 @@ temporality_initials:
 # Will be given when the player has completed all their daily quests.
 # The syntax is the same as for quest rewards.
 global_reward:
+  enabled: true
   reward_type: COMMAND
   commands:
     - "eco give %player% 5000"
     - "give %player% diamond_block 32"
+
+# If a player has two quests of the same type and with the same item/entity,
+# choose if they should progress simultaneously
+# or if the first should be completed before the second progresses.
+synchronised_progression: false
 
 # interfaces settings
 # NEVER DELETE A %variable%

@@ -2,8 +2,8 @@ package com.ordwen.odailyquests.enums;
 
 public enum QuestsPermissions {
 
-    QUEST_USE("odailyquests.use"), // allow using /quests command
-    QUEST_SHOW("odailyquests.show"), // allow using /quests show command
+    QUEST_USE("odailyquests.use"),
+    QUEST_SHOW("odailyquests.show"),
     QUESTS_SHOW_PLAYER("odailyquests.player"),
     QUESTS_SHOW_GLOBAL("odailyquests.global"),
     QUESTS_SHOW_EASY("odailyquests.easy"),

@@ -1,6 +1,10 @@
 package com.ordwen.odailyquests;
 
 import com.ordwen.odailyquests.apis.*;
+import com.ordwen.odailyquests.apis.PlaceholderAPIHook;
+import com.ordwen.odailyquests.apis.holograms.HolographicDisplaysHook;
+import com.ordwen.odailyquests.apis.holograms.LoadHolograms;
+import com.ordwen.odailyquests.apis.holograms.HologramsManager;
 import com.ordwen.odailyquests.commands.AdminCommands;
 import com.ordwen.odailyquests.commands.PlayerCommands;
 import com.ordwen.odailyquests.commands.completers.AdminCompleter;
@@ -11,6 +15,7 @@ import com.ordwen.odailyquests.commands.interfaces.InterfacesManager;
 import com.ordwen.odailyquests.commands.interfaces.PlayerQuestsInterface;
 import com.ordwen.odailyquests.commands.interfaces.pagination.Items;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
+import com.ordwen.odailyquests.files.HologramsFile;
 import com.ordwen.odailyquests.files.ProgressionFile;
 import com.ordwen.odailyquests.files.QuestsFiles;
 import com.ordwen.odailyquests.quests.player.progression.ValidateVillagerTradeQuest;
@@ -29,11 +34,8 @@ import com.ordwen.odailyquests.tools.UpdateChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.PluginLogger;
+import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public final class ODailyQuests extends JavaPlugin {
 
@@ -52,31 +54,32 @@ public final class ODailyQuests extends JavaPlugin {
     private QuestsManager questsManager;
     private LoadProgressionYAML loadProgressionYAML;
     private SaveProgressionYAML saveProgressionYAML;
-    private ProgressionManager progressionManager;
-    private CitizensAPI citizensAPI;
+    private CitizensHook citizensHook;
     private MySQLManager mySqlManager;
     private GlobalReward globalReward;
     private RewardManager rewardManager;
     private LoadProgressionSQL loadProgressionSQL = null;
     private SaveProgressionSQL saveProgressionSQL = null;
-
-    /* Technical items */
-    Logger logger = PluginLogger.getLogger("O'DailyQuests");
+    public HolographicDisplaysHook holographicDisplaysHook;
+    private HologramsFile hologramsFile;
+    public HologramsManager hologramsManager;
+    private LoadHolograms loadHolograms;
 
     @Override
     public void onEnable() {
-        logger.info(ChatColor.GOLD + "Plugin is starting...");
+
+        PluginLogger.info(ChatColor.GOLD + "Plugin is starting...");
 
         /* Check for update */
-        logger.info(ChatColor.GOLD + "Checking for update...");
+        PluginLogger.info(ChatColor.GOLD + "Checking for update...");
         new UpdateChecker(this, 100990).getVersion(version -> {
             if (this.getDescription().getVersion().equals(version)) {
-                logger.info(ChatColor.GREEN + "Plugin is up to date.");
+                PluginLogger.info(ChatColor.GREEN + "Plugin is up to date.");
             } else {
-                logger.info(ChatColor.GOLD + "A new update is available !");
-                logger.info(ChatColor.GOLD + "Current version : " + ChatColor.RED + this.getDescription().getVersion() + ChatColor.GOLD + ", Available version : " + ChatColor.GREEN + version);
-                logger.info(ChatColor.GOLD + "Please download latest version :");
-                logger.info(ChatColor.GOLD + "https://www.spigotmc.org/resources/odailyquests.100990/");
+                PluginLogger.info(ChatColor.GOLD + "A new update is available !");
+                PluginLogger.info(ChatColor.GOLD + "Current version : " + ChatColor.RED + this.getDescription().getVersion() + ChatColor.GOLD + ", Available version : " + ChatColor.GREEN + version);
+                PluginLogger.info(ChatColor.GOLD + "Please download latest version :");
+                PluginLogger.info(ChatColor.GOLD + "https://www.spigotmc.org/resources/odailyquests.100990/");
             }
         });
 
@@ -102,6 +105,9 @@ public final class ODailyQuests extends JavaPlugin {
         /* Load class instances */
         this.questsFiles = new QuestsFiles(this);
         this.progressionFile = new ProgressionFile(this);
+        this.hologramsFile = new HologramsFile(this);
+        this.hologramsManager = new HologramsManager(hologramsFile);
+        this.loadHolograms = new LoadHolograms(hologramsFile);
         this.loadQuests = new LoadQuests(questsFiles, configurationFiles);
         this.items = new Items(configurationFiles);
         this.globalQuestsInterface = new GlobalQuestsInterface(configurationFiles);
@@ -113,53 +119,60 @@ public final class ODailyQuests extends JavaPlugin {
         this.rewardManager = new RewardManager(configurationFiles);
         this.loadProgressionYAML = new LoadProgressionYAML(progressionFile);
         this.saveProgressionYAML = new SaveProgressionYAML(progressionFile);
-        this.progressionManager = new ProgressionManager();
-        this.citizensAPI = new CitizensAPI(configurationFiles, globalQuestsInterface, categorizedQuestsInterfaces);
-
-        /* Load dependencies */
-
-        // VAULT - CMI
-        if (!VaultAPI.setupEconomy()) {
-            logger.info(ChatColor.RED + "No compatible plugin detected for reward type 'MONEY'.");
-            logger.info(ChatColor.RED + "Quests with reward type 'MONEY' will not work.");
-        } else {
-            logger.info(ChatColor.YELLOW + "Vault" + ChatColor.GREEN + " successfully hooked.");
-        }
-
-        // TOKENMANAGER - PLAYERPOINTS
-        if (!TokenManagerAPI.setupTokenManager()) {
-            PlayerPoints.setupPlayerPointsAPI();
-            if (PlayerPoints.isPlayerPointsSetup()) {
-                logger.info(ChatColor.YELLOW + "PlayerPoints" + ChatColor.GREEN + " successfully hooked.");
-            } else {
-                logger.info(ChatColor.RED + "No compatible plugin detected for reward type 'POINTS'.");
-                logger.info(ChatColor.RED + "Quests with reward type 'POINTS' will not work.");
-            }
-        } else {
-            logger.info(ChatColor.YELLOW + "TokenManager" + ChatColor.GREEN + " successfully hooked.");
-        }
-
-        // CITIZENS
-        if (CitizensAPI.setupCitizens()) {
-            getServer().getPluginManager().registerEvents(citizensAPI, this);
-            logger.info(ChatColor.YELLOW + "Citizens" + ChatColor.GREEN + " successfully hooked.");
-        } else logger.info(ChatColor.YELLOW + "Citizens" + ChatColor.GOLD + " not detected. NPCs will not work.");
-
-        // ELITEMOBS
-        if (EliteMobsAPI.isEliteMobsSetup()) {
-            logger.info(ChatColor.YELLOW + "EliteMobs" + ChatColor.GREEN + " successfully hooked.");
-            getServer().getPluginManager().registerEvents(new EliteMobsAPI(), this);
-        }
-
-        // MYTHICMOBS
-        if (MythicMobsHook.isMythicMobsSetup()) {
-            logger.info(ChatColor.YELLOW + "MythicMobs" + ChatColor.GREEN + " successfully hooked.");
-            getServer().getPluginManager().registerEvents(new MythicMobsHook(), this);
-        }
+        this.citizensHook = new CitizensHook(configurationFiles, globalQuestsInterface, categorizedQuestsInterfaces);
 
         /* Load files */
         questsFiles.loadQuestsFiles();
         progressionFile.loadProgressionFile();
+        hologramsFile.loadHologramsFile();
+
+        /* Load dependencies */
+
+        // VAULT - CMI
+        if (!VaultHook.setupEconomy()) {
+            PluginLogger.info(ChatColor.RED + "No compatible plugin detected for reward type 'MONEY'.");
+            PluginLogger.info(ChatColor.RED + "Quests with reward type 'MONEY' will not work.");
+        } else {
+            PluginLogger.info(ChatColor.YELLOW + "Vault" + ChatColor.GREEN + " successfully hooked.");
+        }
+
+        // TOKENMANAGER - PLAYERPOINTS
+        if (!TokenManagerHook.setupTokenManager()) {
+            PlayerPointsHook.setupPlayerPointsAPI();
+            if (PlayerPointsHook.isPlayerPointsSetup()) {
+                PluginLogger.info(ChatColor.YELLOW + "PlayerPoints" + ChatColor.GREEN + " successfully hooked.");
+            } else {
+                PluginLogger.info(ChatColor.RED + "No compatible plugin detected for reward type 'POINTS'.");
+                PluginLogger.info(ChatColor.RED + "Quests with reward type 'POINTS' will not work.");
+            }
+        } else {
+            PluginLogger.info(ChatColor.YELLOW + "TokenManager" + ChatColor.GREEN + " successfully hooked.");
+        }
+
+        // CITIZENS
+        if (CitizensHook.setupCitizens()) {
+            getServer().getPluginManager().registerEvents(citizensHook, this);
+            PluginLogger.info(ChatColor.YELLOW + "Citizens" + ChatColor.GREEN + " successfully hooked.");
+        } else PluginLogger.info(ChatColor.YELLOW + "Citizens" + ChatColor.GOLD + " not detected. NPCs will not work.");
+
+        // ELITEMOBS
+        if (EliteMobsHook.isEliteMobsSetup()) {
+            PluginLogger.info(ChatColor.YELLOW + "EliteMobs" + ChatColor.GREEN + " successfully hooked.");
+            getServer().getPluginManager().registerEvents(new EliteMobsHook(), this);
+        }
+
+        // MYTHICMOBS
+        if (MythicMobsHook.isMythicMobsSetup()) {
+            PluginLogger.info(ChatColor.YELLOW + "MythicMobs" + ChatColor.GREEN + " successfully hooked.");
+            getServer().getPluginManager().registerEvents(new MythicMobsHook(), this);
+        }
+
+        // HOLOGRAPHICDISPLAYS
+        if (HolographicDisplaysHook.isHolographicDisplaysSetup()) {
+            PluginLogger.info(ChatColor.YELLOW + "HolographicDisplays" + ChatColor.GREEN + " successfully hooked.");
+            holographicDisplaysHook = new HolographicDisplaysHook();
+            loadHolograms.loadHolograms();
+        } else PluginLogger.info(ChatColor.YELLOW + "HolographicDisplays" + ChatColor.GOLD + " not detected. Holograms will not work.");
 
         /* Load quests */
         loadQuests.loadCategories();
@@ -176,11 +189,17 @@ public final class ODailyQuests extends JavaPlugin {
             categorizedQuestsInterfaces.loadCategorizedInterfaces();
         else globalQuestsInterface.loadGlobalQuestsInterface();
 
+        interfacesManager.initEmptyCaseItems();
+
+        /* Hook PAPI */
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new PlaceholderAPIHook().register();
-            logger.info(ChatColor.YELLOW + "PlaceholderAPI" + ChatColor.GREEN + " successfully hooked.");
+            PluginLogger.info(ChatColor.YELLOW + "PlaceholderAPI" + ChatColor.GREEN + " successfully hooked.");
         } else
-            logger.info(ChatColor.YELLOW + "PlaceholderAPI" + ChatColor.GOLD + " not detected. Placeholders will not work.");
+            PluginLogger.info(ChatColor.YELLOW + "PlaceholderAPI" + ChatColor.GOLD + " not detected. Placeholders will not work.");
+
+        /* Load utils */
+        ProgressionManager.isSynchronised = configurationFiles.getConfigFile().getBoolean("synchronised_progression");
 
         /* Load commands */
         getCommand("quests").setExecutor(new PlayerCommands(configurationFiles, globalQuestsInterface, categorizedQuestsInterfaces));
@@ -194,7 +213,7 @@ public final class ODailyQuests extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ValidateVillagerTradeQuest(), this);
         getServer().getPluginManager().registerEvents(interfacesManager, this);
         getServer().getPluginManager().registerEvents(questsManager, this);
-        getServer().getPluginManager().registerEvents(progressionManager, this);
+        getServer().getPluginManager().registerEvents(new ProgressionManager(), this);
 
         /* Avoid server/plugin reload errors */
         if (getServer().getOnlinePlayers().size() > 0) {
@@ -220,14 +239,14 @@ public final class ODailyQuests extends JavaPlugin {
                     }
                     break;
                 default:
-                    logger.log(Level.SEVERE, "Impossible to load player quests : the selected storage mode is incorrect !");
+                    PluginLogger.error("Impossible to load player quests : the selected storage mode is incorrect !");
                     break;
             }
-            logger.log(Level.WARNING, "It seems that you have reloaded the server.");
-            logger.log(Level.WARNING, "Think that this can cause problems, especially in the data backup.");
-            logger.log(Level.WARNING, "You should restart the server instead.");
+            PluginLogger.error("It seems that you have reloaded the server.");
+            PluginLogger.error("Think that this can cause problems, especially in the data backup.");
+            PluginLogger.error("You should restart the server instead.");
         }
-        logger.info(ChatColor.GREEN + "Plugin is started !");
+        PluginLogger.info(ChatColor.GREEN + "Plugin is started !");
     }
 
     @Override
@@ -249,12 +268,12 @@ public final class ODailyQuests extends JavaPlugin {
                     }
                     break;
                 default:
-                    logger.log(Level.SEVERE, "Impossible to save player quests : the selected storage mode is incorrect !");
+                    PluginLogger.error("Impossible to save player quests : the selected storage mode is incorrect !");
                     break;
             }
         }
 
-        logger.info(ChatColor.RED + "Plugin is shutting down...");
+        PluginLogger.info(ChatColor.RED + "Plugin is shutting down...");
     }
 
 }

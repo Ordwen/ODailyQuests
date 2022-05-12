@@ -3,7 +3,7 @@ package com.ordwen.odailyquests.apis;
 import org.black_ixx.playerpoints.PlayerPointsAPI;
 import org.bukkit.Bukkit;
 
-public class PlayerPoints {
+public class PlayerPointsHook {
 
     private static PlayerPointsAPI playerPointsAPI;
 

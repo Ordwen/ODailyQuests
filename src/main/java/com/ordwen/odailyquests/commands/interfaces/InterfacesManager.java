@@ -13,10 +13,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.Merchant;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantInventory;
 import org.bukkit.plugin.PluginLogger;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class InterfacesManager implements Listener {
@@ -45,6 +47,7 @@ public class InterfacesManager implements Listener {
     }
 
     /* variables */
+    private List<Material> emptyCaseItems;
     private static String playerQuestsInventoryName;
     private static String globalQuestsInventoryName;
     private static String easyQuestsInventoryName;
@@ -62,6 +65,20 @@ public class InterfacesManager implements Listener {
         hardQuestsInventoryName = ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(configurationFiles.getConfigFile().getConfigurationSection("interfaces.hard_quests").getString(".inventory_name")));
 
         logger.info(ChatColor.GREEN + "Interfaces names successfully loaded.");
+    }
+
+    /**
+     * Init empty case items.
+     */
+    public void initEmptyCaseItems() {
+        emptyCaseItems = new ArrayList<>();
+        emptyCaseItems.add(PlayerQuestsInterface.getEmptyCaseItem());
+        if (GlobalQuestsInterface.getEmptyCaseItem() != null) {
+            emptyCaseItems.add(GlobalQuestsInterface.getEmptyCaseItem().getType());
+        }
+        for (ItemStack item : CategorizedQuestsInterfaces.getEmptyCaseItems()) {
+            emptyCaseItems.add(item.getType());
+        }
     }
 
     @EventHandler
@@ -94,13 +111,23 @@ public class InterfacesManager implements Listener {
             event.setCancelled(true);
 
             if (event.getCurrentItem() != null
-                    && !event.getCurrentItem().getType().equals(PlayerQuestsInterface.getEmptyCaseItem())
+                    && !emptyCaseItems.contains(event.getCurrentItem().getType())
                     && event.getClick().isLeftClick()
                     && event.getSlot() < event.getView().getTopInventory().getSize()
                     && !event.getSlotType().equals(InventoryType.SlotType.QUICKBAR)) {
-                if (event.getCurrentItem().getType() != Material.PLAYER_HEAD) {
-                    ProgressionManager.validateGetQuestType(event.getWhoClicked().getName(), event.getCurrentItem().getType());
-                } else if (!event.getCurrentItem().equals(Items.getPlayerHead((Player) event.getWhoClicked()))){
+                if (event.getCurrentItem().getType() != Material.PLAYER_HEAD
+                        && inventoryName.startsWith(playerQuestsInventoryName)) {
+                    int index;
+                    switch (event.getSlot()) {
+                        case 11 -> index = 1;
+                        case 13 -> index = 2;
+                        case 15 -> index = 3;
+                        default -> {
+                            return;
+                        }
+                    }
+                    ProgressionManager.validateGetQuestType(event.getWhoClicked().getName(), index);
+                } else if (!event.getCurrentItem().equals(Items.getPlayerHead((Player) event.getWhoClicked()))) {
                     int page = Integer.parseInt(inventoryName.substring(inventoryName.length() - 1));
                     if (event.getCurrentItem().getItemMeta() != null) {
                         if (event.getCurrentItem().getItemMeta().getDisplayName().equals(ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(configurationFiles.getConfigFile().getConfigurationSection("interfaces").getString(".next_item_name"))))) {

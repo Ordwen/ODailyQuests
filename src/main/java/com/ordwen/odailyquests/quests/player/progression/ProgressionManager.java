@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.quests.player.progression;
 
 import com.ordwen.odailyquests.enums.QuestsMessages;
+import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.quests.Quest;
 import com.ordwen.odailyquests.quests.QuestType;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
@@ -23,51 +24,52 @@ import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.inventory.*;
 
 import java.util.HashMap;
-import java.util.Objects;
 
 public class ProgressionManager implements Listener {
 
+    public static boolean isSynchronised;
+
     @EventHandler
     public void onBlockBreakEvent(BlockBreakEvent event) {
-        setPlayerQuestProgression(event.getPlayer().getName(), event.getBlock().getType(), null, null, 1, QuestType.BREAK);
+        setPlayerQuestProgression(event.getPlayer().getName(), new ItemStack(event.getBlock().getType()), null, null, 1, QuestType.BREAK);
     }
 
     @EventHandler
     public void onBlockPlaceEvent(BlockPlaceEvent event) {
-        setPlayerQuestProgression(event.getPlayer().getName(), event.getBlock().getType(), null, null, 1, QuestType.PLACE);
+        setPlayerQuestProgression(event.getPlayer().getName(), new ItemStack(event.getBlock().getType()), null, null, 1, QuestType.PLACE);
     }
 
     @EventHandler
     public void onPickupItemEvent(EntityPickupItemEvent event) {
         if (event.getEntity() instanceof Player) {
-            setPlayerQuestProgression(event.getEntity().getName(), event.getItem().getItemStack().getType(), null, null, 1, QuestType.PICKUP);
+            setPlayerQuestProgression(event.getEntity().getName(), event.getItem().getItemStack(), null, null, event.getItem().getItemStack().getAmount(), QuestType.PICKUP);
         }
     }
 
     @EventHandler
     public void onCraftItemEvent(CraftItemEvent event) {
-        setPlayerQuestProgression(event.getWhoClicked().getName(), event.getRecipe().getResult().getType(), null, null,1, QuestType.CRAFT);
+        setPlayerQuestProgression(event.getWhoClicked().getName(), event.getRecipe().getResult(), null, null, 1, QuestType.CRAFT);
     }
 
     @EventHandler
     public void onProjectileLaunch(ProjectileLaunchEvent event) {
         if (event.getEntity().getShooter() instanceof Player) {
             switch (event.getEntity().getType()) {
-                case ENDER_PEARL -> setPlayerQuestProgression(((Player) event.getEntity().getShooter()).getName(), Material.ENDER_PEARL, null, null, 1, QuestType.LAUNCH);
-                case EGG -> setPlayerQuestProgression(((Player) event.getEntity().getShooter()).getName(), Material.EGG, null, null, 1, QuestType.LAUNCH);
-                case ARROW -> setPlayerQuestProgression(((Player) event.getEntity().getShooter()).getName(), Material.ARROW, null, null, 1, QuestType.LAUNCH);
+                case ENDER_PEARL -> setPlayerQuestProgression(((Player) event.getEntity().getShooter()).getName(), new ItemStack(Material.ENDER_PEARL), null, null, 1, QuestType.LAUNCH);
+                case EGG -> setPlayerQuestProgression(((Player) event.getEntity().getShooter()).getName(), new ItemStack(Material.EGG), null, null, 1, QuestType.LAUNCH);
+                case ARROW -> setPlayerQuestProgression(((Player) event.getEntity().getShooter()).getName(), new ItemStack(Material.ARROW), null, null, 1, QuestType.LAUNCH);
             }
         }
     }
 
     @EventHandler
     public void onItemConsumeEvent(PlayerItemConsumeEvent event) {
-        setPlayerQuestProgression(event.getPlayer().getName(), event.getItem().getType(), null, null, 1, QuestType.CONSUME);
+        setPlayerQuestProgression(event.getPlayer().getName(), event.getItem(), null, null, 1, QuestType.CONSUME);
     }
 
     @EventHandler
     public void onFurnaceExtractEvent(FurnaceExtractEvent event) {
-        setPlayerQuestProgression(event.getPlayer().getName(), event.getItemType(), null, null, event.getItemAmount(), QuestType.COOK);
+        setPlayerQuestProgression(event.getPlayer().getName(), new ItemStack(event.getItemType()), null, null, event.getItemAmount(), QuestType.COOK);
     }
 
     @EventHandler
@@ -79,13 +81,13 @@ public class ProgressionManager implements Listener {
 
     @EventHandler
     public void onEnchantItemEvent(EnchantItemEvent event) {
-        setPlayerQuestProgression(event.getEnchanter().getName(), event.getItem().getType(), null, null, 1, QuestType.ENCHANT);
+        setPlayerQuestProgression(event.getEnchanter().getName(), event.getItem(), null, null, 1, QuestType.ENCHANT);
     }
 
     @EventHandler
     public void onPlayerFishEvent(PlayerFishEvent event) {
         if (event.getState() == PlayerFishEvent.State.CAUGHT_FISH && event.getCaught() instanceof Item) {
-            setPlayerQuestProgression(event.getPlayer().getName(), ((Item) event.getCaught()).getItemStack().getType(), null, null, 1, QuestType.FISH);
+            setPlayerQuestProgression(event.getPlayer().getName(), ((Item) event.getCaught()).getItemStack(), null, null, 1, QuestType.FISH);
         }
     }
 
@@ -108,11 +110,12 @@ public class ProgressionManager implements Listener {
 
     /**
      * Increase player quest progression.
+     *
      * @param playerName player name.
-     * @param material the material of the event-block.
-     * @param type quest type.
+     * @param item   the material of the event-block.
+     * @param type       quest type.
      */
-    public static void setPlayerQuestProgression(String playerName, Material material, EntityType entity, String entityName, int quantity, QuestType type) {
+    public static void setPlayerQuestProgression(String playerName, ItemStack item, EntityType entity, String entityName, int quantity, QuestType type) {
         if (QuestsManager.getActiveQuests().containsKey(playerName)) {
             HashMap<Quest, Progression> playerQuests = QuestsManager.getActiveQuests().get(playerName).getPlayerQuests();
             for (Quest quest : playerQuests.keySet()) {
@@ -130,22 +133,31 @@ public class ProgressionManager implements Listener {
                         if (quest.getEntityName().equals(entityName)) {
                             isRequiredItem = true;
                         }
-                    }
-                    else {
-                        if (quest.getItemRequired().getType().equals(material)) {
-                            isRequiredItem = true;
+                    } else {
+                        if (quest.getItemRequired().hasItemMeta()) {
+                            if (item.hasItemMeta()) {
+                                isRequiredItem =
+                                        quest.getItemRequired().getType() == item.getType()
+                                        && quest.getItemRequired().getItemMeta().getDisplayName().equals(item.getItemMeta().getDisplayName())
+                                        && quest.getItemRequired().getItemMeta().getLore().equals(item.getItemMeta().getLore());
+                            }
                         }
+                        else isRequiredItem = (quest.getItemRequired().getType() == item.getType());
+
                     }
                     if (isRequiredItem) {
                         for (int i = 0; i < quantity; i++) {
                             questProgression.progression++;
                         }
-                        if (questProgression.getProgression() == quest.getAmountRequired()) {
+                        if (questProgression.getProgression() >= quest.getAmountRequired()) {
                             questProgression.isAchieved = true;
                             Bukkit.getPlayer(playerName).sendMessage(QuestsMessages.QUEST_ACHIEVED.toString().replace("%questName%", quest.getQuestName()));
                             QuestsManager.getActiveQuests().get(playerName).increaseAchievedQuests(playerName);
                             RewardManager.sendQuestReward(playerName, quest.getReward());
                         }
+                    }
+                    if (!isSynchronised) {
+                        break;
                     }
                 }
             }
@@ -154,42 +166,55 @@ public class ProgressionManager implements Listener {
 
     /**
      * Check if player can validate a quest with type GET.
+     *
      * @param playerName player to check.
-     * @param material material to check.
+     * @param index index of the player quest.
      */
-    public static void validateGetQuestType(String playerName, Material material) {
+    public static void validateGetQuestType(String playerName, int index) {
         if (QuestsManager.getActiveQuests().containsKey(playerName)) {
             HashMap<Quest, Progression> playerQuests = QuestsManager.getActiveQuests().get(playerName).getPlayerQuests();
+            int i = 1;
             for (Quest quest : playerQuests.keySet()) {
-                if (quest.getType() == QuestType.GET && quest.getItemRequired().getType().equals(material)) {
+                if (i == index && quest.getType() == QuestType.GET) {
                     Progression questProgression = playerQuests.get(quest);
                     if (!questProgression.isAchieved()) {
                         PlayerInventory playerInventory = Bukkit.getPlayer(playerName).getInventory();
-                        if (getAmount(playerInventory, quest.getItemRequired().getType()) >= quest.getAmountRequired()) {
+                        if (getAmount(playerInventory, quest.getItemRequired()) >= quest.getAmountRequired()) {
                             questProgression.isAchieved = true;
                             Bukkit.getPlayer(playerName).sendMessage(QuestsMessages.QUEST_ACHIEVED.toString().replace("%questName%", quest.getQuestName()));
                             Bukkit.getPlayer(playerName).closeInventory();
                             RewardManager.sendQuestReward(playerName, quest.getReward());
                         } else {
-                            Objects.requireNonNull(Bukkit.getPlayer(playerName)).sendMessage(QuestsMessages.NOT_ENOUGH_ITEM.toString());
+                            Bukkit.getPlayer(playerName).sendMessage(QuestsMessages.NOT_ENOUGH_ITEM.toString());
                         }
                     }
+                    break;
                 }
+                i++;
             }
         }
     }
 
     /**
      * Count amount of an item in player inventory.
+     *
      * @param playerInventory player inventory to check.
-     * @param material material to check.
+     * @param item        material to check.
      * @return amount of material.
      */
-    private static int getAmount(PlayerInventory playerInventory, Material material) {
+    private static int getAmount(PlayerInventory playerInventory, ItemStack item) {
         int amount = 0;
         for (ItemStack itemStack : playerInventory.getContents()) {
-            if (itemStack != null && itemStack.getType().equals(material)) {
-                amount += itemStack.getAmount();
+            if (itemStack != null && itemStack.getType().equals(item.getType())) {
+                if (item.hasItemMeta()) {
+                    if (itemStack.hasItemMeta()) {
+                        boolean sameItem = itemStack.getItemMeta().getDisplayName().equals(item.getItemMeta().getDisplayName())
+                                && itemStack.getItemMeta().getLore().equals(item.getItemMeta().getLore());
+                        if (sameItem) {
+                            amount += itemStack.getAmount();
+                        }
+                    }
+                } else amount += itemStack.getAmount();
             }
         }
         return amount;

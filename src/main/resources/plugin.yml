@@ -12,6 +12,9 @@ softdepend:
   - Citizens
   - PlaceholderAPI
   - PlayerPoints
+  - MythicMobs
+  - EliteMobs
+  - HolographicDisplays
 loadbefore:
   - Vault
 commands:
@@ -24,8 +27,3 @@ commands:
     aliases:
       - questadmin
       - qadmin
-  questsreload:
-    description: reload command
-    aliases:
-      - questreload
-      - qreload

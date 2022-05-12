@@ -35,7 +35,7 @@ quests:
     menu_item: GOLD_BLOCK
     description:
       - "&eGet 16 gold blocks."
-      - "&eWin &b&m32 diamond blocks."
+      - "&eWin &b&n32 diamond blocks."
     quest_type: GET
     required_item: GOLD_BLOCK
     required_amount: 16
@@ -131,3 +131,39 @@ quests:
     reward:
       reward_type: EXP_LEVELS
       amount: 5
+  10:
+    name: "&d&lBeautiful flower"
+    menu_item: ALLIUM
+    description:
+      - "&eGet one &dbeautiful flower&e."
+      - "&eWin &b&n32 diamond blocks."
+    quest_type: GET
+    required_item: CUSTOM_ITEM
+    custom_item:
+      type: ALLIUM
+      name: "&dBeautiful Flower"
+      lore:
+        - "&dThis flower is"
+        - "&dvery useful..."
+    required_amount: 1
+    reward:
+      reward_type: COMMAND
+      commands:
+        - "give %player% diamond_block 32"
+  11:
+    name: "&aCraft the Saint Cobblestone."
+    menu_item: COBBLESTONE
+    description:
+      - "&bCraft a Saint Cobblestone."
+      - "&bWin &c5 000 000$&b."
+    quest_type: CRAFT
+    required_item: CUSTOM_ITEM
+    custom_item:
+      type: COBBLESTONE
+      name: "&c&lThe Saint Cobblestone"
+      lore:
+        - "&cWoaaaaaaaw..."
+    required_amount: 1
+    reward:
+      reward_type: MONEY
+      amount: 5000000

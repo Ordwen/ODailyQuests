@@ -42,7 +42,9 @@ public class PlayerCommands implements CommandExecutor {
                                     if (args.length == 2) {
                                         switch (args[1]) {
                                             case "global":
-                                                if (sender.hasPermission(QuestsPermissions.QUESTS_SHOW_GLOBAL.getPermission())) {
+                                                if (configurationFiles.getConfigFile().getInt("quests_mode") != 1) {
+                                                    sender.sendMessage(QuestsMessages.CATEGORIZED_ENABLED.toString());
+                                                } else if (sender.hasPermission(QuestsPermissions.QUESTS_SHOW_GLOBAL.getPermission())) {
                                                     ((Player) sender).openInventory(globalQuestsInterface.getGlobalQuestsInterfaceFirstPage());
                                                 } else sender.sendMessage(QuestsMessages.NO_PERMISSION_CATEGORY.toString());
                                                 break;
