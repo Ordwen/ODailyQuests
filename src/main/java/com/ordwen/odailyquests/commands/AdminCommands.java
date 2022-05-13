@@ -2,7 +2,7 @@ package com.ordwen.odailyquests.commands;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.apis.holograms.HologramsManager;
-import com.ordwen.odailyquests.commands.interfaces.PlayerQuestsInterface;
+import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.enums.QuestsPermissions;
 import com.ordwen.odailyquests.quests.LoadQuests;

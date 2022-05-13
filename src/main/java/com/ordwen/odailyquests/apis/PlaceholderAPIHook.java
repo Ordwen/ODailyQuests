@@ -1,6 +1,6 @@
 package com.ordwen.odailyquests.apis;
 
-import com.ordwen.odailyquests.commands.interfaces.PlayerQuestsInterface;
+import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
 import com.ordwen.odailyquests.quests.LoadQuests;
 import com.ordwen.odailyquests.quests.Quest;
 import com.ordwen.odailyquests.quests.player.QuestsManager;

@@ -82,18 +82,6 @@ synchronised_progression: false
 interfaces:
   next_item_name: "&a&lNext Page"
   previous_item_name: "&e&lPrevious Page"
-  player_quests:
-    inventory_name: "&bMy quests"
-    empty_item: GREEN_STAINED_GLASS_PANE
-    progress: "&eIN PROGRESS (&a%progress%&e/&c%required%&e)"
-    status: "&eStatus :"
-    achieved: "&aACHIEVED"
-    complete_get_type: "&eClick to complete this quest !"
-    player_head:
-      item_name: "&bYour quests"
-      item_description:
-        - "&eCompleted quests : &b%achieved%&e/&63"
-        - "&eNext draw in : &c%drawIn%"
   global_quests:
     inventory_name: "Quests - Global"
     empty_item: BLACK_STAINED_GLASS_PANE

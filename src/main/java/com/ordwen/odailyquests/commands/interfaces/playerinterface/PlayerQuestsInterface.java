@@ -1,7 +1,9 @@
-package com.ordwen.odailyquests.commands.interfaces;
+package com.ordwen.odailyquests.commands.interfaces.playerinterface;
 
+import com.ordwen.odailyquests.commands.interfaces.InterfacesManager;
 import com.ordwen.odailyquests.commands.interfaces.pagination.Items;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
+import com.ordwen.odailyquests.files.PlayerInterfaceFile;
 import com.ordwen.odailyquests.quests.Quest;
 import com.ordwen.odailyquests.quests.QuestType;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
@@ -11,6 +13,7 @@ import com.ordwen.odailyquests.tools.ColorConvert;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -30,15 +33,15 @@ public class PlayerQuestsInterface {
     /**
      * Getting instance of classes.
      */
-    private static ConfigurationFiles configurationFiles;
+    static FileConfiguration config;
 
     /**
      * Class instance constructor.
      *
-     * @param configurationFiles configuration files class.
+     * @param playerInterfaceFile configuration files class.
      */
-    public PlayerQuestsInterface(ConfigurationFiles configurationFiles) {
-        PlayerQuestsInterface.configurationFiles = configurationFiles;
+    public PlayerQuestsInterface(PlayerInterfaceFile playerInterfaceFile) {
+        config = playerInterfaceFile.getPlayerInterfaceFileConfiguration();
     }
 
     /* Logger for stacktrace */
@@ -51,25 +54,19 @@ public class PlayerQuestsInterface {
     private static String status;
     private static String progression;
     private static String completeGetType;
-    private static ItemStack emptyCaseItem;
 
     /**
      * Load player quests interface.
      */
     public void loadPlayerQuestsInterface() {
 
-        emptyCaseItem = new ItemStack(Material.valueOf(Objects.requireNonNull(configurationFiles.getConfigFile().getConfigurationSection("interfaces.player_quests")).getString(".empty_item")));
+        // FAIRE CHOISIR TAILLE
         playerQuestsInventoryBase = Bukkit.createInventory(null, 27, "BASIC");
 
-        achieved = Objects.requireNonNull(configurationFiles.getConfigFile().getConfigurationSection("interfaces.player_quests")).getString(".achieved");
-        status = Objects.requireNonNull(configurationFiles.getConfigFile().getConfigurationSection("interfaces.player_quests")).getString(".status");
-        progression = Objects.requireNonNull(configurationFiles.getConfigFile().getConfigurationSection("interfaces.player_quests")).getString(".progress");
-        completeGetType = Objects.requireNonNull(configurationFiles.getConfigFile().getConfigurationSection("interfaces.player_quests")).getString(".complete_get_type");
-
-        /* fill empty slots */
-        for (int i = 0; i < playerQuestsInventoryBase.getSize(); i++) {
-            if (playerQuestsInventoryBase.getItem(i) == null) playerQuestsInventoryBase.setItem(i, emptyCaseItem);
-        }
+        achieved = config.getConfigurationSection("interfaces.player_quests").getString(".achieved");
+        status = config.getConfigurationSection("interfaces.player_quests").getString(".status");
+        progression = config.getConfigurationSection("interfaces.player_quests").getString(".progress");
+        completeGetType = config.getConfigurationSection("interfaces.player_quests").getString(".complete_get_type");
 
         logger.info(ChatColor.GREEN + "Player quests interface successfully loaded.");
     }
@@ -130,15 +127,6 @@ public class PlayerQuestsInterface {
     }
 
     /**
-     * Get empty case item material.
-     *
-     * @return material.
-     */
-    public static Material getEmptyCaseItem() {
-        return emptyCaseItem.getType();
-    }
-
-    /**
      * Get the time remain before the next quests draw.
      *
      * @param playerName player to consider.
@@ -149,7 +137,7 @@ public class PlayerQuestsInterface {
         long timestamp = QuestsManager.getActiveQuests().get(playerName).getTimestamp();
         long diff;
 
-        if (configurationFiles.getConfigFile().getInt("timestamp_mode") == 1) {
+        if (config.getInt("timestamp_mode") == 1) {
             Calendar oldCal = Calendar.getInstance();
             oldCal.setTimeInMillis(timestamp);
             oldCal.set(Calendar.HOUR_OF_DAY, oldCal.getActualMinimum(Calendar.HOUR_OF_DAY));
@@ -172,11 +160,11 @@ public class PlayerQuestsInterface {
         int hours;
         int days;
 
-        String d = configurationFiles.getConfigFile().getConfigurationSection("temporality_initials").getString("days");
-        String h = configurationFiles.getConfigFile().getConfigurationSection("temporality_initials").getString("hours");
-        String m = configurationFiles.getConfigFile().getConfigurationSection("temporality_initials").getString("minutes");
+        String d = config.getConfigurationSection("temporality_initials").getString("days");
+        String h = config.getConfigurationSection("temporality_initials").getString("hours");
+        String m = config.getConfigurationSection("temporality_initials").getString("minutes");
 
-        switch (configurationFiles.getConfigFile().getInt("temporality_mode")) {
+        switch (config.getInt("temporality_mode")) {
             case 1:
                 rest = 86400000L - diff;
                 minutes = (int) ((rest / (1000 * 60)) % 60);

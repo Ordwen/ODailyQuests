@@ -12,12 +12,9 @@ import com.ordwen.odailyquests.commands.completers.PlayerCompleter;
 import com.ordwen.odailyquests.commands.interfaces.CategorizedQuestsInterfaces;
 import com.ordwen.odailyquests.commands.interfaces.GlobalQuestsInterface;
 import com.ordwen.odailyquests.commands.interfaces.InterfacesManager;
-import com.ordwen.odailyquests.commands.interfaces.PlayerQuestsInterface;
+import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
 import com.ordwen.odailyquests.commands.interfaces.pagination.Items;
-import com.ordwen.odailyquests.files.ConfigurationFiles;
-import com.ordwen.odailyquests.files.HologramsFile;
-import com.ordwen.odailyquests.files.ProgressionFile;
-import com.ordwen.odailyquests.files.QuestsFiles;
+import com.ordwen.odailyquests.files.*;
 import com.ordwen.odailyquests.quests.player.progression.ValidateVillagerTradeQuest;
 import com.ordwen.odailyquests.rewards.GlobalReward;
 import com.ordwen.odailyquests.rewards.RewardManager;
@@ -45,6 +42,7 @@ public final class ODailyQuests extends JavaPlugin {
     public ConfigurationFiles configurationFiles;
     public QuestsFiles questsFiles;
     private ProgressionFile progressionFile;
+    private PlayerInterfaceFile playerInterfaceFile;
     public LoadQuests loadQuests;
     private Items items;
     public InterfacesManager interfacesManager;
@@ -106,12 +104,13 @@ public final class ODailyQuests extends JavaPlugin {
         this.questsFiles = new QuestsFiles(this);
         this.progressionFile = new ProgressionFile(this);
         this.hologramsFile = new HologramsFile(this);
+        this.playerInterfaceFile = new PlayerInterfaceFile(this);
         this.hologramsManager = new HologramsManager(hologramsFile);
         this.loadHolograms = new LoadHolograms(hologramsFile);
         this.loadQuests = new LoadQuests(questsFiles, configurationFiles);
         this.items = new Items(configurationFiles);
         this.globalQuestsInterface = new GlobalQuestsInterface(configurationFiles);
-        this.playerQuestsInterface = new PlayerQuestsInterface(configurationFiles);
+        this.playerQuestsInterface = new PlayerQuestsInterface(playerInterfaceFile);
         this.categorizedQuestsInterfaces = new CategorizedQuestsInterfaces(configurationFiles);
         this.interfacesManager = new InterfacesManager(configurationFiles, globalQuestsInterface, categorizedQuestsInterfaces);
         this.questsManager = new QuestsManager(configurationFiles, loadProgressionSQL, saveProgressionSQL);
@@ -125,6 +124,7 @@ public final class ODailyQuests extends JavaPlugin {
         questsFiles.loadQuestsFiles();
         progressionFile.loadProgressionFile();
         hologramsFile.loadHologramsFile();
+        playerInterfaceFile.loadPlayerInterfaceFile();
 
         /* Load dependencies */
 

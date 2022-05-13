@@ -1,0 +1,37 @@
+# ======================================================
+# Here you can create your own player quests interface.
+# Remind, the first slot in a GUI is 0.
+# ======================================================
+player_interface:
+  inventory_name: "&bMy quests"
+  progress: "&eIN PROGRESS (&a%progress%&e/&c%required%&e)"
+  status: "&eStatus :"
+  achieved: "&aACHIEVED"
+  complete_get_type: "&eClick to complete this quest !"
+  player_head:
+    enabled: true
+    slot: 4
+    item_name: "&bYour quests"
+    item_description:
+      - "&eCompleted quests : &b%achieved%&e/&63"
+      - "&eNext draw in : &c%drawIn%"
+  # set the position of quests items
+  first_quest_slot: 12
+  second_quest_slot: 14
+  third_quest_slot: 16
+  items:
+    1:
+      type: FILL
+      item:
+        material: YELLOW_GLASS_PANE
+        slot: 1
+    2:
+      type: COMMAND
+      item:
+        material: REDSTONE
+        name: "&cBack"
+        lore:
+          - "&eGo back to menu."
+        slot: 27
+      commands:
+          - "menu"
