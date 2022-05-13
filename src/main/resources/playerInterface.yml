@@ -3,6 +3,7 @@
 # Remind, the first slot in a GUI is 0.
 # ======================================================
 player_interface:
+  size: 27
   inventory_name: "&bMy quests"
   progress: "&eIN PROGRESS (&a%progress%&e/&c%required%&e)"
   status: "&eStatus :"

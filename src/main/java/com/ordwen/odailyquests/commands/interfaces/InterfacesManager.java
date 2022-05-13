@@ -3,9 +3,11 @@ package com.ordwen.odailyquests.commands.interfaces;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
 import com.ordwen.odailyquests.commands.interfaces.pagination.Items;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
+import com.ordwen.odailyquests.files.PlayerInterfaceFile;
 import com.ordwen.odailyquests.quests.player.progression.ProgressionManager;
 import com.ordwen.odailyquests.quests.player.progression.ValidateVillagerTradeQuest;
 import com.ordwen.odailyquests.tools.ColorConvert;
+import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -16,21 +18,17 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantInventory;
-import org.bukkit.plugin.PluginLogger;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 public class InterfacesManager implements Listener {
-
-    /* Logger for stacktrace */
-    private static final Logger logger = PluginLogger.getLogger("O'DailyQuests");
 
     /**
      * Getting instance of classes.
      */
     private final ConfigurationFiles configurationFiles;
+    private final PlayerInterfaceFile playerInterfaceFile;
     private final GlobalQuestsInterface globalQuestsInterface;
     private final CategorizedQuestsInterfaces categorizedQuestsInterfaces;
 
@@ -39,16 +37,18 @@ public class InterfacesManager implements Listener {
      *
      * @param configurationFiles configuration files class.
      */
-    public InterfacesManager(ConfigurationFiles configurationFiles,
+    public InterfacesManager(PlayerInterfaceFile playerInterfaceFile,
+                             ConfigurationFiles configurationFiles,
                              GlobalQuestsInterface globalQuestsInterface,
                              CategorizedQuestsInterfaces categorizedQuestsInterfaces) {
+        this.playerInterfaceFile = playerInterfaceFile;
         this.configurationFiles = configurationFiles;
         this.globalQuestsInterface = globalQuestsInterface;
         this.categorizedQuestsInterfaces = categorizedQuestsInterfaces;
     }
 
     /* variables */
-    private List<Material> emptyCaseItems;
+    private List<ItemStack> emptyCaseItems;
     private static String playerQuestsInventoryName;
     private static String globalQuestsInventoryName;
     private static String easyQuestsInventoryName;
@@ -59,13 +59,13 @@ public class InterfacesManager implements Listener {
      * Init variables.
      */
     public void initInventoryNames() {
-        playerQuestsInventoryName = ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(configurationFiles.getConfigFile().getConfigurationSection("interfaces.player_quests").getString(".inventory_name")));
+        playerQuestsInventoryName = ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(playerInterfaceFile.getPlayerInterfaceFileConfiguration().getConfigurationSection("player_interface").getString(".inventory_name")));
         globalQuestsInventoryName = ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(configurationFiles.getConfigFile().getConfigurationSection("interfaces.global_quests").getString(".inventory_name")));
         easyQuestsInventoryName = ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(configurationFiles.getConfigFile().getConfigurationSection("interfaces.easy_quests").getString(".inventory_name")));
         mediumQuestsInventoryName = ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(configurationFiles.getConfigFile().getConfigurationSection("interfaces.medium_quests").getString(".inventory_name")));
         hardQuestsInventoryName = ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(configurationFiles.getConfigFile().getConfigurationSection("interfaces.hard_quests").getString(".inventory_name")));
 
-        logger.info(ChatColor.GREEN + "Interfaces names successfully loaded.");
+        PluginLogger.info(ChatColor.GREEN + "Interfaces names successfully loaded.");
     }
 
     /**
@@ -73,13 +73,11 @@ public class InterfacesManager implements Listener {
      */
     public void initEmptyCaseItems() {
         emptyCaseItems = new ArrayList<>();
-        emptyCaseItems.add(PlayerQuestsInterface.getEmptyCaseItem());
+        emptyCaseItems.addAll(PlayerQuestsInterface.getFillItems());
         if (GlobalQuestsInterface.getEmptyCaseItem() != null) {
-            emptyCaseItems.add(GlobalQuestsInterface.getEmptyCaseItem().getType());
+            emptyCaseItems.add(GlobalQuestsInterface.getEmptyCaseItem());
         }
-        for (ItemStack item : CategorizedQuestsInterfaces.getEmptyCaseItems()) {
-            emptyCaseItems.add(item.getType());
-        }
+        emptyCaseItems.addAll(CategorizedQuestsInterfaces.getEmptyCaseItems());
     }
 
     @EventHandler
@@ -131,7 +129,9 @@ public class InterfacesManager implements Listener {
                 } else if (!event.getCurrentItem().equals(Items.getPlayerHead((Player) event.getWhoClicked()))) {
                     int page = Integer.parseInt(inventoryName.substring(inventoryName.length() - 1));
                     if (event.getCurrentItem().getItemMeta() != null) {
-                        if (event.getCurrentItem().getItemMeta().getDisplayName().equals(ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(configurationFiles.getConfigFile().getConfigurationSection("interfaces").getString(".next_item_name"))))) {
+                        if (event.getCurrentItem().getItemMeta().getDisplayName().equals(
+                                ChatColor.translateAlternateColorCodes('&',
+                                        ColorConvert.convertColorCode(configurationFiles.getConfigFile().getConfigurationSection("interfaces").getString(".next_item_name"))))) {
                             event.getWhoClicked().closeInventory();
                             if (inventoryName.startsWith(globalQuestsInventoryName)) {
                                 event.getWhoClicked().openInventory(globalQuestsInterface.getGlobalQuestsNextPage(page));

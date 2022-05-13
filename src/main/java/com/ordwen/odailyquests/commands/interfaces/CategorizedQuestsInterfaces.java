@@ -4,13 +4,13 @@ import com.ordwen.odailyquests.commands.interfaces.pagination.Items;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.quests.LoadQuests;
 import com.ordwen.odailyquests.quests.Quest;
+import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.PluginLogger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,9 +31,6 @@ public class CategorizedQuestsInterfaces {
     public CategorizedQuestsInterfaces(ConfigurationFiles configurationFiles) {
         this.configurationFiles = configurationFiles;
     }
-
-    /* Logger for stacktrace */
-    private final Logger logger = PluginLogger.getLogger("O'DailyQuests");
 
     /* init items */
     private final float invSize = 45;
@@ -116,7 +113,7 @@ public class CategorizedQuestsInterfaces {
                 if (inv.getItem(j) == null) inv.setItem(j, emptyCaseItem);
             }
         }
-        logger.info(ChatColor.GREEN + "Categorized quests interfaces successfully loaded.");
+        PluginLogger.info(ChatColor.GREEN + "Categorized quests interfaces successfully loaded.");
     }
 
     /**

@@ -10,65 +10,77 @@ import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.tools.ColorConvert;
+import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.PluginLogger;
 
 import java.util.*;
-import java.util.logging.Logger;
 
 public class PlayerQuestsInterface {
-
-    /* active interfaces */
-    public static HashMap<Player, Inventory> activeInterfaces = new HashMap<>();
 
     /**
      * Getting instance of classes.
      */
-    static FileConfiguration config;
-
+    private static FileConfiguration interfaceConfig;
+    private static FileConfiguration config;
     /**
      * Class instance constructor.
      *
-     * @param playerInterfaceFile configuration files class.
+     * @param playerInterfaceFile interfaceConfiguration files class.
      */
-    public PlayerQuestsInterface(PlayerInterfaceFile playerInterfaceFile) {
-        config = playerInterfaceFile.getPlayerInterfaceFileConfiguration();
+    public PlayerQuestsInterface(PlayerInterfaceFile playerInterfaceFile, ConfigurationFiles configurationFiles) {
+        interfaceConfig = playerInterfaceFile.getPlayerInterfaceFileConfiguration();
+        config = configurationFiles.getConfigFile();
     }
-
-    /* Logger for stacktrace */
-    private static final Logger logger = PluginLogger.getLogger("O'DailyQuests");
 
     /* init variables */
     private static Inventory playerQuestsInventoryBase;
-
+    private static int size;
     private static String achieved;
     private static String status;
     private static String progression;
     private static String completeGetType;
 
+    /* item slots */
+    private static int slotPlayerHead = -1;
+    private static int slotFirstQuest;
+    private static int slotSecondQuest;
+    private static int slotThirdQuest;
+    private static List<ItemStack> fillItems;
     /**
      * Load player quests interface.
      */
     public void loadPlayerQuestsInterface() {
 
-        // FAIRE CHOISIR TAILLE
-        playerQuestsInventoryBase = Bukkit.createInventory(null, 27, "BASIC");
+        /* load item slots */
+        if (interfaceConfig.getConfigurationSection("player_interface.player_head").getBoolean(".enabled")) {
+            slotPlayerHead = interfaceConfig.getConfigurationSection("player_interface.player_head").getInt(".slot");
+        }
+        slotFirstQuest = interfaceConfig.getConfigurationSection("player_interface").getInt(".first_quest_slot");
+        slotSecondQuest = interfaceConfig.getConfigurationSection("player_interface").getInt(".second_quest_slot");
+        slotThirdQuest = interfaceConfig.getConfigurationSection("player_interface").getInt(".third_quest_slot");
 
-        achieved = config.getConfigurationSection("interfaces.player_quests").getString(".achieved");
-        status = config.getConfigurationSection("interfaces.player_quests").getString(".status");
-        progression = config.getConfigurationSection("interfaces.player_quests").getString(".progress");
-        completeGetType = config.getConfigurationSection("interfaces.player_quests").getString(".complete_get_type");
+        /* create base of inventory */
+        size = interfaceConfig.getConfigurationSection("player_interface").getInt(".size");
+        playerQuestsInventoryBase = Bukkit.createInventory(null, size, "BASIC");
 
-        logger.info(ChatColor.GREEN + "Player quests interface successfully loaded.");
+        /* load all texts */
+        achieved = interfaceConfig.getConfigurationSection("player_interface").getString(".achieved");
+        status = interfaceConfig.getConfigurationSection("player_interface").getString(".status");
+        progression = interfaceConfig.getConfigurationSection("player_interface").getString(".progress");
+        completeGetType = interfaceConfig.getConfigurationSection("player_interface").getString(".complete_get_type");
+
+        // CHARGER TOUS LES ITEMS QUI NE CHANGENT PAS SELON LE JOUEURS (section "items")
+        /* load all fill items */
+        fillItems = new ArrayList<>();
+
+        PluginLogger.info(ChatColor.GREEN + "Player quests interface successfully loaded.");
     }
 
     /**
@@ -78,17 +90,17 @@ public class PlayerQuestsInterface {
      */
     public static Inventory getPlayerQuestsInterface(String playerName) {
 
-        Inventory playerQuestsInventoryIndividual = Bukkit.createInventory(null, 27, InterfacesManager.getPlayerQuestsInventoryName());
+        Inventory playerQuestsInventoryIndividual = Bukkit.createInventory(null, size, InterfacesManager.getPlayerQuestsInventoryName());
         playerQuestsInventoryIndividual.setContents(playerQuestsInventoryBase.getContents());
 
         HashMap<String, PlayerQuests> activeQuests = QuestsManager.getActiveQuests();
         HashMap<Quest, Progression> playerQuests = activeQuests.get(playerName).getPlayerQuests();
 
         /* load player head */
-        playerQuestsInventoryIndividual.setItem(4, Items.getPlayerHead(Bukkit.getPlayer(playerName)));
+        playerQuestsInventoryIndividual.setItem(slotPlayerHead, Items.getPlayerHead(Bukkit.getPlayer(playerName)));
 
         /* load quests */
-        int i = 2;
+        int i = 0;
         for (Quest quest : playerQuests.keySet()) {
 
             ItemStack itemStack = quest.getMenuItem();
@@ -118,11 +130,18 @@ public class PlayerQuestsInterface {
             itemMeta.setLore(lore);
             itemStack.setItemMeta(itemMeta);
 
-            playerQuestsInventoryIndividual.setItem(i + 9, itemStack);
-
-            i = i + 2;
+            switch (i) {
+                case 0 -> playerQuestsInventoryIndividual.setItem(slotFirstQuest, itemStack);
+                case 1 -> playerQuestsInventoryIndividual.setItem(slotSecondQuest, itemStack);
+                case 2 -> playerQuestsInventoryIndividual.setItem(slotThirdQuest, itemStack);
+                default -> {
+                    PluginLogger.error("Unexpected value on the load of the player quests interface.");
+                    PluginLogger.error("Invalid index for quest place : " + i);
+                    PluginLogger.error("Please inform the developer.");
+                }
+            }
+            i++;
         }
-
         return playerQuestsInventoryIndividual;
     }
 
@@ -215,5 +234,9 @@ public class PlayerQuestsInterface {
         }
 
         return timeRemain;
+    }
+
+    public static List<ItemStack> getFillItems() {
+        return fillItems;
     }
 }

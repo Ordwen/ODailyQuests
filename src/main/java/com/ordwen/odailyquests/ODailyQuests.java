@@ -110,9 +110,9 @@ public final class ODailyQuests extends JavaPlugin {
         this.loadQuests = new LoadQuests(questsFiles, configurationFiles);
         this.items = new Items(configurationFiles);
         this.globalQuestsInterface = new GlobalQuestsInterface(configurationFiles);
-        this.playerQuestsInterface = new PlayerQuestsInterface(playerInterfaceFile);
+        this.playerQuestsInterface = new PlayerQuestsInterface(playerInterfaceFile, configurationFiles);
         this.categorizedQuestsInterfaces = new CategorizedQuestsInterfaces(configurationFiles);
-        this.interfacesManager = new InterfacesManager(configurationFiles, globalQuestsInterface, categorizedQuestsInterfaces);
+        this.interfacesManager = new InterfacesManager(playerInterfaceFile, configurationFiles, globalQuestsInterface, categorizedQuestsInterfaces);
         this.questsManager = new QuestsManager(configurationFiles, loadProgressionSQL, saveProgressionSQL);
         this.globalReward = new GlobalReward(configurationFiles);
         this.rewardManager = new RewardManager(configurationFiles);
