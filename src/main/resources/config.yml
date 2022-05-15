@@ -95,6 +95,13 @@ interfaces:
     inventory_name: "Quests - Hard"
     empty_item: RED_STAINED_GLASS_PANE
 
+# You can disable quest progression in certain worlds.
+# You must put here the name of the world (in theory the name of its directory).
+# If you don't want to disable worlds, just put a single line with no name (- "").
+disabled_worlds:
+  - "world_nether"
+  - "world_the_end"
+
 # Citizens Implementation
 # Here you can select NPCs names for each category.
 # The player have to interact with the NPC to open an interface.

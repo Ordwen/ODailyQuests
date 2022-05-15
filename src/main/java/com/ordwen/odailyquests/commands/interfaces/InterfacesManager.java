@@ -8,6 +8,7 @@ import com.ordwen.odailyquests.quests.player.progression.ProgressionManager;
 import com.ordwen.odailyquests.quests.player.progression.ValidateVillagerTradeQuest;
 import com.ordwen.odailyquests.tools.ColorConvert;
 import com.ordwen.odailyquests.tools.PluginLogger;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -102,6 +103,7 @@ public class InterfacesManager implements Listener {
         }
 
         String inventoryName = event.getView().getTitle();
+
         if (inventoryName.startsWith(playerQuestsInventoryName)
                 || inventoryName.startsWith(globalQuestsInventoryName)
                 || inventoryName.startsWith(easyQuestsInventoryName)
@@ -110,22 +112,31 @@ public class InterfacesManager implements Listener {
             event.setCancelled(true);
 
             if (event.getCurrentItem() != null
-                    && !emptyCaseItems.contains(event.getCurrentItem().getType())
+                    && !emptyCaseItems.contains(event.getCurrentItem())
                     && event.getClick().isLeftClick()
                     && event.getSlot() < event.getView().getTopInventory().getSize()
                     && !event.getSlotType().equals(InventoryType.SlotType.QUICKBAR)) {
                 if (event.getCurrentItem().getType() != Material.PLAYER_HEAD
                         && inventoryName.startsWith(playerQuestsInventoryName)) {
-                    int index;
-                    switch (event.getSlot()) {
-                        case 11 -> index = 1;
-                        case 13 -> index = 2;
-                        case 15 -> index = 3;
-                        default -> {
-                            return;
+
+                    if (PlayerQuestsInterface.getFillItems().contains(event.getCurrentItem())) return;
+
+                    if (PlayerQuestsInterface.getConsoleCommandsItems().containsKey(event.getCurrentItem())) {
+                        for (String cmd : PlayerQuestsInterface.getConsoleCommandsItems().get(event.getCurrentItem())) {
+                            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd.replace("%player%", event.getWhoClicked().getName()));
                         }
+                        return;
                     }
-                    ProgressionManager.validateGetQuestType(event.getWhoClicked().getName(), index);
+
+                    if (PlayerQuestsInterface.getPlayerCommandsItems().containsKey(event.getCurrentItem())) {
+                        for (String cmd : PlayerQuestsInterface.getPlayerCommandsItems().get(event.getCurrentItem())) {
+                            Bukkit.getServer().dispatchCommand(event.getWhoClicked(), cmd);
+                        }
+                        return;
+                    }
+
+                    ProgressionManager.validateGetQuestType(event.getWhoClicked().getName(), event.getCurrentItem());
+
                 } else if (!event.getCurrentItem().equals(Items.getPlayerHead((Player) event.getWhoClicked()))) {
                     int page = Integer.parseInt(inventoryName.substring(inventoryName.length() - 1));
                     if (event.getCurrentItem().getItemMeta() != null) {

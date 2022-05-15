@@ -92,11 +92,11 @@ public class LoadQuests {
 
         /* load quests */
         if (file.getConfigurationSection("quests") != null) {
+            int questIndex = 0;
             for (String fileQuest : file.getConfigurationSection("quests").getKeys(false)) {
 
                 /* init variables (quest constructor) */
                 Quest quest = null;
-                int questIndex;
                 String questName;
                 List<String> questDesc;
                 QuestType questType = null;
@@ -113,21 +113,10 @@ public class LoadQuests {
                 RewardType rewardType;
 
                 /* init quest items */
-                questIndex = Integer.parseInt(fileQuest) - 1;
                 questName = ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(file.getConfigurationSection("quests." + fileQuest).getString(".name")));
 
-                menuItem = null;
-                try {
-                    menuItem = new ItemStack(Material.valueOf(file.getConfigurationSection("quests." + fileQuest).getString(".menu_item")));
-                } catch (Exception e) {
-                    PluginLogger.error("-----------------------------------");
-                    PluginLogger.error("Invalid material type detected.");
-                    PluginLogger.error("File : " + fileName);
-                    PluginLogger.error("Quest number : " + (questIndex + 1));
-                    PluginLogger.error("Parameter : menu_item");
-                    PluginLogger.error("Value : " + file.getConfigurationSection("quests." + fileQuest).getString(".menu_item"));
-                    PluginLogger.error("-----------------------------------");
-                }
+                String presumedItem = file.getConfigurationSection("quests." + fileQuest).getString(".menu_item");
+                menuItem = getItemStackFromMaterial(presumedItem, fileName, questIndex, "menu_item");
 
                 questDesc = file.getConfigurationSection("quests." + fileQuest).getStringList(".description");
                 for (String string : questDesc) {
@@ -147,74 +136,51 @@ public class LoadQuests {
                 }
 
                 if (questType != null) {
-                    boolean isEntityType = questType == QuestType.KILL
-                            || questType == QuestType.BREED
-                            || questType == QuestType.TAME
-                            || questType == QuestType.SHEAR
-                            || questType == QuestType.CUSTOM_MOBS;
+                    boolean isGlobalType = false;
+                    boolean isEntityType = false;
 
-                    if (isEntityType) {
-                        if (questType == QuestType.CUSTOM_MOBS) {
+                    switch(questType) {
+                        /* type that does not require a specific entity/item */
+                        case MILKING -> {
+                            isGlobalType = true;
+                        }
+                        /* type that require a custom mob */
+                        case CUSTOM_MOBS -> {
+                            isEntityType = true;
                             entityName = ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(file.getConfigurationSection("quests." + fileQuest).getString(".entity_name")));
-                        } else {
-                            try {
-                                entityType = EntityType.valueOf(file.getConfigurationSection("quests." + fileQuest).getString(".entity_type"));
-                            } catch (Exception e) {
-                                PluginLogger.error("-----------------------------------");
-                                PluginLogger.error("Invalid entity type detected.");
-                                PluginLogger.error("File : " + fileName);
-                                PluginLogger.error("Quest number : " + (questIndex + 1));
-                                PluginLogger.error("Parameter : entity_type");
-                                PluginLogger.error("Value : " + file.getConfigurationSection("quests." + fileQuest).getString(".entity_type"));
-                                PluginLogger.error("-----------------------------------");
-                            }
                         }
-                    } else {
-                        String itemType = file.getConfigurationSection("quests." + fileQuest).getString(".required_item");
-                        if (itemType.equals("CUSTOM_ITEM")) {
-                            ConfigurationSection section = file.getConfigurationSection("quests." + fileQuest + ".custom_item");
-
-                            try {
-                                requiredItem = new ItemStack(Material.valueOf(section.getString(".type")));
-                            } catch (Exception e) {
-                            PluginLogger.error("-----------------------------------");
-                            PluginLogger.error("Invalid material type detected.");
-                            PluginLogger.error("File : " + fileName);
-                            PluginLogger.error("Quest number : " + (questIndex + 1));
-                            PluginLogger.error("Parameter : type (CUSTOM_ITEM)");
-                            PluginLogger.error("Value : " + file.getConfigurationSection("quests." + fileQuest + ".custom_item").getString(".type"));
-                            PluginLogger.error("-----------------------------------");
+                        /* types that requires an entity */
+                        case KILL, BREED, TAME, SHEAR -> {
+                            isEntityType = true;
+                            String presumedEntity = file.getConfigurationSection("quests." + fileQuest).getString(".entity_type");
+                            entityType = getEntityType(presumedEntity, fileName, questIndex, presumedEntity);
                         }
-
-                            ItemMeta meta = requiredItem.getItemMeta();
-                            meta.setDisplayName(ColorConvert.convertColorCode(ChatColor.translateAlternateColorCodes('&', section.getString(".name"))));
-
-                            List<String> lore = section.getStringList(".lore");
-                            for (String str : lore) {
-                                lore.set(lore.indexOf(str), ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(str)));
+                        /* types that requires an item */
+                        case BREAK, PLACE, CRAFT, PICKUP, LAUNCH, CONSUME, GET, COOK, ENCHANT, VILLAGER_TRADE -> {
+                            String itemType = file.getConfigurationSection("quests." + fileQuest).getString(".required_item");
+                            /* check if the required item is a custom item */
+                            if (itemType.equals("CUSTOM_ITEM")) {
+                                ConfigurationSection section = file.getConfigurationSection("quests." + fileQuest + ".custom_item");
+                                requiredItem = getItemStackFromMaterial(section.getString(".type"), fileName, questIndex, "type (CUSTOM_ITEM)");
+                                ItemMeta meta = requiredItem.getItemMeta();
+                                meta.setDisplayName(ColorConvert.convertColorCode(ChatColor.translateAlternateColorCodes('&', section.getString(".name"))));
+                                List<String> lore = section.getStringList(".lore");
+                                for (String str : lore) {
+                                    lore.set(lore.indexOf(str), ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(str)));
+                                }
+                                meta.setLore(lore);
+                                requiredItem.setItemMeta(meta);
+                            } else {
+                                requiredItem = getItemStackFromMaterial(itemType, fileName, questIndex, "required_item");
                             }
-                            meta.setLore(lore);
-
-                            requiredItem.setItemMeta(meta);
-                        } else {
-                            try {
-                                requiredItem = new ItemStack(Material.valueOf(itemType));
-                            } catch (Exception e) {
-                                PluginLogger.error("-----------------------------------");
-                                PluginLogger.error("Invalid material type detected.");
-                                PluginLogger.error("File : " + fileName);
-                                PluginLogger.error("Quest number : " + (questIndex + 1));
-                                PluginLogger.error("Parameter : required_item");
-                                PluginLogger.error("Value : " + file.getConfigurationSection("quests." + fileQuest).getString(".required_item"));
-                                PluginLogger.error("-----------------------------------");
-                            }
-                        }
-                        if (questType == QuestType.VILLAGER_TRADE) {
-                            if (file.getConfigurationSection("quests." + fileQuest).contains(".villager_profession")) {
-                                profession = Villager.Profession.valueOf(file.getConfigurationSection("quests." + fileQuest).getString(".villager_profession"));
-                            }
-                            if (file.getConfigurationSection("quests." + fileQuest).contains(".villager_level")) {
-                                villagerLevel = file.getConfigurationSection("quests." + fileQuest).getInt(".villager_level");
+                            /* check if the item have to be obtained by a villager */
+                            if (questType == QuestType.VILLAGER_TRADE) {
+                                if (file.getConfigurationSection("quests." + fileQuest).contains(".villager_profession")) {
+                                    profession = Villager.Profession.valueOf(file.getConfigurationSection("quests." + fileQuest).getString(".villager_profession"));
+                                }
+                                if (file.getConfigurationSection("quests." + fileQuest).contains(".villager_level")) {
+                                    villagerLevel = file.getConfigurationSection("quests." + fileQuest).getInt(".villager_level");
+                                }
                             }
                         }
                     }
@@ -231,7 +197,10 @@ public class LoadQuests {
                     }
 
                     /* init quest */
-                    if (isEntityType) {
+                    if (isGlobalType) {
+                        quest = new Quest(questIndex, questName, questDesc, questType, menuItem, requiredAmount, reward);
+                    }
+                    else if (isEntityType) {
                         if (questType == QuestType.CUSTOM_MOBS) {
                             if (EliteMobsHook.isEliteMobsSetup() || MythicMobsHook.isMythicMobsSetup()) {
                                 quest = new Quest(questIndex, questName, questDesc, questType, entityName, menuItem, requiredAmount, reward);
@@ -251,12 +220,60 @@ public class LoadQuests {
                     /* add quest to the list */
                     if (quest != null) {
                         quests.add(quest);
+                        questIndex++;
                     }
                 }
             }
             PluginLogger.info(ChatColor.GREEN + fileName + " array successfully loaded (" + ChatColor.YELLOW + quests.size() + ChatColor.GREEN + ").");
         } else
             PluginLogger.error(ChatColor.RED + "Impossible to load " + fileName + " : there is no quests in hardQuests.yml file !");
+    }
+
+    /**
+     *
+     * @param material
+     * @param fileName
+     * @param questIndex
+     * @return
+     */
+    private ItemStack getItemStackFromMaterial(String material, String fileName, int questIndex, String parameter) {
+        ItemStack requiredItem = null;
+        try {
+            requiredItem = new ItemStack(Material.valueOf(material));
+        } catch (Exception e) {
+            PluginLogger.error("-----------------------------------");
+            PluginLogger.error("Invalid material type detected.");
+            PluginLogger.error("File : " + fileName);
+            PluginLogger.error("Quest number : " + (questIndex + 1));
+            PluginLogger.error("Parameter : " + parameter);
+            PluginLogger.error("Value : " + material);
+            PluginLogger.error("-----------------------------------");
+        }
+        return requiredItem;
+    }
+
+    /**
+     *
+     * @param entity
+     * @param fileName
+     * @param questIndex
+     * @param value
+     * @return
+     */
+    private EntityType getEntityType(String entity, String fileName, int questIndex, String value) {
+        EntityType entityType = null;
+        try {
+            entityType = EntityType.valueOf(entity);
+        } catch (Exception e) {
+            PluginLogger.error("-----------------------------------");
+            PluginLogger.error("Invalid entity type detected.");
+            PluginLogger.error("File : " + fileName);
+            PluginLogger.error("Quest number : " + (questIndex + 1));
+            PluginLogger.error("Parameter : entity_type");
+            PluginLogger.error("Value : " + value);
+            PluginLogger.error("-----------------------------------");
+        }
+        return entityType;
     }
 
     /**

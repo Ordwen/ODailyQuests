@@ -1,7 +1,7 @@
 package com.ordwen.odailyquests.quests.player.progression;
 
+import com.ordwen.odailyquests.configuration.DisabledWorlds;
 import com.ordwen.odailyquests.enums.QuestsMessages;
-import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.quests.Quest;
 import com.ordwen.odailyquests.quests.QuestType;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
@@ -18,6 +18,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.*;
+import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
@@ -108,21 +109,33 @@ public class ProgressionManager implements Listener {
         setPlayerQuestProgression(event.getPlayer().getName(), null, event.getEntity().getType(), null, 1, QuestType.SHEAR);
     }
 
+    @EventHandler
+    public void onPlayerBucketFill(PlayerBucketFillEvent event) {
+        if (event.getItemStack().getType() == Material.MILK_BUCKET) {
+            setPlayerQuestProgression(event.getPlayer().getName(), null, null, null, 1, QuestType.MILKING);
+        }
+    }
+
     /**
      * Increase player quest progression.
      *
      * @param playerName player name.
-     * @param item   the material of the event-block.
+     * @param item       the material of the event-block.
      * @param type       quest type.
      */
     public static void setPlayerQuestProgression(String playerName, ItemStack item, EntityType entity, String entityName, int quantity, QuestType type) {
+        if (DisabledWorlds.isWorldDisabled(Bukkit.getPlayer(playerName).getWorld().getName())) {
+            return;
+        }
         if (QuestsManager.getActiveQuests().containsKey(playerName)) {
             HashMap<Quest, Progression> playerQuests = QuestsManager.getActiveQuests().get(playerName).getPlayerQuests();
             for (Quest quest : playerQuests.keySet()) {
                 Progression questProgression = playerQuests.get(quest);
                 if (!questProgression.isAchieved() && quest.getType() == type) {
                     boolean isRequiredItem = false;
-                    if (type == QuestType.KILL
+                    if (type == QuestType.MILKING) {
+                        isRequiredItem = true;
+                    } else if (type == QuestType.KILL
                             || type == QuestType.BREED
                             || type == QuestType.TAME
                             || type == QuestType.SHEAR) {
@@ -138,12 +151,10 @@ public class ProgressionManager implements Listener {
                             if (item.hasItemMeta()) {
                                 isRequiredItem =
                                         quest.getItemRequired().getType() == item.getType()
-                                        && quest.getItemRequired().getItemMeta().getDisplayName().equals(item.getItemMeta().getDisplayName())
-                                        && quest.getItemRequired().getItemMeta().getLore().equals(item.getItemMeta().getLore());
+                                                && quest.getItemRequired().getItemMeta().getDisplayName().equals(item.getItemMeta().getDisplayName())
+                                                && quest.getItemRequired().getItemMeta().getLore().equals(item.getItemMeta().getLore());
                             }
-                        }
-                        else isRequiredItem = (quest.getItemRequired().getType() == item.getType());
-
+                        } else isRequiredItem = (quest.getItemRequired().getType() == item.getType());
                     }
                     if (isRequiredItem) {
                         for (int i = 0; i < quantity; i++) {
@@ -167,15 +178,17 @@ public class ProgressionManager implements Listener {
     /**
      * Check if player can validate a quest with type GET.
      *
-     * @param playerName player to check.
-     * @param index index of the player quest.
+     * @param playerName  player to check.
+     * @param clickedItem item clicked in the inventory.
      */
-    public static void validateGetQuestType(String playerName, int index) {
+    public static void validateGetQuestType(String playerName, ItemStack clickedItem) {
+        if (DisabledWorlds.isWorldDisabled(Bukkit.getPlayer(playerName).getWorld().getName())) {
+            return;
+        }
         if (QuestsManager.getActiveQuests().containsKey(playerName)) {
             HashMap<Quest, Progression> playerQuests = QuestsManager.getActiveQuests().get(playerName).getPlayerQuests();
-            int i = 1;
             for (Quest quest : playerQuests.keySet()) {
-                if (i == index && quest.getType() == QuestType.GET) {
+                if (clickedItem.equals(quest.getMenuItem()) && quest.getType() == QuestType.GET) {
                     Progression questProgression = playerQuests.get(quest);
                     if (!questProgression.isAchieved()) {
                         PlayerInventory playerInventory = Bukkit.getPlayer(playerName).getInventory();
@@ -190,7 +203,6 @@ public class ProgressionManager implements Listener {
                     }
                     break;
                 }
-                i++;
             }
         }
     }
@@ -199,7 +211,7 @@ public class ProgressionManager implements Listener {
      * Count amount of an item in player inventory.
      *
      * @param playerInventory player inventory to check.
-     * @param item        material to check.
+     * @param item            material to check.
      * @return amount of material.
      */
     private static int getAmount(PlayerInventory playerInventory, ItemStack item) {

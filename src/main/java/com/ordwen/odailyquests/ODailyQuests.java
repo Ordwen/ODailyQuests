@@ -14,6 +14,7 @@ import com.ordwen.odailyquests.commands.interfaces.GlobalQuestsInterface;
 import com.ordwen.odailyquests.commands.interfaces.InterfacesManager;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
 import com.ordwen.odailyquests.commands.interfaces.pagination.Items;
+import com.ordwen.odailyquests.configuration.DisabledWorlds;
 import com.ordwen.odailyquests.files.*;
 import com.ordwen.odailyquests.quests.player.progression.ValidateVillagerTradeQuest;
 import com.ordwen.odailyquests.rewards.GlobalReward;
@@ -27,6 +28,7 @@ import com.ordwen.odailyquests.quests.player.progression.storage.yaml.SaveProgre
 import com.ordwen.odailyquests.quests.player.progression.storage.mysql.LoadProgressionSQL;
 import com.ordwen.odailyquests.quests.player.progression.storage.mysql.MySQLManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.mysql.SaveProgressionSQL;
+import com.ordwen.odailyquests.tools.TimeRemain;
 import com.ordwen.odailyquests.tools.UpdateChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -62,6 +64,8 @@ public final class ODailyQuests extends JavaPlugin {
     private HologramsFile hologramsFile;
     public HologramsManager hologramsManager;
     private LoadHolograms loadHolograms;
+    private TimeRemain timeRemain;
+    private DisabledWorlds disabledWorlds;
 
     @Override
     public void onEnable() {
@@ -108,9 +112,9 @@ public final class ODailyQuests extends JavaPlugin {
         this.hologramsManager = new HologramsManager(hologramsFile);
         this.loadHolograms = new LoadHolograms(hologramsFile);
         this.loadQuests = new LoadQuests(questsFiles, configurationFiles);
-        this.items = new Items(configurationFiles);
+        this.items = new Items(configurationFiles, playerInterfaceFile);
         this.globalQuestsInterface = new GlobalQuestsInterface(configurationFiles);
-        this.playerQuestsInterface = new PlayerQuestsInterface(playerInterfaceFile, configurationFiles);
+        this.playerQuestsInterface = new PlayerQuestsInterface(playerInterfaceFile);
         this.categorizedQuestsInterfaces = new CategorizedQuestsInterfaces(configurationFiles);
         this.interfacesManager = new InterfacesManager(playerInterfaceFile, configurationFiles, globalQuestsInterface, categorizedQuestsInterfaces);
         this.questsManager = new QuestsManager(configurationFiles, loadProgressionSQL, saveProgressionSQL);
@@ -119,6 +123,8 @@ public final class ODailyQuests extends JavaPlugin {
         this.loadProgressionYAML = new LoadProgressionYAML(progressionFile);
         this.saveProgressionYAML = new SaveProgressionYAML(progressionFile);
         this.citizensHook = new CitizensHook(configurationFiles, globalQuestsInterface, categorizedQuestsInterfaces);
+        this.timeRemain = new TimeRemain(configurationFiles);
+        this.disabledWorlds = new DisabledWorlds(configurationFiles);
 
         /* Load files */
         questsFiles.loadQuestsFiles();
@@ -173,6 +179,9 @@ public final class ODailyQuests extends JavaPlugin {
             holographicDisplaysHook = new HolographicDisplaysHook();
             loadHolograms.loadHolograms();
         } else PluginLogger.info(ChatColor.YELLOW + "HolographicDisplays" + ChatColor.GOLD + " not detected. Holograms will not work.");
+
+        /* Load specific settings */
+        disabledWorlds.loadDisabledWorlds();
 
         /* Load quests */
         loadQuests.loadCategories();

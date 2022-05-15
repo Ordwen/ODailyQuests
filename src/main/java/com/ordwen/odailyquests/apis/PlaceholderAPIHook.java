@@ -4,6 +4,7 @@ import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsI
 import com.ordwen.odailyquests.quests.LoadQuests;
 import com.ordwen.odailyquests.quests.Quest;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
+import com.ordwen.odailyquests.tools.TimeRemain;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -38,7 +39,7 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
             return String.valueOf(QuestsManager.getActiveQuests().get(player.getName()).getAchievedQuests());
         }
         if (params.equalsIgnoreCase("drawin")) {
-            return PlayerQuestsInterface.timeRemain(player.getName());
+            return TimeRemain.timeRemain(player.getName());
         }
         if (params.equalsIgnoreCase("progress_1")) {
             return String.valueOf(getQuestProgression(0, player.getName()));

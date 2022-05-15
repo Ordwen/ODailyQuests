@@ -167,3 +167,14 @@ quests:
     reward:
       reward_type: MONEY
       amount: 5000000
+  12:
+    name: "&aMiiiiilk."
+    menu_item: MILK_BUCKET
+    description:
+      - "&bGet 2 milk buckets."
+      - "&bWin &c5 000 000$&b."
+    quest_type: MILKING
+    required_amount: 2
+    reward:
+      reward_type: MONEY
+      amount: 5000000

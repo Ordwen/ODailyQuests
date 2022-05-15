@@ -9,7 +9,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Scanner;
 import java.util.function.Consumer;
-import java.util.logging.Logger;
 
 public class UpdateChecker {
 

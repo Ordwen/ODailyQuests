@@ -18,6 +18,7 @@ public enum QuestType {
     TAME("TAME"),
     BREED("BREED"),
     SHEAR("SHEAR"),
+    MILKING("MILKING"),
     VILLAGER_TRADE("VILLAGER_TRADE"),
 
     CUSTOM_MOBS("CUSTOM_MOBS"),
