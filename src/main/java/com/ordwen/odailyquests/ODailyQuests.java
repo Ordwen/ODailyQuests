@@ -15,6 +15,7 @@ import com.ordwen.odailyquests.commands.interfaces.InterfacesManager;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
 import com.ordwen.odailyquests.commands.interfaces.pagination.Items;
 import com.ordwen.odailyquests.configuration.DisabledWorlds;
+import com.ordwen.odailyquests.configuration.Title;
 import com.ordwen.odailyquests.files.*;
 import com.ordwen.odailyquests.quests.player.progression.ValidateVillagerTradeQuest;
 import com.ordwen.odailyquests.rewards.GlobalReward;
@@ -66,6 +67,7 @@ public final class ODailyQuests extends JavaPlugin {
     private LoadHolograms loadHolograms;
     private TimeRemain timeRemain;
     private DisabledWorlds disabledWorlds;
+    private Title title;
 
     @Override
     public void onEnable() {
@@ -125,6 +127,7 @@ public final class ODailyQuests extends JavaPlugin {
         this.citizensHook = new CitizensHook(configurationFiles, globalQuestsInterface, categorizedQuestsInterfaces);
         this.timeRemain = new TimeRemain(configurationFiles);
         this.disabledWorlds = new DisabledWorlds(configurationFiles);
+        this.title = new Title(configurationFiles);
 
         /* Load files */
         questsFiles.loadQuestsFiles();
@@ -182,6 +185,7 @@ public final class ODailyQuests extends JavaPlugin {
 
         /* Load specific settings */
         disabledWorlds.loadDisabledWorlds();
+        title.loadTitle();
 
         /* Load quests */
         loadQuests.loadCategories();

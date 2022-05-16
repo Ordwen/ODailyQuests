@@ -3,6 +3,7 @@ package com.ordwen.odailyquests.rewards;
 import com.ordwen.odailyquests.apis.PlayerPointsHook;
 import com.ordwen.odailyquests.apis.TokenManagerHook;
 import com.ordwen.odailyquests.apis.VaultHook;
+import com.ordwen.odailyquests.configuration.Title;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.tools.PluginLogger;

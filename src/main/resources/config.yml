@@ -73,6 +73,17 @@ global_reward:
 # or if the first should be completed before the second progresses.
 synchronised_progression: false
 
+# Set a title that will be displayed when a player completes a quest.
+# Reminder: 20 ticks is equal to one second.
+# Available placeholders : %player% , %questName%
+title:
+  enabled: true
+  fadeIn: 10 # The default number of ticks for the title to fade in.
+  stay: 70 # The default number of ticks for the title to stay.
+  fadeOut: 20 # The default number of ticks for the title to fade out.
+  text: "&aWell done, %player%"
+  subtitle: "&aYou have completed the quest %questName% &a!" # Leave this field blank if you do not want a subtitle
+
 # interfaces settings
 # NEVER DELETE A %variable%
 # %progress% is replaced by the progression of the quest.
