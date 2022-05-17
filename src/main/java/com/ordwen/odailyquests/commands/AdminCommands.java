@@ -1,7 +1,8 @@
 package com.ordwen.odailyquests.commands;
 
 import com.ordwen.odailyquests.ODailyQuests;
-import com.ordwen.odailyquests.apis.holograms.HologramsManager;
+import com.ordwen.odailyquests.apis.hooks.holograms.HologramsManager;
+import com.ordwen.odailyquests.apis.hooks.holograms.HolographicDisplaysHook;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.enums.QuestsPermissions;
@@ -10,7 +11,6 @@ import com.ordwen.odailyquests.quests.Quest;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
-import com.ordwen.odailyquests.quests.player.progression.ProgressionManager;
 import com.ordwen.odailyquests.rewards.RewardManager;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
@@ -36,16 +36,12 @@ public class AdminCommands implements CommandExecutor {
             if (sender.hasPermission(QuestsPermissions.QUESTS_ADMIN.getPermission())) {
                 if (args.length == 1) {
                     if ("reload".equals(args[0])) {
-                        oDailyQuests.configurationFiles.loadConfigurationFiles();
-                        oDailyQuests.interfacesManager.initInventoryNames();
-                        oDailyQuests.questsFiles.loadQuestsFiles();
-                        oDailyQuests.loadQuests.clearQuestsLists();
-                        oDailyQuests.loadQuests.loadCategories();
-                        //oDailyQuests.playerQuestsInterface.loadPlayerQuestsInterface();
-                        //oDailyQuests.globalQuestsInterface.loadGlobalQuestsInterface();
-                        //oDailyQuests.categorizedQuestsInterfaces.loadCategorizedInterfaces();
-                        oDailyQuests.configurationFiles.loadMessagesFiles();
-                        ProgressionManager.isSynchronised = oDailyQuests.configurationFiles.getConfigFile().getBoolean("synchronised_progression");
+                        oDailyQuests.filesManager.loadAllFiles();
+                        oDailyQuests.configurationManager.loadConfiguration();
+
+                        oDailyQuests.interfacesManager.initAllObjects();
+                        LoadQuests.loadCategories();
+
                         sender.sendMessage(ChatColor.GREEN + "Plugin successfully reloaded!");
                     } else {
                         sender.sendMessage(QuestsMessages.ADMIN_HELP.toString());
@@ -108,7 +104,7 @@ public class AdminCommands implements CommandExecutor {
                                             switch (args[2]) {
                                                 case "global":
                                                     if (LoadQuests.getGlobalQuests().size() != 0) {
-                                                        oDailyQuests.holographicDisplaysHook.createHologram(index,
+                                                        HolographicDisplaysHook.createHologram(index,
                                                                 LoadQuests.getGlobalQuests(),
                                                                 ((Player) sender).getPlayer());
                                                     } else
@@ -116,7 +112,7 @@ public class AdminCommands implements CommandExecutor {
                                                     break;
                                                 case "easy":
                                                     if (LoadQuests.getEasyQuests().size() != 0) {
-                                                        oDailyQuests.holographicDisplaysHook.createHologram(index,
+                                                        HolographicDisplaysHook.createHologram(index,
                                                                 LoadQuests.getEasyQuests(),
                                                                 ((Player) sender).getPlayer());
                                                     } else
@@ -124,7 +120,7 @@ public class AdminCommands implements CommandExecutor {
                                                     break;
                                                 case "medium":
                                                     if (LoadQuests.getMediumQuests().size() != 0) {
-                                                        oDailyQuests.holographicDisplaysHook.createHologram(index,
+                                                        HolographicDisplaysHook.createHologram(index,
                                                                 LoadQuests.getMediumQuests(),
                                                                 ((Player) sender).getPlayer());
                                                     } else
@@ -132,7 +128,7 @@ public class AdminCommands implements CommandExecutor {
                                                     break;
                                                 case "hard":
                                                     if (LoadQuests.getHardQuests().size() != 0) {
-                                                        oDailyQuests.holographicDisplaysHook.createHologram(index,
+                                                        HolographicDisplaysHook.createHologram(index,
                                                                 LoadQuests.getHardQuests(),
                                                                 ((Player) sender).getPlayer());
                                                     } else

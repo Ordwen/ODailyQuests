@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.configuration.functions;
+package com.ordwen.odailyquests.configuration.functionalities;
 
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.files.ConfigurationFiles;

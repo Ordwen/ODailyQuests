@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.apis;
+package com.ordwen.odailyquests.apis.hooks.mobs;
 
 import com.ordwen.odailyquests.quests.QuestType;
 import com.ordwen.odailyquests.quests.player.progression.ProgressionManager;

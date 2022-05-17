@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.apis;
+package com.ordwen.odailyquests.apis.hooks.placeholders;
 
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
 import com.ordwen.odailyquests.quests.LoadQuests;

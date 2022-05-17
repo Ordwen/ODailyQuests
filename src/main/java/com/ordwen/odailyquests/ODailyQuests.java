@@ -1,24 +1,16 @@
 package com.ordwen.odailyquests;
 
-import com.ordwen.odailyquests.apis.*;
-import com.ordwen.odailyquests.apis.PlaceholderAPIHook;
-import com.ordwen.odailyquests.apis.holograms.HolographicDisplaysHook;
-import com.ordwen.odailyquests.apis.holograms.LoadHolograms;
-import com.ordwen.odailyquests.apis.holograms.HologramsManager;
+import com.ordwen.odailyquests.apis.IntegrationsManager;
+import com.ordwen.odailyquests.apis.hooks.holograms.HologramsManager;
 import com.ordwen.odailyquests.commands.AdminCommands;
 import com.ordwen.odailyquests.commands.PlayerCommands;
 import com.ordwen.odailyquests.commands.completers.AdminCompleter;
 import com.ordwen.odailyquests.commands.completers.PlayerCompleter;
-import com.ordwen.odailyquests.commands.interfaces.CategorizedQuestsInterfaces;
-import com.ordwen.odailyquests.commands.interfaces.GlobalQuestsInterface;
 import com.ordwen.odailyquests.commands.interfaces.InterfacesManager;
 import com.ordwen.odailyquests.commands.interfaces.InventoryClickListener;
-import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
-import com.ordwen.odailyquests.commands.interfaces.pagination.Items;
 import com.ordwen.odailyquests.configuration.ConfigurationManager;
 import com.ordwen.odailyquests.files.*;
 import com.ordwen.odailyquests.quests.player.progression.ValidateVillagerTradeQuest;
-import com.ordwen.odailyquests.configuration.functions.GlobalReward;
 import com.ordwen.odailyquests.tools.Metrics;
 import com.ordwen.odailyquests.quests.LoadQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
@@ -28,9 +20,7 @@ import com.ordwen.odailyquests.quests.player.progression.storage.yaml.SaveProgre
 import com.ordwen.odailyquests.quests.player.progression.storage.mysql.LoadProgressionSQL;
 import com.ordwen.odailyquests.quests.player.progression.storage.mysql.MySQLManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.mysql.SaveProgressionSQL;
-import com.ordwen.odailyquests.tools.TimeRemain;
 import com.ordwen.odailyquests.tools.UpdateChecker;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import com.ordwen.odailyquests.tools.PluginLogger;
@@ -42,43 +32,18 @@ public final class ODailyQuests extends JavaPlugin {
      * Getting instance of files classes.
      */
     public ConfigurationFiles configurationFiles;
-    public QuestsFiles questsFiles;
-    private ProgressionFile progressionFile;
-    private PlayerInterfaceFile playerInterfaceFile;
-    public LoadQuests loadQuests;
+    public ConfigurationManager configurationManager;
     public InterfacesManager interfacesManager;
-    private QuestsManager questsManager;
-    private LoadProgressionYAML loadProgressionYAML;
-    private SaveProgressionYAML saveProgressionYAML;
-    private CitizensHook citizensHook;
-    private MySQLManager mySqlManager;
+    public FilesManager filesManager;
     private LoadProgressionSQL loadProgressionSQL = null;
     private SaveProgressionSQL saveProgressionSQL = null;
-    public HolographicDisplaysHook holographicDisplaysHook;
-    private HologramsFile hologramsFile;
-    public HologramsManager hologramsManager;
-    private LoadHolograms loadHolograms;
-    private TimeRemain timeRemain;
-
-    private ConfigurationManager configurationManager;
 
     @Override
     public void onEnable() {
 
         PluginLogger.info(ChatColor.GOLD + "Plugin is starting...");
 
-        /* Check for update */
-        PluginLogger.info(ChatColor.GOLD + "Checking for update...");
-        new UpdateChecker(this, 100990).getVersion(version -> {
-            if (this.getDescription().getVersion().equals(version)) {
-                PluginLogger.info(ChatColor.GREEN + "Plugin is up to date.");
-            } else {
-                PluginLogger.info(ChatColor.GOLD + "A new update is available !");
-                PluginLogger.info(ChatColor.GOLD + "Current version : " + ChatColor.RED + this.getDescription().getVersion() + ChatColor.GOLD + ", Available version : " + ChatColor.GREEN + version);
-                PluginLogger.info(ChatColor.GOLD + "Please download latest version :");
-                PluginLogger.info(ChatColor.GOLD + "https://www.spigotmc.org/resources/odailyquests.100990/");
-            }
-        });
+        checkForUpdate();
 
         /* Load Metrics */
         // https://bstats.org/plugin/bukkit/ODailyQuests/14277
@@ -87,109 +52,43 @@ public final class ODailyQuests extends JavaPlugin {
 
         /* Load configuration files */
         this.configurationFiles = new ConfigurationFiles(this);
-        configurationFiles.loadConfigurationFiles();
-        configurationFiles.loadMessagesFiles();
+        this.configurationFiles.loadConfigurationFiles();
+        this.configurationFiles.loadMessagesFiles();
 
         /* Load SQL Support */
         if (configurationFiles.getConfigFile().getString("storage_mode").equals("MySQL")) {
-            this.mySqlManager = new MySQLManager(configurationFiles, 10);
+            MySQLManager mySqlManager = new MySQLManager(configurationFiles, 10);
             this.loadProgressionSQL = new LoadProgressionSQL(mySqlManager);
             this.saveProgressionSQL = new SaveProgressionSQL(mySqlManager);
 
             mySqlManager.setupDatabase();
         }
 
+        /* Load files */
+        this.filesManager = new FilesManager(this);
+        this.filesManager.loadAllFiles();
+
         /* Load class instances */
-        this.questsFiles = new QuestsFiles(this);
-        this.progressionFile = new ProgressionFile(this);
-        this.hologramsFile = new HologramsFile(this);
-        this.playerInterfaceFile = new PlayerInterfaceFile(this);
-        this.hologramsManager = new HologramsManager(hologramsFile);
-        this.loadHolograms = new LoadHolograms(hologramsFile);
-        this.loadQuests = new LoadQuests(questsFiles, configurationFiles);
-        this.interfacesManager = new InterfacesManager(playerInterfaceFile, configurationFiles);
-        this.questsManager = new QuestsManager(configurationFiles, loadProgressionSQL, saveProgressionSQL);
-        this.loadProgressionYAML = new LoadProgressionYAML(progressionFile);
-        this.saveProgressionYAML = new SaveProgressionYAML(progressionFile);
-        this.citizensHook = new CitizensHook(configurationFiles, InterfacesManager.getGlobalQuestsInterface(), InterfacesManager.getCategorizedQuestsInterfaces());
-        this.timeRemain = new TimeRemain(configurationFiles);
+        this.interfacesManager = new InterfacesManager(configurationFiles);
         this.configurationManager = new ConfigurationManager(configurationFiles);
 
-        /* Load files */
-        questsFiles.loadQuestsFiles();
-        progressionFile.loadProgressionFile();
-        hologramsFile.loadHologramsFile();
-        playerInterfaceFile.loadPlayerInterfaceFile();
-
         /* Load dependencies */
+        new IntegrationsManager(this).loadAllDependencies();
 
-        // VAULT - CMI
-        if (!VaultHook.setupEconomy()) {
-            PluginLogger.info(ChatColor.RED + "No compatible plugin detected for reward type 'MONEY'.");
-            PluginLogger.info(ChatColor.RED + "Quests with reward type 'MONEY' will not work.");
-        } else {
-            PluginLogger.info(ChatColor.YELLOW + "Vault" + ChatColor.GREEN + " successfully hooked.");
-        }
-
-        // TOKENMANAGER - PLAYERPOINTS
-        if (!TokenManagerHook.setupTokenManager()) {
-            PlayerPointsHook.setupPlayerPointsAPI();
-            if (PlayerPointsHook.isPlayerPointsSetup()) {
-                PluginLogger.info(ChatColor.YELLOW + "PlayerPoints" + ChatColor.GREEN + " successfully hooked.");
-            } else {
-                PluginLogger.info(ChatColor.RED + "No compatible plugin detected for reward type 'POINTS'.");
-                PluginLogger.info(ChatColor.RED + "Quests with reward type 'POINTS' will not work.");
-            }
-        } else {
-            PluginLogger.info(ChatColor.YELLOW + "TokenManager" + ChatColor.GREEN + " successfully hooked.");
-        }
-
-        // CITIZENS
-        if (CitizensHook.setupCitizens()) {
-            getServer().getPluginManager().registerEvents(citizensHook, this);
-            PluginLogger.info(ChatColor.YELLOW + "Citizens" + ChatColor.GREEN + " successfully hooked.");
-        } else PluginLogger.info(ChatColor.YELLOW + "Citizens" + ChatColor.GOLD + " not detected. NPCs will not work.");
-
-        // ELITEMOBS
-        if (EliteMobsHook.isEliteMobsSetup()) {
-            PluginLogger.info(ChatColor.YELLOW + "EliteMobs" + ChatColor.GREEN + " successfully hooked.");
-            getServer().getPluginManager().registerEvents(new EliteMobsHook(), this);
-        }
-
-        // MYTHICMOBS
-        if (MythicMobsHook.isMythicMobsSetup()) {
-            PluginLogger.info(ChatColor.YELLOW + "MythicMobs" + ChatColor.GREEN + " successfully hooked.");
-            getServer().getPluginManager().registerEvents(new MythicMobsHook(), this);
-        }
-
-        // HOLOGRAPHICDISPLAYS
-        if (HolographicDisplaysHook.isHolographicDisplaysSetup()) {
-            PluginLogger.info(ChatColor.YELLOW + "HolographicDisplays" + ChatColor.GREEN + " successfully hooked.");
-            holographicDisplaysHook = new HolographicDisplaysHook();
-            loadHolograms.loadHolograms();
-        } else PluginLogger.info(ChatColor.YELLOW + "HolographicDisplays" + ChatColor.GOLD + " not detected. Holograms will not work.");
+        /* Load holograms */
+        HologramsManager.loadHolograms();
 
         /* Load specific settings */
         configurationManager.loadConfiguration();
 
         /* Load quests */
-        loadQuests.loadCategories();
+        LoadQuests.loadCategories();
 
         /* Load interfaces */
         interfacesManager.initAllObjects();
 
-        /* Hook PAPI */
-        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            new PlaceholderAPIHook().register();
-            PluginLogger.info(ChatColor.YELLOW + "PlaceholderAPI" + ChatColor.GREEN + " successfully hooked.");
-        } else
-            PluginLogger.info(ChatColor.YELLOW + "PlaceholderAPI" + ChatColor.GOLD + " not detected. Placeholders will not work.");
-
-        /* Load utils */
-        ProgressionManager.isSynchronised = configurationFiles.getConfigFile().getBoolean("synchronised_progression");
-
         /* Load commands */
-        getCommand("quests").setExecutor(new PlayerCommands(configurationFiles, InterfacesManager.getGlobalQuestsInterface(), InterfacesManager.getCategorizedQuestsInterfaces()));
+        getCommand("quests").setExecutor(new PlayerCommands(configurationFiles));
         getCommand("questsadmin").setExecutor(new AdminCommands(this));
 
         /* Load Tab Completers */
@@ -199,7 +98,7 @@ public final class ODailyQuests extends JavaPlugin {
         /* Load listeners */
         getServer().getPluginManager().registerEvents(new ValidateVillagerTradeQuest(), this);
         getServer().getPluginManager().registerEvents(new InventoryClickListener(), this);
-        getServer().getPluginManager().registerEvents(questsManager, this);
+        getServer().getPluginManager().registerEvents(new QuestsManager(configurationFiles, loadProgressionSQL, saveProgressionSQL), this);
         getServer().getPluginManager().registerEvents(new ProgressionManager(), this);
 
         /* Avoid server/plugin reload errors */
@@ -233,6 +132,7 @@ public final class ODailyQuests extends JavaPlugin {
             PluginLogger.error("Think that this can cause problems, especially in the data backup.");
             PluginLogger.error("You should restart the server instead.");
         }
+
         PluginLogger.info(ChatColor.GREEN + "Plugin is started !");
     }
 
@@ -261,6 +161,23 @@ public final class ODailyQuests extends JavaPlugin {
         }
 
         PluginLogger.info(ChatColor.RED + "Plugin is shutting down...");
+    }
+
+    /**
+     * Check if an update is available.
+     */
+    private void checkForUpdate() {
+        PluginLogger.info(ChatColor.GOLD + "Checking for update...");
+        new UpdateChecker(this, 100990).getVersion(version -> {
+            if (this.getDescription().getVersion().equals(version)) {
+                PluginLogger.info(ChatColor.GREEN + "Plugin is up to date.");
+            } else {
+                PluginLogger.info(ChatColor.GOLD + "A new update is available !");
+                PluginLogger.info(ChatColor.GOLD + "Current version : " + ChatColor.RED + this.getDescription().getVersion() + ChatColor.GOLD + ", Available version : " + ChatColor.GREEN + version);
+                PluginLogger.info(ChatColor.GOLD + "Please download latest version :");
+                PluginLogger.info(ChatColor.GOLD + "https://www.spigotmc.org/resources/odailyquests.100990/");
+            }
+        });
     }
 
 }

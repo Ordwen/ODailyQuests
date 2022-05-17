@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.apis;
+package com.ordwen.odailyquests.apis.hooks.mobs;
 
 import com.magmaguy.elitemobs.api.EliteMobDeathEvent;
 import com.ordwen.odailyquests.quests.QuestType;

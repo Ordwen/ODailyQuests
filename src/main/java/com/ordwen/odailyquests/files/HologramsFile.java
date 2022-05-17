@@ -25,22 +25,22 @@ public class HologramsFile {
         this.oDailyQuests = oDailyQuests;
     }
 
-    private File hologramsFile;
-    private FileConfiguration holograms;
+    private static File hologramsFile;
+    private static FileConfiguration holograms;
 
     /**
      * Get the configuration file.
      * @return config file.
      */
-    public FileConfiguration getHologramsFileConfiguration() {
-        return this.holograms;
+    public static FileConfiguration getHologramsFileConfiguration() {
+        return holograms;
     }
 
     /**
      * Get the file.
      * @return file.
      */
-    public File getHologramsFile() { return this.hologramsFile; }
+    public static File getHologramsFile() { return hologramsFile; }
 
     /**
      * Init progression file.

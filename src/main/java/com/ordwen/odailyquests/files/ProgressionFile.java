@@ -25,22 +25,22 @@ public class ProgressionFile {
         this.oDailyQuests = oDailyQuests;
     }
 
-    private File progressionFile;
-    private FileConfiguration progression;
+    private static File progressionFile;
+    private static FileConfiguration progression;
 
     /**
      * Get the configuration file.
      * @return config file.
      */
-    public FileConfiguration getProgressionFileConfiguration() {
-        return this.progression;
+    public static FileConfiguration getProgressionFileConfiguration() {
+        return progression;
     }
 
     /**
      * Get the file.
      * @return file.
      */
-    public File getProgressionFile() { return this.progressionFile; }
+    public static File getProgressionFile() { return progressionFile; }
 
     /**
      * Init progression file.

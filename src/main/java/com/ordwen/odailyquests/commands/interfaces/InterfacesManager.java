@@ -20,7 +20,6 @@ public class InterfacesManager implements Listener {
      * Getting instance of classes.
      */
     private final ConfigurationFiles configurationFiles;
-    private final PlayerInterfaceFile playerInterfaceFile ;
     private static GlobalQuestsInterface globalQuestsInterface;
     private static CategorizedQuestsInterfaces categorizedQuestsInterfaces;
 
@@ -33,9 +32,7 @@ public class InterfacesManager implements Listener {
      *
      * @param configurationFiles configuration files class.
      */
-    public InterfacesManager(PlayerInterfaceFile playerInterfaceFile,
-                             ConfigurationFiles configurationFiles) {
-        this.playerInterfaceFile = playerInterfaceFile;
+    public InterfacesManager(ConfigurationFiles configurationFiles) {
         this.configurationFiles = configurationFiles;
     }
 
@@ -69,8 +66,8 @@ public class InterfacesManager implements Listener {
      * Load player quests interface.
      */
     public void loadPlayerQuestsInterface() {
-        new PlayerHead(playerInterfaceFile).initPlayerHead();
-        new PlayerQuestsInterface(playerInterfaceFile).loadPlayerQuestsInterface();
+        new PlayerHead().initPlayerHead();
+        new PlayerQuestsInterface().loadPlayerQuestsInterface();
 
         initEmptyCaseItems();
     }
@@ -94,7 +91,7 @@ public class InterfacesManager implements Listener {
      * Init variables.
      */
     public void initInventoryNames() {
-        playerQuestsInventoryName = ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(playerInterfaceFile.getPlayerInterfaceFileConfiguration().getConfigurationSection("player_interface").getString(".inventory_name")));
+        playerQuestsInventoryName = ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(PlayerInterfaceFile.getPlayerInterfaceFileConfiguration().getConfigurationSection("player_interface").getString(".inventory_name")));
         globalQuestsInventoryName = ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(configurationFiles.getConfigFile().getConfigurationSection("interfaces.global_quests").getString(".inventory_name")));
         easyQuestsInventoryName = ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(configurationFiles.getConfigFile().getConfigurationSection("interfaces.easy_quests").getString(".inventory_name")));
         mediumQuestsInventoryName = ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(configurationFiles.getConfigFile().getConfigurationSection("interfaces.medium_quests").getString(".inventory_name")));

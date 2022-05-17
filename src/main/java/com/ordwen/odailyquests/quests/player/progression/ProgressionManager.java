@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.quests.player.progression;
 
-import com.ordwen.odailyquests.configuration.functions.DisabledWorlds;
+import com.ordwen.odailyquests.configuration.essentials.Synchronization;
+import com.ordwen.odailyquests.configuration.functionalities.DisabledWorlds;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.quests.Quest;
 import com.ordwen.odailyquests.quests.QuestType;
@@ -27,8 +28,6 @@ import org.bukkit.inventory.*;
 import java.util.HashMap;
 
 public class ProgressionManager implements Listener {
-
-    public static boolean isSynchronised;
 
     @EventHandler
     public void onBlockBreakEvent(BlockBreakEvent event) {
@@ -166,7 +165,7 @@ public class ProgressionManager implements Listener {
                             RewardManager.sendAllRewardItems(quest.getQuestName(), playerName, quest.getReward());
                         }
                     }
-                    if (!isSynchronised) {
+                    if (!Synchronization.isSynchronised()) {
                         break;
                     }
                 }

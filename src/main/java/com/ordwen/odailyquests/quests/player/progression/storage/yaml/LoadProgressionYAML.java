@@ -9,24 +9,11 @@ import com.ordwen.odailyquests.quests.player.progression.Utils;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.HashMap;
 
 public class LoadProgressionYAML {
-
-    /**
-     * Getting instance of classes.
-     */
-    private static ProgressionFile progressionFile;
-
-    /**
-     * Class instance constructor.
-     *
-     * @param progressionFile progression file class.
-     */
-    public LoadProgressionYAML(ProgressionFile progressionFile) {
-        LoadProgressionYAML.progressionFile = progressionFile;
-    }
 
     /**
      * Load or renewed quotidian quests of player.
@@ -36,6 +23,8 @@ public class LoadProgressionYAML {
      */
     public static void loadPlayerQuests(String playerName, HashMap<String, PlayerQuests> activeQuests, int questsConfigMode, int timestampConfigMode, int temporalityMode) {
 
+        FileConfiguration progressionFile = ProgressionFile.getProgressionFileConfiguration();
+
         /* init variables */
         long timestamp;
         int achievedQuests;
@@ -43,10 +32,10 @@ public class LoadProgressionYAML {
         HashMap<Quest, Progression> quests = new HashMap<>();
 
         /* check if player has data */
-        if (progressionFile.getProgressionFileConfiguration().getString(playerName) != null) {
+        if (progressionFile.getString(playerName) != null) {
 
-            timestamp = progressionFile.getProgressionFileConfiguration().getConfigurationSection(playerName).getLong(".timestamp");
-            achievedQuests = progressionFile.getProgressionFileConfiguration().getConfigurationSection(playerName).getInt(".achievedQuests");
+            timestamp = progressionFile.getConfigurationSection(playerName).getLong(".timestamp");
+            achievedQuests = progressionFile.getConfigurationSection(playerName).getInt(".achievedQuests");
 
             /* renew quests */
             if (Utils.checkTimestamp(timestampConfigMode, temporalityMode, timestamp)) {
@@ -54,10 +43,10 @@ public class LoadProgressionYAML {
             }
             /* load non-achieved quests */
             else {
-                for (String string : progressionFile.getProgressionFileConfiguration().getConfigurationSection(playerName + ".quests").getKeys(false)) {
-                    int questIndex = progressionFile.getProgressionFileConfiguration().getConfigurationSection(playerName + ".quests." + string).getInt(".index");
-                    int advancement = progressionFile.getProgressionFileConfiguration().getConfigurationSection(playerName + ".quests." + string).getInt(".progression");
-                    boolean isAchieved = progressionFile.getProgressionFileConfiguration().getConfigurationSection(playerName + ".quests." + string).getBoolean(".isAchieved");
+                for (String string : progressionFile.getConfigurationSection(playerName + ".quests").getKeys(false)) {
+                    int questIndex = progressionFile.getConfigurationSection(playerName + ".quests." + string).getInt(".index");
+                    int advancement = progressionFile.getConfigurationSection(playerName + ".quests." + string).getInt(".progression");
+                    boolean isAchieved = progressionFile.getConfigurationSection(playerName + ".quests." + string).getBoolean(".isAchieved");
 
                     Progression progression = new Progression(advancement, isAchieved);
                     Quest quest = Utils.findQuest(playerName, questsConfigMode, questIndex, Integer.parseInt(string));

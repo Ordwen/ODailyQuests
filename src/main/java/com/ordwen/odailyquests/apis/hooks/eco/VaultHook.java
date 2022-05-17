@@ -1,12 +1,8 @@
-package com.ordwen.odailyquests.apis;
+package com.ordwen.odailyquests.apis.hooks.eco;
 
-import com.ordwen.odailyquests.ODailyQuests;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.PluginLogger;
 import org.bukkit.plugin.RegisteredServiceProvider;
-
-import java.util.logging.Logger;
 
 public class VaultHook {
 

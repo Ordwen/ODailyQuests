@@ -14,12 +14,6 @@ import java.util.List;
 
 public class PlayerHead {
 
-    private static PlayerInterfaceFile playerInterfaceFile;
-
-    public PlayerHead(PlayerInterfaceFile playerInterfaceFile) {
-        PlayerHead.playerInterfaceFile = playerInterfaceFile;
-    }
-
     private static ItemStack playerHead;
     private static SkullMeta skullMeta;
 
@@ -30,8 +24,8 @@ public class PlayerHead {
         playerHead = new ItemStack(Material.PLAYER_HEAD, 1);
         skullMeta = (SkullMeta) playerHead.getItemMeta();
         skullMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&',
-                ColorConvert.convertColorCode(playerInterfaceFile.getPlayerInterfaceFileConfiguration().getConfigurationSection("player_interface.player_head").getString(".item_name"))));
-        skullMeta.setLore(playerInterfaceFile.getPlayerInterfaceFileConfiguration().getConfigurationSection("player_interface.player_head").getStringList(".item_description"));
+                ColorConvert.convertColorCode(PlayerInterfaceFile.getPlayerInterfaceFileConfiguration().getConfigurationSection("player_interface.player_head").getString(".item_name"))));
+        skullMeta.setLore(PlayerInterfaceFile.getPlayerInterfaceFileConfiguration().getConfigurationSection("player_interface.player_head").getStringList(".item_description"));
     }
 
     /**

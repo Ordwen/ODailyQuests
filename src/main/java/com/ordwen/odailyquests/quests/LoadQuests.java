@@ -1,8 +1,8 @@
 package com.ordwen.odailyquests.quests;
 
-import com.ordwen.odailyquests.apis.EliteMobsHook;
-import com.ordwen.odailyquests.apis.MythicMobsHook;
-import com.ordwen.odailyquests.files.ConfigurationFiles;
+import com.ordwen.odailyquests.apis.hooks.mobs.EliteMobsHook;
+import com.ordwen.odailyquests.apis.hooks.mobs.MythicMobsHook;
+import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.files.QuestsFiles;
 import com.ordwen.odailyquests.rewards.Reward;
 import com.ordwen.odailyquests.rewards.RewardType;
@@ -22,23 +22,6 @@ import java.util.List;
 
 public class LoadQuests {
 
-    /**
-     * Getting instance of classes.
-     */
-    private final QuestsFiles questsFiles;
-    private final ConfigurationFiles configurationFiles;
-
-    /**
-     * Class instance constructor.
-     *
-     * @param questsFiles        quests files class.
-     * @param configurationFiles configuration files class.
-     */
-    public LoadQuests(QuestsFiles questsFiles, ConfigurationFiles configurationFiles) {
-        this.questsFiles = questsFiles;
-        this.configurationFiles = configurationFiles;
-    }
-
     /* Init quests lists */
     private static final ArrayList<Quest> globalQuests = new ArrayList<>();
     private static final ArrayList<Quest> easyQuests = new ArrayList<>();
@@ -46,30 +29,25 @@ public class LoadQuests {
     private static final ArrayList<Quest> hardQuests = new ArrayList<>();
 
     /**
-     * Clear all quests lists.
+     * Load all quests from files.
      */
-    public void clearQuestsLists() {
+    public static void loadCategories() {
+
         globalQuests.clear();
         easyQuests.clear();
         mediumQuests.clear();
         hardQuests.clear();
-    }
-
-    /**
-     * Load all quests from files.
-     */
-    public void loadCategories() {
 
         /* init files */
-        FileConfiguration globalQuestsFile = questsFiles.getGlobalQuestsFile();
-        FileConfiguration easyQuestsFile = questsFiles.getEasyQuestsFile();
-        FileConfiguration mediumQuestsFile = questsFiles.getMediumQuestsFile();
-        FileConfiguration hardQuestsFile = questsFiles.getHardQuestsFile();
+        FileConfiguration globalQuestsFile = QuestsFiles.getGlobalQuestsFile();
+        FileConfiguration easyQuestsFile = QuestsFiles.getEasyQuestsFile();
+        FileConfiguration mediumQuestsFile = QuestsFiles.getMediumQuestsFile();
+        FileConfiguration hardQuestsFile = QuestsFiles.getHardQuestsFile();
 
-        if (configurationFiles.getConfigFile().getInt("quests_mode") == 1) {
+        if (Modes.getQuestsMode() == 1) {
             /* load global quests */
             loadQuests(globalQuestsFile, globalQuests, "Global Quests");
-        } else if (configurationFiles.getConfigFile().getInt("quests_mode") == 2) {
+        } else if (Modes.getQuestsMode() == 2) {
             /* load easy quests */
             loadQuests(easyQuestsFile, easyQuests, "Easy Quests");
             /* load medium quests */
@@ -88,7 +66,7 @@ public class LoadQuests {
      * @param quests   list for quests.
      * @param fileName file name for PluginLogger.
      */
-    public void loadQuests(FileConfiguration file, ArrayList<Quest> quests, String fileName) {
+    public static void loadQuests(FileConfiguration file, ArrayList<Quest> quests, String fileName) {
 
         /* load quests */
         if (file.getConfigurationSection("quests") != null) {
@@ -236,7 +214,7 @@ public class LoadQuests {
      * @param questIndex
      * @return
      */
-    private ItemStack getItemStackFromMaterial(String material, String fileName, int questIndex, String parameter) {
+    private static ItemStack getItemStackFromMaterial(String material, String fileName, int questIndex, String parameter) {
         ItemStack requiredItem = null;
         try {
             requiredItem = new ItemStack(Material.valueOf(material));
@@ -260,7 +238,7 @@ public class LoadQuests {
      * @param value
      * @return
      */
-    private EntityType getEntityType(String entity, String fileName, int questIndex, String value) {
+    private static EntityType getEntityType(String entity, String fileName, int questIndex, String value) {
         EntityType entityType = null;
         try {
             entityType = EntityType.valueOf(entity);

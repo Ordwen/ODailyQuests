@@ -25,41 +25,41 @@ public class QuestsFiles {
         this.oDailyQuests = oDailyQuests;
     }
 
-    private FileConfiguration globalQuests;
-    private FileConfiguration easyQuests;
-    private FileConfiguration mediumQuests;
-    private FileConfiguration hardQuests;
+    private static FileConfiguration globalQuests;
+    private static FileConfiguration easyQuests;
+    private static FileConfiguration mediumQuests;
+    private static FileConfiguration hardQuests;
 
     /**
      * Get the global quests file.
      * @return global quests file.
      */
-    public FileConfiguration getGlobalQuestsFile() {
-        return this.globalQuests;
+    public static FileConfiguration getGlobalQuestsFile() {
+        return globalQuests;
     }
 
     /**
      * Get the easy quests file.
      * @return easy quests file.
      */
-    public FileConfiguration getEasyQuestsFile() {
-        return this.easyQuests;
+    public static FileConfiguration getEasyQuestsFile() {
+        return easyQuests;
     }
 
     /**
      * Get the medium quests file.
      * @return medium quests file.
      */
-    public FileConfiguration getMediumQuestsFile() {
-        return this.mediumQuests;
+    public static FileConfiguration getMediumQuestsFile() {
+        return mediumQuests;
     }
 
     /**
      * Get the hard quests file.
      * @return hard quests file.
      */
-    public FileConfiguration getHardQuestsFile() {
-        return this.hardQuests;
+    public static FileConfiguration getHardQuestsFile() {
+        return hardQuests;
     }
 
     /**

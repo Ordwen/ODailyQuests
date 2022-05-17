@@ -1,8 +1,11 @@
-package com.ordwen.odailyquests.apis;
+package com.ordwen.odailyquests.apis.hooks.npcs;
 
 import com.ordwen.odailyquests.commands.interfaces.CategorizedQuestsInterfaces;
 import com.ordwen.odailyquests.commands.interfaces.GlobalQuestsInterface;
+import com.ordwen.odailyquests.commands.interfaces.InterfacesManager;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
+import com.ordwen.odailyquests.configuration.essentials.Modes;
+import com.ordwen.odailyquests.configuration.integrations.NPCNames;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.enums.QuestsPermissions;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
@@ -14,9 +17,7 @@ import org.bukkit.event.Listener;
 
 public class CitizensHook implements Listener {
 
-    private final ConfigurationFiles configurationFiles;
-    private final GlobalQuestsInterface globalQuestsInterface;
-    private final CategorizedQuestsInterfaces categorizedQuestsInterfaces;
+    //private final ConfigurationFiles configurationFiles;
 
     /**
      * Setup CitizensAPI.
@@ -26,62 +27,49 @@ public class CitizensHook implements Listener {
         return citizensAPI != null;
     }
 
-    /**
-     * Class instance constructor.
-     *
-     * @param configurationFiles configuration files class.
-     */
-    public CitizensHook(ConfigurationFiles configurationFiles,
-                        GlobalQuestsInterface globalQuestsInterface,
-                        CategorizedQuestsInterfaces categorizedQuestsInterfaces) {
-        this.configurationFiles = configurationFiles;
-        this.globalQuestsInterface = globalQuestsInterface;
-        this.categorizedQuestsInterfaces = categorizedQuestsInterfaces;
-    }
-
     @EventHandler
     public void onNPCClickEvent(NPCRightClickEvent event) {
         String npcName = event.getNPC().getName();
 
         /* Player interface */
-        if (npcName.equals(configurationFiles.getConfigFile().getConfigurationSection("npcs").getString(".name_player"))) {
+        if (npcName.equals(NPCNames.getPlayerNPCName())) {
             if (event.getClicker().hasPermission(QuestsPermissions.QUESTS_SHOW_PLAYER.getPermission())) {
                 event.getClicker().openInventory(PlayerQuestsInterface.getPlayerQuestsInterface(event.getClicker().getName()));
             } else event.getClicker().sendMessage(QuestsMessages.NO_PERMISSION_CATEGORY.toString());
         }
 
         /* Global interface */
-        if (npcName.equals(configurationFiles.getConfigFile().getConfigurationSection("npcs").getString(".name_global"))) {
-            if (configurationFiles.getConfigFile().getInt("quests_mode") == 1) {
+        if (npcName.equals(NPCNames.getGlobalNPCName())) {
+            if (Modes.getQuestsMode() == 1) {
                 if (event.getClicker().hasPermission(QuestsPermissions.QUESTS_SHOW_GLOBAL.getPermission())) {
-                    event.getClicker().openInventory(globalQuestsInterface.getGlobalQuestsInterfaceFirstPage());
+                    event.getClicker().openInventory(InterfacesManager.getGlobalQuestsInterface().getGlobalQuestsInterfaceFirstPage());
                 } else event.getClicker().sendMessage(QuestsMessages.NO_PERMISSION_CATEGORY.toString());
             } else event.getClicker().sendMessage(QuestsMessages.GLOBAL_DISABLED.toString());
         }
 
         /* Easy interface */
-        if (npcName.equals(configurationFiles.getConfigFile().getConfigurationSection("npcs").getString(".name_easy"))) {
-            if (configurationFiles.getConfigFile().getInt("quests_mode") == 2) {
+        if (npcName.equals(NPCNames.getEasyNPCName())) {
+            if (Modes.getQuestsMode() == 2) {
                 if (event.getClicker().hasPermission(QuestsPermissions.QUESTS_SHOW_EASY.getPermission())) {
-                    event.getClicker().openInventory(categorizedQuestsInterfaces.getEasyQuestsInterfaceFirstPage());
+                    event.getClicker().openInventory(InterfacesManager.getCategorizedQuestsInterfaces().getEasyQuestsInterfaceFirstPage());
                 } else event.getClicker().sendMessage(QuestsMessages.NO_PERMISSION_CATEGORY.toString());
             } else event.getClicker().sendMessage(QuestsMessages.CATEGORIZED_DISABLED.toString());
         }
 
         /* Medium interface */
-        if (npcName.equals(configurationFiles.getConfigFile().getConfigurationSection("npcs").getString(".name_medium"))) {
-            if (configurationFiles.getConfigFile().getInt("quests_mode") == 2) {
+        if (npcName.equals(NPCNames.getMediumNPCName())) {
+            if (Modes.getQuestsMode() == 2) {
                 if (event.getClicker().hasPermission(QuestsPermissions.QUESTS_SHOW_MEDIUM.getPermission())) {
-                    event.getClicker().openInventory(categorizedQuestsInterfaces.getMediumQuestsInterfaceFirstPage());
+                    event.getClicker().openInventory(InterfacesManager.getCategorizedQuestsInterfaces().getMediumQuestsInterfaceFirstPage());
                 } else event.getClicker().sendMessage(QuestsMessages.NO_PERMISSION_CATEGORY.toString());
             } else event.getClicker().sendMessage(QuestsMessages.CATEGORIZED_DISABLED.toString());
         }
 
         /* Hard interface */
-        if (npcName.equals(configurationFiles.getConfigFile().getConfigurationSection("npcs").getString(".name_hard"))) {
-            if (configurationFiles.getConfigFile().getInt("quests_mode") == 2) {
+        if (npcName.equals(NPCNames.getHardNPCName())) {
+            if (Modes.getQuestsMode() == 2) {
                 if (event.getClicker().hasPermission(QuestsPermissions.QUESTS_SHOW_HARD.getPermission())) {
-                    event.getClicker().openInventory(categorizedQuestsInterfaces.getHardQuestsInterfaceFirstPage());
+                    event.getClicker().openInventory(InterfacesManager.getCategorizedQuestsInterfaces().getHardQuestsInterfaceFirstPage());
                 } else event.getClicker().sendMessage(QuestsMessages.NO_PERMISSION_CATEGORY.toString());
             } else event.getClicker().sendMessage(QuestsMessages.CATEGORIZED_DISABLED.toString());
         }

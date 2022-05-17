@@ -24,20 +24,6 @@ import java.util.*;
 
 public class PlayerQuestsInterface {
 
-    /**
-     * Getting instance of classes.
-     */
-    private static PlayerInterfaceFile playerInterfaceFile;
-
-    /**
-     * Class instance constructor.
-     *
-     * @param playerInterfaceFile interfaceConfiguration files class.
-     */
-    public PlayerQuestsInterface(PlayerInterfaceFile playerInterfaceFile) {
-        PlayerQuestsInterface.playerInterfaceFile = playerInterfaceFile;
-    }
-
     /* init variables */
     private static Inventory playerQuestsInventoryBase;
     private static int size;
@@ -63,7 +49,7 @@ public class PlayerQuestsInterface {
      */
     public void loadPlayerQuestsInterface() {
 
-        ConfigurationSection interfaceConfig = playerInterfaceFile.getPlayerInterfaceFileConfiguration().getConfigurationSection("player_interface");
+        ConfigurationSection interfaceConfig = PlayerInterfaceFile.getPlayerInterfaceFileConfiguration().getConfigurationSection("player_interface");
         isPlayerHeadEnabled = interfaceConfig.getConfigurationSection("player_head").getBoolean(".enabled");
 
         /* load item slots */

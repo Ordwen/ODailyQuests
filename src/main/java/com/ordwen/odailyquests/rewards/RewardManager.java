@@ -1,10 +1,10 @@
 package com.ordwen.odailyquests.rewards;
 
-import com.ordwen.odailyquests.apis.PlayerPointsHook;
-import com.ordwen.odailyquests.apis.TokenManagerHook;
-import com.ordwen.odailyquests.apis.VaultHook;
-import com.ordwen.odailyquests.configuration.functions.Actionbar;
-import com.ordwen.odailyquests.configuration.functions.Title;
+import com.ordwen.odailyquests.apis.hooks.points.PlayerPointsHook;
+import com.ordwen.odailyquests.apis.hooks.points.TokenManagerHook;
+import com.ordwen.odailyquests.apis.hooks.eco.VaultHook;
+import com.ordwen.odailyquests.configuration.functionalities.Actionbar;
+import com.ordwen.odailyquests.configuration.functionalities.Title;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;

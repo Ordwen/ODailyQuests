@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.apis.holograms;
+package com.ordwen.odailyquests.apis.hooks.holograms;
 
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
@@ -31,7 +31,7 @@ public class HolographicDisplaysHook {
      * @param list where to find the quest
      * @param player sender
      */
-    public void createHologram(int index, ArrayList<Quest> list, Player player) {
+    public static void createHologram(int index, ArrayList<Quest> list, Player player) {
         Quest quest = getQuest(index, list);
 
         if (quest != null) {
@@ -78,7 +78,7 @@ public class HolographicDisplaysHook {
      * @param quests list where find the quest
      * @return the quest
      */
-    private Quest getQuest(int index, ArrayList<Quest> quests) {
+    private static Quest getQuest(int index, ArrayList<Quest> quests) {
         if (index >= 0 && quests.size()-1 >= index) {
             return quests.get(index);
         } else return null;

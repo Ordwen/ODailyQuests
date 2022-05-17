@@ -17,6 +17,7 @@ softdepend:
   - HolographicDisplays
 loadbefore:
   - Vault
+  - PlayerPoints
 commands:
   quests:
     description: default player command
