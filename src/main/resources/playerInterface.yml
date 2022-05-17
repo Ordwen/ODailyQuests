@@ -38,115 +38,115 @@ player_interface:
     2:
       type: FILL
       item:
-        material: GRAY_GLASS_PANE
+        material: GRAY_STAINED_GLASS_PANE
         slot: 1
     3:
       type: FILL
       item:
-        material: GRAY_GLASS_PANE
+        material: GRAY_STAINED_GLASS_PANE
         slot: 2
     4:
       type: FILL
       item:
-        material: GRAY_GLASS_PANE
+        material: GRAY_STAINED_GLASS_PANE
         slot: 3
     5:
       type: FILL
       item:
-        material: GRAY_GLASS_PANE
+        material: GRAY_STAINED_GLASS_PANE
         slot: 4
     6:
       type: FILL
-        item:
-        material: GRAY_GLASS_PANE
+      item:
+        material: GRAY_STAINED_GLASS_PANE
         slot: 6
     7:
       type: FILL
-        item:
-        material: GRAY_GLASS_PANE
+      item:
+        material: GRAY_STAINED_GLASS_PANE
         slot: 7
     8:
       type: FILL
-        item:
-        material: GRAY_GLASS_PANE
+      item:
+        material: GRAY_STAINED_GLASS_PANE
         slot: 8
     9:
       type: FILL
       item:
-        material: GRAY_GLASS_PANE
+        material: GRAY_STAINED_GLASS_PANE
         slot: 9
     10:
       type: FILL
       item:
-        material: GRAY_GLASS_PANE
+        material: GRAY_STAINED_GLASS_PANE
         slot: 10
     11:
       type: FILL
       item:
-        material: GRAY_GLASS_PANE
+        material: GRAY_STAINED_GLASS_PANE
         slot: 11
     12:
       type: FILL
       item:
-        material: GRAY_GLASS_PANE
+        material: GRAY_STAINED_GLASS_PANE
         slot: 13
     13:
       type: FILL
       item:
-        material: GRAY_GLASS_PANE
+        material: GRAY_STAINED_GLASS_PANE
         slot: 15
     14:
       type: FILL
       item:
-        material: GRAY_GLASS_PANE
+        material: GRAY_STAINED_GLASS_PANE
         slot: 17
     15:
       type: FILL
       item:
-        material: GRAY_GLASS_PANE
+        material: GRAY_STAINED_GLASS_PANE
         slot: 18
     16:
       type: FILL
       item:
-        material: GRAY_GLASS_PANE
+        material: GRAY_STAINED_GLASS_PANE
         slot: 19
     17:
       type: FILL
       item:
-        material: GRAY_GLASS_PANE
+        material: GRAY_STAINED_GLASS_PANE
         slot: 20
     18:
       type: FILL
       item:
-        material: GRAY_GLASS_PANE
+        material: GRAY_STAINED_GLASS_PANE
         slot: 21
     19:
       type: FILL
       item:
-        material: GRAY_GLASS_PANE
+        material: GRAY_STAINED_GLASS_PANE
         slot: 22
     20:
       type: FILL
       item:
-        material: GRAY_GLASS_PANE
+        material: GRAY_STAINED_GLASS_PANE
         slot: 23
     21:
       type: FILL
       item:
-        material: GRAY_GLASS_PANE
+        material: GRAY_STAINED_GLASS_PANE
         slot: 24
     22:
       type: FILL
       item:
-        material: GRAY_GLASS_PANE
+        material: GRAY_STAINED_GLASS_PANE
         slot: 25
     23:
       type: FILL
       item:
-        material: GRAY_GLASS_PANE
+        material: GRAY_STAINED_GLASS_PANE
         slot: 26
     24:
       type: FILL
       item:
-        material: GRAY_GLASS_PANE
+        material: GRAY_STAINED_GLASS_PANE
         slot: 27

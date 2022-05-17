@@ -1,7 +1,6 @@
 package com.ordwen.odailyquests.quests.player.progression;
 
-import com.ordwen.odailyquests.configuration.DisabledWorlds;
-import com.ordwen.odailyquests.configuration.Title;
+import com.ordwen.odailyquests.configuration.functions.DisabledWorlds;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.quests.Quest;
 import com.ordwen.odailyquests.quests.QuestType;
@@ -163,10 +162,8 @@ public class ProgressionManager implements Listener {
                         }
                         if (questProgression.getProgression() >= quest.getAmountRequired()) {
                             questProgression.isAchieved = true;
-                            Bukkit.getPlayer(playerName).sendMessage(QuestsMessages.QUEST_ACHIEVED.toString().replace("%questName%", quest.getQuestName()));
                             QuestsManager.getActiveQuests().get(playerName).increaseAchievedQuests(playerName);
-                            RewardManager.sendQuestReward(playerName, quest.getReward());
-                            Title.sendTitle(Bukkit.getPlayer(playerName), quest.getQuestName());
+                            RewardManager.sendAllRewardItems(quest.getQuestName(), playerName, quest.getReward());
                         }
                     }
                     if (!isSynchronised) {
@@ -196,10 +193,8 @@ public class ProgressionManager implements Listener {
                         PlayerInventory playerInventory = Bukkit.getPlayer(playerName).getInventory();
                         if (getAmount(playerInventory, quest.getItemRequired()) >= quest.getAmountRequired()) {
                             questProgression.isAchieved = true;
-                            Bukkit.getPlayer(playerName).sendMessage(QuestsMessages.QUEST_ACHIEVED.toString().replace("%questName%", quest.getQuestName()));
                             Bukkit.getPlayer(playerName).closeInventory();
-                            RewardManager.sendQuestReward(playerName, quest.getReward());
-                            Title.sendTitle(Bukkit.getPlayer(playerName), quest.getQuestName());
+                            RewardManager.sendAllRewardItems(quest.getQuestName(), playerName, quest.getReward());
                         } else {
                             Bukkit.getPlayer(playerName).sendMessage(QuestsMessages.NOT_ENOUGH_ITEM.toString());
                         }

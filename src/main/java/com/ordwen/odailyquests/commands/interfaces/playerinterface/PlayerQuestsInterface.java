@@ -14,7 +14,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
@@ -158,7 +157,7 @@ public class PlayerQuestsInterface {
 
         /* load player head */
         if (isPlayerHeadEnabled) {
-            playerQuestsInventoryIndividual.setItem(slotPlayerHead, Items.getPlayerHead(Bukkit.getPlayer(playerName)));
+            playerQuestsInventoryIndividual.setItem(slotPlayerHead, PlayerHead.getPlayerHead(Bukkit.getPlayer(playerName)));
         }
 
         /* load quests */
@@ -230,4 +229,5 @@ public class PlayerQuestsInterface {
     public static HashMap<ItemStack, List<String>> getConsoleCommandsItems() {
         return consoleCommandsItems;
     }
+
 }

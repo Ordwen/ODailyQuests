@@ -3,7 +3,6 @@ package com.ordwen.odailyquests.commands;
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.apis.holograms.HologramsManager;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
-import com.ordwen.odailyquests.configuration.Title;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.enums.QuestsPermissions;
 import com.ordwen.odailyquests.quests.LoadQuests;
@@ -42,9 +41,9 @@ public class AdminCommands implements CommandExecutor {
                         oDailyQuests.questsFiles.loadQuestsFiles();
                         oDailyQuests.loadQuests.clearQuestsLists();
                         oDailyQuests.loadQuests.loadCategories();
-                        oDailyQuests.playerQuestsInterface.loadPlayerQuestsInterface();
-                        oDailyQuests.globalQuestsInterface.loadGlobalQuestsInterface();
-                        oDailyQuests.categorizedQuestsInterfaces.loadCategorizedInterfaces();
+                        //oDailyQuests.playerQuestsInterface.loadPlayerQuestsInterface();
+                        //oDailyQuests.globalQuestsInterface.loadGlobalQuestsInterface();
+                        //oDailyQuests.categorizedQuestsInterfaces.loadCategorizedInterfaces();
                         oDailyQuests.configurationFiles.loadMessagesFiles();
                         ProgressionManager.isSynchronised = oDailyQuests.configurationFiles.getConfigFile().getBoolean("synchronised_progression");
                         sender.sendMessage(ChatColor.GREEN + "Plugin successfully reloaded!");
@@ -82,9 +81,7 @@ public class AdminCommands implements CommandExecutor {
                                         if (index == Integer.parseInt(args[2]) - 1) {
                                             if (!playerQuests.get(quest).isAchieved()) {
                                                 progression.isAchieved = true;
-                                                Bukkit.getPlayer(args[1]).sendMessage(QuestsMessages.QUEST_ACHIEVED.toString().replace("%questName%", quest.getQuestName()));
-                                                RewardManager.sendQuestReward(args[1], quest.getReward());
-                                                Title.sendTitle(Bukkit.getPlayer(args[1]), quest.getQuestName());
+                                                RewardManager.sendAllRewardItems(quest.getQuestName(), args[1], quest.getReward());
                                                 playerQuests.remove(quest);
                                                 playerQuests.put(quest, progression);
                                                 QuestsManager.getActiveQuests().get(args[1]).increaseAchievedQuests(args[1]);

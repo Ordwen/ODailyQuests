@@ -84,6 +84,12 @@ title:
   text: "&aWell done, %player%"
   subtitle: "&aYou have completed the quest %questName% &a!" # Leave this field blank if you do not want a subtitle
 
+# Set a message that will be displayed in the actionbar when a player completes a quest.
+# Available placeholders : %player% , %questName%
+actionbar:
+  enabled: true
+  text: "&eNot bad for an old men!"
+
 # interfaces settings
 # NEVER DELETE A %variable%
 # %progress% is replaced by the progression of the quest.

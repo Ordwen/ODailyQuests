@@ -12,14 +12,13 @@ import com.ordwen.odailyquests.commands.completers.PlayerCompleter;
 import com.ordwen.odailyquests.commands.interfaces.CategorizedQuestsInterfaces;
 import com.ordwen.odailyquests.commands.interfaces.GlobalQuestsInterface;
 import com.ordwen.odailyquests.commands.interfaces.InterfacesManager;
+import com.ordwen.odailyquests.commands.interfaces.InventoryClickListener;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
 import com.ordwen.odailyquests.commands.interfaces.pagination.Items;
-import com.ordwen.odailyquests.configuration.DisabledWorlds;
-import com.ordwen.odailyquests.configuration.Title;
+import com.ordwen.odailyquests.configuration.ConfigurationManager;
 import com.ordwen.odailyquests.files.*;
 import com.ordwen.odailyquests.quests.player.progression.ValidateVillagerTradeQuest;
-import com.ordwen.odailyquests.rewards.GlobalReward;
-import com.ordwen.odailyquests.rewards.RewardManager;
+import com.ordwen.odailyquests.configuration.functions.GlobalReward;
 import com.ordwen.odailyquests.tools.Metrics;
 import com.ordwen.odailyquests.quests.LoadQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
@@ -47,18 +46,12 @@ public final class ODailyQuests extends JavaPlugin {
     private ProgressionFile progressionFile;
     private PlayerInterfaceFile playerInterfaceFile;
     public LoadQuests loadQuests;
-    private Items items;
     public InterfacesManager interfacesManager;
-    public GlobalQuestsInterface globalQuestsInterface;
-    public PlayerQuestsInterface playerQuestsInterface;
-    public CategorizedQuestsInterfaces categorizedQuestsInterfaces;
     private QuestsManager questsManager;
     private LoadProgressionYAML loadProgressionYAML;
     private SaveProgressionYAML saveProgressionYAML;
     private CitizensHook citizensHook;
     private MySQLManager mySqlManager;
-    private GlobalReward globalReward;
-    private RewardManager rewardManager;
     private LoadProgressionSQL loadProgressionSQL = null;
     private SaveProgressionSQL saveProgressionSQL = null;
     public HolographicDisplaysHook holographicDisplaysHook;
@@ -66,8 +59,8 @@ public final class ODailyQuests extends JavaPlugin {
     public HologramsManager hologramsManager;
     private LoadHolograms loadHolograms;
     private TimeRemain timeRemain;
-    private DisabledWorlds disabledWorlds;
-    private Title title;
+
+    private ConfigurationManager configurationManager;
 
     @Override
     public void onEnable() {
@@ -114,20 +107,13 @@ public final class ODailyQuests extends JavaPlugin {
         this.hologramsManager = new HologramsManager(hologramsFile);
         this.loadHolograms = new LoadHolograms(hologramsFile);
         this.loadQuests = new LoadQuests(questsFiles, configurationFiles);
-        this.items = new Items(configurationFiles, playerInterfaceFile);
-        this.globalQuestsInterface = new GlobalQuestsInterface(configurationFiles);
-        this.playerQuestsInterface = new PlayerQuestsInterface(playerInterfaceFile);
-        this.categorizedQuestsInterfaces = new CategorizedQuestsInterfaces(configurationFiles);
-        this.interfacesManager = new InterfacesManager(playerInterfaceFile, configurationFiles, globalQuestsInterface, categorizedQuestsInterfaces);
+        this.interfacesManager = new InterfacesManager(playerInterfaceFile, configurationFiles);
         this.questsManager = new QuestsManager(configurationFiles, loadProgressionSQL, saveProgressionSQL);
-        this.globalReward = new GlobalReward(configurationFiles);
-        this.rewardManager = new RewardManager(configurationFiles);
         this.loadProgressionYAML = new LoadProgressionYAML(progressionFile);
         this.saveProgressionYAML = new SaveProgressionYAML(progressionFile);
-        this.citizensHook = new CitizensHook(configurationFiles, globalQuestsInterface, categorizedQuestsInterfaces);
+        this.citizensHook = new CitizensHook(configurationFiles, InterfacesManager.getGlobalQuestsInterface(), InterfacesManager.getCategorizedQuestsInterfaces());
         this.timeRemain = new TimeRemain(configurationFiles);
-        this.disabledWorlds = new DisabledWorlds(configurationFiles);
-        this.title = new Title(configurationFiles);
+        this.configurationManager = new ConfigurationManager(configurationFiles);
 
         /* Load files */
         questsFiles.loadQuestsFiles();
@@ -184,25 +170,13 @@ public final class ODailyQuests extends JavaPlugin {
         } else PluginLogger.info(ChatColor.YELLOW + "HolographicDisplays" + ChatColor.GOLD + " not detected. Holograms will not work.");
 
         /* Load specific settings */
-        disabledWorlds.loadDisabledWorlds();
-        title.loadTitle();
+        configurationManager.loadConfiguration();
 
         /* Load quests */
         loadQuests.loadCategories();
 
-        /* Load global reward */
-        globalReward.initGlobalReward();
-
         /* Load interfaces */
-        items.initItems();
-        interfacesManager.initInventoryNames();
-        playerQuestsInterface.loadPlayerQuestsInterface();
-
-        if (configurationFiles.getConfigFile().getInt("quests_mode") == 2)
-            categorizedQuestsInterfaces.loadCategorizedInterfaces();
-        else globalQuestsInterface.loadGlobalQuestsInterface();
-
-        interfacesManager.initEmptyCaseItems();
+        interfacesManager.initAllObjects();
 
         /* Hook PAPI */
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
@@ -215,7 +189,7 @@ public final class ODailyQuests extends JavaPlugin {
         ProgressionManager.isSynchronised = configurationFiles.getConfigFile().getBoolean("synchronised_progression");
 
         /* Load commands */
-        getCommand("quests").setExecutor(new PlayerCommands(configurationFiles, globalQuestsInterface, categorizedQuestsInterfaces));
+        getCommand("quests").setExecutor(new PlayerCommands(configurationFiles, InterfacesManager.getGlobalQuestsInterface(), InterfacesManager.getCategorizedQuestsInterfaces()));
         getCommand("questsadmin").setExecutor(new AdminCommands(this));
 
         /* Load Tab Completers */
@@ -224,7 +198,7 @@ public final class ODailyQuests extends JavaPlugin {
 
         /* Load listeners */
         getServer().getPluginManager().registerEvents(new ValidateVillagerTradeQuest(), this);
-        getServer().getPluginManager().registerEvents(interfacesManager, this);
+        getServer().getPluginManager().registerEvents(new InventoryClickListener(), this);
         getServer().getPluginManager().registerEvents(questsManager, this);
         getServer().getPluginManager().registerEvents(new ProgressionManager(), this);
 

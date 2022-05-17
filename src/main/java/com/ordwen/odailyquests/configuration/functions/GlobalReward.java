@@ -1,7 +1,10 @@
-package com.ordwen.odailyquests.rewards;
+package com.ordwen.odailyquests.configuration.functions;
 
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
+import com.ordwen.odailyquests.rewards.Reward;
+import com.ordwen.odailyquests.rewards.RewardManager;
+import com.ordwen.odailyquests.rewards.RewardType;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
 
@@ -39,7 +42,7 @@ public class GlobalReward {
     public static void sendGlobalReward(String playerName) {
         if (isEnabled) {
             Bukkit.getPlayer(playerName).sendMessage(QuestsMessages.ALL_QUESTS_ACHIEVED.toString());
-            RewardManager.sendQuestReward(playerName, globalReward);
+            RewardManager.sendQuestReward(Bukkit.getPlayer(playerName), globalReward);
         }
     }
 }

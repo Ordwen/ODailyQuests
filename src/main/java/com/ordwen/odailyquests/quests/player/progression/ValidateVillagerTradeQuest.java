@@ -84,9 +84,8 @@ public class ValidateVillagerTradeQuest implements Listener {
                         }
                         if (questProgression.getProgression() >= quest.getAmountRequired()) {
                             questProgression.isAchieved = true;
-                            Bukkit.getPlayer(playerName).sendMessage(QuestsMessages.QUEST_ACHIEVED.toString().replace("%questName%", quest.getQuestName()));
                             QuestsManager.getActiveQuests().get(playerName).increaseAchievedQuests(playerName);
-                            RewardManager.sendQuestReward(playerName, quest.getReward());
+                            RewardManager.sendAllRewardItems(quest.getQuestName(), playerName, quest.getReward());
                         }
                     }
                 }
