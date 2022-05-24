@@ -29,7 +29,7 @@ public class Items {
     /* init items */
     private static ItemStack previous;
     private static ItemStack next;
-
+    private static final HashSet<ItemStack> paginationItems = new HashSet<>();
 
 
     /**
@@ -65,6 +65,8 @@ public class Items {
 
         previousMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(configurationFiles.getConfigFile().getConfigurationSection("interfaces").getString(".previous_item_name"))));
         previous.setItemMeta(previousMeta);
+
+        paginationItems.add(previous);
     }
 
     /**
@@ -92,6 +94,8 @@ public class Items {
 
         nextMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(configurationFiles.getConfigFile().getConfigurationSection("interfaces").getString(".next_item_name"))));
         next.setItemMeta(nextMeta);
+
+        paginationItems.add(next);
     }
 
     /**
@@ -112,4 +116,11 @@ public class Items {
         return next;
     }
 
+    /**
+     * Get pagination items.
+     * @return set of pagination items
+     */
+    public static HashSet<ItemStack> getPaginationItems() {
+        return paginationItems;
+    }
 }

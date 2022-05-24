@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.quests;
 
+import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.apis.hooks.mobs.EliteMobsHook;
 import com.ordwen.odailyquests.apis.hooks.mobs.MythicMobsHook;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
@@ -7,6 +8,7 @@ import com.ordwen.odailyquests.files.QuestsFiles;
 import com.ordwen.odailyquests.rewards.Reward;
 import com.ordwen.odailyquests.rewards.RewardType;
 import com.ordwen.odailyquests.tools.ColorConvert;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -47,13 +49,33 @@ public class LoadQuests {
         if (Modes.getQuestsMode() == 1) {
             /* load global quests */
             loadQuests(globalQuestsFile, globalQuests, "Global Quests");
+            if (globalQuests.size() < 3) {
+                PluginLogger.error("Impossible to enable the plugin.");
+                PluginLogger.error("You need to have at least 3 quests in your globalQuest.yml file.");
+                Bukkit.getPluginManager().disablePlugin(ODailyQuests.INSTANCE);
+            }
         } else if (Modes.getQuestsMode() == 2) {
             /* load easy quests */
             loadQuests(easyQuestsFile, easyQuests, "Easy Quests");
+            if (easyQuests.size() == 0) {
+                PluginLogger.error("Impossible to enable the plugin.");
+                PluginLogger.error("You need to have at least 1 quest in your easyQuests.yml file.");
+                Bukkit.getPluginManager().disablePlugin(ODailyQuests.INSTANCE);
+            }
             /* load medium quests */
             loadQuests(mediumQuestsFile, mediumQuests, "Medium Quests");
+            if (mediumQuests.size() == 0) {
+                PluginLogger.error("Impossible to enable the plugin.");
+                PluginLogger.error("You need to have at least 1 quest in your mediumQuests.yml file.");
+                Bukkit.getPluginManager().disablePlugin(ODailyQuests.INSTANCE);
+            }
             /* load hard quests */
             loadQuests(hardQuestsFile, hardQuests, "Hard Quests");
+            if (hardQuests.size() == 0) {
+                PluginLogger.error("Impossible to enable the plugin.");
+                PluginLogger.error("You need to have at least 1 quest in your hardQuests.yml file.");
+                Bukkit.getPluginManager().disablePlugin(ODailyQuests.INSTANCE);
+            }
         } else {
             PluginLogger.error(ChatColor.RED + "Impossible to load the quests. The selected mode is incorrect.");
         }
@@ -130,27 +152,32 @@ public class LoadQuests {
                         /* types that requires an entity */
                         case KILL, BREED, TAME, SHEAR -> {
                             isEntityType = true;
-                            String presumedEntity = file.getConfigurationSection("quests." + fileQuest).getString(".entity_type");
-                            entityType = getEntityType(presumedEntity, fileName, questIndex, presumedEntity);
+                            if (file.getConfigurationSection("quests." + fileQuest).contains(".entity_type")) {
+                                String presumedEntity = file.getConfigurationSection("quests." + fileQuest).getString(".entity_type");
+                                entityType = getEntityType(presumedEntity, fileName, questIndex, presumedEntity);
+                            } else isGlobalType = true;
                         }
                         /* types that requires an item */
                         case BREAK, PLACE, CRAFT, PICKUP, LAUNCH, CONSUME, GET, COOK, ENCHANT, VILLAGER_TRADE -> {
-                            String itemType = file.getConfigurationSection("quests." + fileQuest).getString(".required_item");
-                            /* check if the required item is a custom item */
-                            if (itemType.equals("CUSTOM_ITEM")) {
-                                ConfigurationSection section = file.getConfigurationSection("quests." + fileQuest + ".custom_item");
-                                requiredItem = getItemStackFromMaterial(section.getString(".type"), fileName, questIndex, "type (CUSTOM_ITEM)");
-                                ItemMeta meta = requiredItem.getItemMeta();
-                                meta.setDisplayName(ColorConvert.convertColorCode(ChatColor.translateAlternateColorCodes('&', section.getString(".name"))));
-                                List<String> lore = section.getStringList(".lore");
-                                for (String str : lore) {
-                                    lore.set(lore.indexOf(str), ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(str)));
+                            if (file.getConfigurationSection("quests." + fileQuest).contains(".required_item")) {
+                                String itemType = file.getConfigurationSection("quests." + fileQuest).getString(".required_item");
+                                /* check if the required item is a custom item */
+                                if (itemType.equals("CUSTOM_ITEM")) {
+                                    ConfigurationSection section = file.getConfigurationSection("quests." + fileQuest + ".custom_item");
+                                    requiredItem = getItemStackFromMaterial(section.getString(".type"), fileName, questIndex, "type (CUSTOM_ITEM)");
+                                    ItemMeta meta = requiredItem.getItemMeta();
+                                    meta.setDisplayName(ColorConvert.convertColorCode(ChatColor.translateAlternateColorCodes('&', section.getString(".name"))));
+                                    List<String> lore = section.getStringList(".lore");
+                                    for (String str : lore) {
+                                        lore.set(lore.indexOf(str), ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(str)));
+                                    }
+                                    meta.setLore(lore);
+                                    requiredItem.setItemMeta(meta);
+                                } else {
+                                    requiredItem = getItemStackFromMaterial(itemType, fileName, questIndex, "required_item");
                                 }
-                                meta.setLore(lore);
-                                requiredItem.setItemMeta(meta);
-                            } else {
-                                requiredItem = getItemStackFromMaterial(itemType, fileName, questIndex, "required_item");
-                            }
+                            } else isGlobalType = true;
+
                             /* check if the item have to be obtained by a villager */
                             if (questType == QuestType.VILLAGER_TRADE) {
                                 if (file.getConfigurationSection("quests." + fileQuest).contains(".villager_profession")) {
@@ -176,7 +203,10 @@ public class LoadQuests {
 
                     /* init quest */
                     if (isGlobalType) {
-                        quest = new Quest(questIndex, questName, questDesc, questType, menuItem, requiredAmount, reward);
+                        if (questType == QuestType.VILLAGER_TRADE) {
+
+                        }
+                        else quest = new Quest(questIndex, questName, questDesc, questType, menuItem, requiredAmount, reward);
                     }
                     else if (isEntityType) {
                         if (questType == QuestType.CUSTOM_MOBS) {

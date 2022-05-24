@@ -32,7 +32,7 @@ public class RewardManager {
         switch (reward.getRewardType()) {
             case COMMAND:
                 for (String cmd : reward.getRewardCommands()) {
-                    Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd.replace("%player%", player.getDisplayName()));
+                    Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd.replace("%player%", player.getName()));
                 }
                 player.sendMessage(QuestsMessages.REWARD_COMMAND.toString());
                 break;
@@ -56,7 +56,7 @@ public class RewardManager {
                     PlayerPointsHook.getPlayerPointsAPI().give(player.getUniqueId(), reward.getRewardAmount());
                     player.sendMessage(QuestsMessages.REWARD_POINTS.toString().replace("%rewardAmount%", String.valueOf(reward.getRewardAmount())));
                 } else {
-                    PluginLogger.info(ChatColor.RED + "Impossible to give reward to " + ChatColor.GOLD + player.getDisplayName() + ChatColor.RED + ".");
+                    PluginLogger.info(ChatColor.RED + "Impossible to give reward to " + ChatColor.GOLD + player.getName() + ChatColor.RED + ".");
                     PluginLogger.info(ChatColor.RED + "Reward type is " + reward.getRewardType().getRewardTypeName() + " but TokenManager is not hooked.");
                 }
         }

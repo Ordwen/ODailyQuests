@@ -27,6 +27,7 @@ public class ConfigurationFiles {
     }
 
     private FileConfiguration config;
+    private File configFile;
 
     private static File LANG_FILE;
 
@@ -36,6 +37,14 @@ public class ConfigurationFiles {
      */
     public FileConfiguration getConfigFile() {
         return this.config;
+    }
+
+    /**
+     * Get the original file.
+     * @return file
+     */
+    public File getFile() {
+        return this.configFile;
     }
 
     /**
@@ -51,7 +60,7 @@ public class ConfigurationFiles {
      */
     public void loadConfigurationFiles() {
 
-        File configFile = new File(oDailyQuests.getDataFolder(), "config.yml");
+        configFile = new File(oDailyQuests.getDataFolder(), "config.yml");
 
         /* Configuration file */
         if (!configFile.exists()) {

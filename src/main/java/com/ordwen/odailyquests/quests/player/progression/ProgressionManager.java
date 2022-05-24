@@ -2,6 +2,7 @@ package com.ordwen.odailyquests.quests.player.progression;
 
 import com.ordwen.odailyquests.configuration.essentials.Synchronization;
 import com.ordwen.odailyquests.configuration.functionalities.DisabledWorlds;
+import com.ordwen.odailyquests.configuration.functionalities.SpawnersProgression;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.quests.Quest;
 import com.ordwen.odailyquests.quests.QuestType;
@@ -9,6 +10,7 @@ import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.rewards.RewardManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -26,8 +28,16 @@ import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.inventory.*;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class ProgressionManager implements Listener {
+
+    HashSet<Entity> entitiesFromSpawners = new HashSet<>();
+
+    @EventHandler
+    public void onEntitySpawnEvent(SpawnerSpawnEvent event) {
+        entitiesFromSpawners.add(event.getEntity());
+    }
 
     @EventHandler
     public void onBlockBreakEvent(BlockBreakEvent event) {
@@ -48,7 +58,41 @@ public class ProgressionManager implements Listener {
 
     @EventHandler
     public void onCraftItemEvent(CraftItemEvent event) {
-        setPlayerQuestProgression(event.getWhoClicked().getName(), event.getRecipe().getResult(), null, null, 1, QuestType.CRAFT);
+        ItemStack test = event.getRecipe().getResult().clone();
+        ClickType click = event.getClick();
+
+        int recipeAmount = test.getAmount();
+
+        switch (click) {
+            case NUMBER_KEY:
+                if (event.getWhoClicked().getInventory().getItem(event.getHotbarButton()) != null)
+                    recipeAmount = 0;
+                break;
+            case DROP:
+            case CONTROL_DROP:
+                ItemStack cursor = event.getCursor();
+                if (!(cursor == null || cursor.getType() == Material.AIR))
+                    recipeAmount = 0;
+                break;
+            case SHIFT_RIGHT:
+            case SHIFT_LEFT:
+                if (recipeAmount == 0)
+                    break;
+                int maxCraftable = getMaxCraftAmount(event.getInventory());
+                int capacity = fits(test, event.getView().getBottomInventory());
+
+                if (capacity < maxCraftable)
+                    maxCraftable = ((capacity + recipeAmount - 1) / recipeAmount) * recipeAmount;
+
+                recipeAmount = maxCraftable;
+                break;
+        }
+
+        if (recipeAmount == 0)
+            return;
+
+        test.setAmount(recipeAmount);
+        setPlayerQuestProgression(event.getWhoClicked().getName(), test, null, null, test.getAmount(), QuestType.CRAFT);
     }
 
     @EventHandler
@@ -74,9 +118,17 @@ public class ProgressionManager implements Listener {
 
     @EventHandler
     public void onEntityDeathEvent(EntityDeathEvent event) {
+        Entity entity = event.getEntity();
+
         if (event.getEntity().getKiller() != null) {
-            setPlayerQuestProgression(event.getEntity().getKiller().getName(), null, event.getEntity().getType(), null, 1, QuestType.KILL);
+            if (SpawnersProgression.isSpawnersProgressionDisabled()) {
+                if (!entitiesFromSpawners.contains(entity)) {
+                    setPlayerQuestProgression(event.getEntity().getKiller().getName(), null, event.getEntity().getType(), null, 1, QuestType.KILL);
+                }
+            } else setPlayerQuestProgression(event.getEntity().getKiller().getName(), null, event.getEntity().getType(), null, 1, QuestType.KILL);
         }
+
+        entitiesFromSpawners.remove(entity);
     }
 
     @EventHandler
@@ -138,7 +190,10 @@ public class ProgressionManager implements Listener {
                             || type == QuestType.BREED
                             || type == QuestType.TAME
                             || type == QuestType.SHEAR) {
-                        if (quest.getEntityType().equals(entity)) {
+                        if (quest.getEntityType() == null) {
+                            isRequiredItem = true;
+                        }
+                        else if (quest.getEntityType().equals(entity)) {
                             isRequiredItem = true;
                         }
                     } else if (type == QuestType.CUSTOM_MOBS) {
@@ -146,7 +201,10 @@ public class ProgressionManager implements Listener {
                             isRequiredItem = true;
                         }
                     } else {
-                        if (quest.getItemRequired().hasItemMeta()) {
+                        if (quest.getItemRequired() == null) {
+                            isRequiredItem = true;
+                        }
+                        else if (quest.getItemRequired().hasItemMeta()) {
                             if (item.hasItemMeta()) {
                                 isRequiredItem =
                                         quest.getItemRequired().getType() == item.getType()
@@ -155,6 +213,7 @@ public class ProgressionManager implements Listener {
                             }
                         } else isRequiredItem = (quest.getItemRequired().getType() == item.getType());
                     }
+
                     if (isRequiredItem) {
                         for (int i = 0; i < quantity; i++) {
                             questProgression.progression++;
@@ -192,6 +251,7 @@ public class ProgressionManager implements Listener {
                         PlayerInventory playerInventory = Bukkit.getPlayer(playerName).getInventory();
                         if (getAmount(playerInventory, quest.getItemRequired()) >= quest.getAmountRequired()) {
                             questProgression.isAchieved = true;
+                            QuestsManager.getActiveQuests().get(playerName).increaseAchievedQuests(playerName);
                             Bukkit.getPlayer(playerName).closeInventory();
                             RewardManager.sendAllRewardItems(quest.getQuestName(), playerName, quest.getReward());
                         } else {
@@ -227,5 +287,32 @@ public class ProgressionManager implements Listener {
             }
         }
         return amount;
+    }
+
+    private int fits(ItemStack stack, Inventory inv) {
+        ItemStack[] contents = inv.getContents();
+        int result = 0;
+
+        for (ItemStack is : contents)
+            if (is == null)
+                result += stack.getMaxStackSize();
+            else if (is.isSimilar(stack))
+                result += Math.max(stack.getMaxStackSize() - is.getAmount(), 0);
+
+        return result;
+    }
+
+    private int getMaxCraftAmount(CraftingInventory inv) {
+        if (inv.getResult() == null)
+            return 0;
+
+        int resultCount = inv.getResult().getAmount();
+        int materialCount = Integer.MAX_VALUE;
+
+        for (ItemStack is : inv.getMatrix())
+            if (is != null && is.getAmount() < materialCount)
+                materialCount = is.getAmount();
+
+        return resultCount * materialCount;
     }
 }

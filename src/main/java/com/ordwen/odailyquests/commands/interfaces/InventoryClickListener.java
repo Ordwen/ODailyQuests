@@ -55,10 +55,14 @@ public class InventoryClickListener implements Listener {
                     && event.getClick().isLeftClick()
                     && event.getSlot() < event.getView().getTopInventory().getSize()
                     && !event.getSlotType().equals(InventoryType.SlotType.QUICKBAR)) {
-                if (event.getCurrentItem().getType() != Material.PLAYER_HEAD
+                if (!Items.getPaginationItems().contains(event.getCurrentItem())
                         && inventoryName.startsWith(InterfacesManager.getPlayerQuestsInventoryName())) {
 
                     if (PlayerQuestsInterface.getFillItems().contains(event.getCurrentItem())) return;
+                    if (PlayerQuestsInterface.getCloseItems().contains(event.getCurrentItem())) {
+                        event.getWhoClicked().closeInventory();
+                        return;
+                    }
 
                     if (PlayerQuestsInterface.getConsoleCommandsItems().containsKey(event.getCurrentItem())) {
                         for (String cmd : PlayerQuestsInterface.getConsoleCommandsItems().get(event.getCurrentItem())) {

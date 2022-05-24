@@ -28,6 +28,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public final class ODailyQuests extends JavaPlugin {
 
+    public static ODailyQuests INSTANCE;
+
     /**
      * Getting instance of files classes.
      */
@@ -40,6 +42,7 @@ public final class ODailyQuests extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        INSTANCE = this;
 
         PluginLogger.info(ChatColor.GOLD + "Plugin is starting...");
 

@@ -7,6 +7,7 @@ player_interface:
   progress: "&eIN PROGRESS (&a%progress%&e/&c%required%&e)"
   status: "&eStatus :"
   achieved: "&aACHIEVED"
+  glowing_if_achieved: true
   complete_get_type: "&eClick to complete this quest !"
   player_head:
     enabled: true
@@ -25,6 +26,13 @@ player_interface:
   # More info on Wiki.
   # ========================================================
   items:
+    0:
+      type: CLOSE
+      item:
+        material: REDSTONE_BLOCK
+        name: "&cClose"
+        lore: []
+        slot: 27
     1:
       type: PLAYER_COMMAND
       item:
@@ -32,7 +40,7 @@ player_interface:
         name: "&cBack"
         lore:
           - "&eGo back to menu."
-        slot: 27
+        slot: 19
       commands:
           - "menu"
     2:
@@ -109,44 +117,34 @@ player_interface:
       type: FILL
       item:
         material: GRAY_STAINED_GLASS_PANE
-        slot: 19
+        slot: 20
     17:
       type: FILL
       item:
         material: GRAY_STAINED_GLASS_PANE
-        slot: 20
+        slot: 21
     18:
       type: FILL
       item:
         material: GRAY_STAINED_GLASS_PANE
-        slot: 21
+        slot: 22
     19:
       type: FILL
       item:
         material: GRAY_STAINED_GLASS_PANE
-        slot: 22
+        slot: 23
     20:
       type: FILL
       item:
         material: GRAY_STAINED_GLASS_PANE
-        slot: 23
+        slot: 24
     21:
       type: FILL
       item:
         material: GRAY_STAINED_GLASS_PANE
-        slot: 24
+        slot: 25
     22:
       type: FILL
       item:
         material: GRAY_STAINED_GLASS_PANE
-        slot: 25
-    23:
-      type: FILL
-      item:
-        material: GRAY_STAINED_GLASS_PANE
         slot: 26
-    24:
-      type: FILL
-      item:
-        material: GRAY_STAINED_GLASS_PANE
-        slot: 27

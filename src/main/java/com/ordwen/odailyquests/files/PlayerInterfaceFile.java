@@ -25,20 +25,27 @@ public class PlayerInterfaceFile {
     }
 
     private static FileConfiguration playerInterface;
-
+    private static File playerInterfaceFile;
     /**
-     * Get the player interface file.
-     * @return player interface file.
+     * Get the player interface file configuration.
+     * @return player interface file config
      */
     public static FileConfiguration getPlayerInterfaceFileConfiguration() {
         return playerInterface;
     }
 
     /**
+     * Get the player interface file.
+     * @return player interface file
+     */
+    public static File getPlayerInterfaceFile() {
+        return playerInterfaceFile;
+    }
+    /**
      * Init progression file.
      */
     public void loadPlayerInterfaceFile() {
-        File playerInterfaceFile = new File(oDailyQuests.getDataFolder(), "playerInterface.yml");
+        playerInterfaceFile = new File(oDailyQuests.getDataFolder(), "playerInterface.yml");
 
         if (!playerInterfaceFile.exists()) {
             oDailyQuests.saveResource("playerInterface.yml", false);

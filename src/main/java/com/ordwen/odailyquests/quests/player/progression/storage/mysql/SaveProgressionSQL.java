@@ -1,9 +1,11 @@
 package com.ordwen.odailyquests.quests.player.progression.storage.mysql;
 
+import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.quests.Quest;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.tools.PluginLogger;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 import java.sql.Connection;
@@ -45,53 +47,55 @@ public class SaveProgressionSQL {
 
         String test = "SELECT * FROM PLAYER WHERE PLAYERNAME = '" + playerName + "'";
 
-        try {
-            PreparedStatement testQuery = connection.prepareStatement(test);
-            ResultSet result = testQuery.executeQuery();
+        Bukkit.getScheduler().runTaskAsynchronously(ODailyQuests.INSTANCE, () -> {
+            try {
+                PreparedStatement testQuery = connection.prepareStatement(test);
+                ResultSet result = testQuery.executeQuery();
 
-            if (result.next()) {
-                PluginLogger.info(ChatColor.GOLD + playerName + ChatColor.YELLOW + " detected into database.");
+                if (result.next()) {
+                    PluginLogger.info(ChatColor.GOLD + playerName + ChatColor.YELLOW + " detected into database.");
 
-                String query = "UPDATE PLAYER\n" +
-                        "SET PLAYERTIMESTAMP = " + timestamp + ", ACHIEVEDQUESTS = " + achievedQuests + "\n" +
-                        "WHERE PLAYERNAME = '" + playerName + "'"
-                        ;
-                connection.prepareStatement(query).execute();
+                    String query = "UPDATE PLAYER\n" +
+                            "SET PLAYERTIMESTAMP = " + timestamp + ", ACHIEVEDQUESTS = " + achievedQuests + "\n" +
+                            "WHERE PLAYERNAME = '" + playerName + "'"
+                            ;
+                    connection.prepareStatement(query).execute();
 
-                int index = 0;
-                for (Quest quest : quests.keySet()) {
-                    String update = "UPDATE PROGRESSION\n" +
-                            "SET QUESTINDEX = " + quest.getQuestIndex() + ", ADVANCEMENT = " + quests.get(quest).getProgression() + ", ISACHIEVED = " + quests.get(quest).isAchieved() + "\n"
-                            + "WHERE PLAYERNAME = '" + playerName + "' AND PLAYERQUESTID = " + index;
-                    connection.prepareStatement(update).execute();
-                    index++;
-                }
+                    int index = 0;
+                    for (Quest quest : quests.keySet()) {
+                        String update = "UPDATE PROGRESSION\n" +
+                                "SET QUESTINDEX = " + quest.getQuestIndex() + ", ADVANCEMENT = " + quests.get(quest).getProgression() + ", ISACHIEVED = " + quests.get(quest).isAchieved() + "\n"
+                                + "WHERE PLAYERNAME = '" + playerName + "' AND PLAYERQUESTID = " + index;
+                        connection.prepareStatement(update).execute();
+                        index++;
+                    }
 
-            } else {
+                } else {
 
-                String query = "INSERT INTO PLAYER\n" +
-                        "VALUES\n" +
-                        "('" + playerName + "', " + timestamp + ", " + achievedQuests + ")";
-
-                connection.prepareStatement(query).execute();
-
-                int index = 0;
-                for (Quest quest : quests.keySet()) {
-                    String update = "INSERT INTO PROGRESSION(PLAYERNAME, PLAYERQUESTID, QUESTINDEX, ADVANCEMENT, ISACHIEVED)\n" +
+                    String query = "INSERT INTO PLAYER\n" +
                             "VALUES\n" +
-                            "('" + playerName + "', " + index + ", " + quest.getQuestIndex() + ", " + quests.get(quest).getProgression() + ", " + quests.get(quest).isAchieved() + ")";
-                    connection.prepareStatement(update).execute();
-                    index++;
+                            "('" + playerName + "', " + timestamp + ", " + achievedQuests + ")";
+
+                    connection.prepareStatement(query).execute();
+
+                    int index = 0;
+                    for (Quest quest : quests.keySet()) {
+                        String update = "INSERT INTO PROGRESSION(PLAYERNAME, PLAYERQUESTID, QUESTINDEX, ADVANCEMENT, ISACHIEVED)\n" +
+                                "VALUES\n" +
+                                "('" + playerName + "', " + index + ", " + quest.getQuestIndex() + ", " + quests.get(quest).getProgression() + ", " + quests.get(quest).isAchieved() + ")";
+                        connection.prepareStatement(update).execute();
+                        index++;
+                    }
+
+                    PluginLogger.info(ChatColor.GOLD + playerName + ChatColor.YELLOW + " added to database.");
                 }
 
-                PluginLogger.info(ChatColor.GOLD + playerName + ChatColor.YELLOW + " added to database.");
+                testQuery.close();
+                result.close();
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-
-            testQuery.close();
-            result.close();
-            connection.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        });
     }
 }

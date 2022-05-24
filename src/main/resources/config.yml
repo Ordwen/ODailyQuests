@@ -90,6 +90,9 @@ actionbar:
   enabled: true
   text: "&eNot bad for an old men!"
 
+# Disables the progression of quests where you have to kill an entity if it comes from a Spawner.
+disable_spawners_progression: false
+
 # interfaces settings
 # NEVER DELETE A %variable%
 # %progress% is replaced by the progression of the quest.

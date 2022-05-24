@@ -1,13 +1,13 @@
 package com.ordwen.odailyquests.commands.interfaces.playerinterface;
 
 import com.ordwen.odailyquests.commands.interfaces.InterfacesManager;
-import com.ordwen.odailyquests.commands.interfaces.pagination.Items;
 import com.ordwen.odailyquests.files.PlayerInterfaceFile;
 import com.ordwen.odailyquests.quests.Quest;
 import com.ordwen.odailyquests.quests.QuestType;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
+import com.ordwen.odailyquests.tools.AddDefault;
 import com.ordwen.odailyquests.tools.ColorConvert;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
@@ -32,6 +32,7 @@ public class PlayerQuestsInterface {
     private static String progression;
     private static String completeGetType;
     private static boolean isPlayerHeadEnabled;
+    private static boolean isGlowingEnabled;
 
     /* item slots */
     private static int slotPlayerHead = -1;
@@ -40,7 +41,8 @@ public class PlayerQuestsInterface {
     private static int slotThirdQuest;
 
     /* item lists */
-    private static List<ItemStack> fillItems;
+    private static HashSet<ItemStack> fillItems;
+    private static HashSet<ItemStack> closeItems;
     private static HashMap<ItemStack, List<String>> playerCommandsItems;
     private static HashMap<ItemStack, List<String>> consoleCommandsItems;
 
@@ -51,6 +53,11 @@ public class PlayerQuestsInterface {
 
         ConfigurationSection interfaceConfig = PlayerInterfaceFile.getPlayerInterfaceFileConfiguration().getConfigurationSection("player_interface");
         isPlayerHeadEnabled = interfaceConfig.getConfigurationSection("player_head").getBoolean(".enabled");
+
+        // glowing_if_achieved - VER 1.3.2
+        if (interfaceConfig.contains("glowing_if_achieved")) {
+            isGlowingEnabled = interfaceConfig.getBoolean("glowing_if_achieved");
+        } else AddDefault.addDefaultConfigItem("player_interface.glowing_if_achieved", true, PlayerInterfaceFile.getPlayerInterfaceFileConfiguration(), PlayerInterfaceFile.getPlayerInterfaceFile());
 
         /* load item slots */
         if (isPlayerHeadEnabled) {
@@ -71,7 +78,8 @@ public class PlayerQuestsInterface {
         completeGetType = interfaceConfig.getString(".complete_get_type");
 
         /* load all items */
-        fillItems = new ArrayList<>();
+        fillItems = new HashSet<>();
+        closeItems = new HashSet<>();
         playerCommandsItems = new HashMap<>();
         consoleCommandsItems = new HashMap<>();
 
@@ -83,6 +91,22 @@ public class PlayerQuestsInterface {
                     ItemStack fillItem = new ItemStack(Material.valueOf(itemsSection.getString(element + ".item.material")));
                     playerQuestsInventoryBase.setItem(itemsSection.getInt(element + ".item.slot") - 1, fillItem);
                     fillItems.add(fillItem);
+                }
+                case CLOSE -> {
+                    ItemStack closeItem = new ItemStack(Material.valueOf(itemsSection.getString(element + ".item.material")));
+
+                    ItemMeta meta = closeItem.getItemMeta();
+                    meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(itemsSection.getString(element + ".item.name"))));
+
+                    List<String> lore = itemsSection.getStringList(element + ".item.lore");
+                    for (String str : lore) {
+                        lore.set(lore.indexOf(str), ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(str)));
+                    }
+                    meta.setLore(lore);
+                    closeItem.setItemMeta(meta);
+
+                    playerQuestsInventoryBase.setItem(itemsSection.getInt(element + ".item.slot") - 1, closeItem);
+                    closeItems.add(closeItem);
                 }
                 case PLAYER_COMMAND -> {
                     ItemStack commandItem = new ItemStack(Material.valueOf(itemsSection.getString(element + ".item.material")));
@@ -160,8 +184,9 @@ public class PlayerQuestsInterface {
             lore.add(ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(status)));
 
             if (playerQuests.get(quest).isAchieved()) {
-                itemMeta.addEnchant(Enchantment.SILK_TOUCH, 1, false);
-                itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                if (isGlowingEnabled) {
+                    itemMeta.addEnchant(Enchantment.SILK_TOUCH, 1, false);
+                }
                 lore.add(ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(achieved)));
             } else {
                 if (quest.getType() == QuestType.GET) {
@@ -194,9 +219,9 @@ public class PlayerQuestsInterface {
 
     /**
      * Get all fill items.
-     * @return fill items list.
+     * @return fill items set.
      */
-    public static List<ItemStack> getFillItems() {
+    public static HashSet<ItemStack> getFillItems() {
         return fillItems;
     }
 
@@ -214,6 +239,14 @@ public class PlayerQuestsInterface {
      */
     public static HashMap<ItemStack, List<String>> getConsoleCommandsItems() {
         return consoleCommandsItems;
+    }
+
+    /**
+     * Get all close items.
+     * @return close items set.
+     */
+    public static HashSet<ItemStack> getCloseItems() {
+        return closeItems;
     }
 
 }
