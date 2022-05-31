@@ -36,6 +36,8 @@ public class Items {
      * Load all items.
      */
     public void initItems() {
+        paginationItems.clear();
+
         initPreviousButton();
         initNextButton();
     }
