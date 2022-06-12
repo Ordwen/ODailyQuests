@@ -12,6 +12,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class LoadProgressionYAML {
 
@@ -29,7 +30,7 @@ public class LoadProgressionYAML {
         long timestamp;
         int achievedQuests;
         PlayerQuests playerQuests;
-        HashMap<Quest, Progression> quests = new HashMap<>();
+        LinkedHashMap<Quest, Progression> quests = new LinkedHashMap<>();
 
         /* check if player has data */
         if (progressionFile.getString(playerName) != null) {

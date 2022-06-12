@@ -4,7 +4,7 @@ import com.ordwen.odailyquests.quests.Quest;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.configuration.functionalities.GlobalReward;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class PlayerQuests {
 
@@ -14,9 +14,9 @@ public class PlayerQuests {
     private int achievedQuests;
 
     /* Quest active quest, Boolean quest status */
-    private final HashMap<Quest, Progression> playerQuests;
+    private final LinkedHashMap<Quest, Progression> playerQuests;
 
-    public PlayerQuests(Long timestamp, HashMap<Quest, Progression> playerQuests) {
+    public PlayerQuests(Long timestamp, LinkedHashMap<Quest, Progression> playerQuests) {
         this.timestamp = timestamp;
         this.playerQuests = playerQuests;
         this.achievedQuests = 0;
@@ -56,7 +56,7 @@ public class PlayerQuests {
      * Get player quests.
      * @return player quests.
      */
-    public HashMap<Quest, Progression> getPlayerQuests() {
+    public LinkedHashMap<Quest, Progression> getPlayerQuests() {
         return this.playerQuests;
     }
 

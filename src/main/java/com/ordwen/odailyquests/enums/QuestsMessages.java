@@ -40,6 +40,8 @@ public enum QuestsMessages {
     REWARD_EXP_POINTS("reward_exp_points", "&aYou receive &e%rewardAmount% &bEXP &apoints."),
     REWARD_MONEY("reward_money", "&aYou receive &e%rewardAmount% &b$&a."),
     REWARD_POINTS("reward_points", "&aYou receive &e%rewardAmount% &bpoints&a."),
+
+    NEW_DAY("new_day", "&6It's a new day!")
     ;
 
     private final String path;

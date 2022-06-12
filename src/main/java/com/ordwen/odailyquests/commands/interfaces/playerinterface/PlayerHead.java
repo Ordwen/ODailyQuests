@@ -6,6 +6,7 @@ import com.ordwen.odailyquests.tools.ColorConvert;
 import com.ordwen.odailyquests.tools.TimeRemain;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.block.Skull;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -34,8 +35,10 @@ public class PlayerHead {
      */
     public static ItemStack getPlayerHead(Player player) {
 
-        skullMeta.setOwningPlayer(player);
-        List<String> itemDesc = skullMeta.getLore();
+        SkullMeta meta = PlayerHead.skullMeta.clone();
+
+        meta.setOwningPlayer(player);
+        List<String> itemDesc = meta.getLore();
 
         for (String string : itemDesc) {
             itemDesc.set(itemDesc.indexOf(string), ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(string)
@@ -43,8 +46,8 @@ public class PlayerHead {
                     .replace("%drawIn%", TimeRemain.timeRemain(player.getName()))));
         }
 
-        skullMeta.setLore(itemDesc);
-        playerHead.setItemMeta(skullMeta);
+        meta.setLore(itemDesc);
+        playerHead.setItemMeta(meta);
         return playerHead;
     }
 

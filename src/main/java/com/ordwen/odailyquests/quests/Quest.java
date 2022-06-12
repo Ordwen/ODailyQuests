@@ -124,6 +124,28 @@ public class Quest {
     }
 
     /**
+     * Quest constructor (for VILLAGER_TRADE quest type and global quest).
+     * @param questName name of the quest.
+     * @param questDesc description of the quest.
+     * @param questType type of the quest.
+     * @param amountRequired required amount of the item.
+     * @param villagerProfession required villager profession.
+     * @param villagerLevel required villager level.
+     * @param reward reward of the quest.
+     */
+    public Quest(int questIndex, String questName, List<String> questDesc, QuestType questType, ItemStack menuItem, int amountRequired, Villager.Profession villagerProfession, int villagerLevel, Reward reward) {
+        this.questIndex = questIndex;
+        this.questName = questName;
+        this.questDesc = questDesc;
+        this.questType = questType;
+        this.menuItem = menuItem;
+        this.amountRequired = amountRequired;
+        this.villagerProfession = villagerProfession;
+        this.villagerLevel = villagerLevel;
+        this.reward = reward;
+    }
+
+    /**
      * Get the type of quest.
      * @return the type of the quest.
      */

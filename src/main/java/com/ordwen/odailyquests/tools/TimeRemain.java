@@ -41,7 +41,7 @@ public class TimeRemain {
         String h = Temporality.getHourInitial();
         String m = Temporality.getMinuteInitial();
 
-        long rest;
+        long rest = 0;
 
         switch (Temporality.getTemporalityMode()) {
             case 1 -> {
@@ -65,6 +65,12 @@ public class TimeRemain {
                 timeRemain = getTimeRemainString(rest, d, h, m);
             }
         }
+
+        /*
+        if (rest < 0) {
+
+        }
+        */
 
         return timeRemain;
     }

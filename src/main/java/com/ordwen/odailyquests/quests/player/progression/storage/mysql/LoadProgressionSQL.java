@@ -15,6 +15,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class LoadProgressionSQL {
 
@@ -37,7 +38,7 @@ public class LoadProgressionSQL {
      */
     public void loadProgression(String playerName, HashMap<String, PlayerQuests> activeQuests, int questsConfigMode, int timestampConfigMode, int temporalityMode) {
 
-        HashMap<Quest, Progression> quests = new HashMap<>();
+        LinkedHashMap<Quest, Progression> quests = new LinkedHashMap<>();
 
         Bukkit.getScheduler().runTaskAsynchronously(ODailyQuests.INSTANCE, () -> {
             boolean hasStoredData = false;

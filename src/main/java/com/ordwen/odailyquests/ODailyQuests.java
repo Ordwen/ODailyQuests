@@ -20,11 +20,14 @@ import com.ordwen.odailyquests.quests.player.progression.storage.yaml.SaveProgre
 import com.ordwen.odailyquests.quests.player.progression.storage.mysql.LoadProgressionSQL;
 import com.ordwen.odailyquests.quests.player.progression.storage.mysql.MySQLManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.mysql.SaveProgressionSQL;
+import com.ordwen.odailyquests.tools.TimerTask;
 import com.ordwen.odailyquests.tools.UpdateChecker;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.time.LocalDateTime;
 
 public final class ODailyQuests extends JavaPlugin {
 
@@ -135,6 +138,9 @@ public final class ODailyQuests extends JavaPlugin {
             PluginLogger.error("Think that this can cause problems, especially in the data backup.");
             PluginLogger.error("You should restart the server instead.");
         }
+
+        /* Init delayed task to draw new quests */
+        new TimerTask(LocalDateTime.now());
 
         PluginLogger.info(ChatColor.GREEN + "Plugin is started !");
     }

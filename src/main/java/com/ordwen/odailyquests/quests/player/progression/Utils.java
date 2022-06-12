@@ -12,6 +12,7 @@ import com.ordwen.odailyquests.tools.PluginLogger;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.concurrent.TimeUnit;
 
 public class Utils {
@@ -72,7 +73,7 @@ public class Utils {
      * @param activeQuests        all active quests.
      * @param timestampConfigMode timestamp mode.
      */
-    public static void loadNewPlayerQuests(String playerName, HashMap<String, PlayerQuests> activeQuests, int timestampConfigMode, HashMap<Quest, Progression> quests) {
+    public static void loadNewPlayerQuests(String playerName, HashMap<String, PlayerQuests> activeQuests, int timestampConfigMode, LinkedHashMap<Quest, Progression> quests) {
 
         activeQuests.remove(playerName);
         QuestsManager.selectRandomQuests(quests);

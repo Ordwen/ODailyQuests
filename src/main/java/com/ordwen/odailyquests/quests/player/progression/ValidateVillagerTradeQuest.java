@@ -1,11 +1,10 @@
 package com.ordwen.odailyquests.quests.player.progression;
 
-import com.ordwen.odailyquests.enums.QuestsMessages;
+import com.ordwen.odailyquests.configuration.essentials.Synchronization;
 import com.ordwen.odailyquests.quests.Quest;
 import com.ordwen.odailyquests.quests.QuestType;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.rewards.RewardManager;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,7 +25,7 @@ public class ValidateVillagerTradeQuest implements Listener {
     public void onPlayerInteractEntityEvent(PlayerInteractEntityEvent event) {
         if (event.getRightClicked() instanceof Villager villager) {
             for (MerchantRecipe recipe : villager.getRecipes()) {
-                openRecipes.put(recipe, recipe.getUses()-1);
+                openRecipes.put(recipe, recipe.getUses() - 1);
             }
         }
     }
@@ -45,35 +44,39 @@ public class ValidateVillagerTradeQuest implements Listener {
     /**
      * Validate VILLAGER_TRADE quest type.
      *
-     * @param playerName player who is trading.
-     * @param villager villager wich one the player is trading.
+     * @param playerName     player who is trading.
+     * @param villager       villager wich one the player is trading.
      * @param selectedRecipe item trade.
-     * @param quantity quantity trade.
+     * @param quantity       quantity trade.
      */
     public static void validateTradeQuestType(String playerName, Villager villager, MerchantRecipe selectedRecipe, int quantity) {
         if (QuestsManager.getActiveQuests().containsKey(playerName)) {
 
             HashMap<Quest, Progression> playerQuests = QuestsManager.getActiveQuests().get(playerName).getPlayerQuests();
-            boolean valid = false;
 
             for (Quest quest : playerQuests.keySet()) {
+                boolean valid = false;
                 Progression questProgression = playerQuests.get(quest);
-                if (!questProgression.isAchieved()
-                        && quest.getType() == QuestType.VILLAGER_TRADE
-                        && quest.getItemRequired().getType() == selectedRecipe.getResult().getType()) {
-                    if (selectedRecipe.getUses() > openRecipes.get(selectedRecipe)) {
-                        valid = true;
+                if (!questProgression.isAchieved() && quest.getType() == QuestType.VILLAGER_TRADE) {
+
+                    if (quest.getItemRequired() == null) valid = true;
+                    else if (quest.getItemRequired().getType() == selectedRecipe.getResult().getType()) valid = true;
+
+                    if (selectedRecipe.getUses() <= openRecipes.get(selectedRecipe)) {
+                        valid = false;
                     }
 
-                    if (villager != null) {
-                        if (quest.getVillagerProfession() != null) {
-                            if (!quest.getVillagerProfession().equals(villager.getProfession())) {
-                                valid = false;
+                    if (valid) {
+                        if (villager != null) {
+                            if (quest.getVillagerProfession() != null) {
+                                if (!quest.getVillagerProfession().equals(villager.getProfession())) {
+                                    valid = false;
+                                }
                             }
-                        }
-                        if (quest.getVillagerLevel() != 0) {
-                            if (!(quest.getVillagerLevel() == villager.getVillagerLevel())) {
-                                valid = false;
+                            if (quest.getVillagerLevel() != 0) {
+                                if (!(quest.getVillagerLevel() == villager.getVillagerLevel())) {
+                                    valid = false;
+                                }
                             }
                         }
                     }
@@ -87,6 +90,8 @@ public class ValidateVillagerTradeQuest implements Listener {
                             QuestsManager.getActiveQuests().get(playerName).increaseAchievedQuests(playerName);
                             RewardManager.sendAllRewardItems(quest.getQuestName(), playerName, quest.getReward());
                         }
+
+                        if (!Synchronization.isSynchronised()) break;
                     }
                 }
             }

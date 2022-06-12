@@ -112,7 +112,7 @@ public class CategorizedQuestsInterfaces {
                 if (inv.getItem(j) == null) inv.setItem(j, emptyCaseItem);
             }
         }
-        PluginLogger.info(ChatColor.GREEN + "Categorized quests interfaces successfully loaded.");
+        PluginLogger.info(ChatColor.GREEN + "Categorized quests interface named " + inventoryName + ChatColor.RESET + ChatColor.GREEN + " successfully loaded.");
     }
 
     /**

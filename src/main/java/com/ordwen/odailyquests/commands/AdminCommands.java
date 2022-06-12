@@ -21,6 +21,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class AdminCommands implements CommandExecutor {
 
@@ -51,11 +52,11 @@ public class AdminCommands implements CommandExecutor {
                         case "reset":
                             if (Bukkit.getPlayer(args[1]) != null) {
                                 QuestsManager.getActiveQuests().remove(args[1]);
-                                HashMap<Quest, Progression> quests = new HashMap<>();
+                                LinkedHashMap<Quest, Progression> quests = new LinkedHashMap<>();
                                 QuestsManager.selectRandomQuests(quests);
                                 PlayerQuests playerQuests = new PlayerQuests(System.currentTimeMillis(), quests);
                                 QuestsManager.getActiveQuests().put(args[1], playerQuests);
-
+                                QuestsManager.getActiveQuests().get(args[1]).setAchievedQuests(0);
                                 PluginLogger.info(ChatColor.GREEN + args[1] + ChatColor.YELLOW + " inserted into the array.");
                                 Bukkit.getPlayer(args[1]).sendMessage(QuestsMessages.QUESTS_RENEWED.toString());
                             } else sender.sendMessage(QuestsMessages.INVALID_PLAYER.toString());
@@ -78,8 +79,7 @@ public class AdminCommands implements CommandExecutor {
                                             if (!playerQuests.get(quest).isAchieved()) {
                                                 progression.isAchieved = true;
                                                 RewardManager.sendAllRewardItems(quest.getQuestName(), args[1], quest.getReward());
-                                                playerQuests.remove(quest);
-                                                playerQuests.put(quest, progression);
+                                                playerQuests.replace(quest, progression);
                                                 QuestsManager.getActiveQuests().get(args[1]).increaseAchievedQuests(args[1]);
                                                 break;
                                             } else sender.sendMessage(QuestsMessages.QUEST_ALREADY_ACHIEVED.toString());
