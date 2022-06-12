@@ -17,6 +17,8 @@ import java.util.concurrent.TimeUnit;
 
 public class TimerTask {
 
+    ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
     public TimerTask(LocalDateTime start) {
 
         Runnable runnable = () -> {
@@ -29,7 +31,10 @@ public class TimerTask {
         LocalDateTime end = start.plusDays(1).truncatedTo(ChronoUnit.DAYS);
 
         Duration duration = Duration.between(start, end);
-        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
         scheduler.scheduleAtFixedRate(runnable, duration.toMillis(), 86400000, TimeUnit.MILLISECONDS);
+    }
+
+    public void stop() {
+        scheduler.shutdown();
     }
 }

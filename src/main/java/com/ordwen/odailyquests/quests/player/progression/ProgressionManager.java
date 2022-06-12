@@ -223,9 +223,10 @@ public class ProgressionManager implements Listener {
                             QuestsManager.getActiveQuests().get(playerName).increaseAchievedQuests(playerName);
                             RewardManager.sendAllRewardItems(quest.getQuestName(), playerName, quest.getReward());
                         }
-                    }
-                    if (!Synchronization.isSynchronised()) {
-                        break;
+
+                        if (!Synchronization.isSynchronised()) {
+                            break;
+                        }
                     }
                 }
             }

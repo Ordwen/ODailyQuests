@@ -42,6 +42,7 @@ public final class ODailyQuests extends JavaPlugin {
     public FilesManager filesManager;
     private LoadProgressionSQL loadProgressionSQL = null;
     private SaveProgressionSQL saveProgressionSQL = null;
+    private TimerTask timerTask;
 
     @Override
     public void onEnable() {
@@ -140,13 +141,15 @@ public final class ODailyQuests extends JavaPlugin {
         }
 
         /* Init delayed task to draw new quests */
-        new TimerTask(LocalDateTime.now());
+        timerTask = new TimerTask(LocalDateTime.now());
 
         PluginLogger.info(ChatColor.GREEN + "Plugin is started !");
     }
 
     @Override
     public void onDisable() {
+
+        timerTask.stop();
 
         /* Avoid server/plugin reload errors */
         if (getServer().getOnlinePlayers().size() > 0) {
