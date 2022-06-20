@@ -13,7 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.logging.Logger;
+import java.util.LinkedHashMap;
 
 public class SaveProgressionSQL {
 
@@ -41,7 +41,7 @@ public class SaveProgressionSQL {
         PlayerQuests playerQuests = activeQuests.get(playerName);
         long timestamp = playerQuests.getTimestamp();
         int achievedQuests = playerQuests.getAchievedQuests();
-        HashMap<Quest, Progression> quests = playerQuests.getPlayerQuests();
+        LinkedHashMap<Quest, Progression> quests = playerQuests.getPlayerQuests();
 
         Connection connection = mySqlManager.getConnection();
 

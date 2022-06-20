@@ -94,7 +94,7 @@ public class LoadProgressionSQL {
      * @param questsConfigMode configuration mode.
      * @param quests list of player quests.
      */
-    private void loadPlayerQuests(String playerName, int questsConfigMode, HashMap<Quest, Progression> quests) {
+    private void loadPlayerQuests(String playerName, int questsConfigMode, LinkedHashMap<Quest, Progression> quests) {
 
         try {
             Connection connection = mySqlManager.getConnection();
@@ -102,7 +102,7 @@ public class LoadProgressionSQL {
             PreparedStatement preparedStatement = connection.prepareStatement(getQuestProgressionQuery);
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            int id = 0;
+            int id = 1;
 
             resultSet.next();
             do {

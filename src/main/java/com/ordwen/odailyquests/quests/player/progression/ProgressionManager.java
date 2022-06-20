@@ -21,10 +21,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.*;
-import org.bukkit.event.player.PlayerBucketFillEvent;
-import org.bukkit.event.player.PlayerFishEvent;
-import org.bukkit.event.player.PlayerItemConsumeEvent;
-import org.bukkit.event.player.PlayerShearEntityEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.*;
 
 import java.util.HashMap;
@@ -58,7 +55,13 @@ public class ProgressionManager implements Listener {
 
     @EventHandler
     public void onCraftItemEvent(CraftItemEvent event) {
-        ItemStack test = event.getRecipe().getResult().clone();
+
+        ItemStack test;
+
+        if (event.getRecipe() instanceof ComplexRecipe complexRecipe) {
+            test = new ItemStack(Material.valueOf(complexRecipe.getKey().getKey().toUpperCase()));
+        } else test = event.getRecipe().getResult().clone();
+
         ClickType click = event.getClick();
 
         int recipeAmount = test.getAmount();
@@ -151,12 +154,13 @@ public class ProgressionManager implements Listener {
 
     @EventHandler
     public void onEntityBreadEvent(EntityBreedEvent event) {
-        assert event.getBreeder() instanceof Player;
-        setPlayerQuestProgression(event.getBreeder().getName(), null, event.getEntityType(), null, 1, QuestType.BREED);
+        if (event.getBreeder() != null && event.getBreeder() instanceof Player) {
+            setPlayerQuestProgression(event.getBreeder().getName(), null, event.getEntityType(), null, 1, QuestType.BREED);
+        }
     }
 
     @EventHandler
-    public void onBrewEvent(PlayerShearEntityEvent event) {
+    public void onShearEvent(PlayerShearEntityEvent event) {
         setPlayerQuestProgression(event.getPlayer().getName(), null, event.getEntity().getType(), null, 1, QuestType.SHEAR);
     }
 
@@ -165,6 +169,11 @@ public class ProgressionManager implements Listener {
         if (event.getItemStack().getType() == Material.MILK_BUCKET) {
             setPlayerQuestProgression(event.getPlayer().getName(), null, null, null, 1, QuestType.MILKING);
         }
+    }
+
+    @EventHandler
+    public void onPlayerExpChangeEvent(PlayerExpChangeEvent event) {
+        setPlayerQuestProgression(event.getPlayer().getName(), null, null, null, event.getAmount(), QuestType.EXP);
     }
 
     /**
@@ -184,7 +193,7 @@ public class ProgressionManager implements Listener {
                 Progression questProgression = playerQuests.get(quest);
                 if (!questProgression.isAchieved() && quest.getType() == type) {
                     boolean isRequiredItem = false;
-                    if (type == QuestType.MILKING) {
+                    if (type == QuestType.MILKING || type == QuestType.EXP) {
                         isRequiredItem = true;
                     } else if (type == QuestType.KILL
                             || type == QuestType.BREED
