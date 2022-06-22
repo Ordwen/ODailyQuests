@@ -1,6 +1,5 @@
 package com.ordwen.odailyquests.apis.hooks.placeholders;
 
-import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
 import com.ordwen.odailyquests.quests.LoadQuests;
 import com.ordwen.odailyquests.quests.Quest;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
@@ -35,6 +34,9 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
 
     @Override
     public String onRequest(OfflinePlayer player, String params) {
+        if (params.equalsIgnoreCase("total")) {
+            return String.valueOf(QuestsManager.getActiveQuests().get(player.getName()).getTotalAchievedQuests());
+        }
         if (params.equalsIgnoreCase("achieved")) {
             return String.valueOf(QuestsManager.getActiveQuests().get(player.getName()).getAchievedQuests());
         }

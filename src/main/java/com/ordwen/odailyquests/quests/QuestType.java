@@ -20,7 +20,8 @@ public enum QuestType {
     SHEAR("SHEAR"),
     MILKING("MILKING"),
 
-    EXP("EXP"),
+    EXP_POINTS("EXP_POINTS"),
+    EXP_LEVELS("EXP_LEVELS"),
     VILLAGER_TRADE("VILLAGER_TRADE"),
 
     CUSTOM_MOBS("CUSTOM_MOBS"),

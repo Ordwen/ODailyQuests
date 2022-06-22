@@ -30,6 +30,7 @@ public class ConfigurationManager {
         new DisabledWorlds(configurationFiles).loadDisabledWorlds();
         new GlobalReward(configurationFiles).initGlobalReward();
         new SpawnersProgression(configurationFiles).loadSpawnersProgression();
+        new TakeItems(configurationFiles).loadTakeItems();
 
         // integrations
         new NPCNames(configurationFiles).loadNPCNames();

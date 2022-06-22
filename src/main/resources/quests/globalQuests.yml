@@ -178,3 +178,27 @@ quests:
     reward:
       reward_type: MONEY
       amount: 5000000
+  13:
+    name: "&2Get 500 EXP points."
+    menu_item: EXPERIENCE_BOTTLE
+    description:
+      - "&6Reward:"
+      - "&7A \"hello\" message from the server :)"
+    quest_type: EXP_POINTS
+    required_amount: 500
+    reward:
+      reward_type: COMMAND
+      commands:
+        - "say Hello"
+  14:
+    name: "&2Get 5 EXP levels."
+    menu_item: EXPERIENCE_BOTTLE
+    description:
+      - "&6Reward:"
+      - "&7A \"hello\" message from the server :)"
+    quest_type: EXP_LEVELS
+    required_amount: 5
+    reward:
+      reward_type: COMMAND
+      commands:
+        - "say Hello"

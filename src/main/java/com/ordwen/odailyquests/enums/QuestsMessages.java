@@ -4,13 +4,11 @@ import com.ordwen.odailyquests.tools.ColorConvert;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import java.util.regex.Pattern;
-
 @SuppressWarnings("SpellCheckingInspection")
 public enum QuestsMessages {
 
     PLAYER_HELP("player_help", "&a&nPlayer commands:\n&e/quests me &a: see your own quests\n&e/quests show <global/easy/medium/hard> &a: see the quests of a category"),
-    ADMIN_HELP("admin_help", "&c&nAdmin commands:\n&e/qadmin complete <player> <index> &a: complete a player quest\n&e/qadmin reset <player> &a: draw new quests for a player\n&e/qadmin show <player> &a: see quests of a player"),
+    ADMIN_HELP("admin_help", "&c&nAdmin commands:\n&e/qadmin complete <player> <index> &a: complete a player quest\n&e/qadmin reset <quests/total> <player> &a: draw new quests for a player, or reset his total number of achieved quests.\n&e/qadmin show <player> &a: see quests of a player"),
     NO_PERMISSION("no_permission", "&cYou don't have permission."),
     NO_PERMISSION_CATEGORY("no_permission_category", "&cYou don't have permission to see this category."),
     PLAYER_ONLY("player_only", "&cOnly player can execute this command."),
@@ -31,10 +29,12 @@ public enum QuestsMessages {
 
     QUESTS_IN_PROGRESS("quests_in_progress", "&eYou still have daily quests to complete !"),
     QUESTS_RENEWED("quests_renewed", "&aYou have new daily quests to complete !"),
+    QUESTS_RENEWED_ADMIN("quests_renewed_admin", "&eYou have reset the quests of %target%."),
     QUEST_ACHIEVED("quest_achieved", "&aYou finished the quest &e%questName%&a, well done !"),
     ALL_QUESTS_ACHIEVED("all_quests_achieved", "&aYou have finished all your daily quests, well done !"),
     NOT_ENOUGH_ITEM("not_enough_items","&cYou don't have the required amount to complete this quest."),
-
+    TOTAL_AMOUNT_RESET("total_amount_reset", "&eYour total number of completed quests has been reset by an admin."),
+    TOTAL_AMOUNT_RESET_ADMIN("total_amount_reset_admin", "&e%target%'s total number of completed quests has been reset by an admin."),
     REWARD_COMMAND("reward_command", "&aYou receive some rewards commands."),
     REWARD_EXP_LEVELS("reward_exp_levels", "&aYou receive &e%rewardAmount% &bEXP &alevels."),
     REWARD_EXP_POINTS("reward_exp_points", "&aYou receive &e%rewardAmount% &bEXP &apoints."),
@@ -47,8 +47,6 @@ public enum QuestsMessages {
     private final String path;
     private final String defaultMessage;
     private static FileConfiguration LANG;
-
-    private final Pattern pattern = Pattern.compile("#[a-fA-F0-9]{6}");
 
     /**
      * Message constructor.

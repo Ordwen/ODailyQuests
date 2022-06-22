@@ -40,6 +40,7 @@ public final class ODailyQuests extends JavaPlugin {
     public ConfigurationManager configurationManager;
     public InterfacesManager interfacesManager;
     public FilesManager filesManager;
+    private MySQLManager mySqlManager;
     private LoadProgressionSQL loadProgressionSQL = null;
     private SaveProgressionSQL saveProgressionSQL = null;
     private TimerTask timerTask;
@@ -64,7 +65,7 @@ public final class ODailyQuests extends JavaPlugin {
 
         /* Load SQL Support */
         if (configurationFiles.getConfigFile().getString("storage_mode").equals("MySQL")) {
-            MySQLManager mySqlManager = new MySQLManager(configurationFiles, 10);
+            mySqlManager = new MySQLManager(configurationFiles, 10);
             this.loadProgressionSQL = new LoadProgressionSQL(mySqlManager);
             this.saveProgressionSQL = new SaveProgressionSQL(mySqlManager);
 
@@ -171,6 +172,8 @@ public final class ODailyQuests extends JavaPlugin {
                     break;
             }
         }
+
+        mySqlManager.close();
 
         PluginLogger.info(ChatColor.RED + "Plugin is shutting down...");
     }

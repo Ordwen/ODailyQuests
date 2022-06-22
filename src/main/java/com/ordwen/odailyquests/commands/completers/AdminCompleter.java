@@ -23,13 +23,23 @@ public class AdminCompleter implements TabCompleter {
 
             return completions;
         }
-        else if (args.length == 2 && args[0].equalsIgnoreCase("holo")) {
-            List<String> allCompletions = new ArrayList<>(Arrays.asList("create", "delete"));
-            List<String> completions = new ArrayList<>();
+        else if (args.length == 2 ) {
+            if (args[0].equalsIgnoreCase("holo")) {
+                List<String> allCompletions = new ArrayList<>(Arrays.asList("create", "delete"));
+                List<String> completions = new ArrayList<>();
 
-            StringUtil.copyPartialMatches(args[1], allCompletions, completions);
-            Collections.sort(completions);
-            return completions;
+                StringUtil.copyPartialMatches(args[1], allCompletions, completions);
+                Collections.sort(completions);
+                return completions;
+            }
+            if (args[0].equalsIgnoreCase("reset")) {
+                List<String> allCompletions = new ArrayList<>(Arrays.asList("quests", "total"));
+                List<String> completions = new ArrayList<>();
+
+                StringUtil.copyPartialMatches(args[1], allCompletions, completions);
+                Collections.sort(completions);
+                return completions;
+            }
         }
         else if (args.length == 3 && args[0].equalsIgnoreCase("holo") && args[1].equalsIgnoreCase("create")) {
             List<String> allCompletions = new ArrayList<>(Arrays.asList("global", "easy", "medium", "hard"));

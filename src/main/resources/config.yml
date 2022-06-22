@@ -93,6 +93,9 @@ actionbar:
 # Disables the progression of quests where you have to kill an entity if it comes from a Spawner.
 disable_spawners_progression: false
 
+# Determines if the player loses required items when completing a GET quest.
+take_items_for_get_quests: false
+
 # interfaces settings
 # NEVER DELETE A %variable%
 # %progress% is replaced by the progression of the quest.

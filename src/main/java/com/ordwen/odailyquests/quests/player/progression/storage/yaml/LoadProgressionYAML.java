@@ -29,6 +29,7 @@ public class LoadProgressionYAML {
         /* init variables */
         long timestamp;
         int achievedQuests;
+        int totalAchievedQuests;
         PlayerQuests playerQuests;
         LinkedHashMap<Quest, Progression> quests = new LinkedHashMap<>();
 
@@ -37,6 +38,7 @@ public class LoadProgressionYAML {
 
             timestamp = progressionFile.getConfigurationSection(playerName).getLong(".timestamp");
             achievedQuests = progressionFile.getConfigurationSection(playerName).getInt(".achievedQuests");
+            totalAchievedQuests = progressionFile.getConfigurationSection(playerName).getInt(".totalAchievedQuests");
 
             /* renew quests */
             if (Utils.checkTimestamp(timestampConfigMode, temporalityMode, timestamp)) {
@@ -57,6 +59,7 @@ public class LoadProgressionYAML {
 
                 playerQuests = new PlayerQuests(timestamp, quests);
                 playerQuests.setAchievedQuests(achievedQuests);
+                playerQuests.setTotalAchievedQuests(totalAchievedQuests);
 
                 activeQuests.put(playerName, playerQuests);
 

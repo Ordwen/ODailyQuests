@@ -44,10 +44,11 @@ public class LoadProgressionSQL {
             boolean hasStoredData = false;
             long timestamp = 0;
             int achievedQuests = 0;
+            int totalAchievedQuests = 0;
 
             try {
                 Connection connection = mySqlManager.getConnection();
-                String getTimestampQuery = "SELECT PLAYERTIMESTAMP,ACHIEVEDQUESTS FROM PLAYER WHERE PLAYERNAME = '" + playerName + "'";
+                String getTimestampQuery = "SELECT PLAYERTIMESTAMP,ACHIEVEDQUESTS,TOTALACHIEVEDQUESTS FROM PLAYER WHERE PLAYERNAME = '" + playerName + "'";
                 PreparedStatement preparedStatement = connection.prepareStatement(getTimestampQuery);
 
                 ResultSet resultSet = preparedStatement.executeQuery();
@@ -56,6 +57,7 @@ public class LoadProgressionSQL {
                     hasStoredData = true;
                     timestamp = resultSet.getLong("PLAYERTIMESTAMP");
                     achievedQuests = resultSet.getInt("ACHIEVEDQUESTS");
+                    totalAchievedQuests = resultSet.getInt("TOTALACHIEVEDQUESTS");
                 }
 
                 connection.close();
@@ -75,6 +77,7 @@ public class LoadProgressionSQL {
 
                     PlayerQuests playerQuests = new PlayerQuests(timestamp, quests);
                     playerQuests.setAchievedQuests(achievedQuests);
+                    playerQuests.setTotalAchievedQuests(totalAchievedQuests);
 
                     activeQuests.put(playerName, playerQuests);
 

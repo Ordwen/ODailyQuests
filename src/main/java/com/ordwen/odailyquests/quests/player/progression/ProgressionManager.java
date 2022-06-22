@@ -3,6 +3,7 @@ package com.ordwen.odailyquests.quests.player.progression;
 import com.ordwen.odailyquests.configuration.essentials.Synchronization;
 import com.ordwen.odailyquests.configuration.functionalities.DisabledWorlds;
 import com.ordwen.odailyquests.configuration.functionalities.SpawnersProgression;
+import com.ordwen.odailyquests.configuration.functionalities.TakeItems;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.quests.Quest;
 import com.ordwen.odailyquests.quests.QuestType;
@@ -173,7 +174,13 @@ public class ProgressionManager implements Listener {
 
     @EventHandler
     public void onPlayerExpChangeEvent(PlayerExpChangeEvent event) {
-        setPlayerQuestProgression(event.getPlayer().getName(), null, null, null, event.getAmount(), QuestType.EXP);
+        setPlayerQuestProgression(event.getPlayer().getName(), null, null, null, event.getAmount(), QuestType.EXP_POINTS);
+    }
+
+    @EventHandler
+    public void onPlayerLevelChangeEvent(PlayerLevelChangeEvent event) {
+        final int diff = event.getNewLevel() - event.getOldLevel();
+        if (diff > 0) setPlayerQuestProgression(event.getPlayer().getName(), null, null, null, diff, QuestType.EXP_LEVELS);
     }
 
     /**
@@ -193,7 +200,7 @@ public class ProgressionManager implements Listener {
                 Progression questProgression = playerQuests.get(quest);
                 if (!questProgression.isAchieved() && quest.getType() == type) {
                     boolean isRequiredItem = false;
-                    if (type == QuestType.MILKING || type == QuestType.EXP) {
+                    if (type == QuestType.MILKING || type == QuestType.EXP_POINTS || type == QuestType.EXP_LEVELS) {
                         isRequiredItem = true;
                     } else if (type == QuestType.KILL
                             || type == QuestType.BREED
@@ -262,6 +269,13 @@ public class ProgressionManager implements Listener {
                         if (getAmount(playerInventory, quest.getItemRequired()) >= quest.getAmountRequired()) {
                             questProgression.isAchieved = true;
                             QuestsManager.getActiveQuests().get(playerName).increaseAchievedQuests(playerName);
+
+                            if (TakeItems.isTakeItemsEnabled()) {
+                                final ItemStack toRemove = quest.getItemRequired().clone();
+                                toRemove.setAmount(quest.getAmountRequired());
+                                Bukkit.getPlayer(playerName).getInventory().removeItem(toRemove);
+                            }
+
                             Bukkit.getPlayer(playerName).closeInventory();
                             RewardManager.sendAllRewardItems(quest.getQuestName(), playerName, quest.getReward());
                         } else {

@@ -3,24 +3,24 @@ package com.ordwen.odailyquests.configuration.functionalities;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.tools.AddDefault;
 
-public class SpawnersProgression {
+public class TakeItems {
 
     private final ConfigurationFiles configurationFiles;
 
-    public SpawnersProgression(ConfigurationFiles configurationFiles) {
+    public TakeItems(ConfigurationFiles configurationFiles) {
         this.configurationFiles = configurationFiles;
     }
 
-    private static boolean disabled = false;
+    private static boolean enabled = false;
 
-    public void loadSpawnersProgression() {
-        final String path = "disable_spawners_progression";
+    public void loadTakeItems() {
+        final String path = "take_items_for_get_quests";
         if (configurationFiles.getConfigFile().contains(path)) {
-            disabled = configurationFiles.getConfigFile().getBoolean(path);
+            enabled = configurationFiles.getConfigFile().getBoolean(path);
         } else AddDefault.addDefaultConfigItem(path, false, configurationFiles.getConfigFile(), configurationFiles.getFile());
     }
 
-    public static boolean isSpawnersProgressionDisabled() {
-        return disabled;
+    public static boolean isTakeItemsEnabled() {
+        return enabled;
     }
 }

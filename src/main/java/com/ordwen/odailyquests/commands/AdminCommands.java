@@ -50,26 +50,51 @@ public class AdminCommands implements CommandExecutor {
                 } else if (args.length >= 2) {
                     switch (args[0]) {
                         case "reset":
-                            if (Bukkit.getPlayer(args[1]) != null) {
-                                QuestsManager.getActiveQuests().remove(args[1]);
-                                LinkedHashMap<Quest, Progression> quests = new LinkedHashMap<>();
-                                QuestsManager.selectRandomQuests(quests);
-                                PlayerQuests playerQuests = new PlayerQuests(System.currentTimeMillis(), quests);
-                                QuestsManager.getActiveQuests().put(args[1], playerQuests);
-                                QuestsManager.getActiveQuests().get(args[1]).setAchievedQuests(0);
-                                PluginLogger.info(ChatColor.GREEN + args[1] + ChatColor.YELLOW + " inserted into the array.");
-                                Bukkit.getPlayer(args[1]).sendMessage(QuestsMessages.QUESTS_RENEWED.toString());
-                            } else sender.sendMessage(QuestsMessages.INVALID_PLAYER.toString());
+                            if (args.length >= 3 && args[1] != null && args[2] != null) {
+                                switch (args[1]) {
+                                    case "quests":
+                                        if (Bukkit.getPlayerExact(args[2]) != null) {
+                                            int totalAchievedQuests = QuestsManager.getActiveQuests().get(args[2]).getTotalAchievedQuests();
+
+                                            QuestsManager.getActiveQuests().remove(args[2]);
+                                            LinkedHashMap<Quest, Progression> quests = new LinkedHashMap<>();
+                                            QuestsManager.selectRandomQuests(quests);
+
+                                            PlayerQuests playerQuests = new PlayerQuests(System.currentTimeMillis(), quests);
+                                            playerQuests.setTotalAchievedQuests(totalAchievedQuests);
+
+                                            QuestsManager.getActiveQuests().put(args[2], playerQuests);
+                                            QuestsManager.getActiveQuests().get(args[2]).setAchievedQuests(0);
+
+                                            PluginLogger.info(ChatColor.GREEN + args[2] + ChatColor.YELLOW + " inserted into the array.");
+
+                                            sender.sendMessage(QuestsMessages.QUESTS_RENEWED_ADMIN.toString().replace("%target%", Bukkit.getPlayerExact(args[2]).getName()));
+                                            Bukkit.getPlayerExact(args[2]).sendMessage(QuestsMessages.QUESTS_RENEWED.toString());
+                                        } else sender.sendMessage(QuestsMessages.INVALID_PLAYER.toString());
+                                        break;
+                                    case "total":
+                                        if (Bukkit.getPlayerExact(args[2]) != null) {
+                                            QuestsManager.getActiveQuests().get(args[2]).setTotalAchievedQuests(0);
+
+                                            sender.sendMessage(QuestsMessages.TOTAL_AMOUNT_RESET_ADMIN.toString().replace("%target%", Bukkit.getPlayerExact(args[2]).getName()));
+                                            Bukkit.getPlayerExact(args[2]).sendMessage(QuestsMessages.TOTAL_AMOUNT_RESET.toString());
+                                        } else sender.sendMessage(QuestsMessages.INVALID_PLAYER.toString());
+                                        break;
+                                    default:
+                                        sender.sendMessage(QuestsMessages.ADMIN_HELP.toString());
+                                        break;
+                                }
+                            } else sender.sendMessage(QuestsMessages.ADMIN_HELP.toString());
                             break;
                         case "show":
                             if (sender instanceof Player) {
-                                if (Bukkit.getPlayer(args[1]) != null) {
+                                if (Bukkit.getPlayerExact(args[1]) != null) {
                                     ((Player) sender).openInventory(PlayerQuestsInterface.getPlayerQuestsInterface(args[1]));
                                 } else sender.sendMessage(QuestsMessages.INVALID_PLAYER.toString());
                             } else sender.sendMessage(QuestsMessages.PLAYER_ONLY.toString());
                             break;
                         case "complete":
-                            if (Bukkit.getPlayer(args[1]) != null) {
+                            if (Bukkit.getPlayerExact(args[1]) != null) {
                                 if (args[2] != null && Integer.parseInt(args[2]) >= 1 && Integer.parseInt(args[2]) <= 3) {
                                     HashMap<Quest, Progression> playerQuests = QuestsManager.getActiveQuests().get(args[1]).getPlayerQuests();
                                     int index = 0;
