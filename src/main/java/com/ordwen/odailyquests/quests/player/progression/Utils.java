@@ -36,7 +36,7 @@ public class Utils {
             switch (temporalityMode) {
                 case 1:
                     currentCal.setTimeInMillis(System.currentTimeMillis());
-                    return oldCal.get(Calendar.DATE) < currentCal.get(Calendar.DATE);
+                    return oldCal.get(Calendar.DAY_OF_YEAR) < currentCal.get(Calendar.DAY_OF_YEAR);
                 case 2:
                     currentCal.setTimeInMillis(System.currentTimeMillis());
                     long diffW = TimeUnit.DAYS.convert(currentCal.getTimeInMillis() - oldCal.getTimeInMillis(), TimeUnit.MILLISECONDS);

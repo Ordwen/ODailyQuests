@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.apis.hooks.eco;
 
+import com.ordwen.odailyquests.tools.PluginLogger;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -21,6 +22,7 @@ public class VaultHook {
         if (rsp == null) {
             return false;
         }
+
         econ = rsp.getProvider();
         return econ != null;
     }

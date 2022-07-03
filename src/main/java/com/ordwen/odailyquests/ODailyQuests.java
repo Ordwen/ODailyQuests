@@ -9,6 +9,8 @@ import com.ordwen.odailyquests.commands.completers.PlayerCompleter;
 import com.ordwen.odailyquests.commands.interfaces.InterfacesManager;
 import com.ordwen.odailyquests.commands.interfaces.InventoryClickListener;
 import com.ordwen.odailyquests.configuration.ConfigurationManager;
+import com.ordwen.odailyquests.configuration.essentials.Modes;
+import com.ordwen.odailyquests.configuration.essentials.Temporality;
 import com.ordwen.odailyquests.files.*;
 import com.ordwen.odailyquests.quests.player.progression.ValidateVillagerTradeQuest;
 import com.ordwen.odailyquests.tools.Metrics;
@@ -96,12 +98,12 @@ public final class ODailyQuests extends JavaPlugin {
         interfacesManager.initAllObjects();
 
         /* Load commands */
-        getCommand("quests").setExecutor(new PlayerCommands(configurationFiles));
-        getCommand("questsadmin").setExecutor(new AdminCommands(this));
+        getCommand("dquests").setExecutor(new PlayerCommands(configurationFiles));
+        getCommand("dqadmin").setExecutor(new AdminCommands(this));
 
         /* Load Tab Completers */
-        getCommand("quests").setTabCompleter(new PlayerCompleter());
-        getCommand("questsadmin").setTabCompleter(new AdminCompleter());
+        getCommand("dquests").setTabCompleter(new PlayerCompleter());
+        getCommand("dqadmin").setTabCompleter(new AdminCompleter());
 
         /* Load listeners */
         getServer().getPluginManager().registerEvents(new ValidateVillagerTradeQuest(), this);
@@ -142,7 +144,9 @@ public final class ODailyQuests extends JavaPlugin {
         }
 
         /* Init delayed task to draw new quests */
-        timerTask = new TimerTask(LocalDateTime.now());
+        if (Modes.getTimestampMode() == 1 && Temporality.getTemporalityMode() == 1) {
+            timerTask = new TimerTask(LocalDateTime.now());
+        }
 
         PluginLogger.info(ChatColor.GREEN + "Plugin is started !");
     }
@@ -150,7 +154,7 @@ public final class ODailyQuests extends JavaPlugin {
     @Override
     public void onDisable() {
 
-        timerTask.stop();
+        if (timerTask != null) timerTask.stop();
 
         /* Avoid server/plugin reload errors */
         if (getServer().getOnlinePlayers().size() > 0) {
@@ -173,7 +177,7 @@ public final class ODailyQuests extends JavaPlugin {
             }
         }
 
-        mySqlManager.close();
+        if (mySqlManager != null) mySqlManager.close();
 
         PluginLogger.info(ChatColor.RED + "Plugin is shutting down...");
     }

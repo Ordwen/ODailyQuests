@@ -8,14 +8,18 @@ description: Add more objectives and dynamize your server !
 website: https://www.spigotmc.org/resources/odailyquests-daily-quests-plugin-1-16-1-18.100990/
 softdepend: [Vault, TokenManager, Citizens, PlaceholderAPI, PlayerPoints, MythicMobs, EliteMobs, HolographicDisplays]
 commands:
-  quests:
+  dquests:
     description: default player command
     aliases:
-      - quest
-  questsadmin:
+      - dailyquests
+      - dq
+      - quests
+  dqadmin:
     description: admin command
     aliases:
-      - questadmin
+      - dailyquestsadmin
+      - dquestsadmin
+      - dqa
       - qadmin
 
 

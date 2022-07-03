@@ -19,6 +19,10 @@ public class TimerTask {
 
     ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
+    /**
+     * Set a runnable to reload quests at midnight.
+     * @param start date and time to start the task.
+     */
     public TimerTask(LocalDateTime start) {
 
         Runnable runnable = () -> {
