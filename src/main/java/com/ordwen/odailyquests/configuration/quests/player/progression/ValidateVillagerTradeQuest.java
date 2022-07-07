@@ -1,9 +1,9 @@
-package com.ordwen.odailyquests.quests.player.progression;
+package com.ordwen.odailyquests.configuration.quests.player.progression;
 
 import com.ordwen.odailyquests.configuration.essentials.Synchronization;
-import com.ordwen.odailyquests.quests.Quest;
-import com.ordwen.odailyquests.quests.QuestType;
-import com.ordwen.odailyquests.quests.player.QuestsManager;
+import com.ordwen.odailyquests.configuration.quests.Quest;
+import com.ordwen.odailyquests.configuration.quests.QuestType;
+import com.ordwen.odailyquests.configuration.quests.player.QuestsManager;
 import com.ordwen.odailyquests.rewards.RewardManager;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;

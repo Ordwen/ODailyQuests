@@ -4,6 +4,7 @@ import com.ordwen.odailyquests.apis.IntegrationsManager;
 import com.ordwen.odailyquests.apis.hooks.holograms.HologramsManager;
 import com.ordwen.odailyquests.commands.AdminCommands;
 import com.ordwen.odailyquests.commands.PlayerCommands;
+import com.ordwen.odailyquests.commands.ReloadService;
 import com.ordwen.odailyquests.commands.completers.AdminCompleter;
 import com.ordwen.odailyquests.commands.completers.PlayerCompleter;
 import com.ordwen.odailyquests.commands.interfaces.InterfacesManager;
@@ -12,20 +13,18 @@ import com.ordwen.odailyquests.configuration.ConfigurationManager;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.configuration.essentials.Temporality;
 import com.ordwen.odailyquests.files.*;
-import com.ordwen.odailyquests.quests.player.progression.ValidateVillagerTradeQuest;
+import com.ordwen.odailyquests.configuration.quests.player.progression.ValidateVillagerTradeQuest;
 import com.ordwen.odailyquests.tools.Metrics;
-import com.ordwen.odailyquests.quests.LoadQuests;
-import com.ordwen.odailyquests.quests.player.QuestsManager;
-import com.ordwen.odailyquests.quests.player.progression.storage.yaml.LoadProgressionYAML;
-import com.ordwen.odailyquests.quests.player.progression.ProgressionManager;
-import com.ordwen.odailyquests.quests.player.progression.storage.yaml.SaveProgressionYAML;
-import com.ordwen.odailyquests.quests.player.progression.storage.mysql.LoadProgressionSQL;
-import com.ordwen.odailyquests.quests.player.progression.storage.mysql.MySQLManager;
-import com.ordwen.odailyquests.quests.player.progression.storage.mysql.SaveProgressionSQL;
+import com.ordwen.odailyquests.configuration.quests.LoadQuests;
+import com.ordwen.odailyquests.configuration.quests.player.QuestsManager;
+import com.ordwen.odailyquests.configuration.quests.player.progression.ProgressionManager;
+import com.ordwen.odailyquests.configuration.quests.player.progression.storage.mysql.LoadProgressionSQL;
+import com.ordwen.odailyquests.configuration.quests.player.progression.storage.mysql.MySQLManager;
+import com.ordwen.odailyquests.configuration.quests.player.progression.storage.mysql.SaveProgressionSQL;
 import com.ordwen.odailyquests.tools.TimerTask;
 import com.ordwen.odailyquests.tools.UpdateChecker;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -46,6 +45,7 @@ public final class ODailyQuests extends JavaPlugin {
     private LoadProgressionSQL loadProgressionSQL = null;
     private SaveProgressionSQL saveProgressionSQL = null;
     private TimerTask timerTask;
+    private ReloadService reloadService;
 
     @Override
     public void onEnable() {
@@ -67,9 +67,9 @@ public final class ODailyQuests extends JavaPlugin {
 
         /* Load SQL Support */
         if (configurationFiles.getConfigFile().getString("storage_mode").equals("MySQL")) {
-            mySqlManager = new MySQLManager(configurationFiles, 10);
-            this.loadProgressionSQL = new LoadProgressionSQL(mySqlManager);
-            this.saveProgressionSQL = new SaveProgressionSQL(mySqlManager);
+            mySqlManager = new MySQLManager(this, 10);
+            this.loadProgressionSQL = new LoadProgressionSQL(this);
+            this.saveProgressionSQL = new SaveProgressionSQL(this);
 
             mySqlManager.setupDatabase();
         }
@@ -79,8 +79,9 @@ public final class ODailyQuests extends JavaPlugin {
         this.filesManager.loadAllFiles();
 
         /* Load class instances */
-        this.interfacesManager = new InterfacesManager(configurationFiles);
-        this.configurationManager = new ConfigurationManager(configurationFiles);
+        this.interfacesManager = new InterfacesManager(this);
+        this.configurationManager = new ConfigurationManager(this);
+        this.reloadService = new ReloadService(this);
 
         /* Load dependencies */
         new IntegrationsManager(this).loadAllDependencies();
@@ -98,7 +99,7 @@ public final class ODailyQuests extends JavaPlugin {
         interfacesManager.initAllObjects();
 
         /* Load commands */
-        getCommand("dquests").setExecutor(new PlayerCommands(configurationFiles));
+        getCommand("dquests").setExecutor(new PlayerCommands(this));
         getCommand("dqadmin").setExecutor(new AdminCommands(this));
 
         /* Load Tab Completers */
@@ -108,36 +109,13 @@ public final class ODailyQuests extends JavaPlugin {
         /* Load listeners */
         getServer().getPluginManager().registerEvents(new ValidateVillagerTradeQuest(), this);
         getServer().getPluginManager().registerEvents(new InventoryClickListener(), this);
-        getServer().getPluginManager().registerEvents(new QuestsManager(configurationFiles, loadProgressionSQL, saveProgressionSQL), this);
+        getServer().getPluginManager().registerEvents(new QuestsManager(this), this);
         getServer().getPluginManager().registerEvents(new ProgressionManager(), this);
 
-        /* Avoid server/plugin reload errors */
-        if (getServer().getOnlinePlayers().size() > 0) {
-            switch (configurationFiles.getConfigFile().getString("storage_mode")) {
-                case "YAML":
-                    for (Player player : getServer().getOnlinePlayers()) {
-                        if (!QuestsManager.getActiveQuests().containsKey(player.getName())) {
-                            LoadProgressionYAML.loadPlayerQuests(player.getName(), QuestsManager.getActiveQuests(),
-                                    configurationFiles.getConfigFile().getInt("quests_mode"),
-                                    configurationFiles.getConfigFile().getInt("timestamp_mode"),
-                                    configurationFiles.getConfigFile().getInt("temporality_mode"));
-                        }
-                    }
-                    break;
-                case "MySQL":
-                    for (Player player : getServer().getOnlinePlayers()) {
-                        if (!QuestsManager.getActiveQuests().containsKey(player.getName())) {
-                            loadProgressionSQL.loadProgression(player.getName(), QuestsManager.getActiveQuests(),
-                                    configurationFiles.getConfigFile().getInt("quests_mode"),
-                                    configurationFiles.getConfigFile().getInt("timestamp_mode"),
-                                    configurationFiles.getConfigFile().getInt("temporality_mode"));
-                        }
-                    }
-                    break;
-                default:
-                    PluginLogger.error("Impossible to load player quests : the selected storage mode is incorrect !");
-                    break;
-            }
+        /* Avoid errors on reload */
+        if (Bukkit.getServer().getOnlinePlayers().size() > 0) {
+            reloadService.loadConnectedPlayerQuests();
+
             PluginLogger.error("It seems that you have reloaded the server.");
             PluginLogger.error("Think that this can cause problems, especially in the data backup.");
             PluginLogger.error("You should restart the server instead.");
@@ -156,25 +134,9 @@ public final class ODailyQuests extends JavaPlugin {
 
         if (timerTask != null) timerTask.stop();
 
-        /* Avoid server/plugin reload errors */
-        if (getServer().getOnlinePlayers().size() > 0) {
-            switch (configurationFiles.getConfigFile().getString("storage_mode")) {
-                case "YAML":
-                    for (Player player : getServer().getOnlinePlayers()) {
-                        SaveProgressionYAML.saveProgression(player.getName(), QuestsManager.getActiveQuests());
-                        QuestsManager.getActiveQuests().remove(player.getName());
-                    }
-                    break;
-                case "MySQL":
-                    for (Player player : getServer().getOnlinePlayers()) {
-                        saveProgressionSQL.saveProgression(player.getName(), QuestsManager.getActiveQuests());
-                        QuestsManager.getActiveQuests().remove(player.getName());
-                    }
-                    break;
-                default:
-                    PluginLogger.error("Impossible to save player quests : the selected storage mode is incorrect !");
-                    break;
-            }
+        /* Avoid errors on reload */
+        if (Bukkit.getServer().getOnlinePlayers().size() > 0) {
+            reloadService.saveConnectedPlayerQuests();
         }
 
         if (mySqlManager != null) mySqlManager.close();
@@ -199,5 +161,68 @@ public final class ODailyQuests extends JavaPlugin {
         });
     }
 
+    /**
+     * Get ConfigurationManager instance.
+     * @return ConfigurationManager instance.
+     */
+    public ConfigurationFiles getConfigurationFiles() {
+        return configurationFiles;
+    }
+
+    /**
+     * Get LoadProgressionSQL instance.
+     * @return LoadProgressionSQL instance.
+     */
+    public LoadProgressionSQL getLoadProgressionSQL() {
+        return loadProgressionSQL;
+    }
+
+    /**
+     * Get SaveProgressionSQL instance.
+     * @return SaveProgressionSQL instance.
+     */
+    public SaveProgressionSQL getSaveProgressionSQL() {
+        return saveProgressionSQL;
+    }
+
+    /**
+     * Get MySQLManager instance.
+     * @return MySQLManager instance.
+     */
+    public MySQLManager getMySqlManager() {
+        return mySqlManager;
+    }
+
+    /**
+     * Get ReloadService instance.
+     * @return ReloadService instance.
+     */
+    public ReloadService getReloadService() {
+        return reloadService;
+    }
+
+    /**
+     * Get FilesManager instance.
+     * @return FilesManager instance.
+     */
+    public FilesManager getFilesManager() {
+        return filesManager;
+    }
+
+    /**
+     * Get InterfacesManager instance.
+     * @return InterfacesManager instance.
+     */
+    public InterfacesManager getInterfacesManager() {
+        return interfacesManager;
+    }
+
+    /**
+     * Get ConfigurationManager instance.
+     * @return ConfigurationManager instance.
+     */
+    public ConfigurationManager getConfigurationManager() {
+        return configurationManager;
+    }
 }
 

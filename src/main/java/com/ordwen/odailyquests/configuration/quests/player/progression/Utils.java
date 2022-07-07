@@ -1,10 +1,10 @@
-package com.ordwen.odailyquests.quests.player.progression;
+package com.ordwen.odailyquests.configuration.quests.player.progression;
 
 import com.ordwen.odailyquests.enums.QuestsMessages;
-import com.ordwen.odailyquests.quests.LoadQuests;
-import com.ordwen.odailyquests.quests.Quest;
-import com.ordwen.odailyquests.quests.player.PlayerQuests;
-import com.ordwen.odailyquests.quests.player.QuestsManager;
+import com.ordwen.odailyquests.configuration.quests.LoadQuests;
+import com.ordwen.odailyquests.configuration.quests.Quest;
+import com.ordwen.odailyquests.configuration.quests.player.PlayerQuests;
+import com.ordwen.odailyquests.configuration.quests.player.QuestsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import com.ordwen.odailyquests.tools.PluginLogger;

@@ -1,5 +1,6 @@
-package com.ordwen.odailyquests.quests.player.progression.storage.mysql;
+package com.ordwen.odailyquests.configuration.quests.player.progression.storage.mysql;
 
+import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -25,10 +26,10 @@ public class MySQLManager {
 
     /**
      * Constructor.
-     * @param configurationFiles class.
+     * @param oDailyQuests main class instance.
      */
-    public MySQLManager(ConfigurationFiles configurationFiles, int poolSize) {
-        this.configurationFiles = configurationFiles;
+    public MySQLManager(ODailyQuests oDailyQuests, int poolSize) {
+        this.configurationFiles = oDailyQuests.getConfigurationFiles();
         this.poolSize = poolSize;
     }
 

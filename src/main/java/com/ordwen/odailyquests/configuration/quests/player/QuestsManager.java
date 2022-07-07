@@ -1,13 +1,14 @@
-package com.ordwen.odailyquests.quests.player;
+package com.ordwen.odailyquests.configuration.quests.player;
 
+import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.configuration.quests.LoadQuests;
+import com.ordwen.odailyquests.configuration.quests.Quest;
+import com.ordwen.odailyquests.configuration.quests.player.progression.Progression;
+import com.ordwen.odailyquests.configuration.quests.player.progression.storage.mysql.LoadProgressionSQL;
+import com.ordwen.odailyquests.configuration.quests.player.progression.storage.yaml.LoadProgressionYAML;
+import com.ordwen.odailyquests.configuration.quests.player.progression.storage.yaml.SaveProgressionYAML;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
-import com.ordwen.odailyquests.quests.LoadQuests;
-import com.ordwen.odailyquests.quests.Quest;
-import com.ordwen.odailyquests.quests.player.progression.storage.mysql.LoadProgressionSQL;
-import com.ordwen.odailyquests.quests.player.progression.storage.mysql.SaveProgressionSQL;
-import com.ordwen.odailyquests.quests.player.progression.storage.yaml.LoadProgressionYAML;
-import com.ordwen.odailyquests.quests.player.progression.Progression;
-import com.ordwen.odailyquests.quests.player.progression.storage.yaml.SaveProgressionYAML;
+import com.ordwen.odailyquests.configuration.quests.player.progression.storage.mysql.SaveProgressionSQL;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
@@ -30,15 +31,12 @@ public class QuestsManager implements Listener {
 
     /**
      * Class instance constructor.
-     *
-     * @param configurationFiles configuration files class.
+     * @param oDailyQuests main class instance.
      */
-    public QuestsManager(ConfigurationFiles configurationFiles,
-                         LoadProgressionSQL loadProgressionSQL,
-                         SaveProgressionSQL saveProgressionSQL) {
-        QuestsManager.configurationFiles = configurationFiles;
-        this.loadProgressionSQL = loadProgressionSQL;
-        this.saveProgressionSQL = saveProgressionSQL;
+    public QuestsManager(ODailyQuests oDailyQuests) {
+        configurationFiles = oDailyQuests.getConfigurationFiles();
+        this.loadProgressionSQL = oDailyQuests.getLoadProgressionSQL();
+        this.saveProgressionSQL = oDailyQuests.getSaveProgressionSQL();
     }
 
     private static final HashMap<String, PlayerQuests> activeQuests = new HashMap<>();

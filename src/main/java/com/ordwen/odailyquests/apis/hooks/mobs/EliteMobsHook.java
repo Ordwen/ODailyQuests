@@ -1,8 +1,8 @@
 package com.ordwen.odailyquests.apis.hooks.mobs;
 
 import com.magmaguy.elitemobs.api.EliteMobDeathEvent;
-import com.ordwen.odailyquests.quests.QuestType;
-import com.ordwen.odailyquests.quests.player.progression.ProgressionManager;
+import com.ordwen.odailyquests.configuration.quests.QuestType;
+import com.ordwen.odailyquests.configuration.quests.player.progression.ProgressionManager;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

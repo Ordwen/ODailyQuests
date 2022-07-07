@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.commands.interfaces;
 
+import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.commands.interfaces.pagination.Items;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerHead;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
@@ -30,10 +31,10 @@ public class InterfacesManager implements Listener {
     /**
      * Class instance constructor.
      *
-     * @param configurationFiles configuration files class.
+     * @param oDailyQuests main class instance.
      */
-    public InterfacesManager(ConfigurationFiles configurationFiles) {
-        this.configurationFiles = configurationFiles;
+    public InterfacesManager(ODailyQuests oDailyQuests) {
+        this.configurationFiles = oDailyQuests.getConfigurationFiles();
     }
 
     /* variables */

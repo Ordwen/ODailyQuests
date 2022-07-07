@@ -1,7 +1,7 @@
-package com.ordwen.odailyquests.quests.player;
+package com.ordwen.odailyquests.configuration.quests.player;
 
-import com.ordwen.odailyquests.quests.Quest;
-import com.ordwen.odailyquests.quests.player.progression.Progression;
+import com.ordwen.odailyquests.configuration.quests.player.progression.Progression;
+import com.ordwen.odailyquests.configuration.quests.Quest;
 import com.ordwen.odailyquests.configuration.functionalities.GlobalReward;
 
 import java.util.LinkedHashMap;

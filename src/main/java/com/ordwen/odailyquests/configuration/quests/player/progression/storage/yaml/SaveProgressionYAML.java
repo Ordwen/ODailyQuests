@@ -1,9 +1,9 @@
-package com.ordwen.odailyquests.quests.player.progression.storage.yaml;
+package com.ordwen.odailyquests.configuration.quests.player.progression.storage.yaml;
 
 import com.ordwen.odailyquests.files.ProgressionFile;
-import com.ordwen.odailyquests.quests.Quest;
-import com.ordwen.odailyquests.quests.player.PlayerQuests;
-import com.ordwen.odailyquests.quests.player.progression.Progression;
+import com.ordwen.odailyquests.configuration.quests.Quest;
+import com.ordwen.odailyquests.configuration.quests.player.PlayerQuests;
+import com.ordwen.odailyquests.configuration.quests.player.progression.Progression;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;

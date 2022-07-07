@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.commands;
 
+import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.commands.interfaces.InterfacesManager;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
 import com.ordwen.odailyquests.enums.QuestsMessages;
@@ -18,10 +19,10 @@ public class PlayerCommands implements CommandExecutor {
     /**
      * ConfigurationFiles class instance constructor.
      *
-     * @param configurationFiles files class.
+     * @param oDailyQuests main class instance.
      */
-    public PlayerCommands(ConfigurationFiles configurationFiles) {
-        this.configurationFiles = configurationFiles;
+    public PlayerCommands(ODailyQuests oDailyQuests) {
+        this.configurationFiles = oDailyQuests.getConfigurationFiles();
     }
 
     @Override

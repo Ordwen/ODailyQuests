@@ -6,11 +6,11 @@ import com.ordwen.odailyquests.apis.hooks.holograms.HolographicDisplaysHook;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.enums.QuestsPermissions;
-import com.ordwen.odailyquests.quests.LoadQuests;
-import com.ordwen.odailyquests.quests.Quest;
-import com.ordwen.odailyquests.quests.player.PlayerQuests;
-import com.ordwen.odailyquests.quests.player.QuestsManager;
-import com.ordwen.odailyquests.quests.player.progression.Progression;
+import com.ordwen.odailyquests.configuration.quests.LoadQuests;
+import com.ordwen.odailyquests.configuration.quests.Quest;
+import com.ordwen.odailyquests.configuration.quests.player.PlayerQuests;
+import com.ordwen.odailyquests.configuration.quests.player.QuestsManager;
+import com.ordwen.odailyquests.configuration.quests.player.progression.Progression;
 import com.ordwen.odailyquests.rewards.RewardManager;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
@@ -27,9 +27,11 @@ import java.util.LinkedHashMap;
 public class AdminCommands implements CommandExecutor {
 
     private final ODailyQuests oDailyQuests;
+    private final ReloadService reloadService;
 
     public AdminCommands(ODailyQuests oDailyQuests) {
         this.oDailyQuests = oDailyQuests;
+        this.reloadService = oDailyQuests.getReloadService();
     }
 
     @Override
@@ -37,12 +39,7 @@ public class AdminCommands implements CommandExecutor {
         if (sender.hasPermission(QuestsPermissions.QUESTS_ADMIN.getPermission())) {
             if (args.length == 1) {
                 if ("reload".equals(args[0])) {
-                    oDailyQuests.filesManager.loadAllFiles();
-                    oDailyQuests.configurationManager.loadConfiguration();
-
-                    oDailyQuests.interfacesManager.initAllObjects();
-                    LoadQuests.loadCategories();
-
+                    reloadService.reload();
                     sender.sendMessage(ChatColor.GREEN + "Plugin successfully reloaded!");
                 } else {
                     sender.sendMessage(QuestsMessages.ADMIN_HELP.toString());

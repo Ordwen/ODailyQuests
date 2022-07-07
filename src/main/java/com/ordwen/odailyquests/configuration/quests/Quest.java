@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.quests;
+package com.ordwen.odailyquests.configuration.quests;
 
 import com.ordwen.odailyquests.rewards.Reward;
 import org.bukkit.entity.EntityType;
