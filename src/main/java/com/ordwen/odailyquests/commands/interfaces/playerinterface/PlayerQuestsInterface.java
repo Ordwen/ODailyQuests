@@ -2,11 +2,11 @@ package com.ordwen.odailyquests.commands.interfaces.playerinterface;
 
 import com.ordwen.odailyquests.commands.interfaces.InterfacesManager;
 import com.ordwen.odailyquests.files.PlayerInterfaceFile;
-import com.ordwen.odailyquests.configuration.quests.Quest;
-import com.ordwen.odailyquests.configuration.quests.QuestType;
-import com.ordwen.odailyquests.configuration.quests.player.PlayerQuests;
-import com.ordwen.odailyquests.configuration.quests.player.QuestsManager;
-import com.ordwen.odailyquests.configuration.quests.player.progression.Progression;
+import com.ordwen.odailyquests.quests.Quest;
+import com.ordwen.odailyquests.quests.QuestType;
+import com.ordwen.odailyquests.quests.player.PlayerQuests;
+import com.ordwen.odailyquests.quests.player.QuestsManager;
+import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.tools.AddDefault;
 import com.ordwen.odailyquests.tools.ColorConvert;
 import com.ordwen.odailyquests.tools.PluginLogger;
@@ -57,7 +57,8 @@ public class PlayerQuestsInterface {
         // glowing_if_achieved - VER 1.3.2
         if (interfaceConfig.contains("glowing_if_achieved")) {
             isGlowingEnabled = interfaceConfig.getBoolean("glowing_if_achieved");
-        } else AddDefault.addDefaultConfigItem("player_interface.glowing_if_achieved", true, PlayerInterfaceFile.getPlayerInterfaceFileConfiguration(), PlayerInterfaceFile.getPlayerInterfaceFile());
+        } else
+            AddDefault.addDefaultConfigItem("player_interface.glowing_if_achieved", true, PlayerInterfaceFile.getPlayerInterfaceFileConfiguration(), PlayerInterfaceFile.getPlayerInterfaceFile());
 
         /* load item slots */
         if (isPlayerHeadEnabled) {
@@ -83,72 +84,75 @@ public class PlayerQuestsInterface {
         playerCommandsItems = new HashMap<>();
         consoleCommandsItems = new HashMap<>();
 
-        ConfigurationSection itemsSection =  interfaceConfig.getConfigurationSection("items");
+        ConfigurationSection itemsSection = interfaceConfig.getConfigurationSection("items");
 
-        for (String element : itemsSection.getKeys(false)) {
-            switch(ItemType.valueOf(itemsSection.getString(element + ".type"))) {
-                case FILL -> {
-                    ItemStack fillItem = new ItemStack(Material.valueOf(itemsSection.getString(element + ".item.material")));
-                    playerQuestsInventoryBase.setItem(itemsSection.getInt(element + ".item.slot") - 1, fillItem);
-                    fillItems.add(fillItem);
-                }
-                case CLOSE -> {
-                    ItemStack closeItem = new ItemStack(Material.valueOf(itemsSection.getString(element + ".item.material")));
-
-                    ItemMeta meta = closeItem.getItemMeta();
-                    meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(itemsSection.getString(element + ".item.name"))));
-
-                    List<String> lore = itemsSection.getStringList(element + ".item.lore");
-                    for (String str : lore) {
-                        lore.set(lore.indexOf(str), ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(str)));
+        if (itemsSection != null) {
+            for (String element : itemsSection.getKeys(false)) {
+                switch (ItemType.valueOf(itemsSection.getString(element + ".type"))) {
+                    case FILL -> {
+                        ItemStack fillItem = new ItemStack(Material.valueOf(itemsSection.getString(element + ".item.material")));
+                        playerQuestsInventoryBase.setItem(itemsSection.getInt(element + ".item.slot") - 1, fillItem);
+                        fillItems.add(fillItem);
                     }
-                    meta.setLore(lore);
-                    closeItem.setItemMeta(meta);
+                    case CLOSE -> {
+                        ItemStack closeItem = new ItemStack(Material.valueOf(itemsSection.getString(element + ".item.material")));
 
-                    playerQuestsInventoryBase.setItem(itemsSection.getInt(element + ".item.slot") - 1, closeItem);
-                    closeItems.add(closeItem);
-                }
-                case PLAYER_COMMAND -> {
-                    ItemStack commandItem = new ItemStack(Material.valueOf(itemsSection.getString(element + ".item.material")));
-                    List<String> commands = itemsSection.getStringList(element + ".commands");
+                        ItemMeta meta = closeItem.getItemMeta();
+                        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(itemsSection.getString(element + ".item.name"))));
 
-                    ItemMeta meta = commandItem.getItemMeta();
-                    meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(itemsSection.getString(element + ".item.name"))));
+                        List<String> lore = itemsSection.getStringList(element + ".item.lore");
+                        for (String str : lore) {
+                            lore.set(lore.indexOf(str), ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(str)));
+                        }
+                        meta.setLore(lore);
+                        closeItem.setItemMeta(meta);
 
-                    List<String> lore = itemsSection.getStringList(element + ".item.lore");
-                    for (String str : lore) {
-                        lore.set(lore.indexOf(str), ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(str)));
+                        playerQuestsInventoryBase.setItem(itemsSection.getInt(element + ".item.slot") - 1, closeItem);
+                        closeItems.add(closeItem);
                     }
-                    meta.setLore(lore);
+                    case PLAYER_COMMAND -> {
+                        ItemStack commandItem = new ItemStack(Material.valueOf(itemsSection.getString(element + ".item.material")));
+                        List<String> commands = itemsSection.getStringList(element + ".commands");
 
-                    commandItem.setItemMeta(meta);
+                        ItemMeta meta = commandItem.getItemMeta();
+                        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(itemsSection.getString(element + ".item.name"))));
 
-                    playerQuestsInventoryBase.setItem(itemsSection.getInt(element + ".item.slot") - 1, commandItem);
-                    playerCommandsItems.put(commandItem, commands);
-                }
-                case CONSOLE_COMMAND -> {
-                    ItemStack commandItem = new ItemStack(Material.valueOf(itemsSection.getString(element + ".item.material")));
-                    List<String> commands = itemsSection.getStringList(element + ".commands");
+                        List<String> lore = itemsSection.getStringList(element + ".item.lore");
+                        for (String str : lore) {
+                            lore.set(lore.indexOf(str), ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(str)));
+                        }
+                        meta.setLore(lore);
 
-                    ItemMeta meta = commandItem.getItemMeta();
-                    meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(itemsSection.getString(element + ".item.name"))));
+                        commandItem.setItemMeta(meta);
 
-                    List<String> lore = itemsSection.getStringList(element + ".item.lore");
-                    for (String str : lore) {
-                        lore.set(lore.indexOf(str), ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(str)));
+                        playerQuestsInventoryBase.setItem(itemsSection.getInt(element + ".item.slot") - 1, commandItem);
+                        playerCommandsItems.put(commandItem, commands);
                     }
-                    meta.setLore(lore);
+                    case CONSOLE_COMMAND -> {
+                        ItemStack commandItem = new ItemStack(Material.valueOf(itemsSection.getString(element + ".item.material")));
+                        List<String> commands = itemsSection.getStringList(element + ".commands");
 
-                    playerQuestsInventoryBase.setItem(itemsSection.getInt(element + ".item.slot") - 1, commandItem);
-                    consoleCommandsItems.put(commandItem, commands);
-                }
-                default -> {
-                    PluginLogger.error("An error occurred when loading the player interface.");
-                    PluginLogger.error("Unexpected item type : " + itemsSection.getString(element + ".type"));
-                    PluginLogger.error("At index : " + element);
+                        ItemMeta meta = commandItem.getItemMeta();
+                        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(itemsSection.getString(element + ".item.name"))));
+
+                        List<String> lore = itemsSection.getStringList(element + ".item.lore");
+                        for (String str : lore) {
+                            lore.set(lore.indexOf(str), ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(str)));
+                        }
+                        meta.setLore(lore);
+
+                        playerQuestsInventoryBase.setItem(itemsSection.getInt(element + ".item.slot") - 1, commandItem);
+                        consoleCommandsItems.put(commandItem, commands);
+                    }
+                    default -> {
+                        PluginLogger.error("An error occurred when loading the player interface.");
+                        PluginLogger.error("Unexpected item type : " + itemsSection.getString(element + ".type"));
+                        PluginLogger.error("At index : " + element);
+                    }
                 }
             }
         }
+
         PluginLogger.info(ChatColor.GREEN + "Player quests interface successfully loaded.");
     }
 
@@ -199,6 +203,8 @@ public class PlayerQuestsInterface {
             }
 
             itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+            itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+
             itemMeta.setLore(lore);
             itemStack.setItemMeta(itemMeta);
 
@@ -219,6 +225,7 @@ public class PlayerQuestsInterface {
 
     /**
      * Get all fill items.
+     *
      * @return fill items set.
      */
     public static HashSet<ItemStack> getFillItems() {
@@ -227,6 +234,7 @@ public class PlayerQuestsInterface {
 
     /**
      * Get all player command items.
+     *
      * @return player command items map.
      */
     public static HashMap<ItemStack, List<String>> getPlayerCommandsItems() {
@@ -235,6 +243,7 @@ public class PlayerQuestsInterface {
 
     /**
      * Get all console command items.
+     *
      * @return console command items map.
      */
     public static HashMap<ItemStack, List<String>> getConsoleCommandsItems() {
@@ -243,6 +252,7 @@ public class PlayerQuestsInterface {
 
     /**
      * Get all close items.
+     *
      * @return close items set.
      */
     public static HashSet<ItemStack> getCloseItems() {

@@ -6,7 +6,11 @@ import com.ordwen.odailyquests.configuration.essentials.Synchronization;
 import com.ordwen.odailyquests.configuration.essentials.Temporality;
 import com.ordwen.odailyquests.configuration.functionalities.*;
 import com.ordwen.odailyquests.configuration.integrations.NPCNames;
+import com.ordwen.odailyquests.configuration.integrations.WildStackerEnabled;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
+import org.bukkit.Material;
+import org.bukkit.potion.PotionData;
+import org.bukkit.potion.PotionEffectType;
 
 public class ConfigurationManager {
 
@@ -39,6 +43,7 @@ public class ConfigurationManager {
 
         // integrations
         new NPCNames(configurationFiles).loadNPCNames();
+        new WildStackerEnabled(configurationFiles).loadWildStackerEnabled();
 
         // utils
         Synchronization.isSynchronised = configurationFiles.getConfigFile().getBoolean("synchronised_progression");

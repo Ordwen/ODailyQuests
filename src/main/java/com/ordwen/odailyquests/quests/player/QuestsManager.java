@@ -1,14 +1,14 @@
-package com.ordwen.odailyquests.configuration.quests.player;
+package com.ordwen.odailyquests.quests.player;
 
 import com.ordwen.odailyquests.ODailyQuests;
-import com.ordwen.odailyquests.configuration.quests.LoadQuests;
-import com.ordwen.odailyquests.configuration.quests.Quest;
-import com.ordwen.odailyquests.configuration.quests.player.progression.Progression;
-import com.ordwen.odailyquests.configuration.quests.player.progression.storage.mysql.LoadProgressionSQL;
-import com.ordwen.odailyquests.configuration.quests.player.progression.storage.yaml.LoadProgressionYAML;
-import com.ordwen.odailyquests.configuration.quests.player.progression.storage.yaml.SaveProgressionYAML;
+import com.ordwen.odailyquests.quests.LoadQuests;
+import com.ordwen.odailyquests.quests.Quest;
+import com.ordwen.odailyquests.quests.player.progression.Progression;
+import com.ordwen.odailyquests.quests.player.progression.storage.mysql.LoadProgressionSQL;
+import com.ordwen.odailyquests.quests.player.progression.storage.yaml.LoadProgressionYAML;
+import com.ordwen.odailyquests.quests.player.progression.storage.yaml.SaveProgressionYAML;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
-import com.ordwen.odailyquests.configuration.quests.player.progression.storage.mysql.SaveProgressionSQL;
+import com.ordwen.odailyquests.quests.player.progression.storage.mysql.SaveProgressionSQL;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
@@ -35,8 +35,8 @@ public class QuestsManager implements Listener {
      */
     public QuestsManager(ODailyQuests oDailyQuests) {
         configurationFiles = oDailyQuests.getConfigurationFiles();
-        this.loadProgressionSQL = oDailyQuests.getLoadProgressionSQL();
-        this.saveProgressionSQL = oDailyQuests.getSaveProgressionSQL();
+        this.loadProgressionSQL = oDailyQuests.getMySqlManager().getLoadProgressionSQL();
+        this.saveProgressionSQL = oDailyQuests.getMySqlManager().getSaveProgressionSQL();
     }
 
     private static final HashMap<String, PlayerQuests> activeQuests = new HashMap<>();
@@ -80,7 +80,7 @@ public class QuestsManager implements Listener {
                 SaveProgressionYAML.saveProgression(playerName, activeQuests);
                 break;
             case "MySQL":
-                saveProgressionSQL.saveProgression(playerName, activeQuests);
+                saveProgressionSQL.saveProgression(playerName, activeQuests, true);
                 break;
             default:
                 PluginLogger.error("Impossible to save player quests : the selected storage mode is incorrect !");

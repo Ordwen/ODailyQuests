@@ -2,8 +2,8 @@ package com.ordwen.odailyquests.tools;
 
 import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.enums.QuestsMessages;
-import com.ordwen.odailyquests.configuration.quests.player.QuestsManager;
-import com.ordwen.odailyquests.configuration.quests.player.progression.Utils;
+import com.ordwen.odailyquests.quests.player.QuestsManager;
+import com.ordwen.odailyquests.quests.player.progression.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 

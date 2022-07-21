@@ -1,13 +1,14 @@
-package com.ordwen.odailyquests.configuration.quests.player.progression;
+package com.ordwen.odailyquests.quests.player.progression;
 
 import com.ordwen.odailyquests.configuration.essentials.Synchronization;
 import com.ordwen.odailyquests.configuration.functionalities.DisabledWorlds;
 import com.ordwen.odailyquests.configuration.functionalities.SpawnersProgression;
 import com.ordwen.odailyquests.configuration.functionalities.TakeItems;
-import com.ordwen.odailyquests.configuration.quests.Quest;
+import com.ordwen.odailyquests.configuration.integrations.WildStackerEnabled;
+import com.ordwen.odailyquests.quests.Quest;
 import com.ordwen.odailyquests.enums.QuestsMessages;
-import com.ordwen.odailyquests.configuration.quests.QuestType;
-import com.ordwen.odailyquests.configuration.quests.player.QuestsManager;
+import com.ordwen.odailyquests.quests.QuestType;
+import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.rewards.RewardManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -122,6 +123,8 @@ public class ProgressionManager implements Listener {
 
     @EventHandler
     public void onEntityDeathEvent(EntityDeathEvent event) {
+        if (WildStackerEnabled.isEnabled()) return;
+
         Entity entity = event.getEntity();
 
         if (event.getEntity().getKiller() != null) {

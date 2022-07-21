@@ -1,7 +1,7 @@
 package com.ordwen.odailyquests.commands.interfaces.playerinterface;
 
 import com.ordwen.odailyquests.files.PlayerInterfaceFile;
-import com.ordwen.odailyquests.configuration.quests.player.QuestsManager;
+import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.tools.ColorConvert;
 import com.ordwen.odailyquests.tools.TimeRemain;
 import org.bukkit.ChatColor;

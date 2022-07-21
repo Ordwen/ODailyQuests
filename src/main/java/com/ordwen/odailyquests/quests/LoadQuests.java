@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.configuration.quests;
+package com.ordwen.odailyquests.quests;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.apis.hooks.mobs.EliteMobsHook;

@@ -1,11 +1,11 @@
-package com.ordwen.odailyquests.configuration.quests.player.progression.storage.mysql;
+package com.ordwen.odailyquests.quests.player.progression.storage.mysql;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.enums.QuestsMessages;
-import com.ordwen.odailyquests.configuration.quests.Quest;
-import com.ordwen.odailyquests.configuration.quests.player.PlayerQuests;
-import com.ordwen.odailyquests.configuration.quests.player.progression.Progression;
-import com.ordwen.odailyquests.configuration.quests.player.progression.Utils;
+import com.ordwen.odailyquests.quests.Quest;
+import com.ordwen.odailyquests.quests.player.PlayerQuests;
+import com.ordwen.odailyquests.quests.player.progression.Progression;
+import com.ordwen.odailyquests.quests.player.progression.Utils;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -25,10 +25,10 @@ public class LoadProgressionSQL {
     /**
      * Constructor.
      *
-     * @param oDailyQuests main class instance.
+     * @param mySqlManager instance of MySQLManager.
      */
-    public LoadProgressionSQL(ODailyQuests oDailyQuests) {
-        this.mySqlManager = oDailyQuests.getMySqlManager();
+    public LoadProgressionSQL(MySQLManager mySqlManager) {
+        this.mySqlManager = mySqlManager;
     }
 
     /**

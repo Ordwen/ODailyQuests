@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.configuration.quests.player.progression;
+package com.ordwen.odailyquests.quests.player.progression;
 
 public class Progression {
 

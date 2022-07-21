@@ -2,7 +2,7 @@ package com.ordwen.odailyquests.tools;
 
 import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.configuration.essentials.Temporality;
-import com.ordwen.odailyquests.configuration.quests.player.QuestsManager;
+import com.ordwen.odailyquests.quests.player.QuestsManager;
 
 import java.util.Calendar;
 

@@ -9,6 +9,7 @@ import com.ordwen.odailyquests.apis.hooks.npcs.CitizensHook;
 import com.ordwen.odailyquests.apis.hooks.placeholders.PlaceholderAPIHook;
 import com.ordwen.odailyquests.apis.hooks.points.PlayerPointsHook;
 import com.ordwen.odailyquests.apis.hooks.points.TokenManagerHook;
+import com.ordwen.odailyquests.apis.hooks.stackers.WildStackerHook;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -34,6 +35,17 @@ public class IntegrationsManager {
         loadCitizens();
         loadHolographicDisplays();
         loadPAPI();
+        loadWildStacker();
+    }
+
+    /**
+     * Load WildStacker.
+     */
+    private void loadWildStacker() {
+        if (WildStackerHook.isWildStackerSetup()) {
+            PluginLogger.info(ChatColor.YELLOW + "WildStacker" + ChatColor.GREEN + " successfully hooked.");
+            getServer().getPluginManager().registerEvents(new WildStackerHook(), oDailyQuests);
+        }
     }
 
     /**

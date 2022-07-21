@@ -1,12 +1,12 @@
 package com.ordwen.odailyquests.commands;
 
 import com.ordwen.odailyquests.ODailyQuests;
-import com.ordwen.odailyquests.configuration.quests.LoadQuests;
-import com.ordwen.odailyquests.configuration.quests.player.QuestsManager;
-import com.ordwen.odailyquests.configuration.quests.player.progression.storage.mysql.LoadProgressionSQL;
-import com.ordwen.odailyquests.configuration.quests.player.progression.storage.mysql.SaveProgressionSQL;
-import com.ordwen.odailyquests.configuration.quests.player.progression.storage.yaml.LoadProgressionYAML;
-import com.ordwen.odailyquests.configuration.quests.player.progression.storage.yaml.SaveProgressionYAML;
+import com.ordwen.odailyquests.quests.LoadQuests;
+import com.ordwen.odailyquests.quests.player.QuestsManager;
+import com.ordwen.odailyquests.quests.player.progression.storage.mysql.LoadProgressionSQL;
+import com.ordwen.odailyquests.quests.player.progression.storage.mysql.SaveProgressionSQL;
+import com.ordwen.odailyquests.quests.player.progression.storage.yaml.LoadProgressionYAML;
+import com.ordwen.odailyquests.quests.player.progression.storage.yaml.SaveProgressionYAML;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
@@ -27,8 +27,8 @@ public class ReloadService {
     public ReloadService(ODailyQuests oDailyQuests) {
         this.oDailyQuests = oDailyQuests;
         this.configurationFiles = oDailyQuests.getConfigurationFiles();
-        this.loadProgressionSQL = oDailyQuests.getLoadProgressionSQL();
-        this.saveProgressionSQL = oDailyQuests.getSaveProgressionSQL();
+        this.loadProgressionSQL = oDailyQuests.getMySqlManager().getLoadProgressionSQL();
+        this.saveProgressionSQL = oDailyQuests.getMySqlManager().getSaveProgressionSQL();
     }
 
     /**
@@ -65,7 +65,7 @@ public class ReloadService {
     /**
      * Save all quests from connected players, to avoid errors on reload.
      */
-    public void saveConnectedPlayerQuests() {
+    public void saveConnectedPlayerQuests(boolean isAsync) {
         switch (configurationFiles.getConfigFile().getString("storage_mode")) {
             case "YAML":
                 for (Player player : Bukkit.getServer().getOnlinePlayers()) {
@@ -75,7 +75,7 @@ public class ReloadService {
                 break;
             case "MySQL":
                 for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-                    saveProgressionSQL.saveProgression(player.getName(), QuestsManager.getActiveQuests());
+                    saveProgressionSQL.saveProgression(player.getName(), QuestsManager.getActiveQuests(), isAsync);
                     QuestsManager.getActiveQuests().remove(player.getName());
                 }
                 break;
@@ -94,7 +94,7 @@ public class ReloadService {
         oDailyQuests.getInterfacesManager().initAllObjects();
         LoadQuests.loadCategories();
 
-        saveConnectedPlayerQuests();
+        saveConnectedPlayerQuests(true);
         loadConnectedPlayerQuests();
     }
 }

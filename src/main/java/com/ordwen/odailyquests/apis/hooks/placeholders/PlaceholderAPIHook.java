@@ -1,8 +1,8 @@
 package com.ordwen.odailyquests.apis.hooks.placeholders;
 
-import com.ordwen.odailyquests.configuration.quests.LoadQuests;
-import com.ordwen.odailyquests.configuration.quests.Quest;
-import com.ordwen.odailyquests.configuration.quests.player.QuestsManager;
+import com.ordwen.odailyquests.quests.LoadQuests;
+import com.ordwen.odailyquests.quests.Quest;
+import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.tools.TimeRemain;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.ChatColor;

@@ -134,3 +134,6 @@ npcs:
   name_easy: "&a&lEasy &mQuests"
   name_medium: "&e&lMedium &rQuests"
   name_hard: "&cHard &b&lQuests"
+
+# If you use WildStacker on your server to group mobs, set this parameter to "true".
+use_wildstacker: false

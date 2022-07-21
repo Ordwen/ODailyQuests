@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.configuration.quests;
+package com.ordwen.odailyquests.quests;
 
 /**
  * List of all possible quests types

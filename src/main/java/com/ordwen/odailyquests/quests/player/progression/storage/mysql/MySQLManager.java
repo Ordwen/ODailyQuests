@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.configuration.quests.player.progression.storage.mysql;
+package com.ordwen.odailyquests.quests.player.progression.storage.mysql;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
@@ -13,14 +13,18 @@ import com.ordwen.odailyquests.tools.PluginLogger;
 public class MySQLManager {
 
     /* init variables */
+
+    // database settings
     private String host;
     private String dbName;
     private String password;
     private String user;
     private String port;
 
-    private final int poolSize;
-
+    // instances
+    private final ODailyQuests oDailyQuests;
+    private final LoadProgressionSQL loadProgressionSQL;
+    private final SaveProgressionSQL saveProgressionSQL;
     private final ConfigurationFiles configurationFiles;
     private HikariDataSource hikariDataSource;
 
@@ -28,9 +32,12 @@ public class MySQLManager {
      * Constructor.
      * @param oDailyQuests main class instance.
      */
-    public MySQLManager(ODailyQuests oDailyQuests, int poolSize) {
+    public MySQLManager(ODailyQuests oDailyQuests) {
+        this.oDailyQuests = oDailyQuests;
         this.configurationFiles = oDailyQuests.getConfigurationFiles();
-        this.poolSize = poolSize;
+
+        this.loadProgressionSQL = new LoadProgressionSQL(this);
+        this.saveProgressionSQL = new SaveProgressionSQL(this);
     }
 
     /**
@@ -66,7 +73,7 @@ public class MySQLManager {
 
         HikariConfig hikariConfig = new HikariConfig();
 
-        hikariConfig.setMaximumPoolSize(this.poolSize);
+        hikariConfig.setMaximumPoolSize(10);
         hikariConfig.setJdbcUrl(this.toUri());
         hikariConfig.setUsername(user);
         hikariConfig.setPassword(password);
@@ -181,9 +188,33 @@ public class MySQLManager {
 
     /**
      * Setup JdbcUrl.
-     * @return JdcbUrl.
+     * @return JdbcUrl.
      */
     private String toUri(){
         return "jdbc:mysql://" + this.host + ":" + this.port + "/" + this.dbName;
+    }
+
+    /**
+     * Get load progression SQL instance.
+     * @return load progression SQL instance.
+     */
+    public LoadProgressionSQL getLoadProgressionSQL() {
+        return loadProgressionSQL;
+    }
+
+    /**
+     * Get save progression SQL instance.
+     * @return save progression SQL instance.
+     */
+    public SaveProgressionSQL getSaveProgressionSQL() {
+        return saveProgressionSQL;
+    }
+
+    /**
+     * Get oDailyQuests instance.
+     * @return oDailyQuests instance.
+     */
+    public ODailyQuests getInstance() {
+        return oDailyQuests;
     }
 }
