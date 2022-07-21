@@ -1,7 +1,5 @@
 package com.ordwen.odailyquests.quests;
 
-import com.ordwen.odailyquests.configuration.quests.Quest;
-import com.ordwen.odailyquests.configuration.quests.QuestType;
 import com.ordwen.odailyquests.rewards.Reward;
 import com.ordwen.odailyquests.rewards.RewardType;
 import org.bukkit.Material;
