@@ -91,6 +91,9 @@ public class PlayerQuestsInterface {
                 switch (ItemType.valueOf(itemsSection.getString(element + ".type"))) {
                     case FILL -> {
                         ItemStack fillItem = new ItemStack(Material.valueOf(itemsSection.getString(element + ".item.material")));
+                        ItemMeta fillItemMeta = fillItem.getItemMeta();
+                        fillItemMeta.setDisplayName(ChatColor.RESET + "");
+                        fillItem.setItemMeta(fillItemMeta);
                         playerQuestsInventoryBase.setItem(itemsSection.getInt(element + ".item.slot") - 1, fillItem);
                         fillItems.add(fillItem);
                     }
