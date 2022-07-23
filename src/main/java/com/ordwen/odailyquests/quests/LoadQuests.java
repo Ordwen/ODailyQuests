@@ -10,6 +10,7 @@ import com.ordwen.odailyquests.rewards.RewardType;
 import com.ordwen.odailyquests.tools.ColorConvert;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -102,6 +103,7 @@ public class LoadQuests {
                 QuestType questType = null;
                 ItemStack requiredItem = null;
                 EntityType entityType = null;
+                DyeColor dyeColor = null;
                 String entityName = null;
                 Villager.Profession profession = null;
                 int villagerLevel = 0;
@@ -141,7 +143,7 @@ public class LoadQuests {
 
                     switch(questType) {
                         /* type that does not require a specific entity/item */
-                        case MILKING, EXP_POINTS, EXP_LEVELS -> {
+                        case MILKING, EXP_POINTS, EXP_LEVELS, CARVE -> {
                             isGlobalType = true;
                         }
                         /* type that require a custom mob */
@@ -155,6 +157,12 @@ public class LoadQuests {
                             if (file.getConfigurationSection("quests." + fileQuest).contains(".entity_type")) {
                                 String presumedEntity = file.getConfigurationSection("quests." + fileQuest).getString(".entity_type");
                                 entityType = getEntityType(presumedEntity, fileName, questIndex, presumedEntity);
+                                if (entityType == EntityType.SHEEP) {
+                                    if (file.getConfigurationSection("quests." + fileQuest).contains(".sheep_color")) {
+                                        String presumedDyeColor = file.getConfigurationSection("quests." + fileQuest).getString(".sheep_color");
+                                        dyeColor = getDyeColor(presumedDyeColor, fileName, questIndex, presumedDyeColor);
+                                    }
+                                }
                             } else isGlobalType = true;
                         }
                         /* types that requires an item */
@@ -217,7 +225,7 @@ public class LoadQuests {
                                 PluginLogger.error("Quest at index " + (questIndex + 1) + " cannot be loaded !");
                                 PluginLogger.error("There is no compatible plugin found for quest type CUSTOM_MOBS.");
                             }
-                        } else quest = new Quest(questIndex, questName, questDesc, questType, entityType, menuItem, requiredAmount, reward);
+                        } else quest = new Quest(questIndex, questName, questDesc, questType, entityType, dyeColor, menuItem, requiredAmount, reward);
                     } else {
                         if (questType == QuestType.VILLAGER_TRADE) {
                             quest = new Quest(questIndex, questName, questDesc, questType, requiredItem, menuItem, requiredAmount, profession, villagerLevel, reward);
@@ -234,7 +242,7 @@ public class LoadQuests {
             }
             PluginLogger.info(ChatColor.GREEN + fileName + " array successfully loaded (" + ChatColor.YELLOW + quests.size() + ChatColor.GREEN + ").");
         } else
-            PluginLogger.error(ChatColor.RED + "Impossible to load " + fileName + " : there is no quests in hardQuests.yml file !");
+            PluginLogger.error(ChatColor.RED + "Impossible to load " + fileName + " : there is no quests in " + fileName + " file !");
     }
 
     /**
@@ -282,6 +290,30 @@ public class LoadQuests {
             PluginLogger.error("-----------------------------------");
         }
         return entityType;
+    }
+
+    /**
+     *
+     * @param dye
+     * @param fileName
+     * @param questIndex
+     * @param value
+     * @return
+     */
+    private static DyeColor getDyeColor(String dye, String fileName, int questIndex, String value) {
+        DyeColor dyeColor = null;
+        try {
+            dyeColor = DyeColor.valueOf(dye.toUpperCase());
+        } catch (Exception e) {
+            PluginLogger.error("-----------------------------------");
+            PluginLogger.error("Invalid dye type detected.");
+            PluginLogger.error("File : " + fileName);
+            PluginLogger.error("Quest number : " + (questIndex + 1));
+            PluginLogger.error("Parameter : sheep_color");
+            PluginLogger.error("Value : " + value);
+            PluginLogger.error("-----------------------------------");
+        }
+        return dyeColor;
     }
 
     /**

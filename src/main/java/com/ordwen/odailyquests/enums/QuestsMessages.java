@@ -41,7 +41,8 @@ public enum QuestsMessages {
     REWARD_MONEY("reward_money", "&aYou receive &e%rewardAmount% &b$&a."),
     REWARD_POINTS("reward_points", "&aYou receive &e%rewardAmount% &bpoints&a."),
 
-    NEW_DAY("new_day", "&6It's a new day!")
+    NEW_DAY("new_day", "&6It's a new day!"),
+    REWARD_MONEY_FAIL("reward_money_fail", "&cAn error happened. Impossible to give you the reward. Please contact an administrator."),
     ;
 
     private final String path;

@@ -14,6 +14,7 @@ import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.configuration.essentials.Temporality;
 import com.ordwen.odailyquests.files.*;
 import com.ordwen.odailyquests.quests.player.progression.ValidateVillagerTradeQuest;
+import com.ordwen.odailyquests.quests.player.progression.storage.yaml.YamlManager;
 import com.ordwen.odailyquests.tools.Metrics;
 import com.ordwen.odailyquests.quests.LoadQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
@@ -40,6 +41,7 @@ public final class ODailyQuests extends JavaPlugin {
     public InterfacesManager interfacesManager;
     public FilesManager filesManager;
     private MySQLManager mySqlManager;
+    private YamlManager yamlManager;
     private TimerTask timerTask;
     private ReloadService reloadService;
 
@@ -64,9 +66,8 @@ public final class ODailyQuests extends JavaPlugin {
         /* Load SQL Support */
         if (configurationFiles.getConfigFile().getString("storage_mode").equals("MySQL")) {
             mySqlManager = new MySQLManager(this);
-
             mySqlManager.setupDatabase();
-        }
+        } else yamlManager = new YamlManager();
 
         /* Load files */
         this.filesManager = new FilesManager(this);
@@ -200,6 +201,14 @@ public final class ODailyQuests extends JavaPlugin {
      */
     public ConfigurationManager getConfigurationManager() {
         return configurationManager;
+    }
+
+    /**
+     * Get YamlManager instance.
+     * @return YamlManager instance.
+     */
+    public YamlManager getYamlManager() {
+        return yamlManager;
     }
 }
 

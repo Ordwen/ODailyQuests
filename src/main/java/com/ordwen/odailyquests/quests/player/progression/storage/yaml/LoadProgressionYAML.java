@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.quests.player.progression.storage.yaml;
 
+import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.quests.Quest;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
@@ -22,7 +23,7 @@ public class LoadProgressionYAML {
      * @param playerName   player.
      * @param activeQuests list of active players.
      */
-    public static void loadPlayerQuests(String playerName, HashMap<String, PlayerQuests> activeQuests, int questsConfigMode, int timestampConfigMode, int temporalityMode) {
+    public void loadPlayerQuests(String playerName, HashMap<String, PlayerQuests> activeQuests, int questsConfigMode, int timestampConfigMode, int temporalityMode) {
 
         FileConfiguration progressionFile = ProgressionFile.getProgressionFileConfiguration();
 

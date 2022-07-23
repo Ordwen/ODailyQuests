@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.quests;
 
 import com.ordwen.odailyquests.rewards.Reward;
+import org.bukkit.DyeColor;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;
 import org.bukkit.inventory.ItemStack;
@@ -16,6 +17,7 @@ public class Quest {
     ItemStack itemRequired;
     ItemStack menuItem;
     EntityType entityType;
+    DyeColor dyeColor;
     String entityName;
     int amountRequired;
     Villager.Profession villagerProfession;
@@ -69,19 +71,20 @@ public class Quest {
      * @param amountRequired required amount of the item.
      * @param reward reward of the quest.
      */
-    public Quest(int questIndex, String questName, List<String> questDesc, QuestType questType, EntityType entityType, ItemStack menuItem, int amountRequired, Reward reward) {
+    public Quest(int questIndex, String questName, List<String> questDesc, QuestType questType, EntityType entityType, DyeColor dyeColor, ItemStack menuItem, int amountRequired, Reward reward) {
         this.questIndex = questIndex;
         this.questName = questName;
         this.questDesc = questDesc;
         this.questType = questType;
         this.entityType = entityType;
+        this.dyeColor = dyeColor;
         this.menuItem = menuItem;
         this.amountRequired = amountRequired;
         this.reward = reward;
     }
 
     /**
-     * Quest constructor (for EliteMobs/MyhticMobs).
+     * Quest constructor (for EliteMobs/MythicMobs).
      * @param questName name of the quest.
      * @param questDesc description of the quest.
      * @param questType type of the quest.
@@ -238,5 +241,13 @@ public class Quest {
      */
     public int getVillagerLevel() {
         return this.villagerLevel;
+    }
+
+    /**
+     * Get sheep color.
+     * @return sheep color.
+     */
+    public DyeColor getDyeColor() {
+        return this.dyeColor;
     }
 }

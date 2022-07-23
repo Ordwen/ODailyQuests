@@ -202,3 +202,15 @@ quests:
       reward_type: COMMAND
       commands:
         - "say Hello"
+  15:
+    name: "&2Carve 5 pumpkins."
+    menu_item: PUMPKIN
+    description:
+      - "&6Reward:"
+      - "&7A \"hello\" message from the server :)"
+    quest_type: CARVE
+    required_amount: 5
+    reward:
+      reward_type: COMMAND
+      commands:
+        - "say Hello"

@@ -21,7 +21,7 @@ public class WildStackerHook implements Listener {
     @EventHandler
     public void onEntityUnstackEvent(EntityUnstackEvent event) {
         if (event.getUnstackSource() instanceof Player player) {
-            ProgressionManager.setPlayerQuestProgression(player.getName(), null, event.getEntity().getType(), null, event.getAmount(), QuestType.KILL);
+            ProgressionManager.setPlayerQuestProgression(player.getName(), null, event.getEntity().getType(), null, event.getAmount(), QuestType.KILL, null);
         }
     }
 }

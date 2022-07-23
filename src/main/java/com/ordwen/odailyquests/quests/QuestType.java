@@ -18,6 +18,7 @@ public enum QuestType {
     TAME,
     BREED,
     SHEAR,
+    CARVE,
     MILKING,
 
     EXP_POINTS,

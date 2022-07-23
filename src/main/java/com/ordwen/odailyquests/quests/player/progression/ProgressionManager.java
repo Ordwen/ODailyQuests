@@ -11,15 +11,12 @@ import com.ordwen.odailyquests.quests.QuestType;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.rewards.RewardManager;
 import org.bukkit.Bukkit;
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.*;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.*;
@@ -40,18 +37,18 @@ public class ProgressionManager implements Listener {
 
     @EventHandler
     public void onBlockBreakEvent(BlockBreakEvent event) {
-        setPlayerQuestProgression(event.getPlayer().getName(), new ItemStack(event.getBlock().getType()), null, null, 1, QuestType.BREAK);
+        setPlayerQuestProgression(event.getPlayer().getName(), new ItemStack(event.getBlock().getType()), null, null, 1, QuestType.BREAK, null);
     }
 
     @EventHandler
     public void onBlockPlaceEvent(BlockPlaceEvent event) {
-        setPlayerQuestProgression(event.getPlayer().getName(), new ItemStack(event.getBlock().getType()), null, null, 1, QuestType.PLACE);
+        setPlayerQuestProgression(event.getPlayer().getName(), new ItemStack(event.getBlock().getType()), null, null, 1, QuestType.PLACE, null);
     }
 
     @EventHandler
     public void onPickupItemEvent(EntityPickupItemEvent event) {
         if (event.getEntity() instanceof Player) {
-            setPlayerQuestProgression(event.getEntity().getName(), event.getItem().getItemStack(), null, null, event.getItem().getItemStack().getAmount(), QuestType.PICKUP);
+            setPlayerQuestProgression(event.getEntity().getName(), event.getItem().getItemStack(), null, null, event.getItem().getItemStack().getAmount(), QuestType.PICKUP, null);
         }
     }
 
@@ -100,42 +97,45 @@ public class ProgressionManager implements Listener {
             return;
 
         test.setAmount(recipeAmount);
-        setPlayerQuestProgression(event.getWhoClicked().getName(), test, null, null, test.getAmount(), QuestType.CRAFT);
+        setPlayerQuestProgression(event.getWhoClicked().getName(), test, null, null, test.getAmount(), QuestType.CRAFT, null);
     }
 
     @EventHandler
     public void onProjectileLaunch(ProjectileLaunchEvent event) {
         if (event.getEntity().getShooter() instanceof Player) {
             switch (event.getEntity().getType()) {
-                case ENDER_PEARL -> setPlayerQuestProgression(((Player) event.getEntity().getShooter()).getName(), new ItemStack(Material.ENDER_PEARL), null, null, 1, QuestType.LAUNCH);
-                case EGG -> setPlayerQuestProgression(((Player) event.getEntity().getShooter()).getName(), new ItemStack(Material.EGG), null, null, 1, QuestType.LAUNCH);
-                case ARROW -> setPlayerQuestProgression(((Player) event.getEntity().getShooter()).getName(), new ItemStack(Material.ARROW), null, null, 1, QuestType.LAUNCH);
+                case ENDER_PEARL -> setPlayerQuestProgression(((Player) event.getEntity().getShooter()).getName(), new ItemStack(Material.ENDER_PEARL), null, null, 1, QuestType.LAUNCH, null);
+                case EGG -> setPlayerQuestProgression(((Player) event.getEntity().getShooter()).getName(), new ItemStack(Material.EGG), null, null, 1, QuestType.LAUNCH, null);
+                case ARROW -> setPlayerQuestProgression(((Player) event.getEntity().getShooter()).getName(), new ItemStack(Material.ARROW), null, null, 1, QuestType.LAUNCH, null);
             }
         }
     }
 
     @EventHandler
     public void onItemConsumeEvent(PlayerItemConsumeEvent event) {
-        setPlayerQuestProgression(event.getPlayer().getName(), event.getItem(), null, null, 1, QuestType.CONSUME);
+        setPlayerQuestProgression(event.getPlayer().getName(), event.getItem(), null, null, 1, QuestType.CONSUME, null);
     }
 
     @EventHandler
     public void onFurnaceExtractEvent(FurnaceExtractEvent event) {
-        setPlayerQuestProgression(event.getPlayer().getName(), new ItemStack(event.getItemType()), null, null, event.getItemAmount(), QuestType.COOK);
+        setPlayerQuestProgression(event.getPlayer().getName(), new ItemStack(event.getItemType()), null, null, event.getItemAmount(), QuestType.COOK, null);
     }
 
     @EventHandler
     public void onEntityDeathEvent(EntityDeathEvent event) {
-        if (WildStackerEnabled.isEnabled()) return;
+        if (WildStackerEnabled.isEnabled()) {
+            entitiesFromSpawners.remove(event.getEntity());
+            return;
+        }
 
         Entity entity = event.getEntity();
 
         if (event.getEntity().getKiller() != null) {
             if (SpawnersProgression.isSpawnersProgressionDisabled()) {
                 if (!entitiesFromSpawners.contains(entity)) {
-                    setPlayerQuestProgression(event.getEntity().getKiller().getName(), null, event.getEntity().getType(), null, 1, QuestType.KILL);
+                    setPlayerQuestProgression(event.getEntity().getKiller().getName(), null, event.getEntity().getType(), null, 1, QuestType.KILL, null);
                 }
-            } else setPlayerQuestProgression(event.getEntity().getKiller().getName(), null, event.getEntity().getType(), null, 1, QuestType.KILL);
+            } else setPlayerQuestProgression(event.getEntity().getKiller().getName(), null, event.getEntity().getType(), null, 1, QuestType.KILL, null);
         }
 
         entitiesFromSpawners.remove(entity);
@@ -143,50 +143,63 @@ public class ProgressionManager implements Listener {
 
     @EventHandler
     public void onEnchantItemEvent(EnchantItemEvent event) {
-        setPlayerQuestProgression(event.getEnchanter().getName(), event.getItem(), null, null, 1, QuestType.ENCHANT);
+        setPlayerQuestProgression(event.getEnchanter().getName(), event.getItem(), null, null, 1, QuestType.ENCHANT, null);
     }
 
     @EventHandler
     public void onPlayerFishEvent(PlayerFishEvent event) {
         if (event.getState() == PlayerFishEvent.State.CAUGHT_FISH && event.getCaught() instanceof Item) {
-            setPlayerQuestProgression(event.getPlayer().getName(), ((Item) event.getCaught()).getItemStack(), null, null, 1, QuestType.FISH);
+            setPlayerQuestProgression(event.getPlayer().getName(), ((Item) event.getCaught()).getItemStack(), null, null, 1, QuestType.FISH, null);
         }
     }
 
     /* QUESTS TYPES UPDATE */
     @EventHandler
     public void onEntityTameEvent(EntityTameEvent event) {
-        setPlayerQuestProgression(event.getOwner().getName(), null, event.getEntityType(), null, 1, QuestType.TAME);
+        setPlayerQuestProgression(event.getOwner().getName(), null, event.getEntityType(), null, 1, QuestType.TAME, null);
     }
 
     @EventHandler
     public void onEntityBreadEvent(EntityBreedEvent event) {
         if (event.getBreeder() != null && event.getBreeder() instanceof Player) {
-            setPlayerQuestProgression(event.getBreeder().getName(), null, event.getEntityType(), null, 1, QuestType.BREED);
+            setPlayerQuestProgression(event.getBreeder().getName(), null, event.getEntityType(), null, 1, QuestType.BREED, null);
         }
     }
 
     @EventHandler
-    public void onShearEvent(PlayerShearEntityEvent event) {
-        setPlayerQuestProgression(event.getPlayer().getName(), null, event.getEntity().getType(), null, 1, QuestType.SHEAR);
+    public void onShearEntityEvent(PlayerShearEntityEvent event) {
+        Entity entity = event.getEntity();
+        if (entity instanceof Sheep sheep) {
+            setPlayerQuestProgression(event.getPlayer().getName(), null, event.getEntity().getType(), null, 1, QuestType.SHEAR, sheep.getColor());
+        }
+        setPlayerQuestProgression(event.getPlayer().getName(), null, event.getEntity().getType(), null, 1, QuestType.SHEAR, null);
+    }
+
+    @EventHandler
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        if (!(event.getAction() == Action.RIGHT_CLICK_BLOCK)) return;
+        if (!(event.getClickedBlock().getType() == Material.PUMPKIN)) return;
+        if (!(event.getPlayer().getInventory().getItemInMainHand().getType() == Material.SHEARS)) return;
+
+        setPlayerQuestProgression(event.getPlayer().getName(), null, null, null, 1, QuestType.CARVE, null);
     }
 
     @EventHandler
     public void onPlayerBucketFill(PlayerBucketFillEvent event) {
         if (event.getItemStack().getType() == Material.MILK_BUCKET) {
-            setPlayerQuestProgression(event.getPlayer().getName(), null, null, null, 1, QuestType.MILKING);
+            setPlayerQuestProgression(event.getPlayer().getName(), null, null, null, 1, QuestType.MILKING, null);
         }
     }
 
     @EventHandler
     public void onPlayerExpChangeEvent(PlayerExpChangeEvent event) {
-        setPlayerQuestProgression(event.getPlayer().getName(), null, null, null, event.getAmount(), QuestType.EXP_POINTS);
+        setPlayerQuestProgression(event.getPlayer().getName(), null, null, null, event.getAmount(), QuestType.EXP_POINTS, null);
     }
 
     @EventHandler
     public void onPlayerLevelChangeEvent(PlayerLevelChangeEvent event) {
         final int diff = event.getNewLevel() - event.getOldLevel();
-        if (diff > 0) setPlayerQuestProgression(event.getPlayer().getName(), null, null, null, diff, QuestType.EXP_LEVELS);
+        if (diff > 0) setPlayerQuestProgression(event.getPlayer().getName(), null, null, null, diff, QuestType.EXP_LEVELS, null);
     }
 
     /**
@@ -196,7 +209,7 @@ public class ProgressionManager implements Listener {
      * @param item       the material of the event-block.
      * @param type       quest type.
      */
-    public static void setPlayerQuestProgression(String playerName, ItemStack item, EntityType entity, String entityName, int quantity, QuestType type) {
+    public static void setPlayerQuestProgression(String playerName, ItemStack item, EntityType entity, String entityName, int quantity, QuestType type, DyeColor color) {
         if (DisabledWorlds.isWorldDisabled(Bukkit.getPlayer(playerName).getWorld().getName())) {
             return;
         }
@@ -206,7 +219,7 @@ public class ProgressionManager implements Listener {
                 Progression questProgression = playerQuests.get(quest);
                 if (!questProgression.isAchieved() && quest.getType() == type) {
                     boolean isRequiredItem = false;
-                    if (type == QuestType.MILKING || type == QuestType.EXP_POINTS || type == QuestType.EXP_LEVELS) {
+                    if (type == QuestType.MILKING || type == QuestType.EXP_POINTS || type == QuestType.EXP_LEVELS || type == QuestType.CARVE) {
                         isRequiredItem = true;
                     } else if (type == QuestType.KILL
                             || type == QuestType.BREED
@@ -216,7 +229,8 @@ public class ProgressionManager implements Listener {
                             isRequiredItem = true;
                         }
                         else if (quest.getEntityType().equals(entity)) {
-                            isRequiredItem = true;
+                            if (quest.getDyeColor() != null) isRequiredItem = (color == quest.getDyeColor());
+                            else isRequiredItem = true;
                         }
                     } else if (type == QuestType.CUSTOM_MOBS) {
                         if (quest.getEntityName().equals(entityName)) {

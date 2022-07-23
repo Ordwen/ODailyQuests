@@ -21,7 +21,7 @@ public class MythicMobsHook implements Listener {
     @EventHandler
     public void onMythicMobsDeathEvent(MythicMobDeathEvent event) {
         if (event.getKiller() != null && event.getKiller() instanceof Player) {
-            ProgressionManager.setPlayerQuestProgression(event.getKiller().getName(), null, null, event.getMobType().getInternalName(), 1, QuestType.CUSTOM_MOBS);
+            ProgressionManager.setPlayerQuestProgression(event.getKiller().getName(), null, null, event.getMobType().getInternalName(), 1, QuestType.CUSTOM_MOBS, null);
         }
     }
 }

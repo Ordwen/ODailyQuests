@@ -19,7 +19,7 @@ public class SaveProgressionYAML {
      * @param playerName player name.
      * @param activeQuests player quests.
      */
-    public static void saveProgression(String playerName, HashMap<String, PlayerQuests> activeQuests) {
+    public void saveProgression(String playerName, HashMap<String, PlayerQuests> activeQuests) {
 
         FileConfiguration progressionFile = ProgressionFile.getProgressionFileConfiguration();
 

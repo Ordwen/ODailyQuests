@@ -1,11 +1,10 @@
 package com.ordwen.odailyquests.commands;
 
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.quests.player.progression.storage.yaml.YamlManager;
 import com.ordwen.odailyquests.quests.LoadQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.mysql.MySQLManager;
-import com.ordwen.odailyquests.quests.player.progression.storage.yaml.LoadProgressionYAML;
-import com.ordwen.odailyquests.quests.player.progression.storage.yaml.SaveProgressionYAML;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
@@ -16,6 +15,8 @@ public class ReloadService {
     private final ODailyQuests oDailyQuests;
     private final ConfigurationFiles configurationFiles;
     private final MySQLManager mySqlManager;
+    private final YamlManager yamlManager;
+
     /**
      * Constructor.
      *
@@ -27,7 +28,9 @@ public class ReloadService {
 
         if (useMySQL) {
             this.mySqlManager = oDailyQuests.getMySqlManager();
+            this.yamlManager = null;
         } else {
+            this.yamlManager = oDailyQuests.getYamlManager();
             this.mySqlManager = null;
         }
     }
@@ -40,7 +43,7 @@ public class ReloadService {
             case "YAML":
                 for (Player player : Bukkit.getServer().getOnlinePlayers()) {
                     if (!QuestsManager.getActiveQuests().containsKey(player.getName())) {
-                        LoadProgressionYAML.loadPlayerQuests(player.getName(), QuestsManager.getActiveQuests(),
+                        yamlManager.getLoadProgressionYAML().loadPlayerQuests(player.getName(), QuestsManager.getActiveQuests(),
                                 configurationFiles.getConfigFile().getInt("quests_mode"),
                                 configurationFiles.getConfigFile().getInt("timestamp_mode"),
                                 configurationFiles.getConfigFile().getInt("temporality_mode"));
@@ -70,7 +73,7 @@ public class ReloadService {
         switch (configurationFiles.getConfigFile().getString("storage_mode")) {
             case "YAML":
                 for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-                    SaveProgressionYAML.saveProgression(player.getName(), QuestsManager.getActiveQuests());
+                    yamlManager.getSaveProgressionYAML().saveProgression(player.getName(), QuestsManager.getActiveQuests());
                     QuestsManager.getActiveQuests().remove(player.getName());
                 }
                 break;

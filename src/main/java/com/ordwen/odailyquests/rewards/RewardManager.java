@@ -45,8 +45,13 @@ public class RewardManager {
                 player.sendMessage(QuestsMessages.REWARD_EXP_POINTS.toString().replace("%rewardAmount%", String.valueOf(reward.getRewardAmount())));
                 break;
             case MONEY:
-                VaultHook.getEconomy().depositPlayer(player, reward.getRewardAmount());
-                player.sendMessage(QuestsMessages.REWARD_MONEY.toString().replace("%rewardAmount%", String.valueOf(reward.getRewardAmount())));
+                if (VaultHook.getEconomy() != null) {
+                    VaultHook.getEconomy().depositPlayer(player, reward.getRewardAmount());
+                    player.sendMessage(QuestsMessages.REWARD_MONEY.toString().replace("%rewardAmount%", String.valueOf(reward.getRewardAmount())));
+                } else {
+                    player.sendMessage(QuestsMessages.REWARD_MONEY_FAIL.toString());
+                    PluginLogger.error("Impossible to give money to player " + player.getName() + ". Vault is not properly setup!");
+                }
                 break;
             case POINTS:
                 if (TokenManagerHook.getTokenManagerAPI() != null) {

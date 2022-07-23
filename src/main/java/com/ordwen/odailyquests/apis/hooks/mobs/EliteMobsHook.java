@@ -20,7 +20,7 @@ public class EliteMobsHook implements Listener {
     @EventHandler
     public void onEliteMobsDeathEvent(EliteMobDeathEvent event) {
         if (event.getEntityDeathEvent().getEntity().getKiller() != null) {
-            ProgressionManager.setPlayerQuestProgression(event.getEntityDeathEvent().getEntity().getKiller().getName(), null, null, event.getEliteEntity().getName().substring(event.getEliteEntity().getName().indexOf(' ')+1), 1, QuestType.CUSTOM_MOBS);
+            ProgressionManager.setPlayerQuestProgression(event.getEntityDeathEvent().getEntity().getKiller().getName(), null, null, event.getEliteEntity().getName().substring(event.getEliteEntity().getName().indexOf(' ')+1), 1, QuestType.CUSTOM_MOBS, null);
         }
     }
 
