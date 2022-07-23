@@ -214,3 +214,30 @@ quests:
       reward_type: COMMAND
       commands:
         - "say Hello"
+  16:
+    name: "&2Shear 3 purple sheeps."
+    menu_item: PURPLE_WOOL
+    description:
+      - "&6Reward:"
+      - "&7A \"hello\" message from the server :)"
+    quest_type: SHEAR
+    entity_type: SHEEP
+    sheep_color: PURPLE
+    required_amount: 3
+    reward:
+      reward_type: COMMAND
+      commands:
+        - "say Hello"
+    17:
+      name: "&2Shear 3 sheeps."
+      menu_item: WHITE_WOOL
+      description:
+        - "&6Reward:"
+        - "&7A \"hello\" message from the server :)"
+      quest_type: SHEAR
+      entity_type: SHEEP
+      required_amount: 3
+      reward:
+        reward_type: COMMAND
+        commands:
+          - "say Hello"
