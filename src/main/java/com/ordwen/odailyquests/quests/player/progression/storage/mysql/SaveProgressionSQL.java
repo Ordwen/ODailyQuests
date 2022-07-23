@@ -51,7 +51,7 @@ public class SaveProgressionSQL {
         String test = "SELECT * FROM PLAYER WHERE PLAYERNAME = '" + playerName + "'";
 
         if (isAsync) {
-            Bukkit.getScheduler().runTaskAsynchronously(mySqlManager.getInstance(), () -> saveDatas(playerName, timestamp, achievedQuests, totalAchievedQuests, quests, connection, test));
+            Bukkit.getScheduler().runTaskAsynchronously(ODailyQuests.INSTANCE, () -> saveDatas(playerName, timestamp, achievedQuests, totalAchievedQuests, quests, connection, test));
         } else saveDatas(playerName, timestamp, achievedQuests, totalAchievedQuests, quests, connection, test);
     }
 

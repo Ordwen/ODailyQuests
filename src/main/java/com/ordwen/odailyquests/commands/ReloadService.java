@@ -3,8 +3,7 @@ package com.ordwen.odailyquests.commands;
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.quests.LoadQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
-import com.ordwen.odailyquests.quests.player.progression.storage.mysql.LoadProgressionSQL;
-import com.ordwen.odailyquests.quests.player.progression.storage.mysql.SaveProgressionSQL;
+import com.ordwen.odailyquests.quests.player.progression.storage.mysql.MySQLManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.yaml.LoadProgressionYAML;
 import com.ordwen.odailyquests.quests.player.progression.storage.yaml.SaveProgressionYAML;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
@@ -16,19 +15,21 @@ public class ReloadService {
 
     private final ODailyQuests oDailyQuests;
     private final ConfigurationFiles configurationFiles;
-    private final LoadProgressionSQL loadProgressionSQL;
-    private final SaveProgressionSQL saveProgressionSQL;
-
+    private final MySQLManager mySqlManager;
     /**
      * Constructor.
      *
      * @param oDailyQuests main class instance.
      */
-    public ReloadService(ODailyQuests oDailyQuests) {
+    public ReloadService(ODailyQuests oDailyQuests, boolean useMySQL) {
         this.oDailyQuests = oDailyQuests;
         this.configurationFiles = oDailyQuests.getConfigurationFiles();
-        this.loadProgressionSQL = oDailyQuests.getMySqlManager().getLoadProgressionSQL();
-        this.saveProgressionSQL = oDailyQuests.getMySqlManager().getSaveProgressionSQL();
+
+        if (useMySQL) {
+            this.mySqlManager = oDailyQuests.getMySqlManager();
+        } else {
+            this.mySqlManager = null;
+        }
     }
 
     /**
@@ -49,7 +50,7 @@ public class ReloadService {
             case "MySQL":
                 for (Player player : Bukkit.getServer().getOnlinePlayers()) {
                     if (!QuestsManager.getActiveQuests().containsKey(player.getName())) {
-                        loadProgressionSQL.loadProgression(player.getName(), QuestsManager.getActiveQuests(),
+                        mySqlManager.getLoadProgressionSQL().loadProgression(player.getName(), QuestsManager.getActiveQuests(),
                                 configurationFiles.getConfigFile().getInt("quests_mode"),
                                 configurationFiles.getConfigFile().getInt("timestamp_mode"),
                                 configurationFiles.getConfigFile().getInt("temporality_mode"));
@@ -75,7 +76,7 @@ public class ReloadService {
                 break;
             case "MySQL":
                 for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-                    saveProgressionSQL.saveProgression(player.getName(), QuestsManager.getActiveQuests(), isAsync);
+                    mySqlManager.getSaveProgressionSQL().saveProgression(player.getName(), QuestsManager.getActiveQuests(), isAsync);
                     QuestsManager.getActiveQuests().remove(player.getName());
                 }
                 break;

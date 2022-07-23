@@ -75,7 +75,7 @@ public final class ODailyQuests extends JavaPlugin {
         /* Load class instances */
         this.interfacesManager = new InterfacesManager(this);
         this.configurationManager = new ConfigurationManager(this);
-        this.reloadService = new ReloadService(this);
+        this.reloadService = new ReloadService(this, mySqlManager != null);
 
         /* Load dependencies */
         new IntegrationsManager(this).loadAllDependencies();
@@ -103,7 +103,7 @@ public final class ODailyQuests extends JavaPlugin {
         /* Load listeners */
         getServer().getPluginManager().registerEvents(new ValidateVillagerTradeQuest(), this);
         getServer().getPluginManager().registerEvents(new InventoryClickListener(), this);
-        getServer().getPluginManager().registerEvents(new QuestsManager(this), this);
+        getServer().getPluginManager().registerEvents(new QuestsManager(this, mySqlManager != null), this);
         getServer().getPluginManager().registerEvents(new ProgressionManager(), this);
 
         /* Avoid errors on reload */

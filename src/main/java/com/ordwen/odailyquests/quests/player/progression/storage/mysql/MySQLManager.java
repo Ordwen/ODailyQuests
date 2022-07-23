@@ -22,7 +22,6 @@ public class MySQLManager {
     private String port;
 
     // instances
-    private final ODailyQuests oDailyQuests;
     private final LoadProgressionSQL loadProgressionSQL;
     private final SaveProgressionSQL saveProgressionSQL;
     private final ConfigurationFiles configurationFiles;
@@ -33,7 +32,6 @@ public class MySQLManager {
      * @param oDailyQuests main class instance.
      */
     public MySQLManager(ODailyQuests oDailyQuests) {
-        this.oDailyQuests = oDailyQuests;
         this.configurationFiles = oDailyQuests.getConfigurationFiles();
 
         this.loadProgressionSQL = new LoadProgressionSQL(this);
@@ -210,11 +208,4 @@ public class MySQLManager {
         return saveProgressionSQL;
     }
 
-    /**
-     * Get oDailyQuests instance.
-     * @return oDailyQuests instance.
-     */
-    public ODailyQuests getInstance() {
-        return oDailyQuests;
-    }
 }

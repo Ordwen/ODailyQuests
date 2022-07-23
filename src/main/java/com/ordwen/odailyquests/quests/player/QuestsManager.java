@@ -4,11 +4,10 @@ import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.quests.LoadQuests;
 import com.ordwen.odailyquests.quests.Quest;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
-import com.ordwen.odailyquests.quests.player.progression.storage.mysql.LoadProgressionSQL;
+import com.ordwen.odailyquests.quests.player.progression.storage.mysql.MySQLManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.yaml.LoadProgressionYAML;
 import com.ordwen.odailyquests.quests.player.progression.storage.yaml.SaveProgressionYAML;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
-import com.ordwen.odailyquests.quests.player.progression.storage.mysql.SaveProgressionSQL;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
@@ -26,17 +25,20 @@ public class QuestsManager implements Listener {
      * Getting instance of classes.
      */
     private static ConfigurationFiles configurationFiles;
-    private final LoadProgressionSQL loadProgressionSQL;
-    private final SaveProgressionSQL saveProgressionSQL;
+    private final MySQLManager mySqlManager;
 
     /**
      * Class instance constructor.
      * @param oDailyQuests main class instance.
      */
-    public QuestsManager(ODailyQuests oDailyQuests) {
+    public QuestsManager(ODailyQuests oDailyQuests, boolean useMySQL) {
         configurationFiles = oDailyQuests.getConfigurationFiles();
-        this.loadProgressionSQL = oDailyQuests.getMySqlManager().getLoadProgressionSQL();
-        this.saveProgressionSQL = oDailyQuests.getMySqlManager().getSaveProgressionSQL();
+
+        if (useMySQL) {
+            this.mySqlManager = oDailyQuests.getMySqlManager();
+        } else {
+            this.mySqlManager = null;
+        }
     }
 
     private static final HashMap<String, PlayerQuests> activeQuests = new HashMap<>();
@@ -47,21 +49,15 @@ public class QuestsManager implements Listener {
 
         if (!activeQuests.containsKey(playerName)) {
             switch (configurationFiles.getConfigFile().getString("storage_mode")) {
-                case "YAML":
-                    LoadProgressionYAML.loadPlayerQuests(playerName, activeQuests,
-                            configurationFiles.getConfigFile().getInt("quests_mode"),
-                            configurationFiles.getConfigFile().getInt("timestamp_mode"),
-                            configurationFiles.getConfigFile().getInt("temporality_mode"));
-                    break;
-                case "MySQL":
-                    loadProgressionSQL.loadProgression(playerName, activeQuests,
-                            configurationFiles.getConfigFile().getInt("quests_mode"),
-                            configurationFiles.getConfigFile().getInt("timestamp_mode"),
-                            configurationFiles.getConfigFile().getInt("temporality_mode"));
-                    break;
-                default:
-                    PluginLogger.error("Impossible to load player quests : the selected storage mode is incorrect !");
-                    break;
+                case "YAML" -> LoadProgressionYAML.loadPlayerQuests(playerName, activeQuests,
+                        configurationFiles.getConfigFile().getInt("quests_mode"),
+                        configurationFiles.getConfigFile().getInt("timestamp_mode"),
+                        configurationFiles.getConfigFile().getInt("temporality_mode"));
+                case "MySQL" -> mySqlManager.getLoadProgressionSQL().loadProgression(playerName, activeQuests,
+                        configurationFiles.getConfigFile().getInt("quests_mode"),
+                        configurationFiles.getConfigFile().getInt("timestamp_mode"),
+                        configurationFiles.getConfigFile().getInt("temporality_mode"));
+                default -> PluginLogger.error("Impossible to load player quests : the selected storage mode is incorrect !");
             }
         } else {
             PluginLogger.info(ChatColor.GOLD + playerName + ChatColor.RED + " detected into the array.");
@@ -76,15 +72,9 @@ public class QuestsManager implements Listener {
         String playerName = event.getPlayer().getName();
 
         switch (configurationFiles.getConfigFile().getString("storage_mode")) {
-            case "YAML":
-                SaveProgressionYAML.saveProgression(playerName, activeQuests);
-                break;
-            case "MySQL":
-                saveProgressionSQL.saveProgression(playerName, activeQuests, true);
-                break;
-            default:
-                PluginLogger.error("Impossible to save player quests : the selected storage mode is incorrect !");
-                break;
+            case "YAML" -> SaveProgressionYAML.saveProgression(playerName, activeQuests);
+            case "MySQL" -> mySqlManager.getSaveProgressionSQL().saveProgression(playerName, activeQuests, true);
+            default -> PluginLogger.error("Impossible to save player quests : the selected storage mode is incorrect !");
         }
         activeQuests.remove(playerName);
     }
@@ -107,20 +97,12 @@ public class QuestsManager implements Listener {
             }
         } else if (configurationFiles.getConfigFile().getInt("quests_mode") == 2) {
             for (int i = 0; i < 3; i++) {
-                Quest quest;
-                switch (i) {
-                    case 0:
-                        quest = getRandomQuest(LoadQuests.getEasyQuests());
-                        break;
-                    case 1:
-                        quest = getRandomQuest(LoadQuests.getMediumQuests());
-                        break;
-                    case 2:
-                        quest = getRandomQuest(LoadQuests.getHardQuests());
-                        break;
-                    default:
-                        throw new IllegalStateException("Unexpected value: " + i);
-                }
+                Quest quest = switch (i) {
+                    case 0 -> getRandomQuest(LoadQuests.getEasyQuests());
+                    case 1 -> getRandomQuest(LoadQuests.getMediumQuests());
+                    case 2 -> getRandomQuest(LoadQuests.getHardQuests());
+                    default -> throw new IllegalStateException("Unexpected value: " + i);
+                };
                 Progression progression = new Progression(0, false);
                 quests.put(quest, progression);
             }

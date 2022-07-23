@@ -61,6 +61,9 @@ public class ProgressionManager implements Listener {
         ItemStack test;
 
         if (event.getRecipe() instanceof ComplexRecipe complexRecipe) {
+            if (complexRecipe.getKey().getKey().equals("REPAIR_ITEM")) {
+                return;
+            }
             test = new ItemStack(Material.valueOf(complexRecipe.getKey().getKey().toUpperCase()));
         } else test = event.getRecipe().getResult().clone();
 
