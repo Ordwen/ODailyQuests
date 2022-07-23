@@ -31,7 +31,7 @@ import java.util.HashSet;
 
 public class ProgressionManager implements Listener {
 
-    HashSet<Entity> entitiesFromSpawners = new HashSet<>();
+    private final HashSet<Entity> entitiesFromSpawners = new HashSet<>();
 
     @EventHandler
     public void onEntitySpawnEvent(SpawnerSpawnEvent event) {
@@ -61,7 +61,7 @@ public class ProgressionManager implements Listener {
         ItemStack test;
 
         if (event.getRecipe() instanceof ComplexRecipe complexRecipe) {
-            if (complexRecipe.getKey().getKey().equals("REPAIR_ITEM")) {
+            if (complexRecipe.getKey().getKey().equalsIgnoreCase("REPAIR_ITEM")) {
                 return;
             }
             test = new ItemStack(Material.valueOf(complexRecipe.getKey().getKey().toUpperCase()));
