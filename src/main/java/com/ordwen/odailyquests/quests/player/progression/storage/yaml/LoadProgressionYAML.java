@@ -1,7 +1,6 @@
 package com.ordwen.odailyquests.quests.player.progression.storage.yaml;
 
-import com.ordwen.odailyquests.ODailyQuests;
-import com.ordwen.odailyquests.quests.Quest;
+import com.ordwen.odailyquests.quests.player.progression.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.player.progression.Utils;
@@ -32,7 +31,7 @@ public class LoadProgressionYAML {
         int achievedQuests;
         int totalAchievedQuests;
         PlayerQuests playerQuests;
-        LinkedHashMap<Quest, Progression> quests = new LinkedHashMap<>();
+        LinkedHashMap<AbstractQuest, Progression> quests = new LinkedHashMap<>();
 
         /* check if player has data */
         if (progressionFile.getString(playerName) != null) {
@@ -53,7 +52,7 @@ public class LoadProgressionYAML {
                     boolean isAchieved = progressionFile.getConfigurationSection(playerName + ".quests." + string).getBoolean(".isAchieved");
 
                     Progression progression = new Progression(advancement, isAchieved);
-                    Quest quest = Utils.findQuest(playerName, questsConfigMode, questIndex, Integer.parseInt(string));
+                    AbstractQuest quest = Utils.findQuest(playerName, questsConfigMode, questIndex, Integer.parseInt(string));
 
                     quests.put(quest, progression);
                 }

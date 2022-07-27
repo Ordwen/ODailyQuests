@@ -2,8 +2,8 @@ package com.ordwen.odailyquests.commands.interfaces;
 
 import com.ordwen.odailyquests.commands.interfaces.pagination.Items;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
+import com.ordwen.odailyquests.quests.player.progression.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.LoadQuests;
-import com.ordwen.odailyquests.quests.Quest;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -67,7 +67,7 @@ public class GlobalQuestsInterface {
             while (i < invSize && !allQuestsLoaded) {
 
                 if (currentQuestIndex < LoadQuests.getGlobalQuests().size()) {
-                    Quest quest = LoadQuests.getGlobalQuests().get(currentQuestIndex);
+                    AbstractQuest quest = LoadQuests.getGlobalQuests().get(currentQuestIndex);
 
                     ItemStack itemStack = quest.getMenuItem();
                     ItemMeta itemMeta = itemStack.getItemMeta();

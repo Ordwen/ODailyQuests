@@ -1,9 +1,9 @@
 package com.ordwen.odailyquests.quests.player;
 
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.quests.player.progression.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.progression.storage.yaml.YamlManager;
 import com.ordwen.odailyquests.quests.LoadQuests;
-import com.ordwen.odailyquests.quests.Quest;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.player.progression.storage.mysql.MySQLManager;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
@@ -86,11 +86,11 @@ public class QuestsManager implements Listener {
      *
      * @param quests array of quests.
      */
-    public static void selectRandomQuests(HashMap<Quest, Progression> quests) {
+    public static void selectRandomQuests(HashMap<AbstractQuest, Progression> quests) {
         if (configurationFiles.getConfigFile().getInt("quests_mode") == 1) {
-            ArrayList<Quest> globalQuests = LoadQuests.getGlobalQuests();
+            ArrayList<AbstractQuest> globalQuests = LoadQuests.getGlobalQuests();
             for (int i = 0; i < 3; i++) {
-                Quest quest;
+                AbstractQuest quest;
                 do {
                     quest = getRandomQuest(globalQuests);
                 } while (quests.containsKey(quest));
@@ -99,7 +99,7 @@ public class QuestsManager implements Listener {
             }
         } else if (configurationFiles.getConfigFile().getInt("quests_mode") == 2) {
             for (int i = 0; i < 3; i++) {
-                Quest quest = switch (i) {
+                AbstractQuest quest = switch (i) {
                     case 0 -> getRandomQuest(LoadQuests.getEasyQuests());
                     case 1 -> getRandomQuest(LoadQuests.getMediumQuests());
                     case 2 -> getRandomQuest(LoadQuests.getHardQuests());
@@ -118,7 +118,7 @@ public class QuestsManager implements Listener {
      * @param quests array of quests
      * @return a quest.
      */
-    public static Quest getRandomQuest(ArrayList<Quest> quests) {
+    public static AbstractQuest getRandomQuest(ArrayList<AbstractQuest> quests) {
         int questNumber = new Random().nextInt(quests.size());
         return quests.get(questNumber);
     }

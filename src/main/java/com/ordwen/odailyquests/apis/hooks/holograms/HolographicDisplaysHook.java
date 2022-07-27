@@ -3,7 +3,7 @@ package com.ordwen.odailyquests.apis.hooks.holograms;
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import com.ordwen.odailyquests.enums.QuestsMessages;
-import com.ordwen.odailyquests.quests.Quest;
+import com.ordwen.odailyquests.quests.player.progression.types.AbstractQuest;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -31,8 +31,8 @@ public class HolographicDisplaysHook {
      * @param list where to find the quest
      * @param player sender
      */
-    public static void createHologram(int index, ArrayList<Quest> list, Player player) {
-        Quest quest = getQuest(index, list);
+    public static void createHologram(int index, ArrayList<AbstractQuest> list, Player player) {
+        AbstractQuest quest = getQuest(index, list);
 
         if (quest != null) {
             /* init items to save */
@@ -78,7 +78,7 @@ public class HolographicDisplaysHook {
      * @param quests list where find the quest
      * @return the quest
      */
-    private static Quest getQuest(int index, ArrayList<Quest> quests) {
+    private static AbstractQuest getQuest(int index, ArrayList<AbstractQuest> quests) {
         if (index >= 0 && quests.size()-1 >= index) {
             return quests.get(index);
         } else return null;

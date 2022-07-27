@@ -2,7 +2,7 @@ package com.ordwen.odailyquests.commands.interfaces.playerinterface;
 
 import com.ordwen.odailyquests.commands.interfaces.InterfacesManager;
 import com.ordwen.odailyquests.files.PlayerInterfaceFile;
-import com.ordwen.odailyquests.quests.Quest;
+import com.ordwen.odailyquests.quests.player.progression.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.QuestType;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
@@ -170,7 +170,7 @@ public class PlayerQuestsInterface {
         playerQuestsInventoryIndividual.setContents(playerQuestsInventoryBase.getContents());
 
         HashMap<String, PlayerQuests> activeQuests = QuestsManager.getActiveQuests();
-        HashMap<Quest, Progression> playerQuests = activeQuests.get(playerName).getPlayerQuests();
+        HashMap<AbstractQuest, Progression> playerQuests = activeQuests.get(playerName).getPlayerQuests();
 
         /* load player head */
         if (isPlayerHeadEnabled) {
@@ -179,7 +179,7 @@ public class PlayerQuestsInterface {
 
         /* load quests */
         int i = 0;
-        for (Quest quest : playerQuests.keySet()) {
+        for (AbstractQuest quest : playerQuests.keySet()) {
 
             ItemStack itemStack = quest.getMenuItem();
             ItemMeta itemMeta = itemStack.getItemMeta();

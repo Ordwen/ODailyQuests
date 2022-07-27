@@ -6,8 +6,8 @@ import com.ordwen.odailyquests.apis.hooks.holograms.HolographicDisplaysHook;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.enums.QuestsPermissions;
+import com.ordwen.odailyquests.quests.player.progression.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.LoadQuests;
-import com.ordwen.odailyquests.quests.Quest;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
@@ -54,7 +54,7 @@ public class AdminCommands implements CommandExecutor {
                                         int totalAchievedQuests = QuestsManager.getActiveQuests().get(args[2]).getTotalAchievedQuests();
 
                                         QuestsManager.getActiveQuests().remove(args[2]);
-                                        LinkedHashMap<Quest, Progression> quests = new LinkedHashMap<>();
+                                        LinkedHashMap<AbstractQuest, Progression> quests = new LinkedHashMap<>();
                                         QuestsManager.selectRandomQuests(quests);
 
                                         PlayerQuests playerQuests = new PlayerQuests(System.currentTimeMillis(), quests);
@@ -93,14 +93,14 @@ public class AdminCommands implements CommandExecutor {
                     case "complete":
                         if (Bukkit.getPlayerExact(args[1]) != null) {
                             if (args[2] != null && Integer.parseInt(args[2]) >= 1 && Integer.parseInt(args[2]) <= 3) {
-                                HashMap<Quest, Progression> playerQuests = QuestsManager.getActiveQuests().get(args[1]).getPlayerQuests();
+                                HashMap<AbstractQuest, Progression> playerQuests = QuestsManager.getActiveQuests().get(args[1]).getPlayerQuests();
                                 int index = 0;
-                                for (Quest quest : playerQuests.keySet()) {
+                                for (AbstractQuest quest : playerQuests.keySet()) {
                                     Progression progression = playerQuests.get(quest);
                                     if (index == Integer.parseInt(args[2]) - 1) {
                                         if (!playerQuests.get(quest).isAchieved()) {
-                                            progression.isAchieved = true;
-                                            RewardManager.sendAllRewardItems(quest.getQuestName(), args[1], quest.getReward());
+                                            progression.setAchieved();
+                                            RewardManager.sendAllRewardItems(quest.getQuestName(), Bukkit.getPlayerExact(args[1]), quest.getReward());
                                             playerQuests.replace(quest, progression);
                                             QuestsManager.getActiveQuests().get(args[1]).increaseAchievedQuests(args[1]);
                                             break;

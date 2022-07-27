@@ -2,7 +2,7 @@ package com.ordwen.odailyquests.quests.player.progression.storage.mysql;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.enums.QuestsMessages;
-import com.ordwen.odailyquests.quests.Quest;
+import com.ordwen.odailyquests.quests.player.progression.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.player.progression.Utils;
@@ -38,7 +38,7 @@ public class LoadProgressionSQL {
      */
     public void loadProgression(String playerName, HashMap<String, PlayerQuests> activeQuests, int questsConfigMode, int timestampConfigMode, int temporalityMode) {
 
-        LinkedHashMap<Quest, Progression> quests = new LinkedHashMap<>();
+        LinkedHashMap<AbstractQuest, Progression> quests = new LinkedHashMap<>();
 
         Bukkit.getScheduler().runTaskAsynchronously(ODailyQuests.INSTANCE, () -> {
             boolean hasStoredData = false;
@@ -97,7 +97,7 @@ public class LoadProgressionSQL {
      * @param questsConfigMode configuration mode.
      * @param quests list of player quests.
      */
-    private void loadPlayerQuests(String playerName, int questsConfigMode, LinkedHashMap<Quest, Progression> quests) {
+    private void loadPlayerQuests(String playerName, int questsConfigMode, LinkedHashMap<AbstractQuest, Progression> quests) {
 
         try {
             Connection connection = mySqlManager.getConnection();
@@ -114,7 +114,7 @@ public class LoadProgressionSQL {
                 boolean isAchieved = resultSet.getBoolean("ISACHIEVED");
 
                 Progression progression = new Progression(advancement, isAchieved);
-                Quest quest = Utils.findQuest(playerName, questsConfigMode, questIndex, id);
+                AbstractQuest quest = Utils.findQuest(playerName, questsConfigMode, questIndex, id);
 
                 quests.put(quest, progression);
 

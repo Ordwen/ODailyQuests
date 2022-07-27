@@ -5,6 +5,7 @@ import com.ordwen.odailyquests.apis.hooks.mobs.EliteMobsHook;
 import com.ordwen.odailyquests.apis.hooks.mobs.MythicMobsHook;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.files.QuestsFiles;
+import com.ordwen.odailyquests.quests.player.progression.types.*;
 import com.ordwen.odailyquests.rewards.Reward;
 import com.ordwen.odailyquests.rewards.RewardType;
 import com.ordwen.odailyquests.tools.ColorConvert;
@@ -26,10 +27,10 @@ import java.util.List;
 public class LoadQuests {
 
     /* Init quests lists */
-    private static final ArrayList<Quest> globalQuests = new ArrayList<>();
-    private static final ArrayList<Quest> easyQuests = new ArrayList<>();
-    private static final ArrayList<Quest> mediumQuests = new ArrayList<>();
-    private static final ArrayList<Quest> hardQuests = new ArrayList<>();
+    private static final ArrayList<AbstractQuest> globalQuests = new ArrayList<>();
+    private static final ArrayList<AbstractQuest> easyQuests = new ArrayList<>();
+    private static final ArrayList<AbstractQuest> mediumQuests = new ArrayList<>();
+    private static final ArrayList<AbstractQuest> hardQuests = new ArrayList<>();
 
     /**
      * Load all quests from files.
@@ -89,7 +90,7 @@ public class LoadQuests {
      * @param quests   list for quests.
      * @param fileName file name for PluginLogger.
      */
-    public static void loadQuests(FileConfiguration file, ArrayList<Quest> quests, String fileName) {
+    public static void loadQuests(FileConfiguration file, ArrayList<AbstractQuest> quests, String fileName) {
 
         /* load quests */
         if (file.getConfigurationSection("quests") != null) {
@@ -97,7 +98,7 @@ public class LoadQuests {
             for (String fileQuest : file.getConfigurationSection("quests").getKeys(false)) {
 
                 /* init variables (quest constructor) */
-                Quest quest = null;
+                AbstractQuest quest = null;
                 String questName;
                 List<String> questDesc;
                 QuestType questType = null;
@@ -210,27 +211,32 @@ public class LoadQuests {
                     }
 
                     /* init quest */
+                    final GlobalQuest base = new GlobalQuest(questIndex, questName, questDesc, questType, menuItem, requiredAmount, reward);
                     if (isGlobalType) {
                         if (questType == QuestType.VILLAGER_TRADE) {
-                            quest = new Quest(questIndex, questName, questDesc, questType, menuItem, requiredAmount, profession, villagerLevel, reward);
+                            quest = new VillagerQuest(base, profession, villagerLevel);
                         }
-                        else quest = new Quest(questIndex, questName, questDesc, questType, menuItem, requiredAmount, reward);
+                        else quest = base;
                     }
                     else if (isEntityType) {
                         if (questType == QuestType.CUSTOM_MOBS) {
                             if (EliteMobsHook.isEliteMobsSetup() || MythicMobsHook.isMythicMobsSetup()) {
-                                quest = new Quest(questIndex, questName, questDesc, questType, entityName, menuItem, requiredAmount, reward);
+                                quest = new EntityQuest(base, entityType, null, entityName);
                             } else {
                                 PluginLogger.error("File : " + fileName);
                                 PluginLogger.error("Quest at index " + (questIndex + 1) + " cannot be loaded !");
                                 PluginLogger.error("There is no compatible plugin found for quest type CUSTOM_MOBS.");
                             }
-                        } else quest = new Quest(questIndex, questName, questDesc, questType, entityType, dyeColor, menuItem, requiredAmount, reward);
+                        } else {
+                            quest = new EntityQuest(base, entityType, dyeColor, entityName);
+                        }
                     } else {
                         if (questType == QuestType.VILLAGER_TRADE) {
-                            quest = new Quest(questIndex, questName, questDesc, questType, requiredItem, menuItem, requiredAmount, profession, villagerLevel, reward);
+                            quest = new VillagerQuest(base, requiredItem, profession, villagerLevel);
                         }
-                        else quest = new Quest(questIndex, questName, questDesc, questType, requiredItem, menuItem, requiredAmount, reward);
+                        else {
+                            quest = new ItemQuest(base, requiredItem);
+                        }
                     }
 
                     /* add quest to the list */
@@ -319,28 +325,28 @@ public class LoadQuests {
     /**
      * Get global quests.
      */
-    public static ArrayList<Quest> getGlobalQuests() {
+    public static ArrayList<AbstractQuest> getGlobalQuests() {
         return globalQuests;
     }
 
     /**
      * Get easy quests.
      */
-    public static ArrayList<Quest> getEasyQuests() {
+    public static ArrayList<AbstractQuest> getEasyQuests() {
         return easyQuests;
     }
 
     /**
      * Get medium quests.
      */
-    public static ArrayList<Quest> getMediumQuests() {
+    public static ArrayList<AbstractQuest> getMediumQuests() {
         return mediumQuests;
     }
 
     /**
      * Get hard quests.
      */
-    public static ArrayList<Quest> getHardQuests() {
+    public static ArrayList<AbstractQuest> getHardQuests() {
         return hardQuests;
     }
 }

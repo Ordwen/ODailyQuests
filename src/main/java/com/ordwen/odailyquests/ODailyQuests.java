@@ -12,13 +12,12 @@ import com.ordwen.odailyquests.commands.interfaces.InventoryClickListener;
 import com.ordwen.odailyquests.configuration.ConfigurationManager;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.configuration.essentials.Temporality;
+import com.ordwen.odailyquests.events.EventsManager;
 import com.ordwen.odailyquests.files.*;
-import com.ordwen.odailyquests.quests.player.progression.ValidateVillagerTradeQuest;
 import com.ordwen.odailyquests.quests.player.progression.storage.yaml.YamlManager;
 import com.ordwen.odailyquests.tools.Metrics;
 import com.ordwen.odailyquests.quests.LoadQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
-import com.ordwen.odailyquests.quests.player.progression.ProgressionManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.mysql.MySQLManager;
 import com.ordwen.odailyquests.tools.TimerTask;
 import com.ordwen.odailyquests.tools.UpdateChecker;
@@ -102,10 +101,11 @@ public final class ODailyQuests extends JavaPlugin {
         getCommand("dqadmin").setTabCompleter(new AdminCompleter());
 
         /* Load listeners */
-        getServer().getPluginManager().registerEvents(new ValidateVillagerTradeQuest(), this);
+        new EventsManager(this).registerListeners();
+
+        //getServer().getPluginManager().registerEvents(new BlockBreakListener(), this);
         getServer().getPluginManager().registerEvents(new InventoryClickListener(), this);
         getServer().getPluginManager().registerEvents(new QuestsManager(this, mySqlManager != null), this);
-        getServer().getPluginManager().registerEvents(new ProgressionManager(), this);
 
         /* Avoid errors on reload */
         if (Bukkit.getServer().getOnlinePlayers().size() > 0) {

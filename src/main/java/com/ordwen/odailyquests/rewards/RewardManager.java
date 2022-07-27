@@ -13,8 +13,7 @@ import org.bukkit.entity.Player;
 
 public class RewardManager {
 
-    public static void sendAllRewardItems(String questName, String playerName, Reward reward) {
-        Player player = Bukkit.getPlayer(playerName);
+    public static void sendAllRewardItems(String questName, Player player, Reward reward) {
 
         player.sendMessage(QuestsMessages.QUEST_ACHIEVED.toString().replace("%questName%", questName));
         Title.sendTitle(player, questName);

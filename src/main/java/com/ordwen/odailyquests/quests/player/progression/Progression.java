@@ -2,8 +2,8 @@ package com.ordwen.odailyquests.quests.player.progression;
 
 public class Progression {
 
-    int progression;
-    public boolean isAchieved;
+    private int progression;
+    private boolean isAchieved;
 
     /**
      * Progression constructor.
@@ -22,11 +22,23 @@ public class Progression {
     public int getProgression() { return this.progression; }
 
     /**
+     * Increment the progression of quest.
+     */
+    public void increaseProgression() { this.progression++; }
+
+    /**
      * Get status of quest.
      * @return status.
      */
     public boolean isAchieved() {
         return this.isAchieved;
+    }
+
+    /**
+     * Set status of quest.
+     */
+    public void setAchieved() {
+        this.isAchieved = true;
     }
 
 }

@@ -2,8 +2,8 @@ package com.ordwen.odailyquests.commands.interfaces;
 
 import com.ordwen.odailyquests.commands.interfaces.pagination.Items;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
+import com.ordwen.odailyquests.quests.player.progression.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.LoadQuests;
-import com.ordwen.odailyquests.quests.Quest;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -67,7 +67,7 @@ public class CategorizedQuestsInterfaces {
      * @param emptyCaseItem item for empty-cases.
      * @param quests list of quests.
      */
-    public void loadSelectedInterface(String inventoryName, ItemStack emptyCaseItem, int neededInventories, List<Inventory> questsInventories, ArrayList<Quest> quests) {
+    public void loadSelectedInterface(String inventoryName, ItemStack emptyCaseItem, int neededInventories, List<Inventory> questsInventories, ArrayList<AbstractQuest> quests) {
 
         boolean allQuestsLoaded = false;
         int currentQuestIndex = 0;
@@ -89,7 +89,7 @@ public class CategorizedQuestsInterfaces {
             /* add quests items on slots */
             while (i < invSize && !allQuestsLoaded) {
                 if (currentQuestIndex < quests.size()) {
-                    Quest quest = quests.get(currentQuestIndex);
+                    AbstractQuest quest = quests.get(currentQuestIndex);
 
                     ItemStack itemStack = quest.getMenuItem();
                     ItemMeta itemMeta = itemStack.getItemMeta();

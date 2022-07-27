@@ -1,7 +1,7 @@
 package com.ordwen.odailyquests.quests.player.progression.storage.mysql;
 
 import com.ordwen.odailyquests.ODailyQuests;
-import com.ordwen.odailyquests.quests.Quest;
+import com.ordwen.odailyquests.quests.player.progression.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.tools.PluginLogger;
@@ -44,7 +44,7 @@ public class SaveProgressionSQL {
         long timestamp = playerQuests.getTimestamp();
         int achievedQuests = playerQuests.getAchievedQuests();
         int totalAchievedQuests = playerQuests.getTotalAchievedQuests();
-        LinkedHashMap<Quest, Progression> quests = playerQuests.getPlayerQuests();
+        LinkedHashMap<AbstractQuest, Progression> quests = playerQuests.getPlayerQuests();
 
         Connection connection = mySqlManager.getConnection();
 
@@ -66,7 +66,7 @@ public class SaveProgressionSQL {
      * @param connection          connection.
      * @param test                test.
      */
-    private void saveDatas(String playerName, long timestamp, int achievedQuests, int totalAchievedQuests, LinkedHashMap<Quest, Progression> quests, Connection connection, String test) {
+    private void saveDatas(String playerName, long timestamp, int achievedQuests, int totalAchievedQuests, LinkedHashMap<AbstractQuest, Progression> quests, Connection connection, String test) {
         try {
             PreparedStatement testQuery = connection.prepareStatement(test);
             ResultSet result = testQuery.executeQuery();
@@ -80,7 +80,7 @@ public class SaveProgressionSQL {
                 connection.prepareStatement(query).execute();
 
                 int index = 0;
-                for (Quest quest : quests.keySet()) {
+                for (AbstractQuest quest : quests.keySet()) {
                     String update = "UPDATE PROGRESSION\n" +
                             "SET QUESTINDEX = " + quest.getQuestIndex() + ", ADVANCEMENT = " + quests.get(quest).getProgression() + ", ISACHIEVED = " + quests.get(quest).isAchieved() + "\n"
                             + "WHERE PLAYERNAME = '" + playerName + "' AND PLAYERQUESTID = " + index;
@@ -97,7 +97,7 @@ public class SaveProgressionSQL {
                 connection.prepareStatement(query).execute();
 
                 int index = 0;
-                for (Quest quest : quests.keySet()) {
+                for (AbstractQuest quest : quests.keySet()) {
                     String update = "INSERT INTO PROGRESSION(PLAYERNAME, PLAYERQUESTID, QUESTINDEX, ADVANCEMENT, ISACHIEVED)\n" +
                             "VALUES\n" +
                             "('" + playerName + "', " + index + ", " + quest.getQuestIndex() + ", " + quests.get(quest).getProgression() + ", " + quests.get(quest).isAchieved() + ")";

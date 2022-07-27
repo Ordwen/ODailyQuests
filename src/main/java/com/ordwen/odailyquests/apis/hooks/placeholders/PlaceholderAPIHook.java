@@ -1,7 +1,7 @@
 package com.ordwen.odailyquests.apis.hooks.placeholders;
 
+import com.ordwen.odailyquests.quests.player.progression.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.LoadQuests;
-import com.ordwen.odailyquests.quests.Quest;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.tools.TimeRemain;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
@@ -75,7 +75,7 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
      */
     public int getQuestProgression(int index, String playerName) {
         int i = 0;
-        for (Quest quest : QuestsManager.getActiveQuests().get(playerName).getPlayerQuests().keySet()) {
+        for (AbstractQuest quest : QuestsManager.getActiveQuests().get(playerName).getPlayerQuests().keySet()) {
             if (i == index) {
                 return QuestsManager.getActiveQuests().get(playerName).getPlayerQuests().get(quest).getProgression();
             }
@@ -90,7 +90,7 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
      * @param quests list where find the quest
      * @return the name of the quest
      */
-    private String getQuestName(String params, ArrayList<Quest> quests) {
+    private String getQuestName(String params, ArrayList<AbstractQuest> quests) {
         int index;
         try {
             index = Integer.parseInt(params.substring(params.indexOf("_") + 1)) - 1;

@@ -1,8 +1,8 @@
 package com.ordwen.odailyquests.quests.player.progression;
 
 import com.ordwen.odailyquests.enums.QuestsMessages;
+import com.ordwen.odailyquests.quests.player.progression.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.LoadQuests;
-import com.ordwen.odailyquests.quests.Quest;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import org.bukkit.Bukkit;
@@ -73,7 +73,7 @@ public class Utils {
      * @param activeQuests        all active quests.
      * @param timestampConfigMode timestamp mode.
      */
-    public static void loadNewPlayerQuests(String playerName, HashMap<String, PlayerQuests> activeQuests, int timestampConfigMode, LinkedHashMap<Quest, Progression> quests) {
+    public static void loadNewPlayerQuests(String playerName, HashMap<String, PlayerQuests> activeQuests, int timestampConfigMode, LinkedHashMap<AbstractQuest, Progression> quests) {
 
         activeQuests.remove(playerName);
         QuestsManager.selectRandomQuests(quests);
@@ -102,8 +102,8 @@ public class Utils {
      * @param id               number of player quest.
      * @return quest of index.
      */
-    public static Quest findQuest(String playerName, int questsConfigMode, int questIndex, int id) {
-        Quest quest = null;
+    public static AbstractQuest findQuest(String playerName, int questsConfigMode, int questIndex, int id) {
+        AbstractQuest quest = null;
 
         if (questsConfigMode == 1) {
             quest = getQuestAtIndex(LoadQuests.getGlobalQuests(), questIndex, playerName);
@@ -135,8 +135,8 @@ public class Utils {
      * @param playerName the name of the player for whom the quest is intended.
      * @return the quest.
      */
-    public static Quest getQuestAtIndex(ArrayList<Quest> questsArray, int index, String playerName) {
-        Quest quest;
+    public static AbstractQuest getQuestAtIndex(ArrayList<AbstractQuest> questsArray, int index, String playerName) {
+        AbstractQuest quest;
         try {
             quest = questsArray.get(index);
         } catch (IndexOutOfBoundsException e) {

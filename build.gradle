@@ -54,9 +54,12 @@ dependencies {
     compileOnly name: 'EliteMobs'
 
     implementation 'com.zaxxer:HikariCP:5.0.1'
+
     implementation 'junit:junit:4.13.2'
     testImplementation 'org.spigotmc:spigot-api:1.18.1-R0.1-SNAPSHOT'
+
     compileOnly 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
+
     compileOnly 'com.github.MilkBowl:VaultAPI:1.7'
     compileOnly(group: 'com.github.Realizedd', name: 'TokenManager', version: '3.2.4') {
         transitive = false

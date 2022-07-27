@@ -1,7 +1,7 @@
 package com.ordwen.odailyquests.quests.player.progression.storage.yaml;
 
 import com.ordwen.odailyquests.files.ProgressionFile;
-import com.ordwen.odailyquests.quests.Quest;
+import com.ordwen.odailyquests.quests.player.progression.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.tools.PluginLogger;
@@ -28,7 +28,7 @@ public class SaveProgressionYAML {
         long timestamp = playerQuests.getTimestamp();
         int achievedQuests = playerQuests.getAchievedQuests();
         int totalAchievedQuests = playerQuests.getTotalAchievedQuests();
-        HashMap<Quest, Progression> quests = playerQuests.getPlayerQuests();
+        HashMap<AbstractQuest, Progression> quests = playerQuests.getPlayerQuests();
 
         /* check if player has data */
         if (progressionFile.getString(playerName) != null) {
@@ -38,7 +38,7 @@ public class SaveProgressionYAML {
             progressionFile.getConfigurationSection(playerName).set(".totalAchievedQuests", totalAchievedQuests);
 
             int index = 1;
-            for (Quest quest : quests.keySet()) {
+            for (AbstractQuest quest : quests.keySet()) {
                 progressionFile.getConfigurationSection(playerName + ".quests." + index).set(".index", quest.getQuestIndex());
                 progressionFile.getConfigurationSection(playerName + ".quests." + index).set(".progression", quests.get(quest).getProgression());
                 progressionFile.getConfigurationSection(playerName + ".quests." + index).set(".isAchieved", quests.get(quest).isAchieved());
@@ -50,7 +50,7 @@ public class SaveProgressionYAML {
             progressionFile.set(playerName + ".totalAchievedQuests", totalAchievedQuests);
 
             int index = 1;
-            for (Quest quest : quests.keySet()) {
+            for (AbstractQuest quest : quests.keySet()) {
                 progressionFile.set(playerName + ".quests." + index + ".index", quest.getQuestIndex());
                 progressionFile.set(playerName + ".quests." + index + ".progression", quests.get(quest).getProgression());
                 progressionFile.set(playerName + ".quests." + index + ".isAchieved", quests.get(quest).isAchieved());
