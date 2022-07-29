@@ -6,11 +6,13 @@ import com.ordwen.odailyquests.configuration.functionalities.DisabledWorlds;
 import com.ordwen.odailyquests.configuration.functionalities.TakeItems;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.events.antiglitch.OpenedRecipes;
+import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractPositionChecker;
 import com.ordwen.odailyquests.quests.player.progression.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.progression.types.ItemQuest;
 import com.ordwen.odailyquests.quests.QuestType;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
+import com.ordwen.odailyquests.quests.player.progression.types.LocationQuest;
 import com.ordwen.odailyquests.quests.player.progression.types.VillagerQuest;
 import com.ordwen.odailyquests.rewards.RewardManager;
 import org.bukkit.Material;
@@ -27,7 +29,7 @@ import org.bukkit.inventory.PlayerInventory;
 
 import java.util.HashMap;
 
-public class InventoryClickListener implements Listener {
+public class InventoryClickListener extends AbstractPositionChecker implements Listener {
 
     @EventHandler
     public void onInventoryClickEvent(InventoryClickEvent event) {
@@ -103,6 +105,15 @@ public class InventoryClickListener implements Listener {
                             } else player.sendMessage(QuestsMessages.NOT_ENOUGH_ITEM.toString());
                         }
                         break;
+                    }
+                } else if (abstractQuest instanceof LocationQuest quest) {
+
+                    if (clickedItem.equals(quest.getMenuItem()) && quest.getType() == QuestType.GET) {
+
+                        final Progression questProgression = playerQuests.get(quest);
+                        if (!questProgression.isAchieved()) {
+                            setPlayerQuestProgression(player, QuestType.REACH);
+                        }
                     }
                 }
             }

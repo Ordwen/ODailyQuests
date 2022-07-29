@@ -51,6 +51,7 @@ public class EventsManager {
         Bukkit.getPluginManager().registerEvents(new PlayerLevelChangeListener(), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new PlayerInteractListener(), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new PlayerInteractEntityListener(), oDailyQuests);
+        Bukkit.getPluginManager().registerEvents(new PlayerDeathListener(), oDailyQuests);
 
         // item events
         Bukkit.getPluginManager().registerEvents(new BlockBreakListener(), oDailyQuests);

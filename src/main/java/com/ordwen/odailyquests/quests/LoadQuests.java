@@ -9,10 +9,7 @@ import com.ordwen.odailyquests.quests.player.progression.types.*;
 import com.ordwen.odailyquests.rewards.Reward;
 import com.ordwen.odailyquests.rewards.RewardType;
 import com.ordwen.odailyquests.tools.ColorConvert;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.DyeColor;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
@@ -111,6 +108,10 @@ public class LoadQuests {
                 ItemStack menuItem;
                 int requiredAmount;
 
+                /* reach type */
+                Location location = null;
+                int radius = 1;
+
                 /* init variables (reward constructor) */
                 Reward reward;
                 RewardType rewardType;
@@ -142,9 +143,9 @@ public class LoadQuests {
                     boolean isGlobalType = false;
                     boolean isEntityType = false;
 
-                    switch(questType) {
+                    switch (questType) {
                         /* type that does not require a specific entity/item */
-                        case MILKING, EXP_POINTS, EXP_LEVELS, CARVE -> {
+                        case MILKING, EXP_POINTS, EXP_LEVELS, CARVE, PLAYER_DEATH -> {
                             isGlobalType = true;
                         }
                         /* type that require a custom mob */
@@ -197,9 +198,45 @@ public class LoadQuests {
                                 }
                             }
                         }
+                        /* type that requires a location */
+                        case REACH -> {
+                            final ConfigurationSection section = file.getConfigurationSection("quests." + fileQuest + ".location");
+
+                            if (section == null) {
+                                PluginLogger.error("-----------------------------------");
+                                PluginLogger.error("Invalid quest configuration detected.");
+                                PluginLogger.error("File : " + fileName);
+                                PluginLogger.error("Quest number : " + (questIndex + 1));
+                                PluginLogger.error("You need to specify a location.");
+                                PluginLogger.error("-----------------------------------");
+
+                                location = new Location(Bukkit.getWorlds().get(0), 0, 0, 0);
+                            } else {
+                                final String wd = section.getString(".world");
+                                final int x = section.getInt(".x");
+                                final int y = section.getInt(".y");
+                                final int z = section.getInt(".z");
+
+                                radius = section.getInt(".radius");
+                                final World world = Bukkit.getWorld(wd);
+                                if (world == null) {
+                                    PluginLogger.error("-----------------------------------");
+                                    PluginLogger.error("Invalid quest configuration detected.");
+                                    PluginLogger.error("File : " + fileName);
+                                    PluginLogger.error("Quest number : " + (questIndex + 1));
+                                    PluginLogger.error("The world specified in the location is not loaded.");
+                                    PluginLogger.error("-----------------------------------");   
+                                    
+                                    location = new Location(Bukkit.getWorlds().get(0), 0, 0, 0);
+                                } else {
+                                    location = new Location(world, x, y, z);
+                                }
+                            }
+                        }
                     }
 
-                    requiredAmount = file.getConfigurationSection("quests." + fileQuest).getInt(".required_amount");
+                    if (questType == QuestType.REACH) requiredAmount = 1;
+                    else requiredAmount = file.getConfigurationSection("quests." + fileQuest).getInt(".required_amount");
 
                     /* init reward */
                     rewardType = RewardType.valueOf(file.getConfigurationSection("quests." + fileQuest + ".reward").getString(".reward_type"));
@@ -215,10 +252,8 @@ public class LoadQuests {
                     if (isGlobalType) {
                         if (questType == QuestType.VILLAGER_TRADE) {
                             quest = new VillagerQuest(base, profession, villagerLevel);
-                        }
-                        else quest = base;
-                    }
-                    else if (isEntityType) {
+                        } else quest = base;
+                    } else if (isEntityType) {
                         if (questType == QuestType.CUSTOM_MOBS) {
                             if (EliteMobsHook.isEliteMobsSetup() || MythicMobsHook.isMythicMobsSetup()) {
                                 quest = new EntityQuest(base, entityType, null, entityName);
@@ -233,6 +268,8 @@ public class LoadQuests {
                     } else {
                         if (questType == QuestType.VILLAGER_TRADE) {
                             quest = new VillagerQuest(base, requiredItem, profession, villagerLevel);
+                        } else if (questType == QuestType.REACH) {
+                            quest = new LocationQuest(base, location, radius);
                         }
                         else {
                             quest = new ItemQuest(base, requiredItem);
@@ -252,7 +289,6 @@ public class LoadQuests {
     }
 
     /**
-     *
      * @param material
      * @param fileName
      * @param questIndex
@@ -275,7 +311,6 @@ public class LoadQuests {
     }
 
     /**
-     *
      * @param entity
      * @param fileName
      * @param questIndex
@@ -299,7 +334,6 @@ public class LoadQuests {
     }
 
     /**
-     *
      * @param dye
      * @param fileName
      * @param questIndex

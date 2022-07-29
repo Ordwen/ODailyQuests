@@ -241,3 +241,40 @@ quests:
         reward_type: COMMAND
         commands:
           - "say Hello"
+    18:
+      name: "&cImmortal"
+      menu_item: SKELETON_SKULL
+      description:
+        - "&cDie five times."
+        - ""
+        - "&6Reward:"
+        - "&7A \"hello\" message from the server :)"
+      quest_type: PLAYER_DEATH
+      required_amount: 5
+      reward:
+        reward_type: COMMAND
+        commands:
+          - "say Hello"
+    19:
+      name: "&aExplorer"
+      menu_item: SKELETON_SKULL
+      description:
+        - "&cGo to the following coordinates:"
+        - "&cWorld: &bSpawn"
+        - "&cX: &b-4"
+        - "&cY: &b103"
+        - "&cZ: &b45"
+        - ""
+        - "&6Reward:"
+        - "&7A \"hello\" message from the server :)"
+      quest_type: REACH
+      location:
+        world: Spawn
+        x: -4
+        y: 103
+        z: 45
+        radius: 3
+      reward:
+        reward_type: COMMAND
+        commands:
+          - "say Hello"
