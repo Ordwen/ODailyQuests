@@ -21,6 +21,7 @@ public enum QuestType {
     CARVE,
     MILKING,
     LOCATION,
+    FARMING,
 
     EXP_POINTS,
     EXP_LEVELS,

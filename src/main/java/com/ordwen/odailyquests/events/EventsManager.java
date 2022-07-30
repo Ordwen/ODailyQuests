@@ -64,6 +64,7 @@ public class EventsManager {
         Bukkit.getPluginManager().registerEvents(new PlayerItemConsumeListener(), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new ProjectileLaunchListener(), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new InventoryClickListener(), oDailyQuests);
+        Bukkit.getPluginManager().registerEvents(new BlockDropItemListener(), oDailyQuests);
 
         // inventory events
         Bukkit.getPluginManager().registerEvents(new InventoryCloseListener(), oDailyQuests);

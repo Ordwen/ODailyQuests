@@ -168,7 +168,7 @@ public class LoadQuests {
                             } else isGlobalType = true;
                         }
                         /* types that requires an item */
-                        case BREAK, PLACE, CRAFT, PICKUP, LAUNCH, CONSUME, GET, COOK, ENCHANT, VILLAGER_TRADE, FISH -> {
+                        case BREAK, PLACE, CRAFT, PICKUP, LAUNCH, CONSUME, GET, COOK, ENCHANT, VILLAGER_TRADE, FISH, FARMING -> {
                             if (file.getConfigurationSection("quests." + fileQuest).contains(".required_item")) {
                                 String itemType = file.getConfigurationSection("quests." + fileQuest).getString(".required_item");
                                 /* check if the required item is a custom item */

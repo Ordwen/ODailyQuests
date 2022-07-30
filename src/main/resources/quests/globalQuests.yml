@@ -278,3 +278,15 @@ quests:
         reward_type: COMMAND
         commands:
           - "say Hello"
+    20:
+      name: "&aFarmer"
+      menu_item: CARROT
+      description:
+        - "&eHarvest 10 fully grown carrots."
+        - "&eWin &b5 EXP levels&e."
+      quest_type: FARMING
+      required_item: CARROT
+      required_amount: 10
+      reward:
+        reward_type: EXP_LEVELS
+        amount: 5
