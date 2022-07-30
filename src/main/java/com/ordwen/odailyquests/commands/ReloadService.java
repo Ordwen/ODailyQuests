@@ -73,13 +73,13 @@ public class ReloadService {
         switch (configurationFiles.getConfigFile().getString("storage_mode")) {
             case "YAML":
                 for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-                    yamlManager.getSaveProgressionYAML().saveProgression(player.getName(), QuestsManager.getActiveQuests());
+                    yamlManager.getSaveProgressionYAML().saveProgression(player.getName(), QuestsManager.getActiveQuests().get(player.getName()));
                     QuestsManager.getActiveQuests().remove(player.getName());
                 }
                 break;
             case "MySQL":
                 for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-                    mySqlManager.getSaveProgressionSQL().saveProgression(player.getName(), QuestsManager.getActiveQuests(), isAsync);
+                    mySqlManager.getSaveProgressionSQL().saveProgression(player.getName(), QuestsManager.getActiveQuests().get(player.getName()), isAsync);
                     QuestsManager.getActiveQuests().remove(player.getName());
                 }
                 break;

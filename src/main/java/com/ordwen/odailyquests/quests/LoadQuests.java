@@ -199,7 +199,7 @@ public class LoadQuests {
                             }
                         }
                         /* type that requires a location */
-                        case REACH -> {
+                        case LOCATION -> {
                             final ConfigurationSection section = file.getConfigurationSection("quests." + fileQuest + ".location");
 
                             if (section == null) {
@@ -235,7 +235,7 @@ public class LoadQuests {
                         }
                     }
 
-                    if (questType == QuestType.REACH) requiredAmount = 1;
+                    if (questType == QuestType.LOCATION) requiredAmount = 1;
                     else requiredAmount = file.getConfigurationSection("quests." + fileQuest).getInt(".required_amount");
 
                     /* init reward */
@@ -268,7 +268,7 @@ public class LoadQuests {
                     } else {
                         if (questType == QuestType.VILLAGER_TRADE) {
                             quest = new VillagerQuest(base, requiredItem, profession, villagerLevel);
-                        } else if (questType == QuestType.REACH) {
+                        } else if (questType == QuestType.LOCATION) {
                             quest = new LocationQuest(base, location, radius);
                         }
                         else {

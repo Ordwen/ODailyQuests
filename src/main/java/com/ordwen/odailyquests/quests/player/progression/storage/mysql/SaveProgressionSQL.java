@@ -35,12 +35,11 @@ public class SaveProgressionSQL {
      * Save player quests progression.
      *
      * @param playerName   name of the player.
-     * @param activeQuests player quests.
+     * @param playerQuests player quests.
      */
-    public void saveProgression(String playerName, HashMap<String, PlayerQuests> activeQuests, boolean isAsync) {
+    public void saveProgression(String playerName, PlayerQuests playerQuests, boolean isAsync) {
 
         /* init variables */
-        PlayerQuests playerQuests = activeQuests.get(playerName);
         long timestamp = playerQuests.getTimestamp();
         int achievedQuests = playerQuests.getAchievedQuests();
         int totalAchievedQuests = playerQuests.getTotalAchievedQuests();

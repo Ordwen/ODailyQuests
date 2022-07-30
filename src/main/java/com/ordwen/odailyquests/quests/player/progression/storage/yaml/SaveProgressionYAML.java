@@ -17,14 +17,13 @@ public class SaveProgressionYAML {
      * Save player progression in YAML file.
      *
      * @param playerName player name.
-     * @param activeQuests player quests.
+     * @param playerQuests player quests.
      */
-    public void saveProgression(String playerName, HashMap<String, PlayerQuests> activeQuests) {
+    public void saveProgression(String playerName, PlayerQuests playerQuests) {
 
         FileConfiguration progressionFile = ProgressionFile.getProgressionFileConfiguration();
 
         /* init variables */
-        PlayerQuests playerQuests = activeQuests.get(playerName);
         long timestamp = playerQuests.getTimestamp();
         int achievedQuests = playerQuests.getAchievedQuests();
         int totalAchievedQuests = playerQuests.getTotalAchievedQuests();

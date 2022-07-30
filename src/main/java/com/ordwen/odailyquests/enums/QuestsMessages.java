@@ -43,6 +43,8 @@ public enum QuestsMessages {
 
     NEW_DAY("new_day", "&6It's a new day!"),
     REWARD_MONEY_FAIL("reward_money_fail", "&cAn error happened. Impossible to give you the reward. Please contact an administrator."),
+    TOO_FAR_FROM_LOCATION("too_far", "&cYou are too far from the required location."),
+    BAD_WORLD_LOCATION("bad_world", "&cYou are in the wrong world."),
     ;
 
     private final String path;

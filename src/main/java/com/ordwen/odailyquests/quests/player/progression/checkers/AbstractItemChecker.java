@@ -2,18 +2,18 @@ package com.ordwen.odailyquests.quests.player.progression.checkers;
 
 import com.ordwen.odailyquests.configuration.essentials.Synchronization;
 import com.ordwen.odailyquests.configuration.functionalities.DisabledWorlds;
+import com.ordwen.odailyquests.quests.player.progression.AbstractProgressionIncreaser;
 import com.ordwen.odailyquests.quests.player.progression.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.progression.types.ItemQuest;
 import com.ordwen.odailyquests.quests.QuestType;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
-import com.ordwen.odailyquests.rewards.RewardManager;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 
-public class AbstractItemChecker {
+public abstract class AbstractItemChecker extends AbstractProgressionIncreaser {
 
     /**
      * Increase player quest progression.
@@ -41,15 +41,7 @@ public class AbstractItemChecker {
                     else isRequiredItem = (quest.getRequiredItem().isSimilar(itemStack));
 
                     if (isRequiredItem) {
-                        for (int i = 0; i < amount; i++) {
-                            progression.increaseProgression();
-                        }
-                        if (progression.getProgression() >= quest.getAmountRequired()) {
-                            progression.setAchieved();
-                            QuestsManager.getActiveQuests().get(player.getName()).increaseAchievedQuests(player.getName());
-                            RewardManager.sendAllRewardItems(quest.getQuestName(), player, quest.getReward());
-                        }
-
+                        increaseProgression(player, progression, abstractQuest, amount);
                         if (!Synchronization.isSynchronised()) {
                             break;
                         }

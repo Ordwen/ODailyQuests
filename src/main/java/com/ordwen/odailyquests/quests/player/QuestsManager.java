@@ -72,10 +72,16 @@ public class QuestsManager implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         String playerName = event.getPlayer().getName();
+        final PlayerQuests playerQuests = activeQuests.get(playerName);
+
+        if (playerQuests == null) {
+            PluginLogger.warn("Player quests not found for player " + playerName);
+            return;
+        }
 
         switch (configurationFiles.getConfigFile().getString("storage_mode")) {
-            case "YAML" -> yamlManager.getSaveProgressionYAML().saveProgression(playerName, activeQuests);
-            case "MySQL" -> mySqlManager.getSaveProgressionSQL().saveProgression(playerName, activeQuests, true);
+            case "YAML" -> yamlManager.getSaveProgressionYAML().saveProgression(playerName, playerQuests);
+            case "MySQL" -> mySqlManager.getSaveProgressionSQL().saveProgression(playerName, playerQuests, true);
             default -> PluginLogger.error("Impossible to save player quests : the selected storage mode is incorrect !");
         }
         activeQuests.remove(playerName);

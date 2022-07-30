@@ -20,13 +20,14 @@ public enum QuestType {
     SHEAR,
     CARVE,
     MILKING,
-    REACH,
+    LOCATION,
 
     EXP_POINTS,
     EXP_LEVELS,
     VILLAGER_TRADE,
+    PLAYER_DEATH,
 
-    CUSTOM_MOBS, PLAYER_DEATH,
+    CUSTOM_MOBS,
 
 
 }

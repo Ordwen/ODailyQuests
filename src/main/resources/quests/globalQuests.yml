@@ -19,13 +19,13 @@
 # Please have at least 3 quests for global mode.
 quests:
   1:
-    name: "&aCobblestone"
-    menu_item: COBBLESTONE
+    name: "&aStone"
+    menu_item: STONE
     description:
-      - "&bMine 32 cobblestones."
+      - "&bMine 32 stones."
       - "&bWin &c500$&b."
     quest_type: BREAK
-    required_item: COBBLESTONE
+    required_item: STONE
     required_amount: 32
     reward:
       reward_type: MONEY
@@ -267,7 +267,7 @@ quests:
         - ""
         - "&6Reward:"
         - "&7A \"hello\" message from the server :)"
-      quest_type: REACH
+      quest_type: LOCATION
       location:
         world: Spawn
         x: -4
