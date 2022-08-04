@@ -53,7 +53,10 @@ public class HolographicDisplaysHook {
             // display hologram and add it to the list
             displayHologram(loc, lines, item);
 
-        } else player.sendMessage(QuestsMessages.INVALID_QUEST_INDEX.toString());
+        } else {
+            final String msg = QuestsMessages.INVALID_QUEST_INDEX.toString();
+            if (msg != null) player.sendMessage(msg);
+        }
     }
 
     /**

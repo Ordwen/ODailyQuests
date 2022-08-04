@@ -26,11 +26,9 @@ import java.util.LinkedHashMap;
 
 public class AdminCommands implements CommandExecutor {
 
-    private final ODailyQuests oDailyQuests;
     private final ReloadService reloadService;
 
     public AdminCommands(ODailyQuests oDailyQuests) {
-        this.oDailyQuests = oDailyQuests;
         this.reloadService = oDailyQuests.getReloadService();
     }
 
@@ -42,15 +40,17 @@ public class AdminCommands implements CommandExecutor {
                     reloadService.reload();
                     sender.sendMessage(ChatColor.GREEN + "Plugin successfully reloaded!");
                 } else {
-                    sender.sendMessage(QuestsMessages.ADMIN_HELP.toString());
+                    final String msg = QuestsMessages.ADMIN_HELP.toString();
+                    if (msg != null) sender.sendMessage(msg);
                 }
             } else if (args.length >= 2) {
                 switch (args[0]) {
                     case "reset":
                         if (args.length >= 3 && args[1] != null && args[2] != null) {
+                            final Player target = Bukkit.getPlayerExact(args[2]);
                             switch (args[1]) {
                                 case "quests":
-                                    if (Bukkit.getPlayerExact(args[2]) != null) {
+                                    if (target != null) {
                                         int totalAchievedQuests = QuestsManager.getActiveQuests().get(args[2]).getTotalAchievedQuests();
 
                                         QuestsManager.getActiveQuests().remove(args[2]);
@@ -65,33 +65,56 @@ public class AdminCommands implements CommandExecutor {
 
                                         PluginLogger.info(ChatColor.GREEN + args[2] + ChatColor.YELLOW + " inserted into the array.");
 
-                                        sender.sendMessage(QuestsMessages.QUESTS_RENEWED_ADMIN.toString().replace("%target%", Bukkit.getPlayerExact(args[2]).getName()));
-                                        Bukkit.getPlayerExact(args[2]).sendMessage(QuestsMessages.QUESTS_RENEWED.toString());
-                                    } else sender.sendMessage(QuestsMessages.INVALID_PLAYER.toString());
+                                        String msg = QuestsMessages.QUESTS_RENEWED_ADMIN.toString();
+                                        if (msg != null) sender.sendMessage(msg.replace("%target%", target.getName()));
+
+                                        msg = QuestsMessages.QUESTS_RENEWED.toString();
+                                        if (msg != null) target.sendMessage(msg);
+                                    } else {
+                                        final String msg = QuestsMessages.INVALID_PLAYER.toString();
+                                        if (msg != null) sender.sendMessage(msg);
+                                    }
                                     break;
                                 case "total":
-                                    if (Bukkit.getPlayerExact(args[2]) != null) {
+                                    if (target != null) {
                                         QuestsManager.getActiveQuests().get(args[2]).setTotalAchievedQuests(0);
 
-                                        sender.sendMessage(QuestsMessages.TOTAL_AMOUNT_RESET_ADMIN.toString().replace("%target%", Bukkit.getPlayerExact(args[2]).getName()));
-                                        Bukkit.getPlayerExact(args[2]).sendMessage(QuestsMessages.TOTAL_AMOUNT_RESET.toString());
-                                    } else sender.sendMessage(QuestsMessages.INVALID_PLAYER.toString());
+                                        String msg = QuestsMessages.TOTAL_AMOUNT_RESET_ADMIN.toString();
+                                        if (msg != null) sender.sendMessage(msg.replace("%target%", target.getName()));
+
+                                        msg = QuestsMessages.TOTAL_AMOUNT_RESET.toString();
+                                        if (msg != null) target.sendMessage(msg);
+                                    } else {
+                                        final String msg = QuestsMessages.INVALID_PLAYER.toString();
+                                        if (msg != null) sender.sendMessage(msg);
+                                    }
                                     break;
                                 default:
-                                    sender.sendMessage(QuestsMessages.ADMIN_HELP.toString());
+                                    final String msg = QuestsMessages.ADMIN_HELP.toString();
+                                    if (msg != null) sender.sendMessage(msg);
                                     break;
                             }
-                        } else sender.sendMessage(QuestsMessages.ADMIN_HELP.toString());
+                        } else {
+                            final String msg = QuestsMessages.ADMIN_HELP.toString();
+                            if (msg != null) sender.sendMessage(msg);
+                        }
                         break;
                     case "show":
                         if (sender instanceof Player) {
                             if (Bukkit.getPlayerExact(args[1]) != null) {
                                 ((Player) sender).openInventory(PlayerQuestsInterface.getPlayerQuestsInterface(args[1]));
-                            } else sender.sendMessage(QuestsMessages.INVALID_PLAYER.toString());
-                        } else sender.sendMessage(QuestsMessages.PLAYER_ONLY.toString());
+                            } else {
+                                final String msg = QuestsMessages.INVALID_PLAYER.toString();
+                                if (msg != null) sender.sendMessage(msg);
+                            }
+                        } else {
+                            final String msg = QuestsMessages.PLAYER_ONLY.toString();
+                            if (msg != null) sender.sendMessage(msg);
+                        }
                         break;
                     case "complete":
-                        if (Bukkit.getPlayerExact(args[1]) != null) {
+                        final Player target = Bukkit.getPlayerExact(args[1]);
+                        if (target != null) {
                             if (args[2] != null && Integer.parseInt(args[2]) >= 1 && Integer.parseInt(args[2]) <= 3) {
                                 HashMap<AbstractQuest, Progression> playerQuests = QuestsManager.getActiveQuests().get(args[1]).getPlayerQuests();
                                 int index = 0;
@@ -100,16 +123,25 @@ public class AdminCommands implements CommandExecutor {
                                     if (index == Integer.parseInt(args[2]) - 1) {
                                         if (!playerQuests.get(quest).isAchieved()) {
                                             progression.setAchieved();
-                                            RewardManager.sendAllRewardItems(quest.getQuestName(), Bukkit.getPlayerExact(args[1]), quest.getReward());
+                                            RewardManager.sendAllRewardItems(quest.getQuestName(), target, quest.getReward());
                                             playerQuests.replace(quest, progression);
                                             QuestsManager.getActiveQuests().get(args[1]).increaseAchievedQuests(args[1]);
                                             break;
-                                        } else sender.sendMessage(QuestsMessages.QUEST_ALREADY_ACHIEVED.toString());
+                                        } else {
+                                            final String msg = QuestsMessages.QUEST_ALREADY_ACHIEVED.toString();
+                                            if (msg != null) sender.sendMessage(msg);
+                                        }
                                     }
                                     index++;
                                 }
-                            } else sender.sendMessage(QuestsMessages.INVALID_QUEST_ID.toString());
-                        } else sender.sendMessage(QuestsMessages.INVALID_PLAYER.toString());
+                            } else {
+                                final String msg = QuestsMessages.INVALID_QUEST_ID.toString();
+                                if (msg != null) sender.sendMessage(msg);
+                            }
+                        } else {
+                            final String msg = QuestsMessages.INVALID_PLAYER.toString();
+                            if (msg != null) sender.sendMessage(msg);
+                        }
                         break;
                     case "holo":
                         if (sender instanceof Player) {
@@ -120,7 +152,8 @@ public class AdminCommands implements CommandExecutor {
                                         try {
                                             index = Integer.parseInt(args[3]) - 1;
                                         } catch (Exception e) {
-                                            sender.sendMessage(QuestsMessages.INVALID_QUEST_INDEX.toString());
+                                            final String msg = QuestsMessages.INVALID_QUEST_INDEX.toString();
+                                            if (msg != null) sender.sendMessage(msg);
                                             return true;
                                         }
                                         switch (args[2]) {
@@ -129,60 +162,93 @@ public class AdminCommands implements CommandExecutor {
                                                     HolographicDisplaysHook.createHologram(index,
                                                             LoadQuests.getGlobalQuests(),
                                                             ((Player) sender).getPlayer());
-                                                } else
-                                                    sender.sendMessage(QuestsMessages.HOLO_CATEGORIZED_ENABLED.toString());
+                                                } else {
+                                                    final String msg = QuestsMessages.HOLO_CATEGORIZED_ENABLED.toString();
+                                                    if (msg != null) sender.sendMessage(msg);
+                                                }
                                                 break;
                                             case "easy":
                                                 if (LoadQuests.getEasyQuests().size() != 0) {
                                                     HolographicDisplaysHook.createHologram(index,
                                                             LoadQuests.getEasyQuests(),
                                                             ((Player) sender).getPlayer());
-                                                } else
-                                                    sender.sendMessage(QuestsMessages.HOLO_CATEGORIZED_DISABLED.toString());
+                                                } else {
+                                                    final String msg = QuestsMessages.HOLO_CATEGORIZED_DISABLED.toString();
+                                                    if (msg != null) sender.sendMessage(msg);
+                                                }
                                                 break;
                                             case "medium":
                                                 if (LoadQuests.getMediumQuests().size() != 0) {
                                                     HolographicDisplaysHook.createHologram(index,
                                                             LoadQuests.getMediumQuests(),
                                                             ((Player) sender).getPlayer());
-                                                } else
-                                                    sender.sendMessage(QuestsMessages.HOLO_CATEGORIZED_DISABLED.toString());
+                                                } else {
+                                                    final String msg = QuestsMessages.HOLO_CATEGORIZED_DISABLED.toString();
+                                                    if (msg != null) sender.sendMessage(msg);
+                                                }
                                                 break;
                                             case "hard":
                                                 if (LoadQuests.getHardQuests().size() != 0) {
                                                     HolographicDisplaysHook.createHologram(index,
                                                             LoadQuests.getHardQuests(),
                                                             ((Player) sender).getPlayer());
-                                                } else
-                                                    sender.sendMessage(QuestsMessages.HOLO_CATEGORIZED_DISABLED.toString());
+                                                } else {
+                                                    final String msg = QuestsMessages.HOLO_CATEGORIZED_DISABLED.toString();
+                                                    if (msg != null) sender.sendMessage(msg);
+                                                }
                                                 break;
                                             default:
-                                                sender.sendMessage(QuestsMessages.INVALID_CATEGORY.toString());
+                                                final String msg = QuestsMessages.INVALID_CATEGORY.toString();
+                                                if (msg != null) sender.sendMessage(msg);
                                                 break;
                                         }
                                         break;
-                                    } else sender.sendMessage(QuestsMessages.ADMIN_HELP.toString());
+                                    } else {
+                                        final String msg = QuestsMessages.ADMIN_HELP.toString();
+                                        if (msg != null) sender.sendMessage(msg);
+                                    }
                                 } else if (args.length == 3 && args[1].equalsIgnoreCase("delete")) {
                                     int index;
                                     try {
                                         index = Integer.parseInt(args[2]);
                                     } catch (Exception e) {
-                                        sender.sendMessage(QuestsMessages.INVALID_QUEST_INDEX.toString());
+                                        final String msg = QuestsMessages.INVALID_QUEST_INDEX.toString();
+                                        if (msg != null) sender.sendMessage(msg);
                                         return true;
                                     }
                                     if (HologramsManager.deleteHologram(index)) {
-                                        sender.sendMessage(QuestsMessages.HOLO_DELETED.toString());
-                                    } else sender.sendMessage(QuestsMessages.HOLO_INVALID_INDEX.toString());
-                                } else sender.sendMessage(QuestsMessages.ADMIN_HELP.toString());
-                            } else sender.sendMessage(QuestsMessages.ADMIN_HELP.toString());
-                        } else sender.sendMessage(QuestsMessages.PLAYER_ONLY.toString());
+                                        final String msg = QuestsMessages.HOLO_DELETED.toString();
+                                        if (msg != null) sender.sendMessage(msg);
+                                    } else {
+                                        final String msg = QuestsMessages.HOLO_INVALID_INDEX.toString();
+                                        if (msg != null) sender.sendMessage(msg);
+                                    }
+                                } else {
+                                    final String msg = QuestsMessages.ADMIN_HELP.toString();
+                                    if (msg != null) sender.sendMessage(msg);
+                                }
+                            } else {
+                                final String msg = QuestsMessages.ADMIN_HELP.toString();
+                                if (msg != null) sender.sendMessage(msg);
+                            }
+                        } else {
+                            final String msg = QuestsMessages.PLAYER_ONLY.toString();
+                            if (msg != null) sender.sendMessage(msg);
+                        }
                         break;
                     default:
-                        sender.sendMessage(QuestsMessages.ADMIN_HELP.toString());
+                        final String msg = QuestsMessages.ADMIN_HELP.toString();
+                        if (msg != null) sender.sendMessage(msg);
                         break;
                 }
-            } else sender.sendMessage(QuestsMessages.ADMIN_HELP.toString());
-        } else sender.sendMessage(QuestsMessages.NO_PERMISSION.toString());
+            } else {
+                final String msg = QuestsMessages.ADMIN_HELP.toString();
+                if (msg != null) sender.sendMessage(msg);
+            }
+        } else {
+            final String msg = QuestsMessages.NO_PERMISSION.toString();
+            if (msg != null) sender.sendMessage(msg);
+        }
         return false;
     }
 }

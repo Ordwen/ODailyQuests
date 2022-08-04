@@ -35,7 +35,10 @@ public class CitizensHook implements Listener {
         if (npcName.equals(NPCNames.getPlayerNPCName())) {
             if (event.getClicker().hasPermission(QuestsPermissions.QUESTS_SHOW_PLAYER.getPermission())) {
                 event.getClicker().openInventory(PlayerQuestsInterface.getPlayerQuestsInterface(event.getClicker().getName()));
-            } else event.getClicker().sendMessage(QuestsMessages.NO_PERMISSION_CATEGORY.toString());
+            } else {
+                final String msg = QuestsMessages.NO_PERMISSION_CATEGORY.toString();
+                if (msg != null) event.getClicker().sendMessage(msg);
+            }
         }
 
         /* Global interface */
@@ -43,8 +46,14 @@ public class CitizensHook implements Listener {
             if (Modes.getQuestsMode() == 1) {
                 if (event.getClicker().hasPermission(QuestsPermissions.QUESTS_SHOW_GLOBAL.getPermission())) {
                     event.getClicker().openInventory(InterfacesManager.getGlobalQuestsInterface().getGlobalQuestsInterfaceFirstPage());
-                } else event.getClicker().sendMessage(QuestsMessages.NO_PERMISSION_CATEGORY.toString());
-            } else event.getClicker().sendMessage(QuestsMessages.GLOBAL_DISABLED.toString());
+                } else {
+                    final String msg = QuestsMessages.NO_PERMISSION_CATEGORY.toString();
+                    if (msg != null) event.getClicker().sendMessage(msg);
+                }
+            } else {
+                final String msg = QuestsMessages.GLOBAL_DISABLED.toString();
+                if (msg != null) event.getClicker().sendMessage(msg);
+            }
         }
 
         /* Easy interface */
@@ -52,8 +61,14 @@ public class CitizensHook implements Listener {
             if (Modes.getQuestsMode() == 2) {
                 if (event.getClicker().hasPermission(QuestsPermissions.QUESTS_SHOW_EASY.getPermission())) {
                     event.getClicker().openInventory(InterfacesManager.getCategorizedQuestsInterfaces().getEasyQuestsInterfaceFirstPage());
-                } else event.getClicker().sendMessage(QuestsMessages.NO_PERMISSION_CATEGORY.toString());
-            } else event.getClicker().sendMessage(QuestsMessages.CATEGORIZED_DISABLED.toString());
+                } else {
+                    final String msg = QuestsMessages.NO_PERMISSION_CATEGORY.toString();
+                    if (msg != null) event.getClicker().sendMessage(msg);
+                }
+            } else {
+                final String msg = QuestsMessages.CATEGORIZED_DISABLED.toString();
+                if (msg != null) event.getClicker().sendMessage(msg);
+            }
         }
 
         /* Medium interface */
@@ -61,8 +76,14 @@ public class CitizensHook implements Listener {
             if (Modes.getQuestsMode() == 2) {
                 if (event.getClicker().hasPermission(QuestsPermissions.QUESTS_SHOW_MEDIUM.getPermission())) {
                     event.getClicker().openInventory(InterfacesManager.getCategorizedQuestsInterfaces().getMediumQuestsInterfaceFirstPage());
-                } else event.getClicker().sendMessage(QuestsMessages.NO_PERMISSION_CATEGORY.toString());
-            } else event.getClicker().sendMessage(QuestsMessages.CATEGORIZED_DISABLED.toString());
+                } else {
+                    final String msg = QuestsMessages.NO_PERMISSION_CATEGORY.toString();
+                    if (msg != null) event.getClicker().sendMessage(msg);
+                }
+            } else {
+                final String msg = QuestsMessages.CATEGORIZED_DISABLED.toString();
+                if (msg != null) event.getClicker().sendMessage(msg);
+            }
         }
 
         /* Hard interface */
@@ -70,8 +91,14 @@ public class CitizensHook implements Listener {
             if (Modes.getQuestsMode() == 2) {
                 if (event.getClicker().hasPermission(QuestsPermissions.QUESTS_SHOW_HARD.getPermission())) {
                     event.getClicker().openInventory(InterfacesManager.getCategorizedQuestsInterfaces().getHardQuestsInterfaceFirstPage());
-                } else event.getClicker().sendMessage(QuestsMessages.NO_PERMISSION_CATEGORY.toString());
-            } else event.getClicker().sendMessage(QuestsMessages.CATEGORIZED_DISABLED.toString());
+                } else {
+                    final String msg = QuestsMessages.NO_PERMISSION_CATEGORY.toString();
+                    if (msg != null) event.getClicker().sendMessage(msg);
+                }
+            } else {
+                final String msg = QuestsMessages.CATEGORIZED_DISABLED.toString();
+                if (msg != null) event.getClicker().sendMessage(msg);
+            }
         }
     }
 }

@@ -136,7 +136,10 @@ public abstract class AbstractSpecifiedChecker extends AbstractProgressionIncrea
 
             player.closeInventory();
             RewardManager.sendAllRewardItems(quest.getQuestName(), player, quest.getReward());
-        } else player.sendMessage(QuestsMessages.NOT_ENOUGH_ITEM.toString());
+        } else {
+            final String msg = QuestsMessages.NOT_ENOUGH_ITEM.toString();
+            if (msg != null) player.sendMessage(msg);
+        }
     }
 
     /**
@@ -151,7 +154,8 @@ public abstract class AbstractSpecifiedChecker extends AbstractProgressionIncrea
         double distance = player.getLocation().distance(requiredLocation);
         if (distance <= quest.getRadius()) {
             if (!requiredLocation.getWorld().equals(player.getLocation().getWorld())) {
-                player.sendMessage(QuestsMessages.BAD_WORLD_LOCATION.toString());
+                final String msg = QuestsMessages.BAD_WORLD_LOCATION.toString();
+                if (msg != null) player.sendMessage(msg);
                 return;
             }
             progression.setAchieved();
@@ -159,7 +163,10 @@ public abstract class AbstractSpecifiedChecker extends AbstractProgressionIncrea
 
             player.closeInventory();
             RewardManager.sendAllRewardItems(quest.getQuestName(), player, quest.getReward());
-        } else player.sendMessage(QuestsMessages.TOO_FAR_FROM_LOCATION.toString());
+        } else {
+            final String msg = QuestsMessages.TOO_FAR_FROM_LOCATION.toString();
+            if (msg != null) player.sendMessage(msg);
+        }
     }
 
     /**

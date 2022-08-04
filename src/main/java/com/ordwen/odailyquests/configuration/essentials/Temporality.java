@@ -1,6 +1,8 @@
 package com.ordwen.odailyquests.configuration.essentials;
 
 import com.ordwen.odailyquests.files.ConfigurationFiles;
+import com.ordwen.odailyquests.tools.AddDefault;
+import org.bukkit.configuration.ConfigurationSection;
 
 public class Temporality {
 
@@ -14,16 +16,23 @@ public class Temporality {
     private static String d;
     private static String h;
     private static String m;
+    private static String fewSeconds;
 
     /**
      * Load all temporality settings.
      */
     public void loadTemporalitySettings() {
-        temporalityMode = configurationFiles.getConfigFile().getInt("temporality_mode");
+        final ConfigurationSection config = configurationFiles.getConfigFile();
+        temporalityMode = config.getInt("temporality_mode");
 
-        d = configurationFiles.getConfigFile().getConfigurationSection("temporality_initials").getString("days");
-        h = configurationFiles.getConfigFile().getConfigurationSection("temporality_initials").getString("hours");
-        m = configurationFiles.getConfigFile().getConfigurationSection("temporality_initials").getString("minutes");
+        final ConfigurationSection initials = config.getConfigurationSection("temporality_initials");
+
+        d = initials.getString("days");
+        h = initials.getString("hours");
+        m = initials.getString("minutes");
+
+        if (!initials.contains("few_seconds")) AddDefault.addDefaultConfigItem("temporality_initials.few_seconds", "Few seconds", configurationFiles.getConfigFile(), configurationFiles.getFile());
+        fewSeconds = initials.getString("few_seconds");
     }
 
     /**
@@ -56,5 +65,13 @@ public class Temporality {
      */
     public static String getMinuteInitial() {
         return m;
+    }
+
+    /**
+     * Get few seconds text.
+     * @return fewSeconds
+     */
+    public static String getFewSeconds() {
+        return fewSeconds;
     }
 }

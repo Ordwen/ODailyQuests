@@ -5,42 +5,34 @@ import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractItemCh
 import org.bukkit.Material;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockDropItemEvent;
+import org.bukkit.event.player.PlayerHarvestBlockEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public class BlockDropItemListener extends AbstractItemChecker implements Listener {
+public class PlayerHarvestBlockListener extends AbstractItemChecker implements Listener {
 
     @EventHandler
-    public void onBlockDropItem(BlockDropItemEvent event) {
+    public void onPlayerHarvestBlock(PlayerHarvestBlockEvent event) {
 
-        System.out.println("BLOCK DROP ITEM");
+        // debug > System.out.println("PLAYER HARVEST BLOCK");
 
-        final BlockData data = event.getBlockState().getBlockData();
+        final BlockData data = event.getHarvestedBlock().getBlockData();
         if (data instanceof Ageable ageable) {
             if (ageable.getAge() == ageable.getMaximumAge()) {
 
                 Material material = data.getMaterial();
                 switch (material) {
-                    case POTATOES -> material = Material.POTATO;
-                    case CARROTS -> material = Material.CARROT;
-                    case BEETROOTS -> material = Material.BEETROOT;
-                    case COCOA -> material = Material.COCOA_BEANS;
                     case SWEET_BERRY_BUSH -> material = Material.SWEET_BERRIES;
                 }
 
-                System.out.println(material);
-
-                final List<Item> drops = event.getItems();
+                final List<ItemStack> drops = event.getItemsHarvested();
                 int amount = 0;
-                for (Item item : drops) {
-
-                    if (item.getItemStack().getType() == material) {
-                        amount += item.getItemStack().getAmount();
+                for (ItemStack item : drops) {
+                    if (item.getType() == material) {
+                        amount += item.getAmount();
                     }
                 }
 

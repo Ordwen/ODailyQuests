@@ -87,7 +87,8 @@ public class Utils {
 
         activeQuests.put(playerName, playerQuests);
 
-        Bukkit.getPlayer(playerName).sendMessage(QuestsMessages.QUESTS_RENEWED.toString());
+        final String msg = QuestsMessages.QUESTS_RENEWED.toString();
+        if (msg != null) Bukkit.getPlayer(playerName).sendMessage(msg);
 
         PluginLogger.info(ChatColor.GREEN + playerName + ChatColor.YELLOW + " inserted into the array.");
         PluginLogger.info(ChatColor.GOLD + playerName + ChatColor.YELLOW + "'s quests have been renewed.");

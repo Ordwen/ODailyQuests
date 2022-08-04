@@ -14,6 +14,10 @@ public class FilesManager {
      * Load all files.
      */
     public void loadAllFiles() {
+
+        oDailyQuests.getConfigurationFiles().loadConfigurationFiles();
+        oDailyQuests.getConfigurationFiles().loadMessagesFiles();
+
         new QuestsFiles(oDailyQuests).loadQuestsFiles();
         new ProgressionFile(oDailyQuests).loadProgressionFile();
         new HologramsFile(oDailyQuests).loadHologramsFile();

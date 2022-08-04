@@ -82,7 +82,9 @@ public class LoadProgressionSQL {
                     activeQuests.put(playerName, playerQuests);
 
                     PluginLogger.info(ChatColor.GOLD + playerName + ChatColor.YELLOW + "'s quests have been loaded.");
-                    Bukkit.getPlayer(playerName).sendMessage(QuestsMessages.QUESTS_IN_PROGRESS.toString());
+
+                    final String msg = QuestsMessages.QUESTS_IN_PROGRESS.toString();
+                    if (msg != null) Bukkit.getPlayer(playerName).sendMessage(msg);
                 }
             } else {
                 Utils.loadNewPlayerQuests(playerName, activeQuests, timestampConfigMode, quests);

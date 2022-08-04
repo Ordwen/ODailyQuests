@@ -8,6 +8,21 @@ import java.util.Calendar;
 
 public class TimeRemain {
 
+    private static String d;
+    private static String h;
+    private static String m;
+    private static String fewSeconds;
+
+    /**
+     * Setup initials.
+     */
+    public void setupInitials() {
+        d = Temporality.getDayInitial();
+        h = Temporality.getHourInitial();
+        m = Temporality.getMinuteInitial();
+        fewSeconds = Temporality.getFewSeconds();
+    }
+
     /**
      * Get the time remain before the next quests draw.
      *
@@ -37,11 +52,7 @@ public class TimeRemain {
 
         String timeRemain = "";
 
-        String d = Temporality.getDayInitial();
-        String h = Temporality.getHourInitial();
-        String m = Temporality.getMinuteInitial();
-
-        long rest = 0;
+        long rest;
 
         switch (Temporality.getTemporalityMode()) {
             case 1 -> {
@@ -53,7 +64,7 @@ public class TimeRemain {
                 } else if (minutes != 0) {
                     timeRemain = String.format("%d" + m, minutes);
                 } else {
-                    timeRemain = "Few seconds.";
+                    timeRemain = fewSeconds;
                 }
             }
             case 2 -> {
@@ -65,12 +76,6 @@ public class TimeRemain {
                 timeRemain = getTimeRemainString(rest, d, h, m);
             }
         }
-
-        /*
-        if (rest < 0) {
-
-        }
-        */
 
         return timeRemain;
     }

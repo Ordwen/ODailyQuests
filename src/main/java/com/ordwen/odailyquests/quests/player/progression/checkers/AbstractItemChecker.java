@@ -23,7 +23,7 @@ public abstract class AbstractItemChecker extends AbstractProgressionIncreaser {
      * @param amount    the amount to increase progression by.
      * @param questType the quest type to increase progression for.
      */
-    public void setPlayerQuestProgression(Player player, ItemStack itemStack, int amount, QuestType questType ) {
+    public void setPlayerQuestProgression(Player player, ItemStack itemStack, int amount, QuestType questType) {
         if (DisabledWorlds.isWorldDisabled(player.getWorld().getName())) {
             return;
         }

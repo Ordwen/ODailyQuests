@@ -57,6 +57,7 @@ temporality_initials:
   days: "d"
   hours: "h"
   minutes: "m"
+  few_seconds: "Few seconds"
 
 # Global Reward
 # Will be given when the player has completed all their daily quests.

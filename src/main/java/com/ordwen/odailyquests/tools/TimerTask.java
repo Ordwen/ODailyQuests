@@ -27,7 +27,9 @@ public class TimerTask {
 
         Runnable runnable = () -> {
             for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-                player.sendMessage(QuestsMessages.NEW_DAY.toString());
+
+                final String msg = QuestsMessages.NEW_DAY.toString();
+                if (msg != null) player.sendMessage(msg);
                 Utils.loadNewPlayerQuests(player.getName(), QuestsManager.getActiveQuests(), Modes.getTimestampMode(), new LinkedHashMap<>());
             }
         };

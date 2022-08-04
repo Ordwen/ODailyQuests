@@ -28,6 +28,7 @@ public enum QuestsMessages {
     HOLO_INVALID_INDEX("hologram_invalid_index", "&cInvalid index for the hologram."),
 
     QUESTS_IN_PROGRESS("quests_in_progress", "&eYou still have daily quests to complete !"),
+    ALL_QUESTS_ACHIEVED_CONNECT("all_quests_achieved_connect", "&aYou have completed all your daily quests !"),
     QUESTS_RENEWED("quests_renewed", "&aYou have new daily quests to complete !"),
     QUESTS_RENEWED_ADMIN("quests_renewed_admin", "&eYou have reset the quests of %target%."),
     QUEST_ACHIEVED("quest_achieved", "&aYou finished the quest &e%questName%&a, well done !"),
@@ -75,7 +76,9 @@ public enum QuestsMessages {
     @Override
     public String toString() {
         String msg = LANG.getString(this.path, defaultMessage);
-        return ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(msg));
+
+        if (msg.trim().isEmpty()) return null;
+        else return ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(msg));
     }
 
     /**
