@@ -48,14 +48,6 @@ public class ConfigurationFiles {
     }
 
     /**
-     * Get the messages file.
-     * @return messages file.
-     */
-    public File getMessagesFile() {
-        return LANG_FILE;
-    }
-
-    /**
      * Init configuration files.
      */
     public void loadConfigurationFiles() {
@@ -111,10 +103,9 @@ public class ConfigurationFiles {
             }
         }
         QuestsMessages.setFile(messages);
-        LANG_FILE = messagesFile;
 
         try {
-            messages.save(getMessagesFile());
+            messages.save(messagesFile);
         } catch(IOException e) {
             PluginLogger.info(ChatColor.RED + "An error happened on the save of the messages file.");
             PluginLogger.info(ChatColor.RED + "If the problem persists, contact the developer.");

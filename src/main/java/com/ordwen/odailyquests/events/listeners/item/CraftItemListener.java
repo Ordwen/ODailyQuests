@@ -21,8 +21,10 @@ public class CraftItemListener extends AbstractItemChecker implements Listener {
         ItemStack test;
 
         if (event.getRecipe() instanceof ComplexRecipe complexRecipe) {
-            if (complexRecipe.getKey().getKey().equalsIgnoreCase("REPAIR_ITEM")) {
-                return;
+            switch (complexRecipe.getKey().getKey()) {
+                case "REPAIR_ITEM":
+                case "ARMOR_DYE":
+                    return;
             }
             test = new ItemStack(Material.valueOf(complexRecipe.getKey().getKey().toUpperCase()));
         } else test = event.getRecipe().getResult().clone();

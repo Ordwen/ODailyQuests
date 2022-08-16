@@ -17,8 +17,6 @@ public class PlayerHarvestBlockListener extends AbstractItemChecker implements L
     @EventHandler
     public void onPlayerHarvestBlock(PlayerHarvestBlockEvent event) {
 
-        // debug > System.out.println("PLAYER HARVEST BLOCK");
-
         final BlockData data = event.getHarvestedBlock().getBlockData();
         if (data instanceof Ageable ageable) {
             if (ageable.getAge() == ageable.getMaximumAge()) {

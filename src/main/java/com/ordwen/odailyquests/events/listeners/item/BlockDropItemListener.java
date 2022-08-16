@@ -18,8 +18,6 @@ public class BlockDropItemListener extends AbstractItemChecker implements Listen
     @EventHandler
     public void onBlockDropItem(BlockDropItemEvent event) {
 
-        System.out.println("BLOCK DROP ITEM");
-
         final BlockData data = event.getBlockState().getBlockData();
         if (data instanceof Ageable ageable) {
             if (ageable.getAge() == ageable.getMaximumAge()) {
