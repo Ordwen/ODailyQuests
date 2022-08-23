@@ -4,6 +4,7 @@ import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.apis.hooks.holograms.HologramsManager;
 import com.ordwen.odailyquests.apis.hooks.holograms.HolographicDisplaysHook;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
+import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.enums.QuestsPermissions;
 import com.ordwen.odailyquests.quests.player.progression.types.AbstractQuest;
@@ -115,7 +116,7 @@ public class AdminCommands implements CommandExecutor {
                     case "complete":
                         final Player target = Bukkit.getPlayerExact(args[1]);
                         if (target != null) {
-                            if (args[2] != null && Integer.parseInt(args[2]) >= 1 && Integer.parseInt(args[2]) <= 3) {
+                            if (args[2] != null && Integer.parseInt(args[2]) >= 1 && Integer.parseInt(args[2]) <= QuestsAmount.getQuestsAmount()) {
                                 HashMap<AbstractQuest, Progression> playerQuests = QuestsManager.getActiveQuests().get(args[1]).getPlayerQuests();
                                 int index = 0;
                                 for (AbstractQuest quest : playerQuests.keySet()) {

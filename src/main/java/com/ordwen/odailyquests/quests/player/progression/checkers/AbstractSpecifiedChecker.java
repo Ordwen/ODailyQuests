@@ -82,9 +82,12 @@ public abstract class AbstractSpecifiedChecker extends AbstractProgressionIncrea
                     Progression questProgression = playerQuests.get(quest);
                     if (!questProgression.isAchieved() && quest.getType() == QuestType.VILLAGER_TRADE) {
 
-                        if (quest.getRequiredItem() == null) valid = true;
-                        else if (quest.getRequiredItem().getType() == selectedRecipe.getResult().getType())
-                            valid = true;
+                        if (quest.getRequiredItems() == null) valid = true;
+                        else {
+                            for (ItemStack item : quest.getRequiredItems()) {
+                                if (item.getType() == selectedRecipe.getResult().getType()) valid = true;
+                            }
+                        }
 
                         if (selectedRecipe.getUses() <= OpenedRecipes.get(selectedRecipe)) {
                             valid = false;
@@ -124,14 +127,22 @@ public abstract class AbstractSpecifiedChecker extends AbstractProgressionIncrea
      * @param quest       quest to validate.
      */
     private void validateGetQuestType(Player player, Progression progression, ItemQuest quest) {
-        if (getAmount(player.getInventory(), quest.getRequiredItem()) >= quest.getAmountRequired()) {
+        boolean hasRequiredAmount = true;
+        for (ItemStack item : quest.getRequiredItems()) {
+            if (getAmount(player.getInventory(), item) < quest.getAmountRequired()) {
+                hasRequiredAmount = false;
+            }
+        }
+        if (hasRequiredAmount) {
             progression.setAchieved();
             QuestsManager.getActiveQuests().get(player.getName()).increaseAchievedQuests(player.getName());
 
             if (TakeItems.isTakeItemsEnabled()) {
-                final ItemStack toRemove = quest.getRequiredItem().clone();
-                toRemove.setAmount(quest.getAmountRequired());
-                player.getInventory().removeItem(toRemove);
+                for (ItemStack item : quest.getRequiredItems()) {
+                    final ItemStack toRemove = item.clone();
+                    toRemove.setAmount(quest.getAmountRequired());
+                    player.getInventory().removeItem(toRemove);
+                }
             }
 
             player.closeInventory();

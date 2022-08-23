@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.quests.player;
 
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
 import com.ordwen.odailyquests.quests.player.progression.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.progression.storage.yaml.YamlManager;
 import com.ordwen.odailyquests.quests.LoadQuests;
@@ -88,14 +89,14 @@ public class QuestsManager implements Listener {
     }
 
     /**
-     * Select 3 random quests.
+     * Select random quests.
      *
      * @param quests array of quests.
      */
     public static void selectRandomQuests(HashMap<AbstractQuest, Progression> quests) {
         if (configurationFiles.getConfigFile().getInt("quests_mode") == 1) {
             ArrayList<AbstractQuest> globalQuests = LoadQuests.getGlobalQuests();
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < QuestsAmount.getQuestsAmount(); i++) {
                 AbstractQuest quest;
                 do {
                     quest = getRandomQuest(globalQuests);
@@ -104,7 +105,7 @@ public class QuestsManager implements Listener {
                 quests.put(quest, progression);
             }
         } else if (configurationFiles.getConfigFile().getInt("quests_mode") == 2) {
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < QuestsAmount.getQuestsAmount(); i++) {
                 AbstractQuest quest = switch (i) {
                     case 0 -> getRandomQuest(LoadQuests.getEasyQuests());
                     case 1 -> getRandomQuest(LoadQuests.getMediumQuests());

@@ -2,19 +2,21 @@ package com.ordwen.odailyquests.quests.player.progression.types;
 
 import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
+
 public class ItemQuest extends AbstractQuest {
 
-    final ItemStack requiredItem;
+    final List<ItemStack> requiredItems;
 
     /**
      * Quest constructor.
      *
      * @param globalQuest parent quest.
-     * @param requiredItem  required item.
+     * @param requiredItems list of required items.
      */
-    public ItemQuest(GlobalQuest globalQuest, ItemStack requiredItem) {
+    public ItemQuest(GlobalQuest globalQuest, List<ItemStack> requiredItems) {
         super(globalQuest);
-        this.requiredItem = requiredItem;
+        this.requiredItems = requiredItems;
     }
 
     /**
@@ -22,7 +24,7 @@ public class ItemQuest extends AbstractQuest {
      *
      * @return quest item-required.
      */
-    public ItemStack getRequiredItem() {
-        return this.requiredItem;
+    public List<ItemStack> getRequiredItems() {
+        return this.requiredItems;
     }
 }

@@ -144,6 +144,8 @@ public class PlayerQuestsInterface {
                         }
                         meta.setLore(lore);
 
+                        commandItem.setItemMeta(meta);
+
                         playerQuestsInventoryBase.setItem(itemsSection.getInt(element + ".item.slot") - 1, commandItem);
                         consoleCommandsItems.put(commandItem, commands);
                     }

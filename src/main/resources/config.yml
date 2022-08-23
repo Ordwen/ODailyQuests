@@ -13,6 +13,9 @@ database:
   password: "1234"     # Database password
   port: "3306"         # Database port
 
+# Select the amount of daily quests given to the player.
+quests_amount: 3
+
 # Select the mode of the quests.
 # ==========================================================
 # 1 : only the global quests will be loaded.

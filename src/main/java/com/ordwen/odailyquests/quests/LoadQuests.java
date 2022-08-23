@@ -99,8 +99,9 @@ public class LoadQuests {
                 String questName;
                 List<String> questDesc;
                 QuestType questType = null;
-                ItemStack requiredItem = null;
-                EntityType entityType = null;
+                List<ItemStack> requiredItems = null;
+                ItemStack customItem;
+                List<EntityType> entityTypes = null;
                 DyeColor dyeColor = null;
                 String entityName = null;
                 Villager.Profession profession = null;
@@ -156,13 +157,18 @@ public class LoadQuests {
                         /* types that requires an entity */
                         case KILL, BREED, TAME, SHEAR -> {
                             isEntityType = true;
-                            if (file.getConfigurationSection("quests." + fileQuest).contains(".entity_type")) {
-                                String presumedEntity = file.getConfigurationSection("quests." + fileQuest).getString(".entity_type");
-                                entityType = getEntityType(presumedEntity, fileName, questIndex, presumedEntity);
-                                if (entityType == EntityType.SHEEP) {
-                                    if (file.getConfigurationSection("quests." + fileQuest).contains(".sheep_color")) {
-                                        String presumedDyeColor = file.getConfigurationSection("quests." + fileQuest).getString(".sheep_color");
-                                        dyeColor = getDyeColor(presumedDyeColor, fileName, questIndex, presumedDyeColor);
+                            if (file.getConfigurationSection("quests." + fileQuest).contains(".required_entity")) {
+                                entityTypes = new ArrayList<>();
+
+                                for (String presumedEntity : file.getConfigurationSection("quests." + fileQuest).getStringList(".entity_type")) {
+                                    EntityType entityType = getEntityType(presumedEntity, fileName, questIndex, presumedEntity);
+                                    entityTypes.add(entityType);
+
+                                    if (entityType == EntityType.SHEEP) {
+                                        if (file.getConfigurationSection("quests." + fileQuest).contains(".sheep_color")) {
+                                            String presumedDyeColor = file.getConfigurationSection("quests." + fileQuest).getString(".sheep_color");
+                                            dyeColor = getDyeColor(presumedDyeColor, fileName, questIndex, presumedDyeColor);
+                                        }
                                     }
                                 }
                             } else isGlobalType = true;
@@ -174,17 +180,17 @@ public class LoadQuests {
                                 /* check if the required item is a custom item */
                                 if (itemType.equals("CUSTOM_ITEM")) {
                                     ConfigurationSection section = file.getConfigurationSection("quests." + fileQuest + ".custom_item");
-                                    requiredItem = getItemStackFromMaterial(section.getString(".type"), fileName, questIndex, "type (CUSTOM_ITEM)");
-                                    ItemMeta meta = requiredItem.getItemMeta();
+                                    customItem = getItemStackFromMaterial(section.getString(".type"), fileName, questIndex, "type (CUSTOM_ITEM)");
+                                    ItemMeta meta = customItem.getItemMeta();
                                     meta.setDisplayName(ColorConvert.convertColorCode(ChatColor.translateAlternateColorCodes('&', section.getString(".name"))));
                                     List<String> lore = section.getStringList(".lore");
                                     for (String str : lore) {
                                         lore.set(lore.indexOf(str), ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(str)));
                                     }
                                     meta.setLore(lore);
-                                    requiredItem.setItemMeta(meta);
+                                    customItem.setItemMeta(meta);
                                 } else {
-                                    requiredItem = getItemStackFromMaterial(itemType, fileName, questIndex, "required_item");
+                                    requiredItems.add(getItemStackFromMaterial(itemType, fileName, questIndex, "required_item"));
                                 }
                             } else isGlobalType = true;
 
@@ -256,23 +262,23 @@ public class LoadQuests {
                     } else if (isEntityType) {
                         if (questType == QuestType.CUSTOM_MOBS) {
                             if (EliteMobsHook.isEliteMobsSetup() || MythicMobsHook.isMythicMobsSetup()) {
-                                quest = new EntityQuest(base, entityType, null, entityName);
+                                quest = new EntityQuest(base, entityTypes, null, entityName);
                             } else {
                                 PluginLogger.error("File : " + fileName);
                                 PluginLogger.error("Quest at index " + (questIndex + 1) + " cannot be loaded !");
                                 PluginLogger.error("There is no compatible plugin found for quest type CUSTOM_MOBS.");
                             }
                         } else {
-                            quest = new EntityQuest(base, entityType, dyeColor, entityName);
+                            quest = new EntityQuest(base, entityTypes, dyeColor, entityName);
                         }
                     } else {
                         if (questType == QuestType.VILLAGER_TRADE) {
-                            quest = new VillagerQuest(base, requiredItem, profession, villagerLevel);
+                            quest = new VillagerQuest(base, requiredItems, profession, villagerLevel);
                         } else if (questType == QuestType.LOCATION) {
                             quest = new LocationQuest(base, location, radius);
                         }
                         else {
-                            quest = new ItemQuest(base, requiredItem);
+                            quest = new ItemQuest(base, requiredItems);
                         }
                     }
 

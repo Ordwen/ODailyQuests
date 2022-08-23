@@ -1,15 +1,9 @@
 package com.ordwen.odailyquests.events.listeners.inventory;
 
 import com.ordwen.odailyquests.commands.interfaces.InterfacesManager;
-import com.ordwen.odailyquests.configuration.essentials.Synchronization;
-import com.ordwen.odailyquests.events.antiglitch.OpenedRecipes;
+import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
 import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractSpecifiedChecker;
-import com.ordwen.odailyquests.quests.player.progression.types.AbstractQuest;
-import com.ordwen.odailyquests.quests.QuestType;
-import com.ordwen.odailyquests.quests.player.QuestsManager;
-import com.ordwen.odailyquests.quests.player.progression.Progression;
-import com.ordwen.odailyquests.quests.player.progression.types.VillagerQuest;
-import com.ordwen.odailyquests.rewards.RewardManager;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
@@ -49,11 +43,32 @@ public class InventoryClickListener extends AbstractSpecifiedChecker implements 
             return;
         }
 
-        // complete quest for types that requires a click ( GET - REACH )
+        // do action related to the clicked item
         final String inventoryName = event.getView().getTitle();
         if (inventoryName.startsWith(InterfacesManager.getPlayerQuestsInventoryName())) {
             event.setCancelled(true);
 
+            if (PlayerQuestsInterface.getFillItems().contains(event.getCurrentItem())) return;
+
+            if (PlayerQuestsInterface.getCloseItems().contains(event.getCurrentItem())) {
+                event.getWhoClicked().closeInventory();
+                return;
+            }
+
+            if (PlayerQuestsInterface.getPlayerCommandsItems().containsKey(event.getCurrentItem())) {
+                for (String cmd : PlayerQuestsInterface.getPlayerCommandsItems().get(event.getCurrentItem())) {
+                    Bukkit.getServer().dispatchCommand(event.getWhoClicked(), cmd);
+                }
+            }
+
+            if (PlayerQuestsInterface.getConsoleCommandsItems().containsKey(event.getCurrentItem())) {
+                for (String cmd : PlayerQuestsInterface.getConsoleCommandsItems().get(event.getCurrentItem())) {
+                    Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd.replace("%player%", event.getWhoClicked().getName()));
+                }
+                return;
+            }
+
+            // complete quest for types that requires a click ( GET - REACH )
             setPlayerQuestProgression(player, clickedItem);
         }
     }

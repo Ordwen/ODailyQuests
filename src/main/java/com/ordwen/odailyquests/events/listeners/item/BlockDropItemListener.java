@@ -31,8 +31,6 @@ public class BlockDropItemListener extends AbstractItemChecker implements Listen
                     case SWEET_BERRY_BUSH -> material = Material.SWEET_BERRIES;
                 }
 
-                System.out.println(material);
-
                 final List<Item> drops = event.getItems();
                 int amount = 0;
                 for (Item item : drops) {

@@ -38,10 +38,15 @@ public abstract class AbstractEntityChecker extends AbstractProgressionIncreaser
             if (!progression.isAchieved() && abstractQuest.getType() == questType) {
 
                 if (abstractQuest instanceof EntityQuest quest) {
-                    boolean isRequiredEntity;
+                    boolean isRequiredEntity = false;
 
-                    if (quest.getEntityType() == null) isRequiredEntity = true;
-                    else isRequiredEntity = (quest.getEntityType() == entityType);
+                    if (quest.getEntityTypes() == null) isRequiredEntity = true;
+                    else {
+                        for (EntityType type : quest.getEntityTypes()) {
+                            isRequiredEntity = (type == entityType);
+                            if (isRequiredEntity) break;
+                        }
+                    }
 
                     if (isRequiredEntity) {
                         if (quest.getDyeColor() != null) isRequiredEntity = (dyeColor == quest.getDyeColor());

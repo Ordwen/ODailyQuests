@@ -3,9 +3,12 @@ package com.ordwen.odailyquests.quests.player.progression.types;
 import org.bukkit.entity.Villager;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class VillagerQuest extends AbstractQuest {
 
-    final ItemStack requiredItem;
+    final List<ItemStack> requiredItems;
     final Villager.Profession villagerProfession;
     final int villagerLevel;
 
@@ -21,20 +24,20 @@ public class VillagerQuest extends AbstractQuest {
         this.villagerProfession = villagerProfession;
         this.villagerLevel = villagerLevel;
 
-        this.requiredItem = null;
+        this.requiredItems = null;
     }
 
     /**
      * Quest constructor for quest type TRADE (item specified).
      *
      * @param globalQuest        parent quest.
-     * @param requiredItem       required item.
+     * @param requiredItems       required item.
      * @param villagerProfession required villager profession.
      * @param villagerLevel      required villager level.
      */
-    public VillagerQuest(GlobalQuest globalQuest, ItemStack requiredItem, Villager.Profession villagerProfession, int villagerLevel) {
+    public VillagerQuest(GlobalQuest globalQuest, List<ItemStack> requiredItems, Villager.Profession villagerProfession, int villagerLevel) {
         super(globalQuest);
-        this.requiredItem = requiredItem;
+        this.requiredItems = requiredItems;
         this.villagerProfession = villagerProfession;
         this.villagerLevel = villagerLevel;
     }
@@ -62,8 +65,8 @@ public class VillagerQuest extends AbstractQuest {
      *
      * @return quest item-required.
      */
-    public ItemStack getRequiredItem() {
-        return this.requiredItem;
+    public List<ItemStack> getRequiredItems() {
+        return this.requiredItems;
     }
 
 }

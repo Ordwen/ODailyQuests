@@ -24,7 +24,7 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
 
     @Override
     public String getVersion() {
-        return "1.0.1";
+        return "1.0.2";
     }
 
     @Override
@@ -43,15 +43,6 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
         if (params.equalsIgnoreCase("drawin")) {
             return TimeRemain.timeRemain(player.getName());
         }
-        if (params.equalsIgnoreCase("progress_1")) {
-            return String.valueOf(getQuestProgression(0, player.getName()));
-        }
-        if (params.equalsIgnoreCase("progress_2")) {
-            return String.valueOf(getQuestProgression(1, player.getName()));
-        }
-        if (params.equalsIgnoreCase("progress_3")) {
-            return String.valueOf(getQuestProgression(2, player.getName()));
-        }
         if (params.startsWith("global_")) {
             return getQuestName(params, LoadQuests.getGlobalQuests());
         }
@@ -64,6 +55,24 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
         if (params.startsWith("hard_")) {
             return getQuestName(params, LoadQuests.getHardQuests());
         }
+
+        if (params.startsWith("progress_")) {
+            final int index = Integer.parseInt(params.substring(params.indexOf('_')));
+            return String.valueOf(getQuestProgression(index, player.getName()));
+        }
+
+        /*
+        if (params.equalsIgnoreCase("progress_1")) {
+            return String.valueOf(getQuestProgression(0, player.getName()));
+        }
+        if (params.equalsIgnoreCase("progress_2")) {
+            return String.valueOf(getQuestProgression(1, player.getName()));
+        }
+        if (params.equalsIgnoreCase("progress_3")) {
+            return String.valueOf(getQuestProgression(2, player.getName()));
+        }
+         */
+
         return null;
     }
 

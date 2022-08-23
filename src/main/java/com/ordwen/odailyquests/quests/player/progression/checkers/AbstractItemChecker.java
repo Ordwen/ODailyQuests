@@ -35,10 +35,17 @@ public abstract class AbstractItemChecker extends AbstractProgressionIncreaser {
             final Progression progression = playerQuests.get(abstractQuest);
             if (!progression.isAchieved() && abstractQuest.getType() == questType) {
                 if (abstractQuest instanceof ItemQuest quest) {
-                    boolean isRequiredItem;
+                    boolean isRequiredItem = false;
 
-                    if (quest.getRequiredItem() == null) isRequiredItem = true;
-                    else isRequiredItem = (quest.getRequiredItem().isSimilar(itemStack));
+                    if (quest.getRequiredItems() == null) isRequiredItem = true;
+                    else {
+                        for (ItemStack item : quest.getRequiredItems()) {
+                            if (item.isSimilar(itemStack)) {
+                                isRequiredItem = true;
+                                break;
+                            }
+                        }
+                    }
 
                     if (isRequiredItem) {
                         increaseProgression(player, progression, abstractQuest, amount);
