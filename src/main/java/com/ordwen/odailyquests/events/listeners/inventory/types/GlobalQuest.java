@@ -1,7 +1,6 @@
-package com.ordwen.odailyquests.quests.player.progression.types;
+package com.ordwen.odailyquests.events.listeners.inventory.types;
 
 import com.ordwen.odailyquests.quests.QuestType;
-import com.ordwen.odailyquests.quests.player.progression.types.AbstractQuest;
 import com.ordwen.odailyquests.rewards.Reward;
 import org.bukkit.inventory.ItemStack;
 

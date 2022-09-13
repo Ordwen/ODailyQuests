@@ -7,7 +7,7 @@ import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsI
 import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.enums.QuestsPermissions;
-import com.ordwen.odailyquests.quests.player.progression.types.AbstractQuest;
+import com.ordwen.odailyquests.events.listeners.inventory.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.LoadQuests;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;

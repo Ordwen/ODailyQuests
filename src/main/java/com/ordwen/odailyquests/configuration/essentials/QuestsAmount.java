@@ -23,15 +23,43 @@ public class QuestsAmount {
 
     private static int questsAmount;
 
+    private static int easyQuestsAmount;
+    private static int mediumQuestsAmount;
+    private static int hardQuestsAmount;
+
     public void loadQuestsAmount() {
 
         final FileConfiguration config = configurationFiles.getConfigFile();
 
-        if (!config.contains("quests_amount")) AddDefault.addDefaultConfigItem("quests_item", 3, config, configurationFiles.getFile());
-        questsAmount = config.getInt("quests_amount");
+        if (!config.contains("global_quests_amount")) AddDefault.addDefaultConfigItem("quests_item", 3, config, configurationFiles.getFile());
+        if (!config.contains("easy_quests_amount")) AddDefault.addDefaultConfigItem("easy_quests_amount", 1, config, configurationFiles.getFile());
+        if (!config.contains("medium_quests_amount")) AddDefault.addDefaultConfigItem("medium_quests_amount", 1, config, configurationFiles.getFile());
+        if (!config.contains("hard_quests_amount")) AddDefault.addDefaultConfigItem("hard_quests_amount", 1, config, configurationFiles.getFile());
+
+        if (Modes.getQuestsMode() == 1) {
+            questsAmount = config.getInt("quests_amount");
+        } else if (Modes.getQuestsMode() == 2) {
+            easyQuestsAmount = config.getInt("easy_quests_amount");
+            mediumQuestsAmount = config.getInt("medium_quests_amount");
+            hardQuestsAmount = config.getInt("hard_quests_amount");
+
+            questsAmount = easyQuestsAmount + mediumQuestsAmount + hardQuestsAmount;
+        }
     }
 
     public static int getQuestsAmount() {
         return questsAmount;
+    }
+
+    public static int getEasyQuestsAmount() {
+        return easyQuestsAmount;
+    }
+
+    public static int getMediumQuestsAmount() {
+        return mediumQuestsAmount;
+    }
+
+    public static int getHardQuestsAmount() {
+        return hardQuestsAmount;
     }
 }

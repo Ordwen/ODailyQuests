@@ -2,7 +2,7 @@ package com.ordwen.odailyquests.commands.interfaces.playerinterface;
 
 import com.ordwen.odailyquests.commands.interfaces.InterfacesManager;
 import com.ordwen.odailyquests.files.PlayerInterfaceFile;
-import com.ordwen.odailyquests.quests.player.progression.types.AbstractQuest;
+import com.ordwen.odailyquests.events.listeners.inventory.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.QuestType;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
@@ -36,9 +36,7 @@ public class PlayerQuestsInterface {
 
     /* item slots */
     private static int slotPlayerHead = -1;
-    private static int slotFirstQuest;
-    private static int slotSecondQuest;
-    private static int slotThirdQuest;
+    private static HashMap<Integer, Integer> slotQuests = new HashMap<>();
 
     /* item lists */
     private static HashSet<ItemStack> fillItems;
@@ -64,9 +62,6 @@ public class PlayerQuestsInterface {
         if (isPlayerHeadEnabled) {
             slotPlayerHead = interfaceConfig.getConfigurationSection("player_head").getInt(".slot") - 1;
         }
-        slotFirstQuest = interfaceConfig.getInt(".first_quest_slot") - 1;
-        slotSecondQuest = interfaceConfig.getInt(".second_quest_slot") - 1;
-        slotThirdQuest = interfaceConfig.getInt(".third_quest_slot") - 1;
 
         /* create base of inventory */
         size = interfaceConfig.getInt(".size");
@@ -84,7 +79,13 @@ public class PlayerQuestsInterface {
         playerCommandsItems = new HashMap<>();
         consoleCommandsItems = new HashMap<>();
 
-        ConfigurationSection itemsSection = interfaceConfig.getConfigurationSection("items");
+        ConfigurationSection itemsSection = interfaceConfig.getConfigurationSection("quests");
+
+        for (String i : itemsSection.getKeys(false)) {
+            slotQuests.put(Integer.parseInt(i) - 1, itemsSection.getInt(i));
+        }
+
+        itemsSection = interfaceConfig.getConfigurationSection("items");
 
         if (itemsSection != null) {
             for (String element : itemsSection.getKeys(false)) {
@@ -213,16 +214,8 @@ public class PlayerQuestsInterface {
             itemMeta.setLore(lore);
             itemStack.setItemMeta(itemMeta);
 
-            switch (i) {
-                case 0 -> playerQuestsInventoryIndividual.setItem(slotFirstQuest, itemStack);
-                case 1 -> playerQuestsInventoryIndividual.setItem(slotSecondQuest, itemStack);
-                case 2 -> playerQuestsInventoryIndividual.setItem(slotThirdQuest, itemStack);
-                default -> {
-                    PluginLogger.error("Unexpected value on the load of the player quests interface.");
-                    PluginLogger.error("Invalid index for quest place : " + i);
-                    PluginLogger.error("Please inform the developer.");
-                }
-            }
+            playerQuestsInventoryIndividual.setItem(slotQuests.get(i), itemStack);
+
             i++;
         }
         return playerQuestsInventoryIndividual;

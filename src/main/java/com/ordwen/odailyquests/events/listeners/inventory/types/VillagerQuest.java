@@ -1,9 +1,8 @@
-package com.ordwen.odailyquests.quests.player.progression.types;
+package com.ordwen.odailyquests.events.listeners.inventory.types;
 
 import org.bukkit.entity.Villager;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class VillagerQuest extends AbstractQuest {

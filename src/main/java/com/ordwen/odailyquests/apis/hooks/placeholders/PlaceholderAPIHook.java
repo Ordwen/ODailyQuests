@@ -1,6 +1,6 @@
 package com.ordwen.odailyquests.apis.hooks.placeholders;
 
-import com.ordwen.odailyquests.quests.player.progression.types.AbstractQuest;
+import com.ordwen.odailyquests.events.listeners.inventory.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.LoadQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.tools.TimeRemain;

@@ -1,7 +1,7 @@
-package com.ordwen.odailyquests.quests.player.progression.storage.mysql;
+package com.ordwen.odailyquests.quests.player.progression.storage.sql;
 
 import com.ordwen.odailyquests.ODailyQuests;
-import com.ordwen.odailyquests.quests.player.progression.types.AbstractQuest;
+import com.ordwen.odailyquests.events.listeners.inventory.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.tools.PluginLogger;
@@ -12,21 +12,20 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 public class SaveProgressionSQL {
 
     /* instance of SQLManager */
-    private final MySQLManager mySqlManager;
+    private final SQLManager sqlManager;
 
     /**
      * Constructor.
      *
-     * @param mySqlManager instance of MySQLManager.
+     * @param sqlManager instance of MySQLManager.
      */
-    public SaveProgressionSQL(MySQLManager mySqlManager) {
-        this.mySqlManager = mySqlManager;
+    public SaveProgressionSQL(SQLManager sqlManager) {
+        this.sqlManager = sqlManager;
     }
 
     /* requests */
@@ -45,7 +44,7 @@ public class SaveProgressionSQL {
         int totalAchievedQuests = playerQuests.getTotalAchievedQuests();
         LinkedHashMap<AbstractQuest, Progression> quests = playerQuests.getPlayerQuests();
 
-        Connection connection = mySqlManager.getConnection();
+        Connection connection = sqlManager.getConnection();
 
         String test = "SELECT * FROM PLAYER WHERE PLAYERNAME = '" + playerName + "'";
 

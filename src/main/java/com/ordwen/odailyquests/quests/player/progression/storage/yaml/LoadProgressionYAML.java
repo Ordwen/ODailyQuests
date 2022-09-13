@@ -1,7 +1,7 @@
 package com.ordwen.odailyquests.quests.player.progression.storage.yaml;
 
 import com.ordwen.odailyquests.ODailyQuests;
-import com.ordwen.odailyquests.quests.player.progression.types.AbstractQuest;
+import com.ordwen.odailyquests.events.listeners.inventory.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.player.progression.Utils;

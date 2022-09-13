@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.quests.player.progression.types;
+package com.ordwen.odailyquests.events.listeners.inventory.types;
 
 import org.bukkit.Location;
 

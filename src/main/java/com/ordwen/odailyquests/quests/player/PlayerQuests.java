@@ -1,7 +1,7 @@
 package com.ordwen.odailyquests.quests.player;
 
 import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
-import com.ordwen.odailyquests.quests.player.progression.types.AbstractQuest;
+import com.ordwen.odailyquests.events.listeners.inventory.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.configuration.functionalities.GlobalReward;
 

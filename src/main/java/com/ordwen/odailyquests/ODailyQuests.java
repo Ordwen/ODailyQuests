@@ -14,11 +14,13 @@ import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.configuration.essentials.Temporality;
 import com.ordwen.odailyquests.events.EventsManager;
 import com.ordwen.odailyquests.files.*;
+import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
+import com.ordwen.odailyquests.quests.player.progression.storage.sql.h2.H2Manager;
 import com.ordwen.odailyquests.quests.player.progression.storage.yaml.YamlManager;
 import com.ordwen.odailyquests.tools.*;
 import com.ordwen.odailyquests.quests.LoadQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
-import com.ordwen.odailyquests.quests.player.progression.storage.mysql.MySQLManager;
+import com.ordwen.odailyquests.quests.player.progression.storage.sql.mysql.MySQLManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -36,7 +38,7 @@ public final class ODailyQuests extends JavaPlugin {
     public ConfigurationManager configurationManager;
     public InterfacesManager interfacesManager;
     public FilesManager filesManager;
-    private MySQLManager mySqlManager;
+    private SQLManager sqlManager;
     private YamlManager yamlManager;
     private TimerTask timerTask;
     private ReloadService reloadService;
@@ -60,10 +62,11 @@ public final class ODailyQuests extends JavaPlugin {
         this.configurationFiles.loadMessagesFiles();
 
         /* Load SQL Support */
-        if (configurationFiles.getConfigFile().getString("storage_mode").equals("MySQL")) {
-            mySqlManager = new MySQLManager(this);
-            mySqlManager.setupDatabase();
-        } else yamlManager = new YamlManager();
+        switch (configurationFiles.getConfigFile().getString("storage_mode")) {
+            case "MySQL" -> this.sqlManager = new MySQLManager(this);
+            case "H2" -> this.sqlManager = new H2Manager(this);
+            default -> this.yamlManager = new YamlManager();
+        }
 
         /* Load files */
         this.filesManager = new FilesManager(this);
@@ -72,7 +75,7 @@ public final class ODailyQuests extends JavaPlugin {
         /* Load class instances */
         this.interfacesManager = new InterfacesManager(this);
         this.configurationManager = new ConfigurationManager(this);
-        this.reloadService = new ReloadService(this, mySqlManager != null);
+        this.reloadService = new ReloadService(this, sqlManager != null);
 
         /* Load dependencies */
         new IntegrationsManager(this).loadAllDependencies();
@@ -102,7 +105,7 @@ public final class ODailyQuests extends JavaPlugin {
 
         //getServer().getPluginManager().registerEvents(new BlockBreakListener(), this);
         getServer().getPluginManager().registerEvents(new InventoryClickListener(), this);
-        getServer().getPluginManager().registerEvents(new QuestsManager(this, mySqlManager != null), this);
+        getServer().getPluginManager().registerEvents(new QuestsManager(this, sqlManager != null), this);
 
         /* Avoid errors on reload */
         if (Bukkit.getServer().getOnlinePlayers().size() > 0) {
@@ -131,7 +134,7 @@ public final class ODailyQuests extends JavaPlugin {
             reloadService.saveConnectedPlayerQuests(false);
         }
 
-        if (mySqlManager != null) mySqlManager.close();
+        if (sqlManager != null) sqlManager.close();
         PluginLogger.info(ChatColor.RED + "Plugin is shutting down...");
     }
 
@@ -164,8 +167,8 @@ public final class ODailyQuests extends JavaPlugin {
      * Get MySQLManager instance.
      * @return MySQLManager instance.
      */
-    public MySQLManager getMySqlManager() {
-        return mySqlManager;
+    public SQLManager getSQLManager() {
+        return sqlManager;
     }
 
     /**

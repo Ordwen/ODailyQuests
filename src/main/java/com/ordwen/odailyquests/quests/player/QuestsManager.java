@@ -2,11 +2,11 @@ package com.ordwen.odailyquests.quests.player;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
-import com.ordwen.odailyquests.quests.player.progression.types.AbstractQuest;
+import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
+import com.ordwen.odailyquests.events.listeners.inventory.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.progression.storage.yaml.YamlManager;
 import com.ordwen.odailyquests.quests.LoadQuests;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
-import com.ordwen.odailyquests.quests.player.progression.storage.mysql.MySQLManager;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.ChatColor;
@@ -25,22 +25,22 @@ public class QuestsManager implements Listener {
      * Getting instance of classes.
      */
     private static ConfigurationFiles configurationFiles;
-    private final MySQLManager mySqlManager;
+    private final SQLManager sqlManager;
     private final YamlManager  yamlManager;
 
     /**
      * Class instance constructor.
      * @param oDailyQuests main class instance.
      */
-    public QuestsManager(ODailyQuests oDailyQuests, boolean useMySQL) {
+    public QuestsManager(ODailyQuests oDailyQuests, boolean useSQL) {
         configurationFiles = oDailyQuests.getConfigurationFiles();
 
-        if (useMySQL) {
-            this.mySqlManager = oDailyQuests.getMySqlManager();
+        if (useSQL) {
+            this.sqlManager = oDailyQuests.getSQLManager();
             this.yamlManager = null;
         } else {
             this.yamlManager = oDailyQuests.getYamlManager();
-            this.mySqlManager = null;
+            this.sqlManager = null;
         }
     }
 
@@ -56,7 +56,7 @@ public class QuestsManager implements Listener {
                         configurationFiles.getConfigFile().getInt("quests_mode"),
                         configurationFiles.getConfigFile().getInt("timestamp_mode"),
                         configurationFiles.getConfigFile().getInt("temporality_mode"));
-                case "MySQL" -> mySqlManager.getLoadProgressionSQL().loadProgression(playerName, activeQuests,
+                case "MySQL", "H2" -> sqlManager.getLoadProgressionSQL().loadProgression(playerName, activeQuests,
                         configurationFiles.getConfigFile().getInt("quests_mode"),
                         configurationFiles.getConfigFile().getInt("timestamp_mode"),
                         configurationFiles.getConfigFile().getInt("temporality_mode"));
@@ -82,7 +82,7 @@ public class QuestsManager implements Listener {
 
         switch (configurationFiles.getConfigFile().getString("storage_mode")) {
             case "YAML" -> yamlManager.getSaveProgressionYAML().saveProgression(playerName, playerQuests);
-            case "MySQL" -> mySqlManager.getSaveProgressionSQL().saveProgression(playerName, playerQuests, true);
+            case "MySQL", "H2" -> sqlManager.getSaveProgressionSQL().saveProgression(playerName, playerQuests, true);
             default -> PluginLogger.error("Impossible to save player quests : the selected storage mode is incorrect !");
         }
         activeQuests.remove(playerName);
@@ -105,13 +105,20 @@ public class QuestsManager implements Listener {
                 quests.put(quest, progression);
             }
         } else if (configurationFiles.getConfigFile().getInt("quests_mode") == 2) {
-            for (int i = 0; i < QuestsAmount.getQuestsAmount(); i++) {
-                AbstractQuest quest = switch (i) {
-                    case 0 -> getRandomQuest(LoadQuests.getEasyQuests());
-                    case 1 -> getRandomQuest(LoadQuests.getMediumQuests());
-                    case 2 -> getRandomQuest(LoadQuests.getHardQuests());
-                    default -> throw new IllegalStateException("Unexpected value: " + i);
-                };
+            for (int i = 0; i < QuestsAmount.getEasyQuestsAmount(); i++) {
+                AbstractQuest quest = getRandomQuest(LoadQuests.getEasyQuests());
+                Progression progression = new Progression(0, false);
+                quests.put(quest, progression);
+            }
+
+            for (int i = 0; i < QuestsAmount.getMediumQuestsAmount(); i++) {
+                AbstractQuest quest = getRandomQuest(LoadQuests.getMediumQuests());
+                Progression progression = new Progression(0, false);
+                quests.put(quest, progression);
+            }
+
+            for (int i = 0; i < QuestsAmount.getHardQuestsAmount(); i++) {
+                AbstractQuest quest = getRandomQuest(LoadQuests.getHardQuests());
                 Progression progression = new Progression(0, false);
                 quests.put(quest, progression);
             }

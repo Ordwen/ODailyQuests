@@ -14,7 +14,14 @@ database:
   port: "3306"         # Database port
 
 # Select the amount of daily quests given to the player.
+# Apply to quests mode 1 (global).
 quests_amount: 3
+
+# Select the amount of daily quests given to the player.
+# Apply to quests mode 2 (categorized).
+easy_quests_amount: 1
+medium_quests_amount: 1
+hard_quests_amount: 1
 
 # Select the mode of the quests.
 # ==========================================================

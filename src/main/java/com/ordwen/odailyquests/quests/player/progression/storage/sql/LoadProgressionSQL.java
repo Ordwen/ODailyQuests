@@ -1,8 +1,8 @@
-package com.ordwen.odailyquests.quests.player.progression.storage.mysql;
+package com.ordwen.odailyquests.quests.player.progression.storage.sql;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.enums.QuestsMessages;
-import com.ordwen.odailyquests.quests.player.progression.types.AbstractQuest;
+import com.ordwen.odailyquests.events.listeners.inventory.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.player.progression.Utils;
@@ -20,15 +20,15 @@ import java.util.LinkedHashMap;
 public class LoadProgressionSQL {
 
     /* instance of SQLManager */
-    private final MySQLManager mySqlManager;
+    private final SQLManager sqlManager;
 
     /**
      * Constructor.
      *
-     * @param mySqlManager instance of MySQLManager.
+     * @param sqlManager instance of MySQLManager.
      */
-    public LoadProgressionSQL(MySQLManager mySqlManager) {
-        this.mySqlManager = mySqlManager;
+    public LoadProgressionSQL(SQLManager sqlManager) {
+        this.sqlManager = sqlManager;
     }
 
     /**
@@ -47,7 +47,7 @@ public class LoadProgressionSQL {
             int totalAchievedQuests = 0;
 
             try {
-                Connection connection = mySqlManager.getConnection();
+                Connection connection = sqlManager.getConnection();
                 String getTimestampQuery = "SELECT PLAYERTIMESTAMP,ACHIEVEDQUESTS,TOTALACHIEVEDQUESTS FROM PLAYER WHERE PLAYERNAME = '" + playerName + "'";
                 PreparedStatement preparedStatement = connection.prepareStatement(getTimestampQuery);
 
@@ -102,7 +102,7 @@ public class LoadProgressionSQL {
     private void loadPlayerQuests(String playerName, int questsConfigMode, LinkedHashMap<AbstractQuest, Progression> quests) {
 
         try {
-            Connection connection = mySqlManager.getConnection();
+            Connection connection = sqlManager.getConnection();
             String getQuestProgressionQuery = "SELECT * FROM PROGRESSION WHERE PLAYERNAME = '" + playerName + "'";
             PreparedStatement preparedStatement = connection.prepareStatement(getQuestProgressionQuery);
             ResultSet resultSet = preparedStatement.executeQuery();
