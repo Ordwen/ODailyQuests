@@ -45,7 +45,7 @@ public class LoadProgressionYAML {
 
                 /* renew quests */
                 if (Utils.checkTimestamp(timestampConfigMode, temporalityMode, timestamp)) {
-                    Utils.loadNewPlayerQuests(playerName, activeQuests, timestampConfigMode, quests);
+                    Utils.loadNewPlayerQuests(playerName, activeQuests, timestampConfigMode);
                 }
                 /* load non-achieved quests */
                 else {
@@ -68,16 +68,16 @@ public class LoadProgressionYAML {
 
                     PluginLogger.info(ChatColor.GOLD + playerName + ChatColor.YELLOW + "'s quests have been loaded.");
 
+                    final String msg;
                     if (achievedQuests == playerQuests.getPlayerQuests().size()) {
-                        final String msg = QuestsMessages.ALL_QUESTS_ACHIEVED_CONNECT.toString();
-                        if (msg != null) Bukkit.getPlayer(playerName).sendMessage(msg);
+                        msg = QuestsMessages.ALL_QUESTS_ACHIEVED_CONNECT.toString();
                     } else {
-                        final String msg = QuestsMessages.QUESTS_IN_PROGRESS.toString();
-                        if (msg != null) Bukkit.getPlayer(playerName).sendMessage(msg);
+                        msg = QuestsMessages.QUESTS_IN_PROGRESS.toString();
                     }
+                    if (msg != null) Bukkit.getPlayer(playerName).sendMessage(msg);
                 }
             } else {
-                Utils.loadNewPlayerQuests(playerName, activeQuests, timestampConfigMode, quests);
+                Utils.loadNewPlayerQuests(playerName, activeQuests, timestampConfigMode);
             }
         });
     }

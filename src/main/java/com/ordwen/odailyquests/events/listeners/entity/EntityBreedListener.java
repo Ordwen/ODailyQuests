@@ -7,7 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityBreedEvent;
 
-public class EntityBreadListener extends AbstractEntityChecker implements Listener {
+public class EntityBreedListener extends AbstractEntityChecker implements Listener {
 
     @EventHandler
     public void onEntityBreadEvent(EntityBreedEvent event) {

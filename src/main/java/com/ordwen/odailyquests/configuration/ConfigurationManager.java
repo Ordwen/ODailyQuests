@@ -2,6 +2,7 @@ package com.ordwen.odailyquests.configuration;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
+import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
 import com.ordwen.odailyquests.configuration.essentials.Synchronization;
 import com.ordwen.odailyquests.configuration.essentials.Temporality;
 import com.ordwen.odailyquests.configuration.functionalities.*;
@@ -9,9 +10,6 @@ import com.ordwen.odailyquests.configuration.integrations.NPCNames;
 import com.ordwen.odailyquests.configuration.integrations.WildStackerEnabled;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.tools.TimeRemain;
-import org.bukkit.Material;
-import org.bukkit.potion.PotionData;
-import org.bukkit.potion.PotionEffectType;
 
 public class ConfigurationManager {
 
@@ -34,6 +32,7 @@ public class ConfigurationManager {
         new Modes(configurationFiles).loadPluginModes();
         new Temporality(configurationFiles).loadTemporalitySettings();
         new TimeRemain().setupInitials();
+        new QuestsAmount(configurationFiles).loadQuestsAmount();
 
         // functionalities
         new Actionbar(configurationFiles).loadActionbar();

@@ -55,8 +55,7 @@ public class AdminCommands implements CommandExecutor {
                                         int totalAchievedQuests = QuestsManager.getActiveQuests().get(args[2]).getTotalAchievedQuests();
 
                                         QuestsManager.getActiveQuests().remove(args[2]);
-                                        LinkedHashMap<AbstractQuest, Progression> quests = new LinkedHashMap<>();
-                                        QuestsManager.selectRandomQuests(quests);
+                                        LinkedHashMap<AbstractQuest, Progression> quests = QuestsManager.selectRandomQuests();
 
                                         PlayerQuests playerQuests = new PlayerQuests(System.currentTimeMillis(), quests);
                                         playerQuests.setTotalAchievedQuests(totalAchievedQuests);

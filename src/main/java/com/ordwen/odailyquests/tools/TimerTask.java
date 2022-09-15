@@ -30,7 +30,7 @@ public class TimerTask {
 
                 final String msg = QuestsMessages.NEW_DAY.toString();
                 if (msg != null) player.sendMessage(msg);
-                Utils.loadNewPlayerQuests(player.getName(), QuestsManager.getActiveQuests(), Modes.getTimestampMode(), new LinkedHashMap<>());
+                Utils.loadNewPlayerQuests(player.getName(), QuestsManager.getActiveQuests(), Modes.getTimestampMode());
             }
         };
 

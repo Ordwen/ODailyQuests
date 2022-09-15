@@ -1,7 +1,10 @@
 package com.ordwen.odailyquests.quests.player;
 
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
+import com.ordwen.odailyquests.configuration.essentials.Temporality;
+import com.ordwen.odailyquests.quests.QuestType;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
 import com.ordwen.odailyquests.events.listeners.inventory.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.progression.storage.yaml.YamlManager;
@@ -17,6 +20,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Random;
 
 public class QuestsManager implements Listener {
@@ -53,13 +57,13 @@ public class QuestsManager implements Listener {
         if (!activeQuests.containsKey(playerName)) {
             switch (configurationFiles.getConfigFile().getString("storage_mode")) {
                 case "YAML" -> yamlManager.getLoadProgressionYAML().loadPlayerQuests(playerName, activeQuests,
-                        configurationFiles.getConfigFile().getInt("quests_mode"),
-                        configurationFiles.getConfigFile().getInt("timestamp_mode"),
-                        configurationFiles.getConfigFile().getInt("temporality_mode"));
+                        Modes.getQuestsMode(),
+                        Modes.getTimestampMode(),
+                        Temporality.getTemporalityMode());
                 case "MySQL", "H2" -> sqlManager.getLoadProgressionSQL().loadProgression(playerName, activeQuests,
-                        configurationFiles.getConfigFile().getInt("quests_mode"),
-                        configurationFiles.getConfigFile().getInt("timestamp_mode"),
-                        configurationFiles.getConfigFile().getInt("temporality_mode"));
+                        Modes.getQuestsMode(),
+                        Modes.getTimestampMode(),
+                        Temporality.getTemporalityMode());
                 default -> PluginLogger.error("Impossible to load player quests : the selected storage mode is incorrect !");
             }
         } else {
@@ -90,40 +94,49 @@ public class QuestsManager implements Listener {
 
     /**
      * Select random quests.
-     *
-     * @param quests array of quests.
      */
-    public static void selectRandomQuests(HashMap<AbstractQuest, Progression> quests) {
-        if (configurationFiles.getConfigFile().getInt("quests_mode") == 1) {
+    public static LinkedHashMap<AbstractQuest, Progression> selectRandomQuests() {
+
+        LinkedHashMap<AbstractQuest, Progression> quests = new LinkedHashMap<>();
+
+        if (Modes.getQuestsMode() == 1) {
             ArrayList<AbstractQuest> globalQuests = LoadQuests.getGlobalQuests();
+
             for (int i = 0; i < QuestsAmount.getQuestsAmount(); i++) {
                 AbstractQuest quest;
                 do {
                     quest = getRandomQuest(globalQuests);
                 } while (quests.containsKey(quest));
+
                 Progression progression = new Progression(0, false);
                 quests.put(quest, progression);
             }
-        } else if (configurationFiles.getConfigFile().getInt("quests_mode") == 2) {
+        } else if (Modes.getQuestsMode() == 2) {
+
+            ArrayList<AbstractQuest> easyQuests = LoadQuests.getEasyQuests();
+            ArrayList<AbstractQuest> mediumQuests = LoadQuests.getMediumQuests();
+            ArrayList<AbstractQuest> hardQuests = LoadQuests.getHardQuests();
+
             for (int i = 0; i < QuestsAmount.getEasyQuestsAmount(); i++) {
-                AbstractQuest quest = getRandomQuest(LoadQuests.getEasyQuests());
+                AbstractQuest quest = getRandomQuest(easyQuests);
                 Progression progression = new Progression(0, false);
                 quests.put(quest, progression);
             }
 
             for (int i = 0; i < QuestsAmount.getMediumQuestsAmount(); i++) {
-                AbstractQuest quest = getRandomQuest(LoadQuests.getMediumQuests());
+                AbstractQuest quest = getRandomQuest(mediumQuests);
                 Progression progression = new Progression(0, false);
                 quests.put(quest, progression);
             }
 
             for (int i = 0; i < QuestsAmount.getHardQuestsAmount(); i++) {
-                AbstractQuest quest = getRandomQuest(LoadQuests.getHardQuests());
+                AbstractQuest quest = getRandomQuest(hardQuests);
                 Progression progression = new Progression(0, false);
                 quests.put(quest, progression);
             }
-        } else
-            PluginLogger.error(ChatColor.RED + "Impossible to select quests for player. The selected mode is incorrect.");
+        } else PluginLogger.error(ChatColor.RED + "Impossible to select quests for player. The selected mode is incorrect.");
+
+        return quests;
     }
 
     /**

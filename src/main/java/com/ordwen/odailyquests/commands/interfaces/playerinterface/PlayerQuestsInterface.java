@@ -183,11 +183,9 @@ public class PlayerQuestsInterface {
         /* load quests */
         int i = 0;
         for (AbstractQuest quest : playerQuests.keySet()) {
-
             ItemStack itemStack = quest.getMenuItem();
             ItemMeta itemMeta = itemStack.getItemMeta();
 
-            assert itemMeta != null;
             itemMeta.setDisplayName(quest.getQuestName());
 
             List<String> lore = new ArrayList<>(quest.getQuestDesc());
@@ -214,7 +212,7 @@ public class PlayerQuestsInterface {
             itemMeta.setLore(lore);
             itemStack.setItemMeta(itemMeta);
 
-            playerQuestsInventoryIndividual.setItem(slotQuests.get(i), itemStack);
+            playerQuestsInventoryIndividual.setItem(slotQuests.get(i) - 1, itemStack);
 
             i++;
         }

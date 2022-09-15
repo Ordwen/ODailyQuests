@@ -26,8 +26,9 @@ public class EventsManager {
      * Registers all events.
      */
     public void registerListeners() {
+
         // entity events
-        Bukkit.getPluginManager().registerEvents(new EntityBreadListener(), oDailyQuests);
+        Bukkit.getPluginManager().registerEvents(new EntityBreedListener(), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new EntityTameListener(), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new ShearEntityListener(), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new EntityDeathListener(), oDailyQuests);

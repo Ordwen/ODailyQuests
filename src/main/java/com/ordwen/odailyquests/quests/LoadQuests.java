@@ -6,7 +6,6 @@ import com.ordwen.odailyquests.apis.hooks.mobs.MythicMobsHook;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.events.listeners.inventory.types.*;
 import com.ordwen.odailyquests.files.QuestsFiles;
-import com.ordwen.odailyquests.quests.player.progression.types.*;
 import com.ordwen.odailyquests.rewards.Reward;
 import com.ordwen.odailyquests.rewards.RewardType;
 import com.ordwen.odailyquests.tools.ColorConvert;
@@ -100,7 +99,7 @@ public class LoadQuests {
                 String questName;
                 List<String> questDesc;
                 QuestType questType = null;
-                List<ItemStack> requiredItems = null;
+                List<ItemStack> requiredItems = new ArrayList<>();
                 ItemStack customItem;
                 List<EntityType> entityTypes = null;
                 DyeColor dyeColor = null;
@@ -161,7 +160,7 @@ public class LoadQuests {
                             if (file.getConfigurationSection("quests." + fileQuest).contains(".required_entity")) {
                                 entityTypes = new ArrayList<>();
 
-                                for (String presumedEntity : file.getConfigurationSection("quests." + fileQuest).getStringList(".entity_type")) {
+                                for (String presumedEntity : file.getConfigurationSection("quests." + fileQuest).getStringList(".required_entity")) {
                                     EntityType entityType = getEntityType(presumedEntity, fileName, questIndex, presumedEntity);
                                     entityTypes.add(entityType);
 
@@ -333,7 +332,7 @@ public class LoadQuests {
             PluginLogger.error("Invalid entity type detected.");
             PluginLogger.error("File : " + fileName);
             PluginLogger.error("Quest number : " + (questIndex + 1));
-            PluginLogger.error("Parameter : entity_type");
+            PluginLogger.error("Parameter : required_entity");
             PluginLogger.error("Value : " + value);
             PluginLogger.error("-----------------------------------");
         }

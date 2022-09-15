@@ -2,7 +2,8 @@
 prefix: "&7[O'DailyQuests&7]"
 
 # storage mode for quests & progression
-# AVAILABLE MODES: YAML, MySQL
+# AVAILABLE MODES: YAML, MySQL,H2
+# RECOMMENDED: H2
 storage_mode: "YAML"
 
 # MySQL Database Connection

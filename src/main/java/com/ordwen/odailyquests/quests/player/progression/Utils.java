@@ -34,17 +34,20 @@ public class Utils {
             oldCal.setTimeInMillis(timestamp);
 
             switch (temporalityMode) {
-                case 1:
+                case 1 -> {
                     currentCal.setTimeInMillis(System.currentTimeMillis());
                     return oldCal.get(Calendar.DAY_OF_YEAR) < currentCal.get(Calendar.DAY_OF_YEAR);
-                case 2:
+                }
+                case 2 -> {
                     currentCal.setTimeInMillis(System.currentTimeMillis());
                     long diffW = TimeUnit.DAYS.convert(currentCal.getTimeInMillis() - oldCal.getTimeInMillis(), TimeUnit.MILLISECONDS);
                     return diffW >= 7;
-                case 3:
+                }
+                case 3 -> {
                     currentCal.setTimeInMillis(System.currentTimeMillis());
                     long diffM = TimeUnit.DAYS.convert(currentCal.getTimeInMillis() - oldCal.getTimeInMillis(), TimeUnit.MILLISECONDS);
                     return diffM >= 31;
+                }
             }
         }
 
@@ -73,10 +76,11 @@ public class Utils {
      * @param activeQuests        all active quests.
      * @param timestampConfigMode timestamp mode.
      */
-    public static void loadNewPlayerQuests(String playerName, HashMap<String, PlayerQuests> activeQuests, int timestampConfigMode, LinkedHashMap<AbstractQuest, Progression> quests) {
+    public static void loadNewPlayerQuests(String playerName, HashMap<String, PlayerQuests> activeQuests, int timestampConfigMode) {
 
         activeQuests.remove(playerName);
-        QuestsManager.selectRandomQuests(quests);
+
+        LinkedHashMap<AbstractQuest, Progression> quests = QuestsManager.selectRandomQuests();
         PlayerQuests playerQuests;
 
         if (timestampConfigMode == 1) {
