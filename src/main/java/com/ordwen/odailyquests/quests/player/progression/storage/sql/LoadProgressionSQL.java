@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.quests.player.progression.storage.sql;
 
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.events.listeners.inventory.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
@@ -121,7 +122,13 @@ public class LoadProgressionSQL {
                 quests.put(quest, progression);
 
                 id++;
-            } while (resultSet.next());
+            } while (resultSet.next() && id <= QuestsAmount.getQuestsAmount());
+
+            if (resultSet.next()) {
+                PluginLogger.warn("Player " + playerName + " has more quests than the configuration.");
+                PluginLogger.warn("Only the first " + QuestsAmount.getQuestsAmount() + " quests will be loaded.");
+                PluginLogger.warn("After changing the number of quests, we recommend that you reset the progressions to avoid any problems.");
+            }
 
             resultSet.close();
             preparedStatement.close();

@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.quests.player.progression.storage.yaml;
 
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
 import com.ordwen.odailyquests.events.listeners.inventory.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
@@ -49,15 +50,26 @@ public class LoadProgressionYAML {
                 }
                 /* load non-achieved quests */
                 else {
+                    int i = 1;
+
                     for (String string : progressionFile.getConfigurationSection(playerName + ".quests").getKeys(false)) {
-                        int questIndex = progressionFile.getConfigurationSection(playerName + ".quests." + string).getInt(".index");
-                        int advancement = progressionFile.getConfigurationSection(playerName + ".quests." + string).getInt(".progression");
-                        boolean isAchieved = progressionFile.getConfigurationSection(playerName + ".quests." + string).getBoolean(".isAchieved");
+                        if (i <= QuestsAmount.getQuestsAmount()) {
+                            int questIndex = progressionFile.getConfigurationSection(playerName + ".quests." + string).getInt(".index");
+                            int advancement = progressionFile.getConfigurationSection(playerName + ".quests." + string).getInt(".progression");
+                            boolean isAchieved = progressionFile.getConfigurationSection(playerName + ".quests." + string).getBoolean(".isAchieved");
 
-                        Progression progression = new Progression(advancement, isAchieved);
-                        AbstractQuest quest = Utils.findQuest(playerName, questsConfigMode, questIndex, Integer.parseInt(string));
+                            Progression progression = new Progression(advancement, isAchieved);
+                            AbstractQuest quest = Utils.findQuest(playerName, questsConfigMode, questIndex, Integer.parseInt(string));
 
-                        quests.put(quest, progression);
+                            quests.put(quest, progression);
+                            i++;
+                        }
+                        else {
+                            PluginLogger.warn("Player " + playerName + " has more quests than the configuration.");
+                            PluginLogger.warn("Only the first " + QuestsAmount.getQuestsAmount() + " quests will be loaded.");
+                            PluginLogger.warn("After changing the number of quests, we recommend that you reset the progressions to avoid any problems.");
+                            break;
+                        }
                     }
 
                     playerQuests = new PlayerQuests(timestamp, quests);

@@ -113,6 +113,12 @@ public class QuestsManager implements Listener {
             }
         } else if (Modes.getQuestsMode() == 2) {
 
+            /*
+                do {
+                    quest = getRandomQuest(globalQuests);
+                } while (quests.containsKey(quest));
+             */
+
             ArrayList<AbstractQuest> easyQuests = LoadQuests.getEasyQuests();
             ArrayList<AbstractQuest> mediumQuests = LoadQuests.getMediumQuests();
             ArrayList<AbstractQuest> hardQuests = LoadQuests.getHardQuests();

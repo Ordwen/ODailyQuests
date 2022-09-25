@@ -39,7 +39,8 @@ public class H2Manager extends SQLManager {
 
     private  void initH2() {
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:h2:file:" + oDailyQuests.getDataFolder() + "/database");
+        config.setDriverClassName("org.h2.Driver");
+        config.setJdbcUrl("jdbc:h2:./plugins/ODailyQuests/database");
         config.setUsername("odq");
         config.setPassword("");
         config.setMaxLifetime(300000L);

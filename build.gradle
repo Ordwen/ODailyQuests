@@ -54,9 +54,7 @@ dependencies {
     compileOnly name: 'EliteMobs'
 
     implementation 'com.zaxxer:HikariCP:5.0.1'
-
-    implementation 'junit:junit:4.13.2'
-    testImplementation 'org.spigotmc:spigot-api:1.18.1-R0.1-SNAPSHOT'
+    implementation 'com.h2database:h2:2.1.214'
 
     compileOnly 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
 
@@ -64,6 +62,7 @@ dependencies {
     compileOnly(group: 'com.github.Realizedd', name: 'TokenManager', version: '3.2.4') {
         transitive = false
     }
+
     compileOnly(group: 'net.citizensnpcs', name: 'citizens-main', version: '2.0.29-SNAPSHOT')
     compileOnly(group: 'io.lumine', name: 'Mythic-Dist', version: '5.0.3-SNAPSHOT')
     compileOnly 'com.mojang:authlib:1.5.21'
@@ -95,7 +94,7 @@ shadowJar {
     }
 
     dependencies {
-        exclude(dependency('junit:junit:4.13.2'))
+        //exclude(dependency('com.h2database:h2:2.1.214'))
     }
 }
 
