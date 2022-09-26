@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.events.listeners.entity.custom;
+package com.ordwen.odailyquests.events.listeners.entity.custom.mobs;
 
 import com.ordwen.odailyquests.quests.QuestType;
 import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractEntityChecker;

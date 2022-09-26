@@ -102,6 +102,7 @@ public class PlayerQuestsInterface {
                         ItemStack closeItem = new ItemStack(Material.valueOf(itemsSection.getString(element + ".item.material")));
 
                         ItemMeta meta = closeItem.getItemMeta();
+                        if (itemsSection.contains(element + ".item.custom_model_data")) meta.setCustomModelData(itemsSection.getInt(element + ".item.custom_model_data"));
                         meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(itemsSection.getString(element + ".item.name"))));
 
                         List<String> lore = itemsSection.getStringList(element + ".item.lore");
@@ -119,6 +120,8 @@ public class PlayerQuestsInterface {
                         List<String> commands = itemsSection.getStringList(element + ".commands");
 
                         ItemMeta meta = commandItem.getItemMeta();
+                        if (itemsSection.contains(element + ".item.custom_model_data")) meta.setCustomModelData(itemsSection.getInt(element + ".item.custom_model_data"));
+
                         meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(itemsSection.getString(element + ".item.name"))));
 
                         List<String> lore = itemsSection.getStringList(element + ".item.lore");
@@ -137,6 +140,8 @@ public class PlayerQuestsInterface {
                         List<String> commands = itemsSection.getStringList(element + ".commands");
 
                         ItemMeta meta = commandItem.getItemMeta();
+                        if (itemsSection.contains(element + ".item.custom_model_data")) meta.setCustomModelData(itemsSection.getInt(element + ".item.custom_model_data"));
+
                         meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(itemsSection.getString(element + ".item.name"))));
 
                         List<String> lore = itemsSection.getStringList(element + ".item.lore");

@@ -4,7 +4,6 @@ import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
 import com.ordwen.odailyquests.configuration.essentials.Temporality;
-import com.ordwen.odailyquests.quests.QuestType;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
 import com.ordwen.odailyquests.events.listeners.inventory.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.progression.storage.yaml.YamlManager;
@@ -113,30 +112,36 @@ public class QuestsManager implements Listener {
             }
         } else if (Modes.getQuestsMode() == 2) {
 
-            /*
-                do {
-                    quest = getRandomQuest(globalQuests);
-                } while (quests.containsKey(quest));
-             */
-
-            ArrayList<AbstractQuest> easyQuests = LoadQuests.getEasyQuests();
-            ArrayList<AbstractQuest> mediumQuests = LoadQuests.getMediumQuests();
-            ArrayList<AbstractQuest> hardQuests = LoadQuests.getHardQuests();
+            final ArrayList<AbstractQuest> easyQuests = LoadQuests.getEasyQuests();
+            final ArrayList<AbstractQuest> mediumQuests = LoadQuests.getMediumQuests();
+            final ArrayList<AbstractQuest> hardQuests = LoadQuests.getHardQuests();
 
             for (int i = 0; i < QuestsAmount.getEasyQuestsAmount(); i++) {
-                AbstractQuest quest = getRandomQuest(easyQuests);
+                AbstractQuest quest;
+                do {
+                    quest = getRandomQuest(easyQuests);
+                } while (quests.containsKey(quest));
+
                 Progression progression = new Progression(0, false);
                 quests.put(quest, progression);
             }
 
             for (int i = 0; i < QuestsAmount.getMediumQuestsAmount(); i++) {
-                AbstractQuest quest = getRandomQuest(mediumQuests);
+                AbstractQuest quest;
+                do {
+                    quest = getRandomQuest(mediumQuests);
+                } while (quests.containsKey(quest));
+
                 Progression progression = new Progression(0, false);
                 quests.put(quest, progression);
             }
 
             for (int i = 0; i < QuestsAmount.getHardQuestsAmount(); i++) {
-                AbstractQuest quest = getRandomQuest(hardQuests);
+                AbstractQuest quest;
+                do {
+                    quest = getRandomQuest(hardQuests);
+                } while (quests.containsKey(quest));
+
                 Progression progression = new Progression(0, false);
                 quests.put(quest, progression);
             }

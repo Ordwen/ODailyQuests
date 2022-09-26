@@ -3,7 +3,7 @@ package com.ordwen.odailyquests.apis.hooks.stackers;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 
-public class WildStackerHook implements Listener {
+public class WildStackerHook {
 
     /**
      * Check if WildStacker is enabled.

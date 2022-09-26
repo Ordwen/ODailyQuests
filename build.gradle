@@ -45,6 +45,9 @@ repositories {
         name = 'bg-repo'
         url = 'https://repo.bg-software.com/repository/api/'
     }
+    maven {
+        url = 'https://repo.rosewooddev.io/repository/public/'
+    }
     flatDir {
         dirs 'libs'
     }
@@ -52,6 +55,7 @@ repositories {
 
 dependencies {
     compileOnly name: 'EliteMobs'
+    compileOnly 'dev.rosewood:rosestacker:1.4.13'
 
     implementation 'com.zaxxer:HikariCP:5.0.1'
     implementation 'com.h2database:h2:2.1.214'

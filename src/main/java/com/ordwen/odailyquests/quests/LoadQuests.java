@@ -108,6 +108,7 @@ public class LoadQuests {
                 int villagerLevel = 0;
                 ItemStack menuItem;
                 int requiredAmount;
+                int cmd = -1;
 
                 /* reach type */
                 Location location = null;
@@ -121,7 +122,9 @@ public class LoadQuests {
                 questName = ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(file.getConfigurationSection("quests." + fileQuest).getString(".name")));
 
                 String presumedItem = file.getConfigurationSection("quests." + fileQuest).getString(".menu_item");
-                menuItem = getItemStackFromMaterial(presumedItem, fileName, questIndex, "menu_item");
+                cmd = file.getConfigurationSection("quests." + fileQuest).getInt(".custom_model_data");
+
+                menuItem = getItemStackFromMaterial(presumedItem, fileName, questIndex, "menu_item", cmd);
 
                 questDesc = file.getConfigurationSection("quests." + fileQuest).getStringList(".description");
                 for (String string : questDesc) {
@@ -180,7 +183,7 @@ public class LoadQuests {
                                 /* check if the required item is a custom item */
                                 if (itemType.equals("CUSTOM_ITEM")) {
                                     ConfigurationSection section = file.getConfigurationSection("quests." + fileQuest + ".custom_item");
-                                    customItem = getItemStackFromMaterial(section.getString(".type"), fileName, questIndex, "type (CUSTOM_ITEM)");
+                                    customItem = getItemStackFromMaterial(section.getString(".type"), fileName, questIndex, "type (CUSTOM_ITEM)", -1);
                                     ItemMeta meta = customItem.getItemMeta();
                                     meta.setDisplayName(ColorConvert.convertColorCode(ChatColor.translateAlternateColorCodes('&', section.getString(".name"))));
                                     List<String> lore = section.getStringList(".lore");
@@ -189,8 +192,10 @@ public class LoadQuests {
                                     }
                                     meta.setLore(lore);
                                     customItem.setItemMeta(meta);
+
+                                    requiredItems.add(customItem);
                                 } else {
-                                    requiredItems.add(getItemStackFromMaterial(itemType, fileName, questIndex, "required_item"));
+                                    requiredItems.add(getItemStackFromMaterial(itemType, fileName, questIndex, "required_item", -1));
                                 }
                             } else isGlobalType = true;
 
@@ -300,10 +305,16 @@ public class LoadQuests {
      * @param questIndex
      * @return
      */
-    private static ItemStack getItemStackFromMaterial(String material, String fileName, int questIndex, String parameter) {
+    private static ItemStack getItemStackFromMaterial(String material, String fileName, int questIndex, String parameter, int modelData) {
         ItemStack requiredItem = null;
         try {
             requiredItem = new ItemStack(Material.valueOf(material));
+
+            if (modelData != -1) {
+                final ItemMeta meta = requiredItem.getItemMeta();
+                meta.setCustomModelData(modelData);
+                requiredItem.setItemMeta(meta);
+            }
         } catch (Exception e) {
             PluginLogger.error("-----------------------------------");
             PluginLogger.error("Invalid material type detected.");

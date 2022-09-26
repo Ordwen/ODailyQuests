@@ -36,6 +36,7 @@ public class IntegrationsManager {
         loadHolographicDisplays();
         loadPAPI();
         loadWildStacker();
+        loadRoseStacker();
     }
 
     /**
@@ -44,7 +45,15 @@ public class IntegrationsManager {
     private void loadWildStacker() {
         if (WildStackerHook.isWildStackerSetup()) {
             PluginLogger.info(ChatColor.YELLOW + "WildStacker" + ChatColor.GREEN + " successfully hooked.");
-            getServer().getPluginManager().registerEvents(new WildStackerHook(), oDailyQuests);
+        }
+    }
+
+    /**
+     * Load RoseStacker.
+     */
+    private void loadRoseStacker() {
+        if (WildStackerHook.isWildStackerSetup()) {
+            PluginLogger.info(ChatColor.YELLOW + "RoseStacker" + ChatColor.GREEN + " successfully hooked.");
         }
     }
 
@@ -54,7 +63,6 @@ public class IntegrationsManager {
     private void loadMythicMobs() {
         if (MythicMobsHook.isMythicMobsSetup()) {
             PluginLogger.info(ChatColor.YELLOW + "MythicMobs" + ChatColor.GREEN + " successfully hooked.");
-            getServer().getPluginManager().registerEvents(new MythicMobsHook(), oDailyQuests);
         }
     }
 
@@ -64,7 +72,6 @@ public class IntegrationsManager {
     private void loadEliteMobs() {
         if (EliteMobsHook.isEliteMobsSetup()) {
             PluginLogger.info(ChatColor.YELLOW + "EliteMobs" + ChatColor.GREEN + " successfully hooked.");
-            getServer().getPluginManager().registerEvents(new EliteMobsHook(), oDailyQuests);
         }
     }
 
@@ -104,7 +111,8 @@ public class IntegrationsManager {
         if (CitizensHook.setupCitizens()) {
             getServer().getPluginManager().registerEvents(new CitizensHook(), oDailyQuests);
             PluginLogger.info(ChatColor.YELLOW + "Citizens" + ChatColor.GREEN + " successfully hooked.");
-        } else PluginLogger.info(ChatColor.YELLOW + "Citizens" + ChatColor.GOLD + " not detected. NPCs will not work.");
+        } else
+            PluginLogger.info(ChatColor.YELLOW + "Citizens" + ChatColor.GOLD + " not detected. NPCs will not work.");
     }
 
     /**
@@ -113,7 +121,8 @@ public class IntegrationsManager {
     private void loadHolographicDisplays() {
         if (HolographicDisplaysHook.isHolographicDisplaysSetup()) {
             PluginLogger.info(ChatColor.YELLOW + "HolographicDisplays" + ChatColor.GREEN + " successfully hooked.");
-        } else PluginLogger.info(ChatColor.YELLOW + "HolographicDisplays" + ChatColor.GOLD + " not detected. Holograms will not work.");
+        } else
+            PluginLogger.info(ChatColor.YELLOW + "HolographicDisplays" + ChatColor.GOLD + " not detected. Holograms will not work.");
     }
 
     /**

@@ -1,9 +1,8 @@
 package com.ordwen.odailyquests.apis.hooks.mobs;
 
 import org.bukkit.Bukkit;
-import org.bukkit.event.Listener;
 
-public class EliteMobsHook implements Listener {
+public class EliteMobsHook {
 
     /**
      * Check if EliteMobs is enabled.

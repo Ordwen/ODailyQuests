@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.events.listeners.entity.custom;
+package com.ordwen.odailyquests.events.listeners.entity.custom.mobs;
 
 import com.magmaguy.elitemobs.api.EliteMobDeathEvent;
 import com.ordwen.odailyquests.quests.QuestType;

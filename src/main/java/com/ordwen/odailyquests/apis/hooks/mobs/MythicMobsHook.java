@@ -1,9 +1,8 @@
 package com.ordwen.odailyquests.apis.hooks.mobs;
 
 import org.bukkit.Bukkit;
-import org.bukkit.event.Listener;
 
-public class MythicMobsHook implements Listener {
+public class MythicMobsHook {
 
     /**
      * Check if MythicMobs is enabled.
