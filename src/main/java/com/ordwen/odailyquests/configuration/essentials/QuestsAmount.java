@@ -31,13 +31,13 @@ public class QuestsAmount {
 
         final FileConfiguration config = configurationFiles.getConfigFile();
 
-        if (!config.contains("global_quests_amount")) AddDefault.addDefaultConfigItem("quests_item", 3, config, configurationFiles.getFile());
+        if (!config.contains("global_quests_amount")) AddDefault.addDefaultConfigItem("global_quests_amount", 3, config, configurationFiles.getFile());
         if (!config.contains("easy_quests_amount")) AddDefault.addDefaultConfigItem("easy_quests_amount", 1, config, configurationFiles.getFile());
         if (!config.contains("medium_quests_amount")) AddDefault.addDefaultConfigItem("medium_quests_amount", 1, config, configurationFiles.getFile());
         if (!config.contains("hard_quests_amount")) AddDefault.addDefaultConfigItem("hard_quests_amount", 1, config, configurationFiles.getFile());
 
         if (Modes.getQuestsMode() == 1) {
-            questsAmount = config.getInt("quests_amount");
+            questsAmount = config.getInt("global_quests_amount");
         } else if (Modes.getQuestsMode() == 2) {
             easyQuestsAmount = config.getInt("easy_quests_amount");
             mediumQuestsAmount = config.getInt("medium_quests_amount");
