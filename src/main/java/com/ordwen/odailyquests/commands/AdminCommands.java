@@ -3,6 +3,7 @@ package com.ordwen.odailyquests.commands;
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.apis.hooks.holograms.HologramsManager;
 import com.ordwen.odailyquests.apis.hooks.holograms.HolographicDisplaysHook;
+import com.ordwen.odailyquests.commands.convert.ConverterManager;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
 import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
 import com.ordwen.odailyquests.enums.QuestsMessages;
@@ -46,6 +47,16 @@ public class AdminCommands implements CommandExecutor {
                 }
             } else if (args.length >= 2) {
                 switch (args[0]) {
+                    case "convert":
+                        if (args.length == 3) {
+                            if (!new ConverterManager().convert(args[1], args[2])) {
+                                sender.sendMessage(ChatColor.RED + "Conversion failed!");
+                            } else {
+                                sender.sendMessage(ChatColor.GREEN + "Conversion successful!");
+                                sender.sendMessage(ChatColor.GREEN + "Please select the new storage mode in config file and reload the plugin to apply changes.");
+                            }
+                        } else sender.sendMessage(ChatColor.RED + "Usage: /quests convert <old format> <new format>");
+                        break;
                     case "reset":
                         if (args.length >= 3 && args[1] != null && args[2] != null) {
                             final Player target = Bukkit.getPlayerExact(args[2]);
