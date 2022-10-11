@@ -54,7 +54,7 @@ repositories {
 }
 
 dependencies {
-    //compileOnly name: 'EliteMobs'
+    compileOnly name: 'EliteMobs'
     compileOnly 'dev.rosewood:rosestacker:1.4.13'
 
     implementation 'com.zaxxer:HikariCP:5.0.1'
