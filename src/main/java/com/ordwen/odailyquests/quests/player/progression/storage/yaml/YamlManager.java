@@ -1,8 +1,5 @@
 package com.ordwen.odailyquests.quests.player.progression.storage.yaml;
 
-import com.ordwen.odailyquests.quests.player.progression.storage.yaml.LoadProgressionYAML;
-import com.ordwen.odailyquests.quests.player.progression.storage.yaml.SaveProgressionYAML;
-
 public class YamlManager {
 
     private final LoadProgressionYAML loadProgressionYAML;

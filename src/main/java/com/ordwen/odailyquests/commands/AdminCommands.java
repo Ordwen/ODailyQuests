@@ -28,9 +28,11 @@ import java.util.LinkedHashMap;
 
 public class AdminCommands implements CommandExecutor {
 
+    private final ODailyQuests oDailyQuests;
     private final ReloadService reloadService;
 
     public AdminCommands(ODailyQuests oDailyQuests) {
+        this.oDailyQuests = oDailyQuests;
         this.reloadService = oDailyQuests.getReloadService();
     }
 
@@ -49,8 +51,8 @@ public class AdminCommands implements CommandExecutor {
                 switch (args[0]) {
                     case "convert":
                         if (args.length == 3) {
-                            if (!new ConverterManager().convert(args[1], args[2])) {
-                                sender.sendMessage(ChatColor.RED + "Conversion failed!");
+                            if (!new ConverterManager(oDailyQuests).convert(args[1], args[2])) {
+                                sender.sendMessage(ChatColor.RED + "Conversion failed! Please check the console for more information.");
                             } else {
                                 sender.sendMessage(ChatColor.GREEN + "Conversion successful!");
                                 sender.sendMessage(ChatColor.GREEN + "Please select the new storage mode in config file and reload the plugin to apply changes.");
