@@ -55,7 +55,7 @@ public class AdminCommands implements CommandExecutor {
                                 sender.sendMessage(ChatColor.RED + "Conversion failed! Please check the console for more information.");
                             } else {
                                 sender.sendMessage(ChatColor.GREEN + "Conversion successful!");
-                                sender.sendMessage(ChatColor.GREEN + "Please select the new storage mode in config file and reload the plugin to apply changes.");
+                                sender.sendMessage(ChatColor.GREEN + "Please select the new storage mode in config file and restart the server to apply changes.");
                             }
                         } else sender.sendMessage(ChatColor.RED + "Usage: /quests convert <old format> <new format>");
                         break;

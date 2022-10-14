@@ -19,9 +19,12 @@ public class ConverterManager {
                     case "H2", "h2":
                         return new YAMLtoH2Converter().convert(oDailyQuests);
                     default:
+                        System.out.println("The new format is not supported.");
                         return false;
                 }
+            default:
+                System.out.println("The old format is not supported.");
+                return false;
         }
-        return false;
     }
 }

@@ -15,7 +15,7 @@ public class AdminCompleter implements TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         if (args.length <= 1) {
-            List<String> allCompletions = new ArrayList<>(Arrays.asList("reload", "reset", "show", "complete", "help", "holo"));
+            List<String> allCompletions = new ArrayList<>(Arrays.asList("reload", "reset", "show", "complete", "help", "holo", "convert"));
             List<String> completions = new ArrayList<>();
 
             StringUtil.copyPartialMatches(args[0], allCompletions, completions);
@@ -32,8 +32,16 @@ public class AdminCompleter implements TabCompleter {
                 Collections.sort(completions);
                 return completions;
             }
-            if (args[0].equalsIgnoreCase("reset")) {
+            else if (args[0].equalsIgnoreCase("reset")) {
                 List<String> allCompletions = new ArrayList<>(Arrays.asList("quests", "total"));
+                List<String> completions = new ArrayList<>();
+
+                StringUtil.copyPartialMatches(args[1], allCompletions, completions);
+                Collections.sort(completions);
+                return completions;
+            }
+            else if (args[0].equalsIgnoreCase("convert")) {
+                List<String> allCompletions = new ArrayList<>(Arrays.asList("yaml"));
                 List<String> completions = new ArrayList<>();
 
                 StringUtil.copyPartialMatches(args[1], allCompletions, completions);
@@ -43,6 +51,14 @@ public class AdminCompleter implements TabCompleter {
         }
         else if (args.length == 3 && args[0].equalsIgnoreCase("holo") && args[1].equalsIgnoreCase("create")) {
             List<String> allCompletions = new ArrayList<>(Arrays.asList("global", "easy", "medium", "hard"));
+            List<String> completions = new ArrayList<>();
+
+            StringUtil.copyPartialMatches(args[2], allCompletions, completions);
+            Collections.sort(completions);
+            return completions;
+        }
+        else if (args.length == 3 && args[0].equalsIgnoreCase("convert")) {
+            List<String> allCompletions = new ArrayList<>(Arrays.asList("mysql", "h2"));
             List<String> completions = new ArrayList<>();
 
             StringUtil.copyPartialMatches(args[2], allCompletions, completions);

@@ -4,6 +4,7 @@ import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.apis.hooks.mobs.EliteMobsHook;
 import com.ordwen.odailyquests.apis.hooks.mobs.MythicMobsHook;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
+import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
 import com.ordwen.odailyquests.events.listeners.inventory.types.*;
 import com.ordwen.odailyquests.files.QuestsFiles;
 import com.ordwen.odailyquests.rewards.Reward;
@@ -48,31 +49,31 @@ public class LoadQuests {
         if (Modes.getQuestsMode() == 1) {
             /* load global quests */
             loadQuests(globalQuestsFile, globalQuests, "Global Quests");
-            if (globalQuests.size() < 3) {
+            if (globalQuests.size() < QuestsAmount.getQuestsAmount()) {
                 PluginLogger.error("Impossible to enable the plugin.");
-                PluginLogger.error("You need to have at least 3 quests in your globalQuest.yml file.");
+                PluginLogger.error("You need to have at least " + QuestsAmount.getQuestsAmount() + " quests in your globalQuest.yml file.");
                 Bukkit.getPluginManager().disablePlugin(ODailyQuests.INSTANCE);
             }
         } else if (Modes.getQuestsMode() == 2) {
             /* load easy quests */
             loadQuests(easyQuestsFile, easyQuests, "Easy Quests");
-            if (easyQuests.size() == 0) {
+            if (easyQuests.size() < QuestsAmount.getEasyQuestsAmount()) {
                 PluginLogger.error("Impossible to enable the plugin.");
-                PluginLogger.error("You need to have at least 1 quest in your easyQuests.yml file.");
+                PluginLogger.error("You need to have at least " + QuestsAmount.getEasyQuestsAmount() + " quest in your easyQuests.yml file.");
                 Bukkit.getPluginManager().disablePlugin(ODailyQuests.INSTANCE);
             }
             /* load medium quests */
             loadQuests(mediumQuestsFile, mediumQuests, "Medium Quests");
-            if (mediumQuests.size() == 0) {
+            if (mediumQuests.size() < QuestsAmount.getMediumQuestsAmount()) {
                 PluginLogger.error("Impossible to enable the plugin.");
-                PluginLogger.error("You need to have at least 1 quest in your mediumQuests.yml file.");
+                PluginLogger.error("You need to have at least " + QuestsAmount.getMediumQuestsAmount() + " quest in your mediumQuests.yml file.");
                 Bukkit.getPluginManager().disablePlugin(ODailyQuests.INSTANCE);
             }
             /* load hard quests */
             loadQuests(hardQuestsFile, hardQuests, "Hard Quests");
-            if (hardQuests.size() == 0) {
+            if (hardQuests.size() < QuestsAmount.getHardQuestsAmount()) {
                 PluginLogger.error("Impossible to enable the plugin.");
-                PluginLogger.error("You need to have at least 1 quest in your hardQuests.yml file.");
+                PluginLogger.error("You need to have at least " + QuestsAmount.getHardQuestsAmount() + " quest in your hardQuests.yml file.");
                 Bukkit.getPluginManager().disablePlugin(ODailyQuests.INSTANCE);
             }
         } else {
@@ -288,9 +289,13 @@ public class LoadQuests {
                     }
 
                     /* add quest to the list */
-                    if (quest != null) {
+                    if (quest != null && menuItem != null) {
                         quests.add(quest);
                         questIndex++;
+                    } else {
+                        PluginLogger.error("File : " + fileName);
+                        PluginLogger.error("Quest at index " + (questIndex + 1) + " cannot be loaded!");
+                        PluginLogger.error("Check previous logs for more details.");
                     }
                 }
             }
