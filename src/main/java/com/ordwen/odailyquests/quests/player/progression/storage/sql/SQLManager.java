@@ -14,7 +14,7 @@ public abstract class SQLManager {
     protected SaveProgressionSQL saveProgressionSQL;
 
     public void setupTables() {
-        Connection connection = getConnection();
+        final Connection connection = getConnection();
         try {
             if (!tableExists(connection, "PLAYER")) {
 

@@ -52,7 +52,7 @@ quests:
       - "&cKill &65 &czombies."
       - "&aWin &b500 &aTokens."
     quest_type: KILL
-    entity_type: ZOMBIE
+    required_entity: ZOMBIE
     required_amount: 5
     reward:
       reward_type: POINTS

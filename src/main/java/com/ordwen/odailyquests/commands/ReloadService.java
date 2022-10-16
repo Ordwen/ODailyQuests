@@ -5,7 +5,6 @@ import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.yaml.YamlManager;
 import com.ordwen.odailyquests.quests.LoadQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
-import com.ordwen.odailyquests.quests.player.progression.storage.sql.mysql.MySQLManager;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
@@ -42,22 +41,28 @@ public class ReloadService {
     public void loadConnectedPlayerQuests() {
         switch (configurationFiles.getConfigFile().getString("storage_mode")) {
             case "YAML":
-                for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-                    if (!QuestsManager.getActiveQuests().containsKey(player.getName())) {
-                        yamlManager.getLoadProgressionYAML().loadPlayerQuests(player.getName(), QuestsManager.getActiveQuests(),
-                                configurationFiles.getConfigFile().getInt("quests_mode"),
-                                configurationFiles.getConfigFile().getInt("timestamp_mode"),
-                                configurationFiles.getConfigFile().getInt("temporality_mode"));
+                if (yamlManager == null) restartNeeded();
+                else {
+                    for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+                        if (!QuestsManager.getActiveQuests().containsKey(player.getName())) {
+                            yamlManager.getLoadProgressionYAML().loadPlayerQuests(player.getName(), QuestsManager.getActiveQuests(),
+                                    configurationFiles.getConfigFile().getInt("quests_mode"),
+                                    configurationFiles.getConfigFile().getInt("timestamp_mode"),
+                                    configurationFiles.getConfigFile().getInt("temporality_mode"));
+                        }
                     }
                 }
                 break;
-            case "MySQL":
-                for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-                    if (!QuestsManager.getActiveQuests().containsKey(player.getName())) {
-                        sqlManager.getLoadProgressionSQL().loadProgression(player.getName(), QuestsManager.getActiveQuests(),
-                                configurationFiles.getConfigFile().getInt("quests_mode"),
-                                configurationFiles.getConfigFile().getInt("timestamp_mode"),
-                                configurationFiles.getConfigFile().getInt("temporality_mode"));
+            case "MySQL", "H2":
+                if (sqlManager == null) restartNeeded();
+                else {
+                    for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+                        if (!QuestsManager.getActiveQuests().containsKey(player.getName())) {
+                            sqlManager.getLoadProgressionSQL().loadProgression(player.getName(), QuestsManager.getActiveQuests(),
+                                    configurationFiles.getConfigFile().getInt("quests_mode"),
+                                    configurationFiles.getConfigFile().getInt("timestamp_mode"),
+                                    configurationFiles.getConfigFile().getInt("temporality_mode"));
+                        }
                     }
                 }
                 break;
@@ -73,15 +78,21 @@ public class ReloadService {
     public void saveConnectedPlayerQuests(boolean isAsync) {
         switch (configurationFiles.getConfigFile().getString("storage_mode")) {
             case "YAML":
-                for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-                    yamlManager.getSaveProgressionYAML().saveProgression(player.getName(), QuestsManager.getActiveQuests().get(player.getName()));
-                    QuestsManager.getActiveQuests().remove(player.getName());
+                if (yamlManager == null) restartNeeded();
+                else {
+                    for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+                        yamlManager.getSaveProgressionYAML().saveProgression(player.getName(), QuestsManager.getActiveQuests().get(player.getName()));
+                        QuestsManager.getActiveQuests().remove(player.getName());
+                    }
                 }
                 break;
-            case "MySQL":
-                for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-                    sqlManager.getSaveProgressionSQL().saveProgression(player.getName(), QuestsManager.getActiveQuests().get(player.getName()), isAsync);
-                    QuestsManager.getActiveQuests().remove(player.getName());
+            case "MySQL", "H2":
+                if (sqlManager == null) restartNeeded();
+                else {
+                    for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+                        sqlManager.getSaveProgressionSQL().saveProgression(player.getName(), QuestsManager.getActiveQuests().get(player.getName()), isAsync);
+                        QuestsManager.getActiveQuests().remove(player.getName());
+                    }
                 }
                 break;
             default:
@@ -101,5 +112,12 @@ public class ReloadService {
 
         saveConnectedPlayerQuests(true);
         loadConnectedPlayerQuests();
+    }
+
+    private void restartNeeded() {
+        PluginLogger.warn("-----------------------------------------------");
+        PluginLogger.warn("It seems like you have changed the storage mode.");
+        PluginLogger.warn("Please restart the server to apply the changes.");
+        PluginLogger.warn("-----------------------------------------------");
     }
 }

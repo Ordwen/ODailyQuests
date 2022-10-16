@@ -4,7 +4,7 @@ prefix: "&7[O'DailyQuests&7]"
 # storage mode for quests & progression
 # AVAILABLE MODES: YAML, MySQL,H2
 # RECOMMENDED: H2
-storage_mode: "YAML"
+storage_mode: "H2"
 
 # MySQL Database Connection
 database:
@@ -13,16 +13,6 @@ database:
   user: "admin"        # Database user
   password: "1234"     # Database password
   port: "3306"         # Database port
-
-# Select the amount of daily quests given to the player.
-# Apply to quests mode 1 (global).
-global_quests_amount: 3
-
-# Select the amount of daily quests given to the player.
-# Apply to quests mode 2 (categorized).
-easy_quests_amount: 1
-medium_quests_amount: 1
-hard_quests_amount: 1
 
 # Select the mode of the quests.
 # ==========================================================
@@ -34,6 +24,16 @@ hard_quests_amount: 1
 # ==========================================================
 # You need to reset progressions if you change this mode.
 quests_mode: 1
+
+# Select the amount of daily quests given to the player.
+# Apply to quests mode 1 (global).
+global_quests_amount: 3
+
+# Select the amount of daily quests given to the player.
+# Apply to quests mode 2 (categorized).
+easy_quests_amount: 1
+medium_quests_amount: 1
+hard_quests_amount: 1
 
 # Select the mode of timestamp.
 # ============================================================================

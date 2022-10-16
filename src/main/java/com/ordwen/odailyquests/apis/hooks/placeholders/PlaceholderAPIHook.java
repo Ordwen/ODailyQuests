@@ -1,7 +1,11 @@
 package com.ordwen.odailyquests.apis.hooks.placeholders;
 
+import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.configuration.essentials.Modes;
+import com.ordwen.odailyquests.configuration.essentials.Temporality;
 import com.ordwen.odailyquests.events.listeners.inventory.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.LoadQuests;
+import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.tools.TimeRemain;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
@@ -11,6 +15,12 @@ import org.bukkit.OfflinePlayer;
 import java.util.ArrayList;
 
 public class PlaceholderAPIHook extends PlaceholderExpansion {
+
+    private final ODailyQuests oDailyQuests;
+
+    public PlaceholderAPIHook(ODailyQuests oDailyQuests) {
+        this.oDailyQuests = oDailyQuests;
+    }
 
     @Override
     public String getIdentifier() {
@@ -34,11 +44,34 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
 
     @Override
     public String onRequest(OfflinePlayer player, String params) {
+
+        PlayerQuests playerQuests;
+        if (!QuestsManager.getActiveQuests().containsKey(player.getName())) {
+
+            if (oDailyQuests.getYamlManager() != null) {
+                oDailyQuests.getYamlManager().getLoadProgressionYAML().loadPlayerQuests(
+                        player.getName(),
+                        QuestsManager.getActiveQuests(),
+                        Modes.getQuestsMode(),
+                        Modes.getTimestampMode(),
+                        Temporality.getTemporalityMode());
+            } else {
+                oDailyQuests.getSQLManager().getLoadProgressionSQL().loadProgression(
+                        player.getName(),
+                        QuestsManager.getActiveQuests(),
+                        Modes.getQuestsMode(),
+                        Modes.getTimestampMode(),
+                        Temporality.getTemporalityMode());
+            }
+        }
+
+        playerQuests = QuestsManager.getActiveQuests().get(player.getName());
+
         if (params.equalsIgnoreCase("total")) {
-            return String.valueOf(QuestsManager.getActiveQuests().get(player.getName()).getTotalAchievedQuests());
+            return String.valueOf(playerQuests.getTotalAchievedQuests());
         }
         if (params.equalsIgnoreCase("achieved")) {
-            return String.valueOf(QuestsManager.getActiveQuests().get(player.getName()).getAchievedQuests());
+            return String.valueOf(playerQuests.getAchievedQuests());
         }
         if (params.equalsIgnoreCase("drawin")) {
             return TimeRemain.timeRemain(player.getName());
@@ -78,7 +111,8 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
 
     /**
      * Get player quest progression.
-     * @param index player quest number
+     *
+     * @param index      player quest number
      * @param playerName player
      * @return quest progression
      */
@@ -95,6 +129,7 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
 
     /**
      * Get quest name by index & list.
+     *
      * @param params placeholder
      * @param quests list where find the quest
      * @return the name of the quest
@@ -106,7 +141,7 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
         } catch (Exception e) {
             return ChatColor.RED + "Invalid index.";
         }
-        if (quests.size()-1 >= index) {
+        if (quests.size() - 1 >= index) {
             return quests.get(index).getQuestName();
         } else return ChatColor.RED + "Invalid index.";
     }
