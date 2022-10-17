@@ -33,6 +33,7 @@ public class PlayerQuestsInterface {
     private static String completeGetType;
     private static boolean isPlayerHeadEnabled;
     private static boolean isGlowingEnabled;
+    private static int customModelData = -1;
 
     /* item slots */
     private static int slotPlayerHead = -1;
@@ -60,7 +61,11 @@ public class PlayerQuestsInterface {
 
         /* load item slots */
         if (isPlayerHeadEnabled) {
-            slotPlayerHead = interfaceConfig.getConfigurationSection("player_head").getInt(".slot") - 1;
+            final ConfigurationSection section = interfaceConfig.getConfigurationSection("player_head");
+            slotPlayerHead = section.getInt(".slot") - 1;
+            if (section.contains("custom_model_data")) {
+                customModelData = section.getInt("custom_model_data");
+            }
         }
 
         /* create base of inventory */

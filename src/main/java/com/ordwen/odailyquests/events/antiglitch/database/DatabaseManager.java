@@ -57,7 +57,12 @@ public class DatabaseManager {
         try {
             if (!tableExists(connection, "BLOCKS")) {
 
-                String str = "";
+                String str = "CREATE TABLE #BLOCKS ("
+                        + "ID INT NOT NULL AUTO_INCREMENT,"
+                        + "PLAYER VARCHAR(16) NOT NULL,"
+                        + "BLOCK VARCHAR(255) NOT NULL,"
+                        + "PRIMARY KEY (ID)"
+                        + ");";
 
                 PreparedStatement preparedStatement = connection.prepareStatement(str);
                 preparedStatement.execute();
