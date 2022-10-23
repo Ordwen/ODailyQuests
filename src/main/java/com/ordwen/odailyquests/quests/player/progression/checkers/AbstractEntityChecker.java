@@ -2,6 +2,7 @@ package com.ordwen.odailyquests.quests.player.progression.checkers;
 
 import com.ordwen.odailyquests.configuration.essentials.Synchronization;
 import com.ordwen.odailyquests.configuration.functionalities.DisabledWorlds;
+import com.ordwen.odailyquests.events.listeners.inventory.types.GlobalQuest;
 import com.ordwen.odailyquests.quests.player.progression.AbstractProgressionIncreaser;
 import com.ordwen.odailyquests.events.listeners.inventory.types.AbstractQuest;
 import com.ordwen.odailyquests.events.listeners.inventory.types.EntityQuest;
@@ -37,8 +38,13 @@ public abstract class AbstractEntityChecker extends AbstractProgressionIncreaser
             final Progression progression = playerQuests.get(abstractQuest);
             if (!progression.isAchieved() && abstractQuest.getType() == questType) {
 
-                if (abstractQuest instanceof EntityQuest quest) {
-                    boolean isRequiredEntity = false;
+                boolean isRequiredEntity = false;
+
+                if (abstractQuest instanceof GlobalQuest) {
+                    isRequiredEntity = true;
+                }
+
+                else if (abstractQuest instanceof EntityQuest quest) {
 
                     if (quest.getEntityTypes() == null) isRequiredEntity = true;
                     else {
@@ -53,12 +59,12 @@ public abstract class AbstractEntityChecker extends AbstractProgressionIncreaser
                         if (quest.getEntityName() != null)
                             isRequiredEntity = (entityName.equals(quest.getEntityName()));
                     }
+                }
 
-                    if (isRequiredEntity) {
-                        increaseProgression(player, progression, abstractQuest, amount);
-                        if (!Synchronization.isSynchronised()) {
-                            break;
-                        }
+                if (isRequiredEntity) {
+                    increaseProgression(player, progression, abstractQuest, amount);
+                    if (!Synchronization.isSynchronised()) {
+                        break;
                     }
                 }
             }

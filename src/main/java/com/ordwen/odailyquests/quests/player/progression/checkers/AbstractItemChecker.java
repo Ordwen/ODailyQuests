@@ -2,6 +2,7 @@ package com.ordwen.odailyquests.quests.player.progression.checkers;
 
 import com.ordwen.odailyquests.configuration.essentials.Synchronization;
 import com.ordwen.odailyquests.configuration.functionalities.DisabledWorlds;
+import com.ordwen.odailyquests.events.listeners.inventory.types.GlobalQuest;
 import com.ordwen.odailyquests.quests.player.progression.AbstractProgressionIncreaser;
 import com.ordwen.odailyquests.events.listeners.inventory.types.AbstractQuest;
 import com.ordwen.odailyquests.events.listeners.inventory.types.ItemQuest;
@@ -34,8 +35,14 @@ public abstract class AbstractItemChecker extends AbstractProgressionIncreaser {
 
             final Progression progression = playerQuests.get(abstractQuest);
             if (!progression.isAchieved() && abstractQuest.getType() == questType) {
-                if (abstractQuest instanceof ItemQuest quest) {
-                    boolean isRequiredItem = false;
+
+                boolean isRequiredItem = false;
+
+                if (abstractQuest instanceof GlobalQuest) {
+                    isRequiredItem = true;
+                }
+
+                else if (abstractQuest instanceof ItemQuest quest) {
 
                     if (quest.getRequiredItems() == null) isRequiredItem = true;
                     else {
@@ -46,12 +53,12 @@ public abstract class AbstractItemChecker extends AbstractProgressionIncreaser {
                             }
                         }
                     }
+                }
 
-                    if (isRequiredItem) {
-                        increaseProgression(player, progression, abstractQuest, amount);
-                        if (!Synchronization.isSynchronised()) {
-                            break;
-                        }
+                if (isRequiredItem) {
+                    increaseProgression(player, progression, abstractQuest, amount);
+                    if (!Synchronization.isSynchronised()) {
+                        break;
                     }
                 }
             }
