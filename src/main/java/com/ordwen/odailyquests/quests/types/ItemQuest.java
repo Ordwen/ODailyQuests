@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.events.listeners.inventory.types;
+package com.ordwen.odailyquests.quests.types;
 
 import org.bukkit.inventory.ItemStack;
 

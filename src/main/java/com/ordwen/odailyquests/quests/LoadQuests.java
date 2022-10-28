@@ -5,7 +5,7 @@ import com.ordwen.odailyquests.apis.hooks.mobs.EliteMobsHook;
 import com.ordwen.odailyquests.apis.hooks.mobs.MythicMobsHook;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
-import com.ordwen.odailyquests.events.listeners.inventory.types.*;
+import com.ordwen.odailyquests.quests.types.*;
 import com.ordwen.odailyquests.files.QuestsFiles;
 import com.ordwen.odailyquests.rewards.Reward;
 import com.ordwen.odailyquests.rewards.RewardType;
@@ -95,6 +95,8 @@ public class LoadQuests {
             int questIndex = 0;
             for (String fileQuest : file.getConfigurationSection("quests").getKeys(false)) {
 
+                ConfigurationSection questSection = file.getConfigurationSection("quests." + fileQuest);
+
                 /* init variables (quest constructor) */
                 AbstractQuest quest = null;
                 String questName;
@@ -120,27 +122,27 @@ public class LoadQuests {
                 RewardType rewardType;
 
                 /* init quest items */
-                questName = ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(file.getConfigurationSection("quests." + fileQuest).getString(".name")));
+                questName = ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(questSection.getString(".name")));
 
-                String presumedItem = file.getConfigurationSection("quests." + fileQuest).getString(".menu_item");
-                cmd = file.getConfigurationSection("quests." + fileQuest).getInt(".custom_model_data");
+                String presumedItem = questSection.getString(".menu_item");
+                cmd = questSection.getInt(".custom_model_data");
 
                 menuItem = getItemStackFromMaterial(presumedItem, fileName, questIndex, "menu_item", cmd);
 
-                questDesc = file.getConfigurationSection("quests." + fileQuest).getStringList(".description");
+                questDesc = questSection.getStringList(".description");
                 for (String string : questDesc) {
                     questDesc.set(questDesc.indexOf(string), ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(string)));
                 }
 
                 try {
-                    questType = QuestType.valueOf(file.getConfigurationSection("quests." + fileQuest).getString(".quest_type"));
+                    questType = QuestType.valueOf(questSection.getString(".quest_type"));
                 } catch (Exception e) {
                     PluginLogger.error("-----------------------------------");
                     PluginLogger.error("Invalid quest type detected.");
                     PluginLogger.error("File : " + fileName);
                     PluginLogger.error("Quest number : " + (questIndex + 1));
                     PluginLogger.error("Parameter : quest_type");
-                    PluginLogger.error("Value : " + file.getConfigurationSection("quests." + fileQuest).getString(".quest_type"));
+                    PluginLogger.error("Value : " + questSection.getString(".quest_type"));
                     PluginLogger.error("-----------------------------------");
                 }
 
@@ -156,22 +158,25 @@ public class LoadQuests {
                         /* type that require a custom mob */
                         case CUSTOM_MOBS -> {
                             isEntityType = true;
-                            entityName = ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(file.getConfigurationSection("quests." + fileQuest).getString(".entity_name")));
+                            entityName = ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(questSection.getString(".entity_name")));
                         }
                         /* types that requires an entity */
                         case KILL, BREED, TAME, SHEAR -> {
                             isEntityType = true;
-                            if (file.getConfigurationSection("quests." + fileQuest).contains(".required_entity")) {
+                            if (questSection.contains(".required_entity")) {
                                 entityTypes = new ArrayList<>();
 
-                                for (String presumedEntity : file.getConfigurationSection("quests." + fileQuest).getStringList(".required_entity")) {
-                                    EntityType entityType = getEntityType(presumedEntity, fileName, questIndex, presumedEntity);
-                                    entityTypes.add(entityType);
+                                if (questSection.isString(".required_entity")) entityTypes.add(EntityType.valueOf(questSection.getString(".required_entity")));
+                                else {
+                                    for (String presumedEntity : questSection.getStringList(".required_entity")) {
+                                        EntityType entityType = getEntityType(presumedEntity, fileName, questIndex, presumedEntity);
+                                        entityTypes.add(entityType);
 
-                                    if (entityType == EntityType.SHEEP) {
-                                        if (file.getConfigurationSection("quests." + fileQuest).contains(".sheep_color")) {
-                                            String presumedDyeColor = file.getConfigurationSection("quests." + fileQuest).getString(".sheep_color");
-                                            dyeColor = getDyeColor(presumedDyeColor, fileName, questIndex, presumedDyeColor);
+                                        if (entityType == EntityType.SHEEP) {
+                                            if (questSection.contains(".sheep_color")) {
+                                                String presumedDyeColor = questSection.getString(".sheep_color");
+                                                dyeColor = getDyeColor(presumedDyeColor, fileName, questIndex, presumedDyeColor);
+                                            }
                                         }
                                     }
                                 }
@@ -179,34 +184,47 @@ public class LoadQuests {
                         }
                         /* types that requires an item */
                         case BREAK, PLACE, CRAFT, PICKUP, LAUNCH, CONSUME, GET, COOK, ENCHANT, VILLAGER_TRADE, FISH, FARMING -> {
-                            if (file.getConfigurationSection("quests." + fileQuest).contains(".required_item")) {
-                                String itemType = file.getConfigurationSection("quests." + fileQuest).getString(".required_item");
-                                /* check if the required item is a custom item */
-                                if (itemType.equals("CUSTOM_ITEM")) {
-                                    ConfigurationSection section = file.getConfigurationSection("quests." + fileQuest + ".custom_item");
-                                    customItem = getItemStackFromMaterial(section.getString(".type"), fileName, questIndex, "type (CUSTOM_ITEM)", -1);
-                                    ItemMeta meta = customItem.getItemMeta();
-                                    meta.setDisplayName(ColorConvert.convertColorCode(ChatColor.translateAlternateColorCodes('&', section.getString(".name"))));
-                                    List<String> lore = section.getStringList(".lore");
-                                    for (String str : lore) {
-                                        lore.set(lore.indexOf(str), ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(str)));
-                                    }
-                                    meta.setLore(lore);
-                                    customItem.setItemMeta(meta);
+                            if (questSection.contains(".required_item")) {
 
-                                    requiredItems.add(customItem);
+                                if (questSection.isString(".required_item")) {
+                                    String itemType = questSection.getString(".required_item");
+
+                                    /* check if the required item is a custom item */
+                                    if (itemType.equals("CUSTOM_ITEM")) {
+                                        ConfigurationSection section = file.getConfigurationSection("quests." + fileQuest + ".custom_item");
+                                        customItem = getItemStackFromMaterial(section.getString(".type"), fileName, questIndex, "type (CUSTOM_ITEM)", -1);
+                                        ItemMeta meta = customItem.getItemMeta();
+                                        meta.setDisplayName(ColorConvert.convertColorCode(ChatColor.translateAlternateColorCodes('&', section.getString(".name"))));
+                                        List<String> lore = section.getStringList(".lore");
+                                        for (String str : lore) {
+                                            lore.set(lore.indexOf(str), ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(str)));
+                                        }
+                                        meta.setLore(lore);
+                                        customItem.setItemMeta(meta);
+
+                                        requiredItems.add(customItem);
+                                    } else {
+                                        requiredItems.add(getItemStackFromMaterial(itemType, fileName, questIndex, "required_item", -1));
+                                    }
                                 } else {
-                                    requiredItems.add(getItemStackFromMaterial(itemType, fileName, questIndex, "required_item", -1));
+                                    for (String itemType : questSection.getStringList(".required_item")) {
+                                        ItemStack itemStack = getItemStackFromMaterial(itemType, fileName, questIndex, "required_item", cmd);
+                                        requiredItems.add(itemStack);
+                                    }
+                                }
+
+                                for (String itemType : questSection.getStringList(".required_item")) {
+                                        requiredItems.add(getItemStackFromMaterial(itemType, fileName, questIndex, "required_item", -1));
                                 }
                             } else isGlobalType = true;
 
                             /* check if the item have to be obtained by a villager */
                             if (questType == QuestType.VILLAGER_TRADE) {
-                                if (file.getConfigurationSection("quests." + fileQuest).contains(".villager_profession")) {
-                                    profession = Villager.Profession.valueOf(file.getConfigurationSection("quests." + fileQuest).getString(".villager_profession"));
+                                if (questSection.contains(".villager_profession")) {
+                                    profession = Villager.Profession.valueOf(questSection.getString(".villager_profession"));
                                 }
-                                if (file.getConfigurationSection("quests." + fileQuest).contains(".villager_level")) {
-                                    villagerLevel = file.getConfigurationSection("quests." + fileQuest).getInt(".villager_level");
+                                if (questSection.contains(".villager_level")) {
+                                    villagerLevel = questSection.getInt(".villager_level");
                                 }
                             }
                         }
@@ -248,7 +266,7 @@ public class LoadQuests {
                     }
 
                     if (questType == QuestType.LOCATION) requiredAmount = 1;
-                    else requiredAmount = file.getConfigurationSection("quests." + fileQuest).getInt(".required_amount");
+                    else requiredAmount = questSection.getInt(".required_amount");
 
                     /* init reward */
                     rewardType = RewardType.valueOf(file.getConfigurationSection("quests." + fileQuest + ".reward").getString(".reward_type"));

@@ -2,10 +2,9 @@ package com.ordwen.odailyquests.quests.player.progression.checkers;
 
 import com.ordwen.odailyquests.configuration.essentials.Synchronization;
 import com.ordwen.odailyquests.configuration.functionalities.DisabledWorlds;
-import com.ordwen.odailyquests.events.listeners.inventory.types.GlobalQuest;
 import com.ordwen.odailyquests.quests.player.progression.AbstractProgressionIncreaser;
-import com.ordwen.odailyquests.events.listeners.inventory.types.AbstractQuest;
-import com.ordwen.odailyquests.events.listeners.inventory.types.EntityQuest;
+import com.ordwen.odailyquests.quests.types.AbstractQuest;
+import com.ordwen.odailyquests.quests.types.EntityQuest;
 import com.ordwen.odailyquests.quests.QuestType;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
@@ -40,14 +39,11 @@ public abstract class AbstractEntityChecker extends AbstractProgressionIncreaser
 
                 boolean isRequiredEntity = false;
 
-                if (abstractQuest instanceof GlobalQuest) {
-                    isRequiredEntity = true;
-                }
-
-                else if (abstractQuest instanceof EntityQuest quest) {
+                if (abstractQuest instanceof EntityQuest quest) {
 
                     if (quest.getEntityTypes() == null) isRequiredEntity = true;
                     else {
+                        System.out.println(quest.getEntityTypes().isEmpty());
                         for (EntityType type : quest.getEntityTypes()) {
                             isRequiredEntity = (type == entityType);
                             if (isRequiredEntity) break;
@@ -56,9 +52,10 @@ public abstract class AbstractEntityChecker extends AbstractProgressionIncreaser
 
                     if (isRequiredEntity) {
                         if (quest.getDyeColor() != null) isRequiredEntity = (dyeColor == quest.getDyeColor());
-                        if (quest.getEntityName() != null)
-                            isRequiredEntity = (entityName.equals(quest.getEntityName()));
+                        if (quest.getEntityName() != null) isRequiredEntity = (entityName.equals(quest.getEntityName()));
                     }
+                } else {
+                    isRequiredEntity = true;
                 }
 
                 if (isRequiredEntity) {

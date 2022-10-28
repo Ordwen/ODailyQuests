@@ -1,7 +1,7 @@
 package com.ordwen.odailyquests.quests.player.progression;
 
 import com.ordwen.odailyquests.quests.player.QuestsManager;
-import com.ordwen.odailyquests.events.listeners.inventory.types.AbstractQuest;
+import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.rewards.RewardManager;
 import org.bukkit.entity.Player;
 
