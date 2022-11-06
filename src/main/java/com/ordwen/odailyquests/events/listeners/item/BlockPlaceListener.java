@@ -1,7 +1,9 @@
 package com.ordwen.odailyquests.events.listeners.item;
 
 import com.ordwen.odailyquests.quests.QuestType;
+import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractEntityChecker;
 import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractItemChecker;
+import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -11,6 +13,9 @@ public class BlockPlaceListener extends AbstractItemChecker implements Listener 
 
     @EventHandler
     public void onBlockPlaceEvent(BlockPlaceEvent event) {
-        setPlayerQuestProgression(event.getPlayer(), new ItemStack(event.getBlock().getType()), 1, QuestType.PLACE);
+        final Block block = event.getBlock();
+        System.out.println(block.getBlockData().getAsString());
+
+        setPlayerQuestProgression(event.getPlayer(), new ItemStack(block.getType()), 1, QuestType.PLACE, block.getBlockData().getAsString());
     }
 }

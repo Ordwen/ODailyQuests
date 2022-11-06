@@ -13,7 +13,7 @@ public class PlayerFishListener extends AbstractItemChecker implements Listener 
     @EventHandler
     public void onPlayerFishEvent(PlayerFishEvent event) {
         if (event.getState() == PlayerFishEvent.State.CAUGHT_FISH && event.getCaught() instanceof Item item) {
-            setPlayerQuestProgression(event.getPlayer(), new ItemStack(item.getItemStack().getType()), 1, QuestType.FISH);
+            setPlayerQuestProgression(event.getPlayer(), new ItemStack(item.getItemStack().getType()), 1, QuestType.FISH, null);
         }
     }
 }

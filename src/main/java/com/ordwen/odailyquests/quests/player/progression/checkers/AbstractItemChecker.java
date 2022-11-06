@@ -24,10 +24,15 @@ public abstract class AbstractItemChecker extends AbstractProgressionIncreaser {
      * @param amount    the amount to increase progression by.
      * @param questType the quest type to increase progression for.
      */
-    public void setPlayerQuestProgression(Player player, ItemStack itemStack, int amount, QuestType questType) {
+    public void setPlayerQuestProgression(Player player, ItemStack itemStack, int amount, QuestType questType, String id) {
         if (DisabledWorlds.isWorldDisabled(player.getWorld().getName())) {
             return;
         }
+
+        // VERIF SI id PAS NULL
+        // verif si présent dans db (si oui, return)
+        // ajouter dans db à la fin
+        // avec ODailyQuests.INSTANCE
 
         final HashMap<AbstractQuest, Progression> playerQuests = QuestsManager.getActiveQuests().get(player.getName()).getPlayerQuests();
 

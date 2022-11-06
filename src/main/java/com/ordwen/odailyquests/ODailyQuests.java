@@ -13,6 +13,7 @@ import com.ordwen.odailyquests.configuration.ConfigurationManager;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.configuration.essentials.Temporality;
 import com.ordwen.odailyquests.events.EventsManager;
+import com.ordwen.odailyquests.events.antiglitch.database.DatabaseManager;
 import com.ordwen.odailyquests.files.*;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.h2.H2Manager;
@@ -42,6 +43,7 @@ public final class ODailyQuests extends JavaPlugin {
     private YamlManager yamlManager;
     private TimerTask timerTask;
     private ReloadService reloadService;
+    private DatabaseManager databaseManager;
 
     @Override
     public void onEnable() {
@@ -92,6 +94,10 @@ public final class ODailyQuests extends JavaPlugin {
         /* Load interfaces */
         interfacesManager.initAllObjects();
 
+        /* Load antiglitch */
+        databaseManager = new DatabaseManager(this);
+        databaseManager.setupDatabase();
+
         /* Load commands */
         getCommand("dquests").setExecutor(new PlayerCommands(this));
         getCommand("dqadmin").setExecutor(new AdminCommands(this));
@@ -135,6 +141,8 @@ public final class ODailyQuests extends JavaPlugin {
         }
 
         if (sqlManager != null) sqlManager.close();
+        databaseManager.close();
+
         PluginLogger.info(ChatColor.RED + "Plugin is shutting down...");
     }
 
@@ -209,6 +217,14 @@ public final class ODailyQuests extends JavaPlugin {
      */
     public YamlManager getYamlManager() {
         return yamlManager;
+    }
+
+    /**
+     * Get DatabaseManager instance.
+     * @return DatabaseManager instance.
+     */
+    public DatabaseManager getDatabaseManager() {
+        return databaseManager;
     }
 }
 

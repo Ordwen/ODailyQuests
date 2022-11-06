@@ -28,6 +28,7 @@ public class CraftItemListener extends AbstractItemChecker implements Listener {
             test = new ItemStack(Material.valueOf(complexRecipe.getKey().getKey().toUpperCase()));
         } else test = event.getRecipe().getResult().clone();
 
+
         ClickType click = event.getClick();
 
         int recipeAmount = test.getAmount();
@@ -61,7 +62,7 @@ public class CraftItemListener extends AbstractItemChecker implements Listener {
             return;
 
         test.setAmount(recipeAmount);
-        setPlayerQuestProgression((Player) event.getWhoClicked(), test, test.getAmount(), QuestType.CRAFT);
+        setPlayerQuestProgression((Player) event.getWhoClicked(), test, test.getAmount(), QuestType.CRAFT, null);
     }
 
     /**

@@ -34,7 +34,7 @@ public class PlayerHarvestBlockListener extends AbstractItemChecker implements L
                     }
                 }
 
-                setPlayerQuestProgression(event.getPlayer(), new ItemStack(material), amount, QuestType.FARMING);
+                setPlayerQuestProgression(event.getPlayer(), new ItemStack(material), amount, QuestType.FARMING, null);
             }
         }
     }

@@ -13,11 +13,15 @@ public class ProjectileLaunchListener extends AbstractItemChecker implements Lis
 
     @EventHandler
     public void onProjectileLaunch(ProjectileLaunchEvent event) {
+
+        final String id = String.valueOf(event.getEntity().getUniqueId());
+        System.out.println(id);
+
         if (event.getEntity().getShooter() instanceof Player player) {
             switch (event.getEntity().getType()) {
-                case ENDER_PEARL -> setPlayerQuestProgression(player, new ItemStack(Material.ENDER_PEARL), 1, QuestType.LAUNCH);
-                case EGG -> setPlayerQuestProgression(player, new ItemStack(Material.EGG), 1, QuestType.LAUNCH);
-                case ARROW -> setPlayerQuestProgression(player, new ItemStack(Material.ARROW), 1, QuestType.LAUNCH);
+                case ENDER_PEARL -> setPlayerQuestProgression(player, new ItemStack(Material.ENDER_PEARL), 1, QuestType.LAUNCH, id);
+                case EGG -> setPlayerQuestProgression(player, new ItemStack(Material.EGG), 1, QuestType.LAUNCH, id);
+                case ARROW -> setPlayerQuestProgression(player, new ItemStack(Material.ARROW), 1, QuestType.LAUNCH, id);
             }
         }
     }

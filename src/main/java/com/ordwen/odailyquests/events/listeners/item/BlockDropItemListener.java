@@ -40,7 +40,7 @@ public class BlockDropItemListener extends AbstractItemChecker implements Listen
                     }
                 }
 
-                setPlayerQuestProgression(event.getPlayer(), new ItemStack(material), amount, QuestType.FARMING);
+                setPlayerQuestProgression(event.getPlayer(), new ItemStack(material), amount, QuestType.FARMING, null);
             }
         }
     }

@@ -55,12 +55,12 @@ public class DatabaseManager {
     public void setupTables() {
         final Connection connection = getConnection();
         try {
-            if (!tableExists(connection, "BLOCKS")) {
+            if (!tableExists(connection, "OBJECTS")) {
 
-                String str = "CREATE TABLE #BLOCKS ("
+                String str = "CREATE TEMPORARY TABLE OBJECTS ("
                         + "ID INT NOT NULL AUTO_INCREMENT,"
                         + "PLAYER VARCHAR(16) NOT NULL,"
-                        + "BLOCK VARCHAR(255) NOT NULL,"
+                        + "ID VARCHAR(255) NOT NULL,"
                         + "PRIMARY KEY (ID)"
                         + ");";
 
@@ -68,10 +68,8 @@ public class DatabaseManager {
                 preparedStatement.execute();
 
                 preparedStatement.close();
-            }
-            if (!tableExists(connection, "BLOCKS")) {
+            } else PluginLogger.error("Table OBJECTS already exists. That's not normal. Please contact the developer.");
 
-            }
             connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -119,5 +117,67 @@ public class DatabaseManager {
             }
         }
         return null;
+    }
+
+    /**
+     * Add a block to database.
+     * @param player player name.
+     * @param id serialized block.
+     */
+    public void addObjectId(String player, String id) {
+        final Connection connection = getConnection();
+        try {
+            String str = "INSERT INTO OBJECTS (PLAYER, ID) VALUES (?, ?);";
+
+            PreparedStatement preparedStatement = connection.prepareStatement(str);
+            preparedStatement.setString(1, player);
+            preparedStatement.setString(2, id);
+            preparedStatement.execute();
+
+            preparedStatement.close();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Check if a player already used an id.
+     * @param player player to check.
+     * @param id id to check.
+     */
+    public boolean checkIfContainsObject(String player, String id) {
+        final Connection connection = getConnection();
+        String str = "SELECT * FROM OBJECTS WHERE PLAYER = ? AND ID = ?;";
+
+        return containsRequest(player, id, connection, str);
+    }
+
+    /**
+     * Check if a player already used an id.
+     * @param player player to check.
+     * @param id serialized id to check.
+     * @param connection connection to database.
+     * @param str SQL request.
+     * @return true if player already used entity or block.
+     */
+    private boolean containsRequest(String player, String id, Connection connection, String str) {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(str);
+            preparedStatement.setString(1, player);
+            preparedStatement.setString(2, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            boolean contains = resultSet.next();
+
+            resultSet.close();
+            preparedStatement.close();
+            connection.close();
+
+            return contains;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

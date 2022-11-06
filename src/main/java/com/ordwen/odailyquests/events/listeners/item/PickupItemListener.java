@@ -12,7 +12,8 @@ public class PickupItemListener extends AbstractItemChecker implements Listener 
     @EventHandler
     public void onPickupItemEvent(EntityPickupItemEvent event) {
         if (event.getEntity() instanceof Player player) {
-            setPlayerQuestProgression(player, event.getItem().getItemStack(), event.getItem().getItemStack().getAmount(), QuestType.PICKUP);
+            System.out.println(event.getItem().getUniqueId());
+            setPlayerQuestProgression(player, event.getItem().getItemStack(), event.getItem().getItemStack().getAmount(), QuestType.PICKUP, event.getItem().getUniqueId().toString());
         }
     }
 }
