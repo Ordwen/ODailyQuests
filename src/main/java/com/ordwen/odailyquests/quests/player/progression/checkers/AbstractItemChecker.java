@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.quests.player.progression.checkers;
 
+import com.ordwen.odailyquests.configuration.essentials.Antiglitch;
 import com.ordwen.odailyquests.configuration.essentials.Synchronization;
 import com.ordwen.odailyquests.configuration.functionalities.DisabledWorlds;
 import com.ordwen.odailyquests.quests.types.GlobalQuest;
@@ -29,6 +30,10 @@ public abstract class AbstractItemChecker extends AbstractProgressionIncreaser {
             return;
         }
 
+        // verif si activé dans config
+        if (Antiglitch.storeItems) {
+
+        }
         // VERIF SI id PAS NULL
         // verif si présent dans db (si oui, return)
         // ajouter dans db à la fin

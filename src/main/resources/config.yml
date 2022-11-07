@@ -108,6 +108,11 @@ disable_spawners_progression: false
 # Determines if the player loses required items when completing a GET quest.
 take_items_for_get_quests: false
 
+#
+# LAUNCH - PLACE - PICKUP - BREAK
+#
+store_used_items: false
+
 # interfaces settings
 # NEVER DELETE A %variable%
 # %progress% is replaced by the progression of the quest.
