@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.quests.player.progression.checkers;
 
+import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.Antiglitch;
 import com.ordwen.odailyquests.configuration.essentials.Synchronization;
 import com.ordwen.odailyquests.configuration.functionalities.DisabledWorlds;
@@ -30,14 +31,12 @@ public abstract class AbstractItemChecker extends AbstractProgressionIncreaser {
             return;
         }
 
-        // verif si activé dans config
-        if (Antiglitch.storeItems) {
-
+        if (Antiglitch.storeItems && id != null) {
+            if (ODailyQuests.INSTANCE.getDatabaseManager().checkIfContainsObject(player.getName(), id)) {
+                System.out.println("Player " + player.getName() + " already has item " + id + " in database.");
+                return;
+            }
         }
-        // VERIF SI id PAS NULL
-        // verif si présent dans db (si oui, return)
-        // ajouter dans db à la fin
-        // avec ODailyQuests.INSTANCE
 
         final HashMap<AbstractQuest, Progression> playerQuests = QuestsManager.getActiveQuests().get(player.getName()).getPlayerQuests();
 
@@ -72,6 +71,10 @@ public abstract class AbstractItemChecker extends AbstractProgressionIncreaser {
                     }
                 }
             }
+        }
+
+        if (Antiglitch.storeItems && id != null) {
+            ODailyQuests.INSTANCE.getDatabaseManager().addObjectId(player.getName(), id);
         }
     }
 }
