@@ -14,6 +14,7 @@ public class PlayerInteractListener extends AbstractGlobalChecker implements Lis
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
+
         if (!(event.getAction() == Action.RIGHT_CLICK_BLOCK)) return;
         if (!(event.getClickedBlock().getType() == Material.PUMPKIN)) return;
         if (!(event.getPlayer().getInventory().getItemInMainHand().getType() == Material.SHEARS)) return;

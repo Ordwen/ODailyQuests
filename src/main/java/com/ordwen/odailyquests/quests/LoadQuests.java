@@ -152,7 +152,7 @@ public class LoadQuests {
 
                     switch (questType) {
                         /* type that does not require a specific entity/item */
-                        case MILKING, EXP_POINTS, EXP_LEVELS, CARVE, PLAYER_DEATH -> {
+                        case MILKING, EXP_POINTS, EXP_LEVELS, CARVE, PLAYER_DEATH, FIREBALL_REFLECT -> {
                             isGlobalType = true;
                         }
                         /* type that require a custom mob */

@@ -10,6 +10,7 @@ import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.tools.AddDefault;
 import com.ordwen.odailyquests.tools.ColorConvert;
 import com.ordwen.odailyquests.tools.PluginLogger;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -44,6 +45,9 @@ public class PlayerQuestsInterface {
     private static HashSet<ItemStack> closeItems;
     private static HashMap<ItemStack, List<String>> playerCommandsItems;
     private static HashMap<ItemStack, List<String>> consoleCommandsItems;
+
+    /* items with placeholders */
+    private static final HashMap<ItemStack, Integer> papiItems = new HashMap<>();
 
     /**
      * Load player quests interface.
@@ -117,8 +121,13 @@ public class PlayerQuestsInterface {
                         meta.setLore(lore);
                         closeItem.setItemMeta(meta);
 
-                        playerQuestsInventoryBase.setItem(itemsSection.getInt(element + ".item.slot") - 1, closeItem);
+                        int slot = itemsSection.getInt(element + ".item.slot") - 1;
+                        playerQuestsInventoryBase.setItem(slot, closeItem);
                         closeItems.add(closeItem);
+
+                        if (itemsSection.contains(element + ".use_placeholders") && itemsSection.getBoolean(element + ".use_placeholders")) {
+                            papiItems.put(closeItem, slot);
+                        }
                     }
                     case PLAYER_COMMAND -> {
                         ItemStack commandItem = new ItemStack(Material.valueOf(itemsSection.getString(element + ".item.material")));
@@ -137,8 +146,13 @@ public class PlayerQuestsInterface {
 
                         commandItem.setItemMeta(meta);
 
-                        playerQuestsInventoryBase.setItem(itemsSection.getInt(element + ".item.slot") - 1, commandItem);
+                        int slot = itemsSection.getInt(element + ".item.slot") - 1;
+                        playerQuestsInventoryBase.setItem(slot, commandItem);
                         playerCommandsItems.put(commandItem, commands);
+
+                        if (itemsSection.contains(element + ".use_placeholders") && itemsSection.getBoolean(element + ".use_placeholders")) {
+                            papiItems.put(commandItem, slot);
+                        }
                     }
                     case CONSOLE_COMMAND -> {
                         ItemStack commandItem = new ItemStack(Material.valueOf(itemsSection.getString(element + ".item.material")));
@@ -157,8 +171,13 @@ public class PlayerQuestsInterface {
 
                         commandItem.setItemMeta(meta);
 
-                        playerQuestsInventoryBase.setItem(itemsSection.getInt(element + ".item.slot") - 1, commandItem);
+                        int slot = itemsSection.getInt(element + ".item.slot") - 1;
+                        playerQuestsInventoryBase.setItem(slot, commandItem);
                         consoleCommandsItems.put(commandItem, commands);
+
+                        if (itemsSection.contains(element + ".use_placeholders") && itemsSection.getBoolean(element + ".use_placeholders")) {
+                            papiItems.put(commandItem, slot);
+                        }
                     }
                     default -> {
                         PluginLogger.error("An error occurred when loading the player interface.");
@@ -181,6 +200,22 @@ public class PlayerQuestsInterface {
 
         Inventory playerQuestsInventoryIndividual = Bukkit.createInventory(null, size, InterfacesManager.getPlayerQuestsInventoryName());
         playerQuestsInventoryIndividual.setContents(playerQuestsInventoryBase.getContents());
+
+        if (!papiItems.isEmpty()) {
+            for (ItemStack item : papiItems.keySet()) {
+
+                final ItemStack itemCopy = item.clone();
+                final ItemMeta meta = itemCopy.getItemMeta();
+                final List<String> lore = meta.getLore();
+
+                for (String str : lore) {
+                    lore.set(lore.indexOf(str), PlaceholderAPI.setPlaceholders(Bukkit.getPlayer(playerName), str));
+                }
+                meta.setLore(lore);
+                itemCopy.setItemMeta(meta);
+                playerQuestsInventoryIndividual.setItem(papiItems.get(item), itemCopy);
+            }
+        }
 
         HashMap<String, PlayerQuests> activeQuests = QuestsManager.getActiveQuests();
         HashMap<AbstractQuest, Progression> playerQuests = activeQuests.get(playerName).getPlayerQuests();

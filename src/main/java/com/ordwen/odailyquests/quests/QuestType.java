@@ -23,12 +23,12 @@ public enum QuestType {
     LOCATION,
     FARMING,
 
+    FIREBALL_REFLECT,
     EXP_POINTS,
     EXP_LEVELS,
     VILLAGER_TRADE,
     PLAYER_DEATH,
 
     CUSTOM_MOBS,
-
 
 }
