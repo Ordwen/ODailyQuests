@@ -19,6 +19,7 @@ public class CraftItemListener extends AbstractItemChecker implements Listener {
     public void onCraftItemEvent(CraftItemEvent event) {
 
         ItemStack test;
+        final Player player = (Player) event.getWhoClicked();
 
         if (event.getRecipe() instanceof ComplexRecipe complexRecipe) {
             switch (complexRecipe.getKey().getKey().toUpperCase()) {
@@ -30,8 +31,16 @@ public class CraftItemListener extends AbstractItemChecker implements Listener {
 
 
         ClickType click = event.getClick();
-
         int recipeAmount = test.getAmount();
+
+        final ItemStack cursorItem = player.getItemOnCursor();
+        if (cursorItem.getType() != Material.AIR) {
+            if (cursorItem.getType() == test.getType()) {
+                if (cursorItem.getAmount() + recipeAmount > cursorItem.getMaxStackSize()) {
+                    if (click == ClickType.LEFT || click == ClickType.RIGHT) return;
+                }
+            }
+        }
 
         switch (click) {
             case NUMBER_KEY:
@@ -62,7 +71,7 @@ public class CraftItemListener extends AbstractItemChecker implements Listener {
             return;
 
         test.setAmount(recipeAmount);
-        setPlayerQuestProgression((Player) event.getWhoClicked(), test, test.getAmount(), QuestType.CRAFT, null);
+        setPlayerQuestProgression(player, test, test.getAmount(), QuestType.CRAFT, null);
     }
 
     /**

@@ -58,7 +58,7 @@ public class DatabaseManager {
             if (!tableExists(connection, "OBJECTS")) {
 
                 String str = "CREATE TEMPORARY TABLE OBJECTS ("
-                        + "ID INT NOT NULL AUTO_INCREMENT,"
+                        + "PID INT NOT NULL AUTO_INCREMENT,"
                         + "PLAYER VARCHAR(16) NOT NULL,"
                         + "ID VARCHAR(255) NOT NULL,"
                         + "PRIMARY KEY (ID)"
