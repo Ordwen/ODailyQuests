@@ -95,8 +95,8 @@ public final class ODailyQuests extends JavaPlugin {
         interfacesManager.initAllObjects();
 
         /* Load antiglitch */
-        databaseManager = new DatabaseManager(this);
-        databaseManager.setupDatabase();
+        //databaseManager = new DatabaseManager(this);
+        //databaseManager.setupDatabase();
 
         /* Load commands */
         getCommand("dquests").setExecutor(new PlayerCommands(this));
@@ -141,7 +141,7 @@ public final class ODailyQuests extends JavaPlugin {
         }
 
         if (sqlManager != null) sqlManager.close();
-        databaseManager.close();
+        if (databaseManager != null) databaseManager.close();
 
         PluginLogger.info(ChatColor.RED + "Plugin is shutting down...");
     }

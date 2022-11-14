@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.quests.player.progression;
 
+import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.LoadQuests;
@@ -113,12 +114,31 @@ public class Utils {
         if (questsConfigMode == 1) {
             quest = getQuestAtIndex(LoadQuests.getGlobalQuests(), questIndex, playerName);
         } else if (questsConfigMode == 2) {
+            // id >> numéro de quête du joueur
+            // questIndex >> index de la quête dans le tableau
+
+            final int questsAmount = QuestsAmount.getQuestsAmount();
+
+            if (id <= (questsAmount - QuestsAmount.getMediumQuestsAmount() - QuestsAmount.getHardQuestsAmount())) {
+                quest = getQuestAtIndex(LoadQuests.getEasyQuests(), questIndex, playerName);
+            }
+
+            else if (id <= (questsAmount - QuestsAmount.getHardQuestsAmount())) {
+                quest = getQuestAtIndex(LoadQuests.getMediumQuests(), questIndex, playerName);
+            }
+
+            else {
+                quest = getQuestAtIndex(LoadQuests.getHardQuests(), questIndex, playerName);
+            }
+
+            /*
             quest = switch (id) {
                 case 1 -> getQuestAtIndex(LoadQuests.getEasyQuests(), questIndex, playerName);
                 case 2 -> getQuestAtIndex(LoadQuests.getMediumQuests(), questIndex, playerName);
                 case 3 -> getQuestAtIndex(LoadQuests.getHardQuests(), questIndex, playerName);
                 default -> null;
             };
+            */
         } else
             PluginLogger.error(ChatColor.RED + "Impossible to load player quests. The selected mode is incorrect.");
 

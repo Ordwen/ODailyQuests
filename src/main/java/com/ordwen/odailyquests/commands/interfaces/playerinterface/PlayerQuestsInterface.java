@@ -21,6 +21,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 public class PlayerQuestsInterface {
@@ -90,6 +91,7 @@ public class PlayerQuestsInterface {
 
         ConfigurationSection itemsSection = interfaceConfig.getConfigurationSection("quests");
 
+        slotQuests.clear();
         for (String i : itemsSection.getKeys(false)) {
             slotQuests.put(Integer.parseInt(i) - 1, itemsSection.getInt(i));
         }
@@ -228,9 +230,15 @@ public class PlayerQuestsInterface {
         /* load quests */
         int i = 0;
         for (AbstractQuest quest : playerQuests.keySet()) {
-            ItemStack itemStack = quest.getMenuItem();
-            ItemMeta itemMeta = itemStack.getItemMeta();
 
+            @Nullable ItemStack itemStack = quest.getMenuItem();
+            if (itemStack == null) {
+                PluginLogger.error("An error occurred when loading the player interface.");
+                PluginLogger.error("The quest " + quest.getQuestName() + " has no menu item.");
+                itemStack = new ItemStack(Material.BARRIER);
+            }
+
+            ItemMeta itemMeta = itemStack.getItemMeta();
             itemMeta.setDisplayName(quest.getQuestName());
 
             List<String> lore = new ArrayList<>(quest.getQuestDesc());
@@ -257,7 +265,13 @@ public class PlayerQuestsInterface {
             itemMeta.setLore(lore);
             itemStack.setItemMeta(itemMeta);
 
-            playerQuestsInventoryIndividual.setItem(slotQuests.get(i) - 1, itemStack);
+            if (slotQuests.get(i) != null) {
+                playerQuestsInventoryIndividual.setItem(slotQuests.get(i), itemStack);
+            }
+            else {
+                PluginLogger.error("An error occurred when loading the player interface.");
+                PluginLogger.error("The slot for the quest number " + (i+1) + " is not defined in the playerInterface file.");
+            }
 
             i++;
         }
