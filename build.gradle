@@ -96,10 +96,6 @@ shadowJar {
     manifest {
         attributes 'Main-Class': 'com.ordwen.odailyquests.ODailyQuests'
     }
-
-    dependencies {
-        //exclude(dependency('com.h2database:h2:2.1.214'))
-    }
 }
 
 processResources {

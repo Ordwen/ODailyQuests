@@ -90,7 +90,7 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
         }
 
         if (params.startsWith("progress_")) {
-            final int index = Integer.parseInt(params.substring(params.indexOf('_')));
+            final int index = Integer.parseInt(params.substring(params.indexOf('_') + 1));
             return String.valueOf(getQuestProgression(index, player.getName()));
         }
 
