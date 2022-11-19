@@ -14,8 +14,6 @@ public class BlockPlaceListener extends AbstractItemChecker implements Listener 
     @EventHandler
     public void onBlockPlaceEvent(BlockPlaceEvent event) {
         final Block block = event.getBlock();
-        System.out.println(block.getBlockData().getAsString());
-
         setPlayerQuestProgression(event.getPlayer(), new ItemStack(block.getType()), 1, QuestType.PLACE, block.toString());
     }
 }

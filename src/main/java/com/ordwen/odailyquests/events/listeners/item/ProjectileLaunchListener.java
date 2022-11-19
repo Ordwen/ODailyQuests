@@ -15,7 +15,6 @@ public class ProjectileLaunchListener extends AbstractItemChecker implements Lis
     public void onProjectileLaunch(ProjectileLaunchEvent event) {
 
         final String id = String.valueOf(event.getEntity().getUniqueId());
-        System.out.println(id);
 
         if (event.getEntity().getShooter() instanceof Player player) {
             switch (event.getEntity().getType()) {
