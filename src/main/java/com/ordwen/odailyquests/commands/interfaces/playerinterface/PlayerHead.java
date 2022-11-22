@@ -4,6 +4,7 @@ import com.ordwen.odailyquests.files.PlayerInterfaceFile;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.tools.ColorConvert;
 import com.ordwen.odailyquests.tools.TimeRemain;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -38,6 +39,10 @@ public class PlayerHead {
 
         meta.setOwningPlayer(player);
         List<String> itemDesc = meta.getLore();
+
+        for (String string : itemDesc) {
+            itemDesc.set(itemDesc.indexOf(string), PlaceholderAPI.setPlaceholders(player, string));
+        }
 
         for (String string : itemDesc) {
             itemDesc.set(itemDesc.indexOf(string), ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(string)
