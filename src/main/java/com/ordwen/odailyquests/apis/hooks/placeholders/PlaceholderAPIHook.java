@@ -7,10 +7,14 @@ import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.LoadQuests;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
+import com.ordwen.odailyquests.tools.GetPlaceholders;
 import com.ordwen.odailyquests.tools.TimeRemain;
+import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 
@@ -20,6 +24,7 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
 
     public PlaceholderAPIHook(ODailyQuests oDailyQuests) {
         this.oDailyQuests = oDailyQuests;
+        GetPlaceholders.isPlaceholderAPIHooked = true;
     }
 
     @Override
@@ -93,18 +98,6 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
             final int index = Integer.parseInt(params.substring(params.indexOf('_') + 1));
             return String.valueOf(getQuestProgression(index, player.getName()));
         }
-
-        /*
-        if (params.equalsIgnoreCase("progress_1")) {
-            return String.valueOf(getQuestProgression(0, player.getName()));
-        }
-        if (params.equalsIgnoreCase("progress_2")) {
-            return String.valueOf(getQuestProgression(1, player.getName()));
-        }
-        if (params.equalsIgnoreCase("progress_3")) {
-            return String.valueOf(getQuestProgression(2, player.getName()));
-        }
-         */
 
         return null;
     }

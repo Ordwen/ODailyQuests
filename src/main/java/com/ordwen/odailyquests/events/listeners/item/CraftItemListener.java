@@ -23,8 +23,9 @@ public class CraftItemListener extends AbstractItemChecker implements Listener {
 
         if (event.getRecipe() instanceof ComplexRecipe complexRecipe) {
             switch (complexRecipe.getKey().getKey().toUpperCase()) {
-                case "REPAIR_ITEM", "ARMOR_DYE", "SHULKER_BOX_COLORING":
+                case "REPAIR_ITEM", "ARMOR_DYE", "SHULKER_BOX_COLORING" -> {
                     return;
+                }
             }
             test = new ItemStack(Material.valueOf(complexRecipe.getKey().getKey().toUpperCase()));
         } else test = event.getRecipe().getResult().clone();
@@ -43,28 +44,24 @@ public class CraftItemListener extends AbstractItemChecker implements Listener {
         }
 
         switch (click) {
-            case NUMBER_KEY:
+            case NUMBER_KEY -> {
                 if (event.getWhoClicked().getInventory().getItem(event.getHotbarButton()) != null)
                     recipeAmount = 0;
-                break;
-            case DROP:
-            case CONTROL_DROP:
+            }
+            case DROP, CONTROL_DROP -> {
                 ItemStack cursor = event.getCursor();
                 if (!(cursor == null || cursor.getType() == Material.AIR))
                     recipeAmount = 0;
-                break;
-            case SHIFT_RIGHT:
-            case SHIFT_LEFT:
+            }
+            case SHIFT_RIGHT, SHIFT_LEFT -> {
                 if (recipeAmount == 0)
                     break;
                 int maxCraftable = getMaxCraftAmount(event.getInventory());
                 int capacity = fits(test, event.getView().getBottomInventory());
-
                 if (capacity < maxCraftable)
                     maxCraftable = ((capacity + recipeAmount - 1) / recipeAmount) * recipeAmount;
-
                 recipeAmount = maxCraftable;
-                break;
+            }
         }
 
         if (recipeAmount == 0)

@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.commands.interfaces.playerinterface;
 
+import com.ordwen.odailyquests.apis.hooks.placeholders.PlaceholderAPIHook;
 import com.ordwen.odailyquests.commands.interfaces.InterfacesManager;
 import com.ordwen.odailyquests.files.PlayerInterfaceFile;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
@@ -9,8 +10,8 @@ import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.tools.AddDefault;
 import com.ordwen.odailyquests.tools.ColorConvert;
+import com.ordwen.odailyquests.tools.GetPlaceholders;
 import com.ordwen.odailyquests.tools.PluginLogger;
-import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -35,11 +36,10 @@ public class PlayerQuestsInterface {
     private static String completeGetType;
     private static boolean isPlayerHeadEnabled;
     private static boolean isGlowingEnabled;
-    private static int customModelData = -1;
 
     /* item slots */
     private static int slotPlayerHead = -1;
-    private static HashMap<Integer, Integer> slotQuests = new HashMap<>();
+    private static final HashMap<Integer, Integer> slotQuests = new HashMap<>();
 
     /* item lists */
     private static HashSet<ItemStack> fillItems;
@@ -69,7 +69,7 @@ public class PlayerQuestsInterface {
             final ConfigurationSection section = interfaceConfig.getConfigurationSection("player_head");
             slotPlayerHead = section.getInt(".slot") - 1;
             if (section.contains("custom_model_data")) {
-                customModelData = section.getInt("custom_model_data");
+                int customModelData = section.getInt("custom_model_data");
             }
         }
 
@@ -211,7 +211,7 @@ public class PlayerQuestsInterface {
                 final List<String> lore = meta.getLore();
 
                 for (String str : lore) {
-                    lore.set(lore.indexOf(str), PlaceholderAPI.setPlaceholders(Bukkit.getPlayer(playerName), str));
+                    lore.set(lore.indexOf(str), GetPlaceholders.getPlaceholders(Bukkit.getPlayer(playerName), str));
                 }
                 meta.setLore(lore);
                 itemCopy.setItemMeta(meta);

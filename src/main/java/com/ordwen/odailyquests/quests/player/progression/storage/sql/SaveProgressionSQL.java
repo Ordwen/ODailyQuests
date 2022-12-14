@@ -78,7 +78,6 @@ public class SaveProgressionSQL {
                 connection.prepareStatement(query).execute();
 
                 int index = 0;
-                System.out.println(quests.size());
                 for (AbstractQuest quest : quests.keySet()) {
                     String update = "UPDATE PROGRESSION\n" +
                             "SET QUESTINDEX = " + quest.getQuestIndex() + ", ADVANCEMENT = " + quests.get(quest).getProgression() + ", ISACHIEVED = " + quests.get(quest).isAchieved() + "\n"
