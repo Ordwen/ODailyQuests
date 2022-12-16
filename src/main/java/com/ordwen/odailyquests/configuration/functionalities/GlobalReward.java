@@ -29,7 +29,7 @@ public class GlobalReward {
             if (rewardType == RewardType.COMMAND) {
                 globalReward = new Reward(rewardType, configurationFiles.getConfigFile().getConfigurationSection("global_reward").getStringList(".commands"));
             } else {
-                globalReward = new Reward(rewardType, configurationFiles.getConfigFile().getConfigurationSection("global_quests").getInt(".amount"));
+                globalReward = new Reward(rewardType, configurationFiles.getConfigFile().getConfigurationSection("global_reward").getInt(".amount"));
             }
             PluginLogger.info("Global reward successfully loaded.");
         } else PluginLogger.info("Global reward is disabled.");
