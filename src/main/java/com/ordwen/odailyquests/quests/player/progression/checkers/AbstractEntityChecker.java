@@ -8,6 +8,7 @@ import com.ordwen.odailyquests.quests.types.EntityQuest;
 import com.ordwen.odailyquests.quests.QuestType;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
+import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -43,7 +44,7 @@ public abstract class AbstractEntityChecker extends AbstractProgressionIncreaser
 
                     if (quest.getEntityTypes() == null) isRequiredEntity = true;
                     else {
-                        System.out.println(quest.getEntityTypes().isEmpty());
+                        Bukkit.getServer().getLogger().info(String.valueOf(quest.getEntityTypes().isEmpty()));
                         for (EntityType type : quest.getEntityTypes()) {
                             isRequiredEntity = (type == entityType);
                             if (isRequiredEntity) break;
