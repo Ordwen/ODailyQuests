@@ -94,6 +94,7 @@ public class LoadQuests {
         if (file.getConfigurationSection("quests") != null) {
             int questIndex = 0;
             for (String fileQuest : file.getConfigurationSection("quests").getKeys(false)) {
+
                 ConfigurationSection questSection = file.getConfigurationSection("quests." + fileQuest);
 
                 /* init variables (quest constructor) */
