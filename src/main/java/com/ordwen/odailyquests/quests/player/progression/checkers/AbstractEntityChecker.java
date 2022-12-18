@@ -42,9 +42,8 @@ public abstract class AbstractEntityChecker extends AbstractProgressionIncreaser
 
                 if (abstractQuest instanceof EntityQuest quest) {
 
-                    if (quest.getEntityTypes() == null) isRequiredEntity = true;
+                    if (quest.getEntityTypes() == null || quest.getEntityTypes().isEmpty()) isRequiredEntity = true;
                     else {
-                        Bukkit.getServer().getLogger().info(String.valueOf(quest.getEntityTypes().isEmpty()));
                         for (EntityType type : quest.getEntityTypes()) {
                             isRequiredEntity = (type == entityType);
                             if (isRequiredEntity) break;
