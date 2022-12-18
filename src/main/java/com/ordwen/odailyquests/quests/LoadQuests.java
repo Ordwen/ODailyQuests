@@ -94,7 +94,6 @@ public class LoadQuests {
         if (file.getConfigurationSection("quests") != null) {
             int questIndex = 0;
             for (String fileQuest : file.getConfigurationSection("quests").getKeys(false)) {
-
                 ConfigurationSection questSection = file.getConfigurationSection("quests." + fileQuest);
 
                 /* init variables (quest constructor) */
@@ -163,12 +162,12 @@ public class LoadQuests {
                         /* types that requires an entity */
                         case KILL, BREED, TAME, SHEAR -> {
                             isEntityType = true;
-                            if (questSection.contains(".required_entity")) {
+                            if (questSection.contains(".entity_type")) {
                                 entityTypes = new ArrayList<>();
 
-                                if (questSection.isString(".required_entity")) entityTypes.add(EntityType.valueOf(questSection.getString(".required_entity")));
+                                if (questSection.isString(".entity_type")) entityTypes.add(EntityType.valueOf(questSection.getString(".entity_type")));
                                 else {
-                                    for (String presumedEntity : questSection.getStringList(".required_entity")) {
+                                    for (String presumedEntity : questSection.getStringList(".entity_type")) {
                                         EntityType entityType = getEntityType(presumedEntity, fileName, questIndex, presumedEntity);
                                         entityTypes.add(entityType);
 
@@ -366,7 +365,7 @@ public class LoadQuests {
             PluginLogger.error("Invalid entity type detected.");
             PluginLogger.error("File : " + fileName);
             PluginLogger.error("Quest number : " + (questIndex + 1));
-            PluginLogger.error("Parameter : required_entity");
+            PluginLogger.error("Parameter : entity_type");
             PluginLogger.error("Value : " + value);
             PluginLogger.error("-----------------------------------");
         }
