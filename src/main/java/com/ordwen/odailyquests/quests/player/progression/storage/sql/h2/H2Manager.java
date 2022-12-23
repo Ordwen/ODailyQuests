@@ -8,6 +8,8 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class H2Manager extends SQLManager {
 
@@ -37,16 +39,16 @@ public class H2Manager extends SQLManager {
         setupTables();
     }
 
-    private  void initH2() {
+    private void initH2() {
         HikariConfig config = new HikariConfig();
         config.setDriverClassName("org.h2.Driver");
         config.setJdbcUrl("jdbc:h2:./plugins/ODailyQuests/database");
         config.setUsername("odq");
         config.setPassword("");
+        config.setMaximumPoolSize(100);
         config.setMaxLifetime(300000L);
-        config.setLeakDetectionThreshold(10000L);
-        config.setConnectionTimeout(10000L);
-
+        config.setLeakDetectionThreshold(60000L);
+        config.setConnectionTimeout(60000L);
         super.hikariDataSource = new HikariDataSource(config);
     }
 }

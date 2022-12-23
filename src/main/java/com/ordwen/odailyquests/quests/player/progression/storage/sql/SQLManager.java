@@ -81,7 +81,6 @@ public abstract class SQLManager {
         this.hikariDataSource.close();
     }
 
-
     /**
      * Get database connection.
      *

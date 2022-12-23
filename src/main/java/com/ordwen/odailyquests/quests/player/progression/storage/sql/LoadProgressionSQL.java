@@ -61,9 +61,9 @@ public class LoadProgressionSQL {
                     totalAchievedQuests = resultSet.getInt("TOTALACHIEVEDQUESTS");
                 }
 
-                connection.close();
                 resultSet.close();
                 preparedStatement.close();
+                connection.close();
 
             } catch (SQLException e) {
                 e.printStackTrace();

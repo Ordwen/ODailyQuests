@@ -50,7 +50,7 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
     @Override
     public String onRequest(OfflinePlayer player, String params) {
 
-        PlayerQuests playerQuests;
+       /*
         if (!QuestsManager.getActiveQuests().containsKey(player.getName())) {
 
             if (oDailyQuests.getYamlManager() != null) {
@@ -69,8 +69,10 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
                         Temporality.getTemporalityMode());
             }
         }
+        */
 
-        playerQuests = QuestsManager.getActiveQuests().get(player.getName());
+        if (!QuestsManager.getActiveQuests().containsKey(player.getName())) return null;
+        final PlayerQuests playerQuests = QuestsManager.getActiveQuests().get(player.getName());
 
         if (params.equalsIgnoreCase("total")) {
             return String.valueOf(playerQuests.getTotalAchievedQuests());

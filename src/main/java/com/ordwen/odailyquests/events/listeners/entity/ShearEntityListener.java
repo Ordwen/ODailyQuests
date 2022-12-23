@@ -12,6 +12,8 @@ public class ShearEntityListener extends AbstractEntityChecker implements Listen
 
     @EventHandler
     public void onShearEntityEvent(PlayerShearEntityEvent event) {
+        if (event.isCancelled()) return;
+
         final Entity entity = event.getEntity();
         if (entity instanceof Sheep sheep) {
             setPlayerQuestProgression(event.getPlayer(), event.getEntity().getType(), null, 1, QuestType.SHEAR, sheep.getColor());

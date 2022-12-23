@@ -16,6 +16,7 @@ public class PlayerHarvestBlockListener extends AbstractItemChecker implements L
 
     @EventHandler
     public void onPlayerHarvestBlock(PlayerHarvestBlockEvent event) {
+        if (event.isCancelled()) return;
 
         final BlockData data = event.getHarvestedBlock().getBlockData();
         if (data instanceof Ageable ageable) {

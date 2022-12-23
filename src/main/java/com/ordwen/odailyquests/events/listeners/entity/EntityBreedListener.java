@@ -11,6 +11,8 @@ public class EntityBreedListener extends AbstractEntityChecker implements Listen
 
     @EventHandler
     public void onEntityBreadEvent(EntityBreedEvent event) {
+        if (event.isCancelled()) return;
+
         if (event.getBreeder() != null && event.getBreeder() instanceof Player player) {
             setPlayerQuestProgression(player, event.getEntityType(), null, 1, QuestType.BREED, null);
         }

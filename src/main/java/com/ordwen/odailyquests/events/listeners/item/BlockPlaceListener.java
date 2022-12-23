@@ -13,6 +13,8 @@ public class BlockPlaceListener extends AbstractItemChecker implements Listener 
 
     @EventHandler
     public void onBlockPlaceEvent(BlockPlaceEvent event) {
+        if (event.isCancelled()) return;
+
         final Block block = event.getBlock();
         setPlayerQuestProgression(event.getPlayer(), new ItemStack(block.getType()), 1, QuestType.PLACE, block.toString());
     }

@@ -17,6 +17,7 @@ public class CraftItemListener extends AbstractItemChecker implements Listener {
 
     @EventHandler
     public void onCraftItemEvent(CraftItemEvent event) {
+        if (event.isCancelled()) return;
 
         ItemStack test;
         final Player player = (Player) event.getWhoClicked();

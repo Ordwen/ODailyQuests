@@ -43,7 +43,6 @@ public abstract class AbstractEntityChecker extends AbstractProgressionIncreaser
 
                     if (quest.getEntityTypes() == null) isRequiredEntity = true;
                     else {
-                        System.out.println(quest.getEntityTypes().isEmpty());
                         for (EntityType type : quest.getEntityTypes()) {
                             isRequiredEntity = (type == entityType);
                             if (isRequiredEntity) break;

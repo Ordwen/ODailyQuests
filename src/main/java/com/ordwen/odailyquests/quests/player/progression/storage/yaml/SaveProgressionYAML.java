@@ -35,19 +35,7 @@ public class SaveProgressionYAML {
 
             /* check if player has data */
             if (progressionFile.getString(playerName) != null) {
-                PluginLogger.info(ChatColor.GOLD + playerName + ChatColor.YELLOW + " detected into file data.");
-                progressionFile.getConfigurationSection(playerName).set(".timestamp", timestamp);
-                progressionFile.getConfigurationSection(playerName).set(".achievedQuests", achievedQuests);
-                progressionFile.getConfigurationSection(playerName).set(".totalAchievedQuests", totalAchievedQuests);
 
-                int index = 1;
-                for (AbstractQuest quest : quests.keySet()) {
-                    progressionFile.getConfigurationSection(playerName + ".quests." + index).set(".index", quest.getQuestIndex());
-                    progressionFile.getConfigurationSection(playerName + ".quests." + index).set(".progression", quests.get(quest).getProgression());
-                    progressionFile.getConfigurationSection(playerName + ".quests." + index).set(".isAchieved", quests.get(quest).isAchieved());
-                    index++;
-                }
-            } else {
                 progressionFile.set(playerName + ".timestamp", timestamp);
                 progressionFile.set(playerName + ".achievedQuests", achievedQuests);
                 progressionFile.set(playerName + ".totalAchievedQuests", totalAchievedQuests);
@@ -59,13 +47,13 @@ public class SaveProgressionYAML {
                     progressionFile.set(playerName + ".quests." + index + ".isAchieved", quests.get(quest).isAchieved());
                     index++;
                 }
-                PluginLogger.info(ChatColor.GOLD + playerName + ChatColor.YELLOW + " added to file data.");
+
+                PluginLogger.info(ChatColor.GOLD + playerName + ChatColor.YELLOW + "'s data saved.");
             }
 
             /* save the file */
             try {
                 progressionFile.save(ProgressionFile.getProgressionFile());
-                PluginLogger.info(ChatColor.GOLD + "File data successfully saved.");
             } catch (IOException e) {
                 PluginLogger.info(ChatColor.RED + "An error happened on the save of the progression file.");
                 PluginLogger.info(ChatColor.RED + "If the problem persists, contact the developer.");

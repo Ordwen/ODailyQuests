@@ -11,6 +11,8 @@ public class BucketFillListener extends AbstractGlobalChecker implements Listene
 
     @EventHandler
     public void onPlayerBucketFill(PlayerBucketFillEvent event) {
+        if (event.isCancelled()) return;
+
         if (event.getItemStack().getType() == Material.MILK_BUCKET) {
             setPlayerQuestProgression(event.getPlayer(), 1, QuestType.MILKING);
         }

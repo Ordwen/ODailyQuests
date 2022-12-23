@@ -3,8 +3,6 @@ package com.ordwen.odailyquests.events.listeners.global;
 import com.ordwen.odailyquests.quests.QuestType;
 import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractGlobalChecker;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;

@@ -17,6 +17,7 @@ public class BlockDropItemListener extends AbstractItemChecker implements Listen
 
     @EventHandler
     public void onBlockDropItem(BlockDropItemEvent event) {
+        if (event.isCancelled()) return;
 
         final BlockData data = event.getBlockState().getBlockData();
         if (data instanceof Ageable ageable) {

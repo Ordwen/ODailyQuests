@@ -12,10 +12,12 @@ public class Modes {
 
     private static int questsMode;
     private static int timestampMode;
+    private static String storageMode;
 
     public void loadPluginModes() {
         questsMode = configurationFiles.getConfigFile().getInt("quests_mode");
         timestampMode = configurationFiles.getConfigFile().getInt("timestamp_mode");
+        storageMode = configurationFiles.getConfigFile().getString("storage_mode");
     }
 
     /**
@@ -32,6 +34,14 @@ public class Modes {
      */
     public static int getTimestampMode() {
         return timestampMode;
+    }
+
+    /**
+     * Get storage mode.
+     * @return plugin mode.
+     */
+    public static String getStorageMode() {
+        return storageMode;
     }
 
 }

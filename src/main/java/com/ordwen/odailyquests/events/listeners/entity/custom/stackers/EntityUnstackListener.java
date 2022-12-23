@@ -11,18 +11,10 @@ public class EntityUnstackListener extends AbstractEntityChecker implements List
 
     @EventHandler
     public void onWildStackerEntityUnstackEvent(EntityUnstackEvent event) {
-        if (event.getUnstackSource() instanceof Player player) {
-            setPlayerQuestProgression(player, event.getEntity().getType(), null, event.getAmount(), QuestType.KILL, null);
-        }
-    }
+        if (event.isCancelled()) return;
 
-    /*
-    @EventHandler
-    public void onRoseStackerEntityUnstackEvent(dev.rosewood.rosestacker.event.AsyncEntityDeathEvent event) {
-        if (event.get)
         if (event.getUnstackSource() instanceof Player player) {
             setPlayerQuestProgression(player, event.getEntity().getType(), null, event.getAmount(), QuestType.KILL, null);
         }
     }
-    */
 }

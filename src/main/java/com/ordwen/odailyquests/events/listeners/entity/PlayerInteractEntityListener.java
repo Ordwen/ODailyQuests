@@ -12,6 +12,8 @@ public class PlayerInteractEntityListener implements Listener {
     /* Add recipes to the map when a villager is clicked */
     @EventHandler
     public void onPlayerInteractEntityEvent(PlayerInteractEntityEvent event) {
+        if (event.isCancelled()) return;
+
         if (event.getRightClicked() instanceof Villager villager) {
             for (MerchantRecipe recipe : villager.getRecipes()) {
                 OpenedRecipes.put(recipe, recipe.getUses() - 1);

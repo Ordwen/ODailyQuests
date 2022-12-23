@@ -9,7 +9,6 @@ import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.progression.storage.yaml.YamlManager;
 import com.ordwen.odailyquests.quests.LoadQuests;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
-import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
@@ -27,7 +26,6 @@ public class QuestsManager implements Listener {
     /**
      * Getting instance of classes.
      */
-    private static ConfigurationFiles configurationFiles;
     private final SQLManager sqlManager;
     private final YamlManager  yamlManager;
 
@@ -36,8 +34,6 @@ public class QuestsManager implements Listener {
      * @param oDailyQuests main class instance.
      */
     public QuestsManager(ODailyQuests oDailyQuests, boolean useSQL) {
-        configurationFiles = oDailyQuests.getConfigurationFiles();
-
         if (useSQL) {
             this.sqlManager = oDailyQuests.getSQLManager();
             this.yamlManager = null;
@@ -51,10 +47,11 @@ public class QuestsManager implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        String playerName = event.getPlayer().getName();
 
+        final String playerName = event.getPlayer().getName();
         if (!activeQuests.containsKey(playerName)) {
-            switch (configurationFiles.getConfigFile().getString("storage_mode")) {
+
+            switch (Modes.getStorageMode()) {
                 case "YAML" -> yamlManager.getLoadProgressionYAML().loadPlayerQuests(playerName, activeQuests,
                         Modes.getQuestsMode(),
                         Modes.getTimestampMode(),
@@ -83,11 +80,12 @@ public class QuestsManager implements Listener {
             return;
         }
 
-        switch (configurationFiles.getConfigFile().getString("storage_mode")) {
+        switch (Modes.getStorageMode()) {
             case "YAML" -> yamlManager.getSaveProgressionYAML().saveProgression(playerName, playerQuests);
             case "MySQL", "H2" -> sqlManager.getSaveProgressionSQL().saveProgression(playerName, playerQuests, true);
             default -> PluginLogger.error("Impossible to save player quests : the selected storage mode is incorrect !");
         }
+
         activeQuests.remove(playerName);
     }
 

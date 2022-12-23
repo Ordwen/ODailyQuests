@@ -10,6 +10,8 @@ public class EnchantItemListener extends AbstractItemChecker implements Listener
 
     @EventHandler
     public void onEnchantItemEvent(EnchantItemEvent event) {
+        if (event.isCancelled()) return;
+
         setPlayerQuestProgression(event.getEnchanter(), event.getItem(), 1, QuestType.ENCHANT, null);
     }
 }

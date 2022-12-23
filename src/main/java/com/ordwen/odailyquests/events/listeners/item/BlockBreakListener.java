@@ -12,6 +12,8 @@ public class BlockBreakListener extends AbstractItemChecker implements Listener 
 
     @EventHandler
     public void onBlockBreakEvent(BlockBreakEvent event) {
+        if (event.isCancelled()) return;
+
         final Block block = event.getBlock();
         setPlayerQuestProgression(event.getPlayer(), new ItemStack(block.getType()), 1, QuestType.BREAK, block.getBlockData().getAsString());
     }

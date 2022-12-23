@@ -10,6 +10,8 @@ public class SpawnerSpawnListener implements Listener {
 
     @EventHandler
     public void onSpawnerSpawnEvent(SpawnerSpawnEvent event) {
+        if (event.isCancelled()) return;
+
         if (SpawnersProgression.isSpawnersProgressionDisabled()) {
             EntitySource.addEntityFromSpawner(event.getEntity());
         }

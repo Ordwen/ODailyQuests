@@ -1,6 +1,8 @@
 package com.ordwen.odailyquests.commands;
 
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.configuration.essentials.Modes;
+import com.ordwen.odailyquests.configuration.essentials.Temporality;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.yaml.YamlManager;
 import com.ordwen.odailyquests.quests.LoadQuests;
@@ -46,9 +48,9 @@ public class ReloadService {
                     for (Player player : Bukkit.getServer().getOnlinePlayers()) {
                         if (!QuestsManager.getActiveQuests().containsKey(player.getName())) {
                             yamlManager.getLoadProgressionYAML().loadPlayerQuests(player.getName(), QuestsManager.getActiveQuests(),
-                                    configurationFiles.getConfigFile().getInt("quests_mode"),
-                                    configurationFiles.getConfigFile().getInt("timestamp_mode"),
-                                    configurationFiles.getConfigFile().getInt("temporality_mode"));
+                                    Modes.getQuestsMode(),
+                                    Modes.getTimestampMode(),
+                                    Temporality.getTemporalityMode());
                         }
                     }
                 }
@@ -59,9 +61,9 @@ public class ReloadService {
                     for (Player player : Bukkit.getServer().getOnlinePlayers()) {
                         if (!QuestsManager.getActiveQuests().containsKey(player.getName())) {
                             sqlManager.getLoadProgressionSQL().loadProgression(player.getName(), QuestsManager.getActiveQuests(),
-                                    configurationFiles.getConfigFile().getInt("quests_mode"),
-                                    configurationFiles.getConfigFile().getInt("timestamp_mode"),
-                                    configurationFiles.getConfigFile().getInt("temporality_mode"));
+                                    Modes.getQuestsMode(),
+                                    Modes.getTimestampMode(),
+                                    Temporality.getTemporalityMode());
                         }
                     }
                 }

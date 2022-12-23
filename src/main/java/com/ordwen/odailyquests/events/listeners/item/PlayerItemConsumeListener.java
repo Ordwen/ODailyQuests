@@ -10,6 +10,8 @@ public class PlayerItemConsumeListener extends AbstractItemChecker implements Li
 
     @EventHandler
     public void onItemConsumeEvent(PlayerItemConsumeEvent event) {
+        if (event.isCancelled()) return;
+
         setPlayerQuestProgression(event.getPlayer(), event.getItem(), 1, QuestType.CONSUME, null);
     }
 }

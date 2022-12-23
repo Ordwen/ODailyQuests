@@ -13,6 +13,7 @@ public class ProjectileLaunchListener extends AbstractItemChecker implements Lis
 
     @EventHandler
     public void onProjectileLaunch(ProjectileLaunchEvent event) {
+        if (event.isCancelled()) return;
 
         final String id = String.valueOf(event.getEntity().getUniqueId());
 

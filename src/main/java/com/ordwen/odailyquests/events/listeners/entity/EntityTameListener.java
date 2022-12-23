@@ -11,6 +11,8 @@ public class EntityTameListener extends AbstractEntityChecker implements Listene
 
     @EventHandler
     public void onEntityTameEvent(EntityTameEvent event) {
+        if (event.isCancelled()) return;
+
         if (event.getOwner() instanceof Player player) {
             setPlayerQuestProgression(player, event.getEntityType(), null, 1, QuestType.TAME, null);
         }
