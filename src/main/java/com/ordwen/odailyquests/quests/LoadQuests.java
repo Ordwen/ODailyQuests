@@ -19,9 +19,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -124,7 +124,8 @@ public class LoadQuests {
 
                 /* variables for quests that require potions */
                 PotionType potionType = null;
-                int potionLevel = -1;
+                boolean upgraded = false;
+                boolean extended = false;
                 boolean isPotionQuest = false;
 
                 /* variables for quest menu item */
@@ -207,41 +208,54 @@ public class LoadQuests {
                                     /* check if the required item is a custom item */
                                     if (itemType.equals("CUSTOM_ITEM")) {
                                         ConfigurationSection section = file.getConfigurationSection("quests." + fileQuest + ".custom_item");
-                                        customItem = getItemStackFromMaterial(section.getString(".type"), fileName, questIndex, "type (CUSTOM_ITEM)", -1);
-                                        ItemMeta meta = customItem.getItemMeta();
+                                        ItemStack requiredItem = getItemStackFromMaterial(section.getString(".type"), fileName, questIndex, "type (CUSTOM_ITEM)", -1);
+                                        ItemMeta meta = requiredItem.getItemMeta();
                                         meta.setDisplayName(ColorConvert.convertColorCode(ChatColor.translateAlternateColorCodes('&', section.getString(".name"))));
                                         List<String> lore = section.getStringList(".lore");
                                         for (String str : lore) {
                                             lore.set(lore.indexOf(str), ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(str)));
                                         }
                                         meta.setLore(lore);
-                                        customItem.setItemMeta(meta);
+                                        requiredItem.setItemMeta(meta);
 
-                                        requiredItems.add(customItem);
+                                        requiredItems.add(requiredItem);
                                     } else {
+                                        ItemStack requiredItem = getItemStackFromMaterial(itemType, fileName, questIndex, "required_item", -1);
+
                                         if (itemType.equals("POTION") || itemType.equals("SPLASH_POTION") || itemType.equals("LINGERING_POTION")) {
                                             if (questSection.contains("potion.type")) potionType = PotionType.valueOf(questSection.getString("potion.type"));
-                                            if (questSection.contains("potion.level")) potionLevel = questSection.getInt("potion.level");
+                                            if (questSection.contains("potion.upgraded")) upgraded = questSection.getBoolean("potion.upgraded");
+                                            if (questSection.contains("potion.extended")) extended = questSection.getBoolean("potion.extended");
 
-                                            if (potionType != null || potionLevel != -1) isPotionQuest = true;
+                                            if (potionType != null || upgraded || extended) isPotionQuest = true;
+
+                                            PotionMeta meta = (PotionMeta) menuItem.getItemMeta();
+                                            meta.setBasePotionData(new PotionData(potionType, extended, upgraded));
+                                            menuItem.setItemMeta(meta);
+                                            requiredItem.setItemMeta(meta);
                                         }
-                                        requiredItems.add(getItemStackFromMaterial(itemType, fileName, questIndex, "required_item", -1));
+
+                                        requiredItems.add(requiredItem);
                                     }
                                 } else {
                                     for (String itemType : questSection.getStringList(".required_item")) {
+                                        ItemStack requiredItem = getItemStackFromMaterial(itemType, fileName, questIndex, "required_item", cmd);
+
                                         if (itemType.equals("POTION") || itemType.equals("SPLASH_POTION") || itemType.equals("LINGERING_POTION")) {
                                             if (questSection.contains("potion.type")) potionType = PotionType.valueOf(questSection.getString("potion.type"));
-                                            if (questSection.contains("potion.level")) potionLevel = questSection.getInt("potion.level");
+                                            if (questSection.contains("potion.upgraded")) upgraded = questSection.getBoolean("potion.upgraded");
+                                            if (questSection.contains("potion.extended")) extended = questSection.getBoolean("potion.extended");
 
-                                            if (potionType != null || potionLevel != -1) isPotionQuest = true;
+                                            if (potionType != null || upgraded || extended) isPotionQuest = true;
+
+                                            PotionMeta meta = (PotionMeta) menuItem.getItemMeta();
+                                            meta.setBasePotionData(new PotionData(potionType, extended, upgraded));
+                                            menuItem.setItemMeta(meta);
+                                            requiredItem.setItemMeta(meta);
                                         }
-                                        ItemStack itemStack = getItemStackFromMaterial(itemType, fileName, questIndex, "required_item", cmd);
-                                        requiredItems.add(itemStack);
-                                    }
-                                }
 
-                                for (String itemType : questSection.getStringList(".required_item")) {
-                                        requiredItems.add(getItemStackFromMaterial(itemType, fileName, questIndex, "required_item", -1));
+                                        requiredItems.add(requiredItem);
+                                    }
                                 }
                             } else isGlobalType = true;
 
@@ -329,7 +343,7 @@ public class LoadQuests {
                             quest = new LocationQuest(base, location, radius);
                         }
                         else if (isPotionQuest) {
-                            quest = new PotionQuest(base, requiredItems, potionType, potionLevel);
+                            quest = new PotionQuest(base, requiredItems, potionType, upgraded, extended);
                         }
                         else {
                             quest = new ItemQuest(base, requiredItems);

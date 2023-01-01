@@ -300,7 +300,8 @@ quests:
       required_item: POTION
       potion:
         type: SPEED
-        level: 1
+        upgraded: true
+        extended: false
       required_amount: 1
       reward:
         reward_type: EXP_LEVELS
@@ -318,7 +319,8 @@ quests:
         - LINGERING_POTION
       potion:
         type: SPEED
-        level: 2
+        upgraded: true
+        extended: true
       required_amount: 1
       reward:
         reward_type: EXP_LEVELS

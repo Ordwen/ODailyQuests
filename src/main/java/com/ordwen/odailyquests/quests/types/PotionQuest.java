@@ -1,7 +1,5 @@
 package com.ordwen.odailyquests.quests.types;
 
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionType;
@@ -13,12 +11,14 @@ public class PotionQuest extends AbstractQuest {
 
     final List<ItemStack> requiredItems;
     private final PotionType potionType;
-    private final int potionLevel;
+    private final boolean upgraded;
+    private final boolean extended;
 
-    public PotionQuest(GlobalQuest globalQuest, List<ItemStack> requiredItems, @Nullable PotionType potionType, int potionLevel) {
+    public PotionQuest(GlobalQuest globalQuest, List<ItemStack> requiredItems, @Nullable PotionType potionType, boolean upgraded, boolean extended) {
         super(globalQuest);
         this.potionType = potionType;
-        this.potionLevel = potionLevel;
+        this.upgraded = upgraded;
+        this.extended = extended;
         this.requiredItems = requiredItems;
     }
 
@@ -26,8 +26,12 @@ public class PotionQuest extends AbstractQuest {
         return potionType;
     }
 
-    public int getPotionLevel() {
-        return potionLevel;
+    public boolean isUpgraded() {
+        return upgraded;
+    }
+
+    public boolean isExtended() {
+        return extended;
     }
 
     public List<ItemStack> getRequiredItems() {
@@ -38,12 +42,13 @@ public class PotionQuest extends AbstractQuest {
 
         for (ItemStack item : requiredItems) {
             if (item.getType() != itemStack.getType()) continue;
-            if (potionType == null && potionLevel == -1) return true;
+            if (potionType == null && !upgraded && !extended) return true;
 
             if (itemStack.hasItemMeta() && itemStack.getItemMeta() instanceof PotionMeta potionMeta) {
                 if (potionType != null && potionMeta.getBasePotionData().getType() != potionType) continue;
-                // check potion level
-                // if (potionLevel != -1 && ) continue;
+                if (upgraded && !potionMeta.getBasePotionData().isUpgraded()) continue;
+                if (extended && !potionMeta.getBasePotionData().isExtended()) continue;
+
                 return true;
             }
         }
