@@ -290,3 +290,36 @@ quests:
       reward:
         reward_type: EXP_LEVELS
         amount: 5
+    21:
+      name: "&aSpeeeed..."
+      menu_item: POTION
+      description:
+          - "&eGet a speed potion level 1."
+          - "&eWin &b5 EXP levels&e."
+      quest_type: GET
+      required_item: POTION
+      potion:
+        type: SPEED
+        level: 1
+      required_amount: 1
+      reward:
+        reward_type: EXP_LEVELS
+        amount: 5
+    22:
+      name: "&cSpeeeed..."
+      menu_item: POTION
+      description:
+        - "&eGet a speed potion level 2."
+        - "&eWin &b5 EXP levels&e."
+      quest_type: GET
+      required_item:
+        - POTION
+        - SPLASH_POTION
+        - LINGERING_POTION
+      potion:
+        type: SPEED
+        level: 2
+      required_amount: 1
+      reward:
+        reward_type: EXP_LEVELS
+        amount: 5

@@ -50,27 +50,6 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
     @Override
     public String onRequest(OfflinePlayer player, String params) {
 
-       /*
-        if (!QuestsManager.getActiveQuests().containsKey(player.getName())) {
-
-            if (oDailyQuests.getYamlManager() != null) {
-                oDailyQuests.getYamlManager().getLoadProgressionYAML().loadPlayerQuests(
-                        player.getName(),
-                        QuestsManager.getActiveQuests(),
-                        Modes.getQuestsMode(),
-                        Modes.getTimestampMode(),
-                        Temporality.getTemporalityMode());
-            } else {
-                oDailyQuests.getSQLManager().getLoadProgressionSQL().loadProgression(
-                        player.getName(),
-                        QuestsManager.getActiveQuests(),
-                        Modes.getQuestsMode(),
-                        Modes.getTimestampMode(),
-                        Temporality.getTemporalityMode());
-            }
-        }
-        */
-
         if (!QuestsManager.getActiveQuests().containsKey(player.getName())) return null;
         final PlayerQuests playerQuests = QuestsManager.getActiveQuests().get(player.getName());
 

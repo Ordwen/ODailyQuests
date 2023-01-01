@@ -37,6 +37,7 @@ public class Utils {
             switch (temporalityMode) {
                 case 1 -> {
                     currentCal.setTimeInMillis(System.currentTimeMillis());
+                    if (oldCal.get(Calendar.YEAR) != currentCal.get(Calendar.YEAR)) return true;
                     return oldCal.get(Calendar.DAY_OF_YEAR) < currentCal.get(Calendar.DAY_OF_YEAR);
                 }
                 case 2 -> {

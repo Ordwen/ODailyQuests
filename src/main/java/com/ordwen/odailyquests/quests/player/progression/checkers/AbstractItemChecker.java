@@ -11,6 +11,7 @@ import com.ordwen.odailyquests.quests.types.ItemQuest;
 import com.ordwen.odailyquests.quests.QuestType;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
+import com.ordwen.odailyquests.quests.types.PotionQuest;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -53,8 +54,11 @@ public abstract class AbstractItemChecker extends AbstractProgressionIncreaser {
                     isRequiredItem = true;
                 }
 
-                else if (abstractQuest instanceof ItemQuest quest) {
+                else if (abstractQuest instanceof final PotionQuest potionQuest) {
+                    isRequiredItem = potionQuest.isRequiredItem(itemStack);
+                }
 
+                else if (abstractQuest instanceof ItemQuest quest) {
                     if (quest.getRequiredItems() == null) isRequiredItem = true;
                     else {
                         for (ItemStack item : quest.getRequiredItems()) {

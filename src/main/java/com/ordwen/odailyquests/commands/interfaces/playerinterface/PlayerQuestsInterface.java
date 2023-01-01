@@ -93,7 +93,7 @@ public class PlayerQuestsInterface {
 
         slotQuests.clear();
         for (String i : itemsSection.getKeys(false)) {
-            slotQuests.put(Integer.parseInt(i) - 1, itemsSection.getInt(i));
+            slotQuests.put(Integer.parseInt(i) - 1, itemsSection.getInt(i) - 1);
         }
 
         itemsSection = interfaceConfig.getConfigurationSection("items");

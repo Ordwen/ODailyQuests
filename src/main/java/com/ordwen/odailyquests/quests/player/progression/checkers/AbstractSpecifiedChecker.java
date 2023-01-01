@@ -9,10 +9,7 @@ import com.ordwen.odailyquests.quests.QuestType;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.AbstractProgressionIncreaser;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
-import com.ordwen.odailyquests.quests.types.AbstractQuest;
-import com.ordwen.odailyquests.quests.types.ItemQuest;
-import com.ordwen.odailyquests.quests.types.LocationQuest;
-import com.ordwen.odailyquests.quests.types.VillagerQuest;
+import com.ordwen.odailyquests.quests.types.*;
 import com.ordwen.odailyquests.rewards.RewardManager;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -49,7 +46,8 @@ public abstract class AbstractSpecifiedChecker extends AbstractProgressionIncrea
                         }
                         break;
                     }
-                } else if (abstractQuest instanceof LocationQuest quest) {
+                }
+                else if (abstractQuest instanceof LocationQuest quest) {
 
                     if (clickedItem.equals(quest.getMenuItem()) && quest.getType() == QuestType.LOCATION) {
 
@@ -133,6 +131,7 @@ public abstract class AbstractSpecifiedChecker extends AbstractProgressionIncrea
                 hasRequiredAmount = false;
             }
         }
+
         if (hasRequiredAmount) {
             progression.setAchieved();
             QuestsManager.getActiveQuests().get(player.getName()).increaseAchievedQuests(player.getName());

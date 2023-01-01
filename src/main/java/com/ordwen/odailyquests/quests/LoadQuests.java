@@ -18,7 +18,10 @@ import org.bukkit.entity.Villager;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import com.ordwen.odailyquests.tools.PluginLogger;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionType;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,14 +106,29 @@ public class LoadQuests {
                 List<String> questDesc;
                 QuestType questType = null;
                 List<ItemStack> requiredItems = new ArrayList<>();
-                ItemStack customItem;
                 List<EntityType> entityTypes = null;
+                int requiredAmount;
+
+                /* ItemStack for quests that require a custom item */
+                ItemStack customItem;
+
+                /* color of sheep for quests that require a ship (obviously) */
                 DyeColor dyeColor = null;
+
+                /* name for quest that require an entity handled by a custom mobs plugin */
                 String entityName = null;
+
+                /* variables for VILLAGER_TRADE quest */
                 Villager.Profession profession = null;
                 int villagerLevel = 0;
+
+                /* variables for quests that require potions */
+                PotionType potionType = null;
+                int potionLevel = -1;
+                boolean isPotionQuest = false;
+
+                /* variables for quest menu item */
                 ItemStack menuItem;
-                int requiredAmount;
                 int cmd = -1;
 
                 /* reach type */
@@ -123,10 +141,7 @@ public class LoadQuests {
 
                 /* init quest items */
                 questName = ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(questSection.getString(".name")));
-
                 String presumedItem = questSection.getString(".menu_item");
-                cmd = questSection.getInt(".custom_model_data");
-
                 menuItem = getItemStackFromMaterial(presumedItem, fileName, questIndex, "menu_item", cmd);
 
                 questDesc = questSection.getStringList(".description");
@@ -204,10 +219,22 @@ public class LoadQuests {
 
                                         requiredItems.add(customItem);
                                     } else {
+                                        if (itemType.equals("POTION") || itemType.equals("SPLASH_POTION") || itemType.equals("LINGERING_POTION")) {
+                                            if (questSection.contains("potion.type")) potionType = PotionType.valueOf(questSection.getString("potion.type"));
+                                            if (questSection.contains("potion.level")) potionLevel = questSection.getInt("potion.level");
+
+                                            if (potionType != null || potionLevel != -1) isPotionQuest = true;
+                                        }
                                         requiredItems.add(getItemStackFromMaterial(itemType, fileName, questIndex, "required_item", -1));
                                     }
                                 } else {
                                     for (String itemType : questSection.getStringList(".required_item")) {
+                                        if (itemType.equals("POTION") || itemType.equals("SPLASH_POTION") || itemType.equals("LINGERING_POTION")) {
+                                            if (questSection.contains("potion.type")) potionType = PotionType.valueOf(questSection.getString("potion.type"));
+                                            if (questSection.contains("potion.level")) potionLevel = questSection.getInt("potion.level");
+
+                                            if (potionType != null || potionLevel != -1) isPotionQuest = true;
+                                        }
                                         ItemStack itemStack = getItemStackFromMaterial(itemType, fileName, questIndex, "required_item", cmd);
                                         requiredItems.add(itemStack);
                                     }
@@ -301,6 +328,9 @@ public class LoadQuests {
                         } else if (questType == QuestType.LOCATION) {
                             quest = new LocationQuest(base, location, radius);
                         }
+                        else if (isPotionQuest) {
+                            quest = new PotionQuest(base, requiredItems, potionType, potionLevel);
+                        }
                         else {
                             quest = new ItemQuest(base, requiredItems);
                         }
@@ -323,19 +353,20 @@ public class LoadQuests {
     }
 
     /**
-     * @param material
-     * @param fileName
-     * @param questIndex
-     * @return
+     * @param material the material to get
+     * @param fileName the file name
+     * @param questIndex the quest index
+     * @return the item stack
      */
-    private static ItemStack getItemStackFromMaterial(String material, String fileName, int questIndex, String parameter, int modelData) {
+    private static ItemStack getItemStackFromMaterial(String material, String fileName, int questIndex, String parameter, int cmd) {
         ItemStack requiredItem = null;
+
         try {
             requiredItem = new ItemStack(Material.valueOf(material));
 
-            if (modelData != -1) {
+            if (cmd != -1) {
                 final ItemMeta meta = requiredItem.getItemMeta();
-                meta.setCustomModelData(modelData);
+                meta.setCustomModelData(cmd);
                 requiredItem.setItemMeta(meta);
             }
         } catch (Exception e) {
@@ -347,15 +378,16 @@ public class LoadQuests {
             PluginLogger.error("Value : " + material);
             PluginLogger.error("-----------------------------------");
         }
+
         return requiredItem;
     }
 
     /**
-     * @param entity
-     * @param fileName
-     * @param questIndex
-     * @param value
-     * @return
+     * @param entity the entity to get
+     * @param fileName the file name
+     * @param questIndex the quest index
+     * @param value the value
+     * @return the entity type
      */
     private static EntityType getEntityType(String entity, String fileName, int questIndex, String value) {
         EntityType entityType = null;
@@ -374,11 +406,11 @@ public class LoadQuests {
     }
 
     /**
-     * @param dye
-     * @param fileName
-     * @param questIndex
-     * @param value
-     * @return
+     * @param dye the dye to get
+     * @param fileName the file name
+     * @param questIndex the quest index
+     * @param value the value
+     * @return the dye color
      */
     private static DyeColor getDyeColor(String dye, String fileName, int questIndex, String value) {
         DyeColor dyeColor = null;
