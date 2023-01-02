@@ -47,18 +47,6 @@ public abstract class AbstractSpecifiedChecker extends AbstractProgressionIncrea
                         break;
                     }
                 }
-                // TEMP TO DELETE =========================================================
-                else if (abstractQuest instanceof PotionQuest quest) {
-                    if (clickedItem.equals(quest.getMenuItem()) && quest.getType() == QuestType.GET) {
-
-                        final Progression progression = playerQuests.get(abstractQuest);
-                        if (!progression.isAchieved()) {
-                            validateGetQuestTypePotion(player, progression, quest);
-                        }
-                        break;
-                    }
-                }
-                // TEMP TO DELETE =========================================================
                 else if (abstractQuest instanceof LocationQuest quest) {
 
                     if (clickedItem.equals(quest.getMenuItem()) && quest.getType() == QuestType.LOCATION) {
@@ -70,6 +58,41 @@ public abstract class AbstractSpecifiedChecker extends AbstractProgressionIncrea
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Validate GET quest type.
+     *
+     * @param player      player who is getting the item.
+     * @param progression progression of the quest.
+     * @param quest       quest to validate.
+     */
+    private void validateGetQuestType(Player player, Progression progression, ItemQuest quest) {
+        boolean hasRequiredAmount = true;
+        for (ItemStack item : quest.getRequiredItems()) {
+            if (getAmount(player.getInventory(), item) < quest.getAmountRequired()) {
+                hasRequiredAmount = false;
+            }
+        }
+
+        if (hasRequiredAmount) {
+            progression.setAchieved();
+            QuestsManager.getActiveQuests().get(player.getName()).increaseAchievedQuests(player.getName());
+
+            if (TakeItems.isTakeItemsEnabled()) {
+                for (ItemStack item : quest.getRequiredItems()) {
+                    final ItemStack toRemove = item.clone();
+                    toRemove.setAmount(quest.getAmountRequired());
+                    player.getInventory().removeItem(toRemove);
+                }
+            }
+
+            player.closeInventory();
+            RewardManager.sendAllRewardItems(quest.getQuestName(), player, quest.getReward());
+        } else {
+            final String msg = QuestsMessages.NOT_ENOUGH_ITEM.toString();
+            if (msg != null) player.sendMessage(msg);
         }
     }
 
@@ -125,79 +148,6 @@ public abstract class AbstractSpecifiedChecker extends AbstractProgressionIncrea
                     }
                 }
             }
-        }
-    }
-
-    // TEMP TO DELETE =========================================================
-    /**
-     * Validate GET quest type.
-     *
-     * @param player      player who is getting the item.
-     * @param progression progression of the quest.
-     * @param quest       quest to validate.
-     */
-    private void validateGetQuestTypePotion(Player player, Progression progression, PotionQuest quest) {
-        boolean hasRequiredAmount = true;
-        for (ItemStack item : quest.getRequiredItems()) {
-            if (getAmount(player.getInventory(), item) < quest.getAmountRequired()) {
-                hasRequiredAmount = false;
-            }
-        }
-
-        if (hasRequiredAmount) {
-            progression.setAchieved();
-            QuestsManager.getActiveQuests().get(player.getName()).increaseAchievedQuests(player.getName());
-
-            if (TakeItems.isTakeItemsEnabled()) {
-                for (ItemStack item : quest.getRequiredItems()) {
-                    final ItemStack toRemove = item.clone();
-                    toRemove.setAmount(quest.getAmountRequired());
-                    player.getInventory().removeItem(toRemove);
-                }
-            }
-
-            player.closeInventory();
-            RewardManager.sendAllRewardItems(quest.getQuestName(), player, quest.getReward());
-        } else {
-            final String msg = QuestsMessages.NOT_ENOUGH_ITEM.toString();
-            if (msg != null) player.sendMessage(msg);
-        }
-    }
-    // TEMP TO DELETE =========================================================
-
-
-    /**
-     * Validate GET quest type.
-     *
-     * @param player      player who is getting the item.
-     * @param progression progression of the quest.
-     * @param quest       quest to validate.
-     */
-    private void validateGetQuestType(Player player, Progression progression, ItemQuest quest) {
-        boolean hasRequiredAmount = true;
-        for (ItemStack item : quest.getRequiredItems()) {
-            if (getAmount(player.getInventory(), item) < quest.getAmountRequired()) {
-                hasRequiredAmount = false;
-            }
-        }
-
-        if (hasRequiredAmount) {
-            progression.setAchieved();
-            QuestsManager.getActiveQuests().get(player.getName()).increaseAchievedQuests(player.getName());
-
-            if (TakeItems.isTakeItemsEnabled()) {
-                for (ItemStack item : quest.getRequiredItems()) {
-                    final ItemStack toRemove = item.clone();
-                    toRemove.setAmount(quest.getAmountRequired());
-                    player.getInventory().removeItem(toRemove);
-                }
-            }
-
-            player.closeInventory();
-            RewardManager.sendAllRewardItems(quest.getQuestName(), player, quest.getReward());
-        } else {
-            final String msg = QuestsMessages.NOT_ENOUGH_ITEM.toString();
-            if (msg != null) player.sendMessage(msg);
         }
     }
 

@@ -22,6 +22,7 @@ public class ProjectileLaunchListener extends AbstractItemChecker implements Lis
                 case ENDER_PEARL -> setPlayerQuestProgression(player, new ItemStack(Material.ENDER_PEARL), 1, QuestType.LAUNCH, id);
                 case EGG -> setPlayerQuestProgression(player, new ItemStack(Material.EGG), 1, QuestType.LAUNCH, id);
                 case ARROW -> setPlayerQuestProgression(player, new ItemStack(Material.ARROW), 1, QuestType.LAUNCH, id);
+                case SNOWBALL -> setPlayerQuestProgression(player, new ItemStack(Material.SNOWBALL), 1, QuestType.LAUNCH, id);
             }
         }
     }

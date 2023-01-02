@@ -113,7 +113,9 @@ public class ReloadService {
         LoadQuests.loadCategories();
 
         saveConnectedPlayerQuests(true);
-        loadConnectedPlayerQuests();
+        Bukkit.getScheduler().runTaskLater(oDailyQuests, () -> {
+            loadConnectedPlayerQuests();;
+        }, 20L);
     }
 
     private void restartNeeded() {

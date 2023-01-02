@@ -109,9 +109,6 @@ public class LoadQuests {
                 List<EntityType> entityTypes = null;
                 int requiredAmount;
 
-                /* ItemStack for quests that require a custom item */
-                ItemStack customItem;
-
                 /* color of sheep for quests that require a ship (obviously) */
                 DyeColor dyeColor = null;
 
@@ -126,7 +123,6 @@ public class LoadQuests {
                 PotionType potionType = null;
                 boolean upgraded = false;
                 boolean extended = false;
-                boolean isPotionQuest = false;
 
                 /* variables for quest menu item */
                 ItemStack menuItem;
@@ -227,8 +223,6 @@ public class LoadQuests {
                                             if (questSection.contains("potion.upgraded")) upgraded = questSection.getBoolean("potion.upgraded");
                                             if (questSection.contains("potion.extended")) extended = questSection.getBoolean("potion.extended");
 
-                                            if (potionType != null || upgraded || extended) isPotionQuest = true;
-
                                             PotionMeta meta = (PotionMeta) menuItem.getItemMeta();
                                             meta.setBasePotionData(new PotionData(potionType, extended, upgraded));
                                             menuItem.setItemMeta(meta);
@@ -245,8 +239,6 @@ public class LoadQuests {
                                             if (questSection.contains("potion.type")) potionType = PotionType.valueOf(questSection.getString("potion.type"));
                                             if (questSection.contains("potion.upgraded")) upgraded = questSection.getBoolean("potion.upgraded");
                                             if (questSection.contains("potion.extended")) extended = questSection.getBoolean("potion.extended");
-
-                                            if (potionType != null || upgraded || extended) isPotionQuest = true;
 
                                             PotionMeta meta = (PotionMeta) menuItem.getItemMeta();
                                             meta.setBasePotionData(new PotionData(potionType, extended, upgraded));
@@ -341,9 +333,6 @@ public class LoadQuests {
                             quest = new VillagerQuest(base, requiredItems, profession, villagerLevel);
                         } else if (questType == QuestType.LOCATION) {
                             quest = new LocationQuest(base, location, radius);
-                        }
-                        else if (isPotionQuest) {
-                            quest = new PotionQuest(base, requiredItems, potionType, upgraded, extended);
                         }
                         else {
                             quest = new ItemQuest(base, requiredItems);
