@@ -69,11 +69,15 @@ public abstract class AbstractSpecifiedChecker extends AbstractProgressionIncrea
      * @param quest       quest to validate.
      */
     private void validateGetQuestType(Player player, Progression progression, ItemQuest quest) {
-        boolean hasRequiredAmount = true;
+        boolean hasRequiredAmount = false;
+        int amount = 0;
+
         for (ItemStack item : quest.getRequiredItems()) {
-            if (getAmount(player.getInventory(), item) < quest.getAmountRequired()) {
-                hasRequiredAmount = false;
-            }
+            amount += getAmount(player.getInventory(), item);
+        }
+
+        if (amount >= quest.getAmountRequired()) {
+            hasRequiredAmount = true;
         }
 
         if (hasRequiredAmount) {
@@ -81,10 +85,19 @@ public abstract class AbstractSpecifiedChecker extends AbstractProgressionIncrea
             QuestsManager.getActiveQuests().get(player.getName()).increaseAchievedQuests(player.getName());
 
             if (TakeItems.isTakeItemsEnabled()) {
+                int totalRemoved = 0;
                 for (ItemStack item : quest.getRequiredItems()) {
+                    if (totalRemoved > quest.getAmountRequired()) break;
+
                     final ItemStack toRemove = item.clone();
-                    toRemove.setAmount(quest.getAmountRequired());
+
+                    int current = getAmount(player.getInventory(), item);
+                    int removeAmount = Math.min(current, quest.getAmountRequired() - totalRemoved);
+
+                    toRemove.setAmount(removeAmount);
                     player.getInventory().removeItem(toRemove);
+
+                    totalRemoved += current;
                 }
             }
 
@@ -160,13 +173,15 @@ public abstract class AbstractSpecifiedChecker extends AbstractProgressionIncrea
      */
     private void validateLocationQuestType(Player player, Progression progression, LocationQuest quest) {
         final Location requiredLocation = quest.getRequiredLocation();
+
+        if (!requiredLocation.getWorld().equals(player.getLocation().getWorld())) {
+            final String msg = QuestsMessages.BAD_WORLD_LOCATION.toString();
+            if (msg != null) player.sendMessage(msg);
+            return;
+        }
+
         double distance = player.getLocation().distance(requiredLocation);
         if (distance <= quest.getRadius()) {
-            if (!requiredLocation.getWorld().equals(player.getLocation().getWorld())) {
-                final String msg = QuestsMessages.BAD_WORLD_LOCATION.toString();
-                if (msg != null) player.sendMessage(msg);
-                return;
-            }
             progression.setAchieved();
             QuestsManager.getActiveQuests().get(player.getName()).increaseAchievedQuests(player.getName());
 

@@ -223,10 +223,22 @@ public class LoadQuests {
                                             if (questSection.contains("potion.upgraded")) upgraded = questSection.getBoolean("potion.upgraded");
                                             if (questSection.contains("potion.extended")) extended = questSection.getBoolean("potion.extended");
 
-                                            PotionMeta meta = (PotionMeta) menuItem.getItemMeta();
-                                            meta.setBasePotionData(new PotionData(potionType, extended, upgraded));
-                                            menuItem.setItemMeta(meta);
-                                            requiredItem.setItemMeta(meta);
+                                            if (upgraded && extended) {
+                                                PluginLogger.error("-----------------------------------");
+                                                PluginLogger.error("Invalid potion detected.");
+                                                PluginLogger.error("File : " + fileName);
+                                                PluginLogger.error("Quest number : " + (questIndex + 1));
+                                                PluginLogger.error("Reason : Potion cannot be both upgraded and extended.");
+                                                PluginLogger.error("-----------------------------------");
+
+                                            }
+
+                                            else {
+                                                PotionMeta meta = (PotionMeta) menuItem.getItemMeta();
+                                                meta.setBasePotionData(new PotionData(potionType, extended, upgraded));
+                                                menuItem.setItemMeta(meta);
+                                                requiredItem.setItemMeta(meta);
+                                            }
                                         }
 
                                         requiredItems.add(requiredItem);
@@ -240,10 +252,21 @@ public class LoadQuests {
                                             if (questSection.contains("potion.upgraded")) upgraded = questSection.getBoolean("potion.upgraded");
                                             if (questSection.contains("potion.extended")) extended = questSection.getBoolean("potion.extended");
 
-                                            PotionMeta meta = (PotionMeta) menuItem.getItemMeta();
-                                            meta.setBasePotionData(new PotionData(potionType, extended, upgraded));
-                                            menuItem.setItemMeta(meta);
-                                            requiredItem.setItemMeta(meta);
+                                            if (upgraded && extended) {
+                                                PluginLogger.error("-----------------------------------");
+                                                PluginLogger.error("Invalid potion detected.");
+                                                PluginLogger.error("File : " + fileName);
+                                                PluginLogger.error("Quest number : " + (questIndex + 1));
+                                                PluginLogger.error("Reason : Potion cannot be both upgraded and extended.");
+                                                PluginLogger.error("-----------------------------------");
+                                            }
+
+                                            else {
+                                                PotionMeta meta = (PotionMeta) menuItem.getItemMeta();
+                                                meta.setBasePotionData(new PotionData(potionType, extended, upgraded));
+                                                menuItem.setItemMeta(meta);
+                                                requiredItem.setItemMeta(meta);
+                                            }
                                         }
 
                                         requiredItems.add(requiredItem);
