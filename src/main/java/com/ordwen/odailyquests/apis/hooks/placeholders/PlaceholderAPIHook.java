@@ -1,20 +1,16 @@
 package com.ordwen.odailyquests.apis.hooks.placeholders;
 
 import com.ordwen.odailyquests.ODailyQuests;
-import com.ordwen.odailyquests.configuration.essentials.Modes;
-import com.ordwen.odailyquests.configuration.essentials.Temporality;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.LoadQuests;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.tools.GetPlaceholders;
 import com.ordwen.odailyquests.tools.TimeRemain;
-import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import org.bukkit.Bukkit;
+import net.milkbowl.vault.chat.Chat;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 
@@ -53,6 +49,7 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
         if (!QuestsManager.getActiveQuests().containsKey(player.getName())) return null;
         final PlayerQuests playerQuests = QuestsManager.getActiveQuests().get(player.getName());
 
+        // player placeholders
         if (params.equalsIgnoreCase("total")) {
             return String.valueOf(playerQuests.getTotalAchievedQuests());
         }
@@ -62,39 +59,138 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
         if (params.equalsIgnoreCase("drawin")) {
             return TimeRemain.timeRemain(player.getName());
         }
-        if (params.startsWith("global_")) {
-            return getQuestName(params, LoadQuests.getGlobalQuests());
+        if (params.startsWith("progress")) {
+            return String.valueOf(getQuestProgression(params, playerQuests));
         }
-        if (params.startsWith("easy_")) {
-            return getQuestName(params, LoadQuests.getEasyQuests());
+        if (params.startsWith("desc")) {
+            return getQuestDescription(params, playerQuests);
         }
-        if (params.startsWith("medium_")) {
-            return getQuestName(params, LoadQuests.getMediumQuests());
+        if (params.startsWith("iscompleted")) {
+            return isQuestCompleted(params, playerQuests);
         }
-        if (params.startsWith("hard_")) {
-            return getQuestName(params, LoadQuests.getHardQuests());
+        if (params.startsWith("requiredamount")) {
+            return getQuestRequiredAmount(params, playerQuests);
         }
 
-        if (params.startsWith("progress_")) {
-            final int index = Integer.parseInt(params.substring(params.indexOf('_') + 1));
-            return String.valueOf(getQuestProgression(index, player.getName()));
+        // quests placeholders
+        if (params.startsWith("global")) {
+            return getQuestName(params, LoadQuests.getGlobalQuests());
+        }
+        if (params.startsWith("easy")) {
+            return getQuestName(params, LoadQuests.getEasyQuests());
+        }
+        if (params.startsWith("medium")) {
+            return getQuestName(params, LoadQuests.getMediumQuests());
+        }
+        if (params.startsWith("hard")) {
+            return getQuestName(params, LoadQuests.getHardQuests());
         }
 
         return null;
     }
 
     /**
+     * Check if the quest is completed.
+     * @param params the placeholder.
+     * @param playerQuests the player quests.
+     * @return the result.
+     */
+    private String isQuestCompleted(String params, PlayerQuests playerQuests) {
+        int index;
+        try {
+            index = Integer.parseInt(params.substring(params.indexOf('_') + 1)) - 1;
+        } catch (Exception e) {
+            return ChatColor.RED + "Invalid index.";
+        }
+
+        int i = 0;
+        for (AbstractQuest quest : playerQuests.getPlayerQuests().keySet()) {
+            if (i == index) {
+                return String.valueOf(playerQuests.getPlayerQuests().get(quest).isAchieved());
+            }
+            i++;
+        }
+
+        return ChatColor.RED + "Invalid index.";
+    }
+
+    /**
+     * Get the required amount of a quest.
+     * @param params the placeholder.
+     * @param playerQuests the player quests.
+     * @return the required amount.
+     */
+    private String getQuestRequiredAmount(String params, PlayerQuests playerQuests) {
+        int index;
+        try {
+            index = Integer.parseInt(params.substring(params.indexOf('_') + 1)) - 1;
+        } catch (Exception e) {
+            return ChatColor.RED + "Invalid index.";
+        }
+
+        int i = 0;
+        for (AbstractQuest quest : playerQuests.getPlayerQuests().keySet()) {
+            if (i == index) {
+                return String.valueOf(quest.getAmountRequired());
+            }
+            i++;
+        }
+
+        return ChatColor.RED + "Invalid index.";
+    }
+
+    /**
+     * Get the line of a specified quest description
+     * @param params the placeholder
+     * @param playerQuests the player quests
+     * @return the line of the description
+     */
+    private String getQuestDescription(String params, PlayerQuests playerQuests) {
+        int index;
+        try {
+            index = Integer.parseInt(params.substring(params.indexOf("_") + 1, params.lastIndexOf("_"))) - 1;
+        } catch (Exception e) {
+            return ChatColor.RED + "Invalid index.";
+        }
+
+        int line;
+        try {
+            line = Integer.parseInt(params.substring(params.lastIndexOf("_") + 1)) - 1;
+        } catch (Exception e) {
+            return ChatColor.RED + "Invalid line.";
+        }
+
+        int i = 0;
+        for (AbstractQuest quest : playerQuests.getPlayerQuests().keySet()) {
+            if (i == index) {
+                if (line <= quest.getQuestDesc().size()) return quest.getQuestDesc().get(line);
+                else return ChatColor.RED + "Invalid line.";
+            }
+            i++;
+        }
+
+        return ChatColor.RED + "Invalid index.";
+    }
+
+    /**
      * Get player quest progression.
      *
-     * @param index      player quest number
-     * @param playerName player
-     * @return quest progression
+     * @param params the placeholder
+     * @param playerQuests the player quests
+     * @return current progression
      */
-    public int getQuestProgression(int index, String playerName) {
+    public int getQuestProgression(String params, PlayerQuests playerQuests) {
+        int index;
+        try {
+            index = Integer.parseInt(params.substring(params.indexOf("_") + 1)) - 1;
+        } catch (Exception e) {
+            return -1;
+        }
+
         int i = 0;
-        for (AbstractQuest quest : QuestsManager.getActiveQuests().get(playerName).getPlayerQuests().keySet()) {
+        for (AbstractQuest quest : playerQuests.getPlayerQuests().keySet()) {
             if (i == index) {
-                return QuestsManager.getActiveQuests().get(playerName).getPlayerQuests().get(quest).getProgression();
+                return playerQuests.getPlayerQuests().get(quest).getProgression();
             }
             i++;
         }
