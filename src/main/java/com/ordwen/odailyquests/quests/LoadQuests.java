@@ -178,10 +178,20 @@ public class LoadQuests {
                             if (questSection.contains(".required_entity")) {
                                 entityTypes = new ArrayList<>();
 
-                                if (questSection.isString(".required_entity")) entityTypes.add(EntityType.valueOf(questSection.getString(".required_entity")));
+                                if (questSection.isString(".required_entity")) {
+                                    EntityType entityType = getEntityType(fileName, questIndex, questSection.getString(".required_entity"));
+                                    entityTypes.add(entityType);
+
+                                    if (entityType == EntityType.SHEEP) {
+                                        if (questSection.contains(".sheep_color")) {
+                                            String presumedDyeColor = questSection.getString(".sheep_color");
+                                            dyeColor = getDyeColor(presumedDyeColor, fileName, questIndex, presumedDyeColor);
+                                        }
+                                    }
+                                }
                                 else {
                                     for (String presumedEntity : questSection.getStringList(".required_entity")) {
-                                        EntityType entityType = getEntityType(presumedEntity, fileName, questIndex, presumedEntity);
+                                        EntityType entityType = getEntityType(fileName, questIndex, presumedEntity);
                                         entityTypes.add(entityType);
 
                                         if (entityType == EntityType.SHEEP) {
@@ -409,16 +419,15 @@ public class LoadQuests {
     }
 
     /**
-     * @param entity the entity to get
      * @param fileName the file name
      * @param questIndex the quest index
      * @param value the value
      * @return the entity type
      */
-    private static EntityType getEntityType(String entity, String fileName, int questIndex, String value) {
+    private static EntityType getEntityType(String fileName, int questIndex, String value) {
         EntityType entityType = null;
         try {
-            entityType = EntityType.valueOf(entity);
+            entityType = EntityType.valueOf(value);
         } catch (Exception e) {
             PluginLogger.error("-----------------------------------");
             PluginLogger.error("Invalid entity type detected.");

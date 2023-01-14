@@ -87,7 +87,6 @@ public class SaveProgressionSQL {
             if (Modes.getStorageMode().equalsIgnoreCase("mysql")) playerStatement = connection.prepareStatement(MYSQL_PLAYER_QUERY);
             else playerStatement = connection.prepareStatement(H2_PLAYER_QUERY);
 
-
             playerStatement.setString(1, playerName);
             playerStatement.setLong(2, timestamp);
             playerStatement.setInt(3, achievedQuests);

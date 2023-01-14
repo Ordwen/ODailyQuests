@@ -42,9 +42,9 @@ public abstract class SQLManager {
                         "     PLAYERQUESTID tinyint  not null  ,\n" +
                         "     QUESTINDEX int  not null  ,\n" +
                         "     ADVANCEMENT int  not null  ,\n" +
-                        "     ISACHIEVED bit  not null  \n" +
-                        "     ,\n" +
-                        "     primary key (PRIMARYKEY)\n" +
+                        "     ISACHIEVED bit  not null  ,\n" +
+                        "     primary key (PRIMARYKEY) ,\n" +
+                        "     constraint UNIQUE_PLAYERNAME_PLAYERQUESTID unique (PLAYERNAME, PLAYERQUESTID)" +
                         "  ); ";
 
                 PreparedStatement preparedStatement = connection.prepareStatement(str);
