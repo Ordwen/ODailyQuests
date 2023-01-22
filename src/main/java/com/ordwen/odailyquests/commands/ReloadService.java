@@ -83,7 +83,7 @@ public class ReloadService {
                 if (yamlManager == null) restartNeeded();
                 else {
                     for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-                        yamlManager.getSaveProgressionYAML().saveProgression(player.getName(), QuestsManager.getActiveQuests().get(player.getName()));
+                        yamlManager.getSaveProgressionYAML().saveProgression(player.getName(), QuestsManager.getActiveQuests().get(player.getName()), isAsync);
                         QuestsManager.getActiveQuests().remove(player.getName());
                     }
                 }

@@ -21,44 +21,44 @@ public class SaveProgressionYAML {
      * @param playerName   player name.
      * @param playerQuests player quests.
      */
-    public void saveProgression(String playerName, PlayerQuests playerQuests) {
+    public void saveProgression(String playerName, PlayerQuests playerQuests, boolean isAsync) {
 
-        Bukkit.getScheduler().runTaskAsynchronously(ODailyQuests.INSTANCE, () -> {
-            final FileConfiguration progressionFile = ProgressionFile.getProgressionFileConfiguration();
+        if (isAsync) {
+            Bukkit.getScheduler().runTaskAsynchronously(ODailyQuests.INSTANCE, () -> {
+                updateFile(playerName, playerQuests);
+            });
+        } else updateFile(playerName, playerQuests);
+    }
 
-            /* init variables */
-            long timestamp = playerQuests.getTimestamp();
-            int achievedQuests = playerQuests.getAchievedQuests();
-            int totalAchievedQuests = playerQuests.getTotalAchievedQuests();
+    private void updateFile(String playerName, PlayerQuests playerQuests) {
+        final FileConfiguration progressionFile = ProgressionFile.getProgressionFileConfiguration();
 
-            final HashMap<AbstractQuest, Progression> quests = playerQuests.getPlayerQuests();
+        long timestamp = playerQuests.getTimestamp();
+        int achievedQuests = playerQuests.getAchievedQuests();
+        int totalAchievedQuests = playerQuests.getTotalAchievedQuests();
 
-            /* check if player has data */
-            if (progressionFile.getString(playerName) != null) {
+        final HashMap<AbstractQuest, Progression> quests = playerQuests.getPlayerQuests();
 
-                progressionFile.set(playerName + ".timestamp", timestamp);
-                progressionFile.set(playerName + ".achievedQuests", achievedQuests);
-                progressionFile.set(playerName + ".totalAchievedQuests", totalAchievedQuests);
+        progressionFile.set(playerName + ".timestamp", timestamp);
+        progressionFile.set(playerName + ".achievedQuests", achievedQuests);
+        progressionFile.set(playerName + ".totalAchievedQuests", totalAchievedQuests);
 
-                int index = 1;
-                for (AbstractQuest quest : quests.keySet()) {
-                    progressionFile.set(playerName + ".quests." + index + ".index", quest.getQuestIndex());
-                    progressionFile.set(playerName + ".quests." + index + ".progression", quests.get(quest).getProgression());
-                    progressionFile.set(playerName + ".quests." + index + ".isAchieved", quests.get(quest).isAchieved());
-                    index++;
-                }
+        int index = 1;
+        for (AbstractQuest quest : quests.keySet()) {
+            progressionFile.set(playerName + ".quests." + index + ".index", quest.getQuestIndex());
+            progressionFile.set(playerName + ".quests." + index + ".progression", quests.get(quest).getProgression());
+            progressionFile.set(playerName + ".quests." + index + ".isAchieved", quests.get(quest).isAchieved());
+            index++;
+        }
 
-                PluginLogger.info(ChatColor.GOLD + playerName + ChatColor.YELLOW + "'s data saved.");
-            }
+        PluginLogger.info(ChatColor.GOLD + playerName + ChatColor.YELLOW + "'s data saved.");
 
-            /* save the file */
-            try {
-                progressionFile.save(ProgressionFile.getProgressionFile());
-            } catch (IOException e) {
-                PluginLogger.info(ChatColor.RED + "An error happened on the save of the progression file.");
-                PluginLogger.info(ChatColor.RED + "If the problem persists, contact the developer.");
-                e.printStackTrace();
-            }
-        });
+        try {
+            progressionFile.save(ProgressionFile.getProgressionFile());
+        } catch (IOException e) {
+            PluginLogger.info(ChatColor.RED + "An error happened on the save of the progression file.");
+            PluginLogger.info(ChatColor.RED + "If the problem persists, contact the developer.");
+            e.printStackTrace();
+        }
     }
 }

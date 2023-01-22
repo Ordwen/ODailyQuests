@@ -81,7 +81,7 @@ public class QuestsManager implements Listener {
         }
 
         switch (Modes.getStorageMode()) {
-            case "YAML" -> yamlManager.getSaveProgressionYAML().saveProgression(playerName, playerQuests);
+            case "YAML" -> yamlManager.getSaveProgressionYAML().saveProgression(playerName, playerQuests, true);
             case "MySQL", "H2" -> sqlManager.getSaveProgressionSQL().saveProgression(playerName, playerQuests, true);
             default -> PluginLogger.error("Impossible to save player quests : the selected storage mode is incorrect !");
         }
