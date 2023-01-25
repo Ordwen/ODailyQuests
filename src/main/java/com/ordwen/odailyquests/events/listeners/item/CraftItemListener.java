@@ -24,7 +24,7 @@ public class CraftItemListener extends AbstractItemChecker implements Listener {
 
         if (event.getRecipe() instanceof ComplexRecipe complexRecipe) {
             switch (complexRecipe.getKey().getKey().toUpperCase()) {
-                case "REPAIR_ITEM", "ARMOR_DYE", "SHULKER_BOX_COLORING" -> {
+                case "REPAIR_ITEM", "ARMOR_DYE", "SHULKER_BOX_COLORING", "SHIELD_DECORATION" -> {
                     return;
                 }
             }

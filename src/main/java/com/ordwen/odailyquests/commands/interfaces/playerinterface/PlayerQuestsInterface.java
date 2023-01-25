@@ -58,7 +58,6 @@ public class PlayerQuestsInterface {
         ConfigurationSection interfaceConfig = PlayerInterfaceFile.getPlayerInterfaceFileConfiguration().getConfigurationSection("player_interface");
         isPlayerHeadEnabled = interfaceConfig.getConfigurationSection("player_head").getBoolean(".enabled");
 
-        // glowing_if_achieved - VER 1.3.2
         if (interfaceConfig.contains("glowing_if_achieved")) {
             isGlowingEnabled = interfaceConfig.getBoolean("glowing_if_achieved");
         } else
@@ -231,14 +230,14 @@ public class PlayerQuestsInterface {
         int i = 0;
         for (AbstractQuest quest : playerQuests.keySet()) {
 
-            @Nullable ItemStack itemStack = quest.getMenuItem();
+            @Nullable ItemStack itemStack = quest.getMenuItem().clone();
             if (itemStack == null) {
                 PluginLogger.error("An error occurred when loading the player interface.");
                 PluginLogger.error("The quest " + quest.getQuestName() + " has no menu item.");
                 itemStack = new ItemStack(Material.BARRIER);
             }
 
-            ItemMeta itemMeta = itemStack.getItemMeta();
+            ItemMeta itemMeta = itemStack.getItemMeta().clone();
             itemMeta.setDisplayName(quest.getQuestName());
 
             List<String> lore = new ArrayList<>(quest.getQuestDesc());
