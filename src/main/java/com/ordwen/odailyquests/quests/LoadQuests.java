@@ -124,9 +124,10 @@ public class LoadQuests {
                 boolean upgraded = false;
                 boolean extended = false;
 
-                /* variables for quest menu item */
-                ItemStack menuItem;
-                int cmd = -1;
+                /* quest menu item */
+                int cmd = questSection.isInt(".custom_model_data") ? questSection.getInt(".custom_model_data") : -1;
+                String presumedItem = questSection.getString(".menu_item");
+                ItemStack menuItem = getItemStackFromMaterial(presumedItem, fileName, questIndex, "menu_item", cmd);
 
                 /* reach type */
                 Location location = null;
@@ -138,8 +139,6 @@ public class LoadQuests {
 
                 /* init quest items */
                 questName = ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(questSection.getString(".name")));
-                String presumedItem = questSection.getString(".menu_item");
-                menuItem = getItemStackFromMaterial(presumedItem, fileName, questIndex, "menu_item", cmd);
 
                 questDesc = questSection.getStringList(".description");
                 for (String string : questDesc) {

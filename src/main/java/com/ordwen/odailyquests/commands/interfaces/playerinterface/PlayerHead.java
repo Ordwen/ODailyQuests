@@ -1,6 +1,5 @@
 package com.ordwen.odailyquests.commands.interfaces.playerinterface;
 
-import com.ordwen.odailyquests.apis.hooks.placeholders.PlaceholderAPIHook;
 import com.ordwen.odailyquests.files.PlayerInterfaceFile;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.tools.ColorConvert;
@@ -8,6 +7,7 @@ import com.ordwen.odailyquests.tools.GetPlaceholders;
 import com.ordwen.odailyquests.tools.TimeRemain;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -23,11 +23,17 @@ public class PlayerHead {
      * Init player head.
      */
     public void initPlayerHead() {
+        final ConfigurationSection playerHeadSection = PlayerInterfaceFile.getPlayerInterfaceFileConfiguration().getConfigurationSection("player_interface.player_head");
+
         playerHead = new ItemStack(Material.PLAYER_HEAD, 1);
         skullMeta = (SkullMeta) playerHead.getItemMeta();
-        skullMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&',
-                ColorConvert.convertColorCode(PlayerInterfaceFile.getPlayerInterfaceFileConfiguration().getConfigurationSection("player_interface.player_head").getString(".item_name"))));
-        skullMeta.setLore(PlayerInterfaceFile.getPlayerInterfaceFileConfiguration().getConfigurationSection("player_interface.player_head").getStringList(".item_description"));
+
+        skullMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(playerHeadSection.getString(".item_name"))));
+        skullMeta.setLore(playerHeadSection.getStringList(".item_description"));
+
+        if (playerHeadSection.isInt(".custom_model_data")) {
+            skullMeta.setCustomModelData(playerHeadSection.getInt(".custom_model_data"));
+        }
     }
 
     /**
