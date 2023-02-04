@@ -230,7 +230,8 @@ public class PlayerQuestsInterface {
         int i = 0;
         for (AbstractQuest quest : playerQuests.keySet()) {
 
-            @Nullable ItemStack itemStack = quest.getMenuItem().clone();
+            ItemStack itemStack = quest.getMenuItem().clone();
+
             if (itemStack == null) {
                 PluginLogger.error("An error occurred when loading the player interface.");
                 PluginLogger.error("The quest " + quest.getQuestName() + " has no menu item.");

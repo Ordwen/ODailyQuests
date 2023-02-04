@@ -19,6 +19,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
 
@@ -292,6 +294,14 @@ public class LoadQuests {
                                     villagerLevel = questSection.getInt(".villager_level");
                                 }
                             }
+
+                            /* apply Persistent Data Container to the menu item to differentiate GET quests */
+                            if (questType == QuestType.GET) {
+                                ItemMeta meta = menuItem.getItemMeta();
+                                PersistentDataContainer container = meta.getPersistentDataContainer();
+                                container.set(new NamespacedKey(ODailyQuests.INSTANCE, "quest_type"), PersistentDataType.STRING, "get");
+                                menuItem.setItemMeta(meta);
+                            }
                         }
                         /* type that requires a location */
                         case LOCATION -> {
@@ -320,13 +330,20 @@ public class LoadQuests {
                                     PluginLogger.error("File : " + fileName);
                                     PluginLogger.error("Quest number : " + (questIndex + 1));
                                     PluginLogger.error("The world specified in the location is not loaded.");
-                                    PluginLogger.error("-----------------------------------");   
-                                    
+                                    PluginLogger.error("-----------------------------------");
+
                                     location = new Location(Bukkit.getWorlds().get(0), 0, 0, 0);
                                 } else {
                                     location = new Location(world, x, y, z);
                                 }
                             }
+
+                            /* apply Persistent Data Container to the menu item to differentiate LOCATION quests */
+                            ItemMeta meta = menuItem.getItemMeta();
+                            PersistentDataContainer container = meta.getPersistentDataContainer();
+                            container.set(new NamespacedKey(ODailyQuests.INSTANCE, "quest_type"), PersistentDataType.STRING, "location");
+                            menuItem.setItemMeta(meta);
+
                         }
                     }
 

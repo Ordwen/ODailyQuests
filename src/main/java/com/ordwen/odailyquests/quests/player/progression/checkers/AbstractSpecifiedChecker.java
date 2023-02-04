@@ -17,6 +17,7 @@ import org.bukkit.entity.Villager;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.HashMap;
 
@@ -38,7 +39,7 @@ public abstract class AbstractSpecifiedChecker extends AbstractProgressionIncrea
             for (AbstractQuest abstractQuest : playerQuests.keySet()) {
 
                 if (abstractQuest instanceof ItemQuest quest) {
-                    if (clickedItem.equals(quest.getMenuItem()) && quest.getType() == QuestType.GET) {
+                    if (isAppropriateQuestMenuItem(clickedItem, quest.getMenuItem()) && quest.getType() == QuestType.GET) {
 
                         final Progression progression = playerQuests.get(abstractQuest);
                         if (!progression.isAchieved()) {
@@ -49,7 +50,7 @@ public abstract class AbstractSpecifiedChecker extends AbstractProgressionIncrea
                 }
                 else if (abstractQuest instanceof LocationQuest quest) {
 
-                    if (clickedItem.equals(quest.getMenuItem()) && quest.getType() == QuestType.LOCATION) {
+                    if (isAppropriateQuestMenuItem(clickedItem, quest.getMenuItem()) && quest.getType() == QuestType.LOCATION) {
 
                         final Progression progression = playerQuests.get(quest);
                         if (!progression.isAchieved()) {
@@ -59,6 +60,20 @@ public abstract class AbstractSpecifiedChecker extends AbstractProgressionIncrea
                 }
             }
         }
+    }
+
+    /**
+     * Check if the clicked item is corresponding to a quest menu item, by checking the persistent data container.
+     * @param clickedItem clicked item to check.
+     * @param menuItem quest menu item to compare.
+     * @return true if the clicked item is a GET quest menu item.
+     */
+    private boolean isAppropriateQuestMenuItem(ItemStack clickedItem, ItemStack menuItem) {
+        ItemMeta clickedItemMeta = clickedItem.getItemMeta();
+        ItemMeta menuItemMeta = menuItem.getItemMeta();
+
+        if (clickedItemMeta == null || menuItemMeta == null) return false;
+        return clickedItemMeta.getPersistentDataContainer().equals(menuItemMeta.getPersistentDataContainer());
     }
 
     /**
