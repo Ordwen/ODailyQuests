@@ -41,7 +41,7 @@ public class LoadProgressionSQL {
 
         LinkedHashMap<AbstractQuest, Progression> quests = new LinkedHashMap<>();
 
-        Bukkit.getScheduler().runTaskAsynchronously(ODailyQuests.INSTANCE, () -> {
+        Bukkit.getScheduler().runTaskLaterAsynchronously(ODailyQuests.INSTANCE, () -> {
             boolean hasStoredData = false;
             long timestamp = 0;
             int achievedQuests = 0;
@@ -95,7 +95,7 @@ public class LoadProgressionSQL {
             } else {
                 Utils.loadNewPlayerQuests(playerName, activeQuests, timestampConfigMode);
             }
-        });
+        }, 10);
     }
 
     /**
