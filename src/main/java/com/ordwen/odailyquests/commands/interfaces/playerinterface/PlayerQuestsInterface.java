@@ -1,6 +1,5 @@
 package com.ordwen.odailyquests.commands.interfaces.playerinterface;
 
-import com.ordwen.odailyquests.apis.hooks.placeholders.PlaceholderAPIHook;
 import com.ordwen.odailyquests.commands.interfaces.InterfacesManager;
 import com.ordwen.odailyquests.files.PlayerInterfaceFile;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
@@ -8,7 +7,6 @@ import com.ordwen.odailyquests.quests.QuestType;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
-import com.ordwen.odailyquests.tools.AddDefault;
 import com.ordwen.odailyquests.tools.ColorConvert;
 import com.ordwen.odailyquests.tools.GetPlaceholders;
 import com.ordwen.odailyquests.tools.PluginLogger;
@@ -22,7 +20,6 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import javax.annotation.Nullable;
 import java.util.*;
 
 public class PlayerQuestsInterface {
@@ -57,19 +54,12 @@ public class PlayerQuestsInterface {
 
         ConfigurationSection interfaceConfig = PlayerInterfaceFile.getPlayerInterfaceFileConfiguration().getConfigurationSection("player_interface");
         isPlayerHeadEnabled = interfaceConfig.getConfigurationSection("player_head").getBoolean(".enabled");
-
-        if (interfaceConfig.contains("glowing_if_achieved")) {
-            isGlowingEnabled = interfaceConfig.getBoolean("glowing_if_achieved");
-        } else
-            AddDefault.addDefaultConfigItem("player_interface.glowing_if_achieved", true, PlayerInterfaceFile.getPlayerInterfaceFileConfiguration(), PlayerInterfaceFile.getPlayerInterfaceFile());
+        isGlowingEnabled = interfaceConfig.getBoolean("glowing_if_achieved");
 
         /* load item slots */
         if (isPlayerHeadEnabled) {
             final ConfigurationSection section = interfaceConfig.getConfigurationSection("player_head");
             slotPlayerHead = section.getInt(".slot") - 1;
-            if (section.contains("custom_model_data")) {
-                int customModelData = section.getInt("custom_model_data");
-            }
         }
 
         /* create base of inventory */
@@ -189,7 +179,7 @@ public class PlayerQuestsInterface {
             }
         }
 
-        PluginLogger.info(ChatColor.GREEN + "Player quests interface successfully loaded.");
+        PluginLogger.fine("Player quests interface successfully loaded.");
     }
 
     /**

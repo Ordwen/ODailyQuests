@@ -30,37 +30,41 @@ public abstract class AbstractEntityChecker extends AbstractProgressionIncreaser
             return;
         }
 
-        final HashMap<AbstractQuest, Progression> playerQuests = QuestsManager.getActiveQuests().get(player.getName()).getPlayerQuests();
+        if (QuestsManager.getActiveQuests().containsKey(player.getName())) {
 
-        for (AbstractQuest abstractQuest : playerQuests.keySet()) {
+            final HashMap<AbstractQuest, Progression> playerQuests = QuestsManager.getActiveQuests().get(player.getName()).getPlayerQuests();
 
-            final Progression progression = playerQuests.get(abstractQuest);
-            if (!progression.isAchieved() && abstractQuest.getType() == questType) {
+            for (AbstractQuest abstractQuest : playerQuests.keySet()) {
 
-                boolean isRequiredEntity = false;
+                final Progression progression = playerQuests.get(abstractQuest);
+                if (!progression.isAchieved() && abstractQuest.getType() == questType) {
 
-                if (abstractQuest instanceof EntityQuest quest) {
+                    boolean isRequiredEntity = false;
 
-                    if (quest.getEntityTypes() == null) isRequiredEntity = true;
-                    else {
-                        for (EntityType type : quest.getEntityTypes()) {
-                            isRequiredEntity = (type == entityType);
-                            if (isRequiredEntity) break;
+                    if (abstractQuest instanceof EntityQuest quest) {
+
+                        if (quest.getEntityTypes() == null) isRequiredEntity = true;
+                        else {
+                            for (EntityType type : quest.getEntityTypes()) {
+                                isRequiredEntity = (type == entityType);
+                                if (isRequiredEntity) break;
+                            }
                         }
+
+                        if (isRequiredEntity) {
+                            if (quest.getDyeColor() != null) isRequiredEntity = (dyeColor == quest.getDyeColor());
+                            if (quest.getEntityName() != null)
+                                isRequiredEntity = (entityName.equals(quest.getEntityName()));
+                        }
+                    } else {
+                        isRequiredEntity = true;
                     }
 
                     if (isRequiredEntity) {
-                        if (quest.getDyeColor() != null) isRequiredEntity = (dyeColor == quest.getDyeColor());
-                        if (quest.getEntityName() != null) isRequiredEntity = (entityName.equals(quest.getEntityName()));
-                    }
-                } else {
-                    isRequiredEntity = true;
-                }
-
-                if (isRequiredEntity) {
-                    increaseProgression(player, progression, abstractQuest, amount);
-                    if (!Synchronization.isSynchronised()) {
-                        break;
+                        increaseProgression(player, progression, abstractQuest, amount);
+                        if (!Synchronization.isSynchronised()) {
+                            break;
+                        }
                     }
                 }
             }

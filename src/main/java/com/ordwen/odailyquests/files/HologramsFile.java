@@ -50,7 +50,7 @@ public class HologramsFile {
 
         if (!hologramsFile.exists()) {
             oDailyQuests.saveResource("holograms.yml", false);
-            PluginLogger.info(ChatColor.GREEN + "Holograms file created (YAML).");
+            PluginLogger.info("Holograms file created (YAML).");
         }
 
         holograms = new YamlConfiguration();
@@ -58,11 +58,11 @@ public class HologramsFile {
         try {
             holograms.load(hologramsFile);
         } catch (InvalidConfigurationException | IOException e) {
-            PluginLogger.info(ChatColor.RED + "An error occurred on the load of the holograms file.");
-            PluginLogger.info(ChatColor.RED + "Please inform the developer.");
+            PluginLogger.error("An error occurred on the load of the holograms file.");
+            PluginLogger.error("Please inform the developer.");
             e.printStackTrace();
         }
-        PluginLogger.info(ChatColor.GREEN + "Holograms file successfully loaded (YAML).");
+        PluginLogger.fine("Holograms file successfully loaded (YAML).");
     }
 
 }

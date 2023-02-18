@@ -76,7 +76,7 @@ public class AdminCommands implements CommandExecutor {
                                         QuestsManager.getActiveQuests().put(args[2], playerQuests);
                                         QuestsManager.getActiveQuests().get(args[2]).setAchievedQuests(0);
 
-                                        PluginLogger.info(ChatColor.GREEN + args[2] + ChatColor.YELLOW + " inserted into the array.");
+                                        PluginLogger.fine(args[2] + " inserted into the array.");
 
                                         String msg = QuestsMessages.QUESTS_RENEWED_ADMIN.toString();
                                         if (msg != null) sender.sendMessage(msg.replace("%target%", target.getName()));

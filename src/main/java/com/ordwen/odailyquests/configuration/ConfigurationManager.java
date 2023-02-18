@@ -6,7 +6,6 @@ import com.ordwen.odailyquests.configuration.functionalities.*;
 import com.ordwen.odailyquests.configuration.integrations.NPCNames;
 import com.ordwen.odailyquests.configuration.integrations.WildStackerEnabled;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
-import com.ordwen.odailyquests.tools.AddDefault;
 import com.ordwen.odailyquests.tools.TimeRemain;
 
 public class ConfigurationManager {
@@ -47,7 +46,9 @@ public class ConfigurationManager {
         // utils
         Synchronization.isSynchronised = configurationFiles.getConfigFile().getBoolean("synchronised_progression");
 
+        /*
         if (!configurationFiles.getConfigFile().contains("store_used_items")) AddDefault.addDefaultConfigItem("store_used_items", "true", configurationFiles.getConfigFile(), configurationFiles.getFile());
         Antiglitch.storeItems = configurationFiles.getConfigFile().getBoolean("store_used_items");
+         */
     }
 }

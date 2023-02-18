@@ -17,4 +17,8 @@ public class PluginLogger {
     public static void error(String msg) {
         logger.severe(msg);
     }
+
+    public static void fine(String msg) {
+        logger.fine(msg);
+    }
 }

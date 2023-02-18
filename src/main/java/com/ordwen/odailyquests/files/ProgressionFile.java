@@ -51,7 +51,7 @@ public class ProgressionFile {
 
         if (!progressionFile.exists()) {
             oDailyQuests.saveResource("progression.yml", false);
-            PluginLogger.info(ChatColor.GREEN + "Progression file created (YAML).");
+            PluginLogger.info("Progression file created (YAML).");
         }
 
         progression = new YamlConfiguration();
@@ -59,10 +59,10 @@ public class ProgressionFile {
         try {
             progression.load(progressionFile);
         } catch (InvalidConfigurationException | IOException e) {
-            PluginLogger.info(ChatColor.RED + "An error occurred on the load of the progression file.");
-            PluginLogger.info(ChatColor.RED + "Please inform the developer.");
+            PluginLogger.error("An error occurred on the load of the progression file.");
+            PluginLogger.error("Please inform the developer.");
             e.printStackTrace();
         }
-        PluginLogger.info(ChatColor.GREEN + "Progression file successfully loaded (YAML).");
+        PluginLogger.fine("Progression file successfully loaded (YAML).");
     }
 }

@@ -12,7 +12,6 @@ import com.ordwen.odailyquests.apis.hooks.points.TokenManagerHook;
 import com.ordwen.odailyquests.apis.hooks.stackers.WildStackerHook;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 
 import static org.bukkit.Bukkit.getServer;
 
@@ -44,7 +43,7 @@ public class IntegrationsManager {
      */
     private void loadWildStacker() {
         if (WildStackerHook.isWildStackerSetup()) {
-            PluginLogger.info(ChatColor.YELLOW + "WildStacker" + ChatColor.GREEN + " successfully hooked.");
+            PluginLogger.info("WildStacke successfully hooked.");
         }
     }
 
@@ -53,7 +52,7 @@ public class IntegrationsManager {
      */
     private void loadRoseStacker() {
         if (WildStackerHook.isWildStackerSetup()) {
-            PluginLogger.info(ChatColor.YELLOW + "RoseStacker" + ChatColor.GREEN + " successfully hooked.");
+            PluginLogger.info("RoseStacker successfully hooked.");
         }
     }
 
@@ -62,7 +61,7 @@ public class IntegrationsManager {
      */
     private void loadMythicMobs() {
         if (MythicMobsHook.isMythicMobsSetup()) {
-            PluginLogger.info(ChatColor.YELLOW + "MythicMobs" + ChatColor.GREEN + " successfully hooked.");
+            PluginLogger.info("MythicMobs successfully hooked.");
         }
     }
 
@@ -71,7 +70,7 @@ public class IntegrationsManager {
      */
     private void loadEliteMobs() {
         if (EliteMobsHook.isEliteMobsSetup()) {
-            PluginLogger.info(ChatColor.YELLOW + "EliteMobs" + ChatColor.GREEN + " successfully hooked.");
+            PluginLogger.info("EliteMobs successfully hooked.");
         }
     }
 
@@ -82,13 +81,13 @@ public class IntegrationsManager {
         if (!TokenManagerHook.setupTokenManager()) {
             PlayerPointsHook.setupPlayerPointsAPI();
             if (PlayerPointsHook.isPlayerPointsSetup()) {
-                PluginLogger.info(ChatColor.YELLOW + "PlayerPoints" + ChatColor.GREEN + " successfully hooked.");
+                PluginLogger.info("PlayerPoints successfully hooked.");
             } else {
-                PluginLogger.info(ChatColor.RED + "No compatible plugin detected for reward type 'POINTS'.");
-                PluginLogger.info(ChatColor.RED + "Quests with reward type 'POINTS' will not work.");
+                PluginLogger.warn("No compatible plugin detected for reward type 'POINTS'.");
+                PluginLogger.warn("Quests with reward type 'POINTS' will not work.");
             }
         } else {
-            PluginLogger.info(ChatColor.YELLOW + "TokenManager" + ChatColor.GREEN + " successfully hooked.");
+            PluginLogger.info("TokenManager successfully hooked.");
         }
     }
 
@@ -97,10 +96,10 @@ public class IntegrationsManager {
      */
     private void loadVault() {
         if (!VaultHook.setupEconomy()) {
-            PluginLogger.info(ChatColor.RED + "No compatible plugin detected for reward type 'MONEY'.");
-            PluginLogger.info(ChatColor.RED + "Quests with reward type 'MONEY' will not work.");
+            PluginLogger.warn("No compatible plugin detected for reward type 'MONEY'.");
+            PluginLogger.warn("Quests with reward type 'MONEY' will not work.");
         } else {
-            PluginLogger.info(ChatColor.YELLOW + "Vault" + ChatColor.GREEN + " successfully hooked.");
+            PluginLogger.info("Vault successfully hooked.");
         }
     }
 
@@ -110,9 +109,9 @@ public class IntegrationsManager {
     private void loadCitizens() {
         if (CitizensHook.setupCitizens()) {
             getServer().getPluginManager().registerEvents(new CitizensHook(), oDailyQuests);
-            PluginLogger.info(ChatColor.YELLOW + "Citizens" + ChatColor.GREEN + " successfully hooked.");
+            PluginLogger.info("Citizens successfully hooked.");
         } else
-            PluginLogger.info(ChatColor.YELLOW + "Citizens" + ChatColor.GOLD + " not detected. NPCs will not work.");
+            PluginLogger.warn("Citizens not detected. NPCs will not work.");
     }
 
     /**
@@ -120,9 +119,9 @@ public class IntegrationsManager {
      */
     private void loadHolographicDisplays() {
         if (HolographicDisplaysHook.isHolographicDisplaysSetup()) {
-            PluginLogger.info(ChatColor.YELLOW + "HolographicDisplays" + ChatColor.GREEN + " successfully hooked.");
+            PluginLogger.info("HolographicDisplays successfully hooked.");
         } else
-            PluginLogger.info(ChatColor.YELLOW + "HolographicDisplays" + ChatColor.GOLD + " not detected. Holograms will not work.");
+            PluginLogger.warn("HolographicDisplays not detected. Holograms will not work.");
     }
 
     /**
@@ -131,8 +130,8 @@ public class IntegrationsManager {
     private void loadPAPI() {
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new PlaceholderAPIHook(oDailyQuests).register();
-            PluginLogger.info(ChatColor.YELLOW + "PlaceholderAPI" + ChatColor.GREEN + " successfully hooked.");
+            PluginLogger.info("PlaceholderAPI successfully hooked.");
         } else
-            PluginLogger.info(ChatColor.YELLOW + "PlaceholderAPI" + ChatColor.GOLD + " not detected. Placeholders will not work.");
+            PluginLogger.warn("PlaceholderAPI not detected. Placeholders will not work.");
     }
 }

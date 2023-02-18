@@ -25,41 +25,78 @@ public class QuestsFiles {
         this.oDailyQuests = oDailyQuests;
     }
 
-    private static FileConfiguration globalQuests;
-    private static FileConfiguration easyQuests;
-    private static FileConfiguration mediumQuests;
-    private static FileConfiguration hardQuests;
+    private static File globalQuestsFile;
+    private static File easyQuestsFile;
+    private static File mediumQuestsFile;
+    private static File hardQuestsFile;
+
+    private static FileConfiguration globalQuestsConfiguration;
+    private static FileConfiguration easyQuestsConfiguration;
+    private static FileConfiguration mediumQuestsConfiguration;
+    private static FileConfiguration hardQuestsConfiguration;
 
     /**
      * Get the global quests file.
      * @return global quests file.
      */
-    public static FileConfiguration getGlobalQuestsFile() {
-        return globalQuests;
+    public static File getGlobalQuestsFile() {
+        return globalQuestsFile;
     }
 
     /**
      * Get the easy quests file.
      * @return easy quests file.
      */
-    public static FileConfiguration getEasyQuestsFile() {
-        return easyQuests;
+    public static File getEasyQuestsFile() {
+        return easyQuestsFile;
     }
 
     /**
      * Get the medium quests file.
      * @return medium quests file.
      */
-    public static FileConfiguration getMediumQuestsFile() {
-        return mediumQuests;
+    public static File getMediumQuestsFile() {
+        return mediumQuestsFile;
     }
 
     /**
      * Get the hard quests file.
      * @return hard quests file.
      */
-    public static FileConfiguration getHardQuestsFile() {
-        return hardQuests;
+    public static File getHardQuestsFile() {
+        return hardQuestsFile;
+    }
+
+    /**
+     * Get the global quests configuration.
+     * @return global quests configuration.
+     */
+    public static FileConfiguration getGlobalQuestsConfiguration() {
+        return globalQuestsConfiguration;
+    }
+
+    /**
+     * Get the easy quests configuration.
+     * @return easy quests configuration.
+     */
+    public static FileConfiguration getEasyQuestsConfiguration() {
+        return easyQuestsConfiguration;
+    }
+
+    /**
+     * Get the medium quests configuration.
+     * @return medium quests configuration.
+     */
+    public static FileConfiguration getMediumQuestsConfiguration() {
+        return mediumQuestsConfiguration;
+    }
+
+    /**
+     * Get the hard quests configuration.
+     * @return hard quests configuration.
+     */
+    public static FileConfiguration getHardQuestsConfiguration() {
+        return hardQuestsConfiguration;
     }
 
     /**
@@ -67,79 +104,79 @@ public class QuestsFiles {
      */
     public void loadQuestsFiles() {
 
-        File globalQuestsFile = new File(oDailyQuests.getDataFolder(), "quests/globalQuests.yml");
-        File easyQuestsFile = new File(oDailyQuests.getDataFolder(), "quests/easyQuests.yml");
-        File mediumQuestsFile = new File(oDailyQuests.getDataFolder(), "quests/mediumQuests.yml");
-        File hardQuestsFile = new File(oDailyQuests.getDataFolder(), "quests/hardQuests.yml");
+        globalQuestsFile = new File(oDailyQuests.getDataFolder(), "quests/globalQuests.yml");
+        easyQuestsFile = new File(oDailyQuests.getDataFolder(), "quests/easyQuests.yml");
+        mediumQuestsFile = new File(oDailyQuests.getDataFolder(), "quests/mediumQuests.yml");
+        hardQuestsFile = new File(oDailyQuests.getDataFolder(), "quests/hardQuests.yml");
 
         /* Global quests */
         if (!globalQuestsFile.exists()) {
             oDailyQuests.saveResource("quests/globalQuests.yml", false);
-            PluginLogger.info(ChatColor.GREEN + "Global quests file created.");
+            PluginLogger.info("Global quests file created.");
         }
 
         /* Easy quests */
         if (!easyQuestsFile.exists()) {
             oDailyQuests.saveResource("quests/easyQuests.yml", false);
-            PluginLogger.info(ChatColor.GREEN + "Easy quests file created.");
+            PluginLogger.info("Easy quests file created.");
         }
 
         /* Medium quests */
         if (!mediumQuestsFile.exists()) {
             oDailyQuests.saveResource("quests/mediumQuests.yml", false);
-            PluginLogger.info(ChatColor.GREEN + "Medium quests file created.");
+            PluginLogger.info("Medium quests file created.");
         }
 
         /* Hard quests */
         if (!hardQuestsFile.exists()) {
             oDailyQuests.saveResource("quests/hardQuests.yml", false);
-            PluginLogger.info(ChatColor.GREEN + "Hard quests file created.");
+            PluginLogger.info("Hard quests file created.");
         }
 
-        globalQuests = new YamlConfiguration();
-        easyQuests = new YamlConfiguration();
-        mediumQuests = new YamlConfiguration();
-        hardQuests = new YamlConfiguration();
+        globalQuestsConfiguration = new YamlConfiguration();
+        easyQuestsConfiguration = new YamlConfiguration();
+        mediumQuestsConfiguration = new YamlConfiguration();
+        hardQuestsConfiguration = new YamlConfiguration();
 
         /* Global quests */
         try {
-            globalQuests.load(globalQuestsFile);
+            globalQuestsConfiguration.load(globalQuestsFile);
         } catch (InvalidConfigurationException | IOException e) {
-            PluginLogger.info(ChatColor.RED + "An error occured on the load of the global quests file.");
-            PluginLogger.info(ChatColor.RED + "Please inform the developper.");
+            PluginLogger.error("An error occured on the load of the global quests file.");
+            PluginLogger.error("Please inform the developper.");
             e.printStackTrace();
         }
-        PluginLogger.info(ChatColor.GREEN + "Global quests file successfully loaded.");
+        PluginLogger.fine("Global quests file successfully loaded.");
 
         /* Easy quests */
         try {
-            easyQuests.load(easyQuestsFile);
+            easyQuestsConfiguration.load(easyQuestsFile);
         } catch (InvalidConfigurationException | IOException e) {
-            PluginLogger.info(ChatColor.RED + "An error occured on the load of the easy quests file.");
-            PluginLogger.info(ChatColor.RED + "Please inform the developper.");
+            PluginLogger.error("An error occured on the load of the easy quests file.");
+            PluginLogger.error("Please inform the developper.");
             e.printStackTrace();
         }
-        PluginLogger.info(ChatColor.GREEN + "Easy quests file successfully loaded.");
+        PluginLogger.fine("Easy quests file successfully loaded.");
 
         /* Medium quests */
         try {
-            mediumQuests.load(mediumQuestsFile);
+            mediumQuestsConfiguration.load(mediumQuestsFile);
         } catch (InvalidConfigurationException | IOException e) {
-            PluginLogger.info(ChatColor.RED + "An error occured on the load of the medium quests file.");
-            PluginLogger.info(ChatColor.RED + "Please inform the developper.");
+            PluginLogger.error("An error occured on the load of the medium quests file.");
+            PluginLogger.error("Please inform the developper.");
             e.printStackTrace();
         }
-        PluginLogger.info(ChatColor.GREEN + "Medium quests file successfully loaded.");
+        PluginLogger.fine("Medium quests file successfully loaded.");
 
         /* Hard quests */
         try {
-            hardQuests.load(hardQuestsFile);
+            hardQuestsConfiguration.load(hardQuestsFile);
         } catch (InvalidConfigurationException | IOException e) {
-            PluginLogger.info(ChatColor.RED + "An error occured on the load of the hard quests file.");
-            PluginLogger.info(ChatColor.RED + "Please inform the developper.");
+            PluginLogger.error("An error occured on the load of the hard quests file.");
+            PluginLogger.error("Please inform the developper.");
             e.printStackTrace();
         }
-        PluginLogger.info(ChatColor.GREEN + "Hard quests file successfully loaded.");
+        PluginLogger.fine("Hard quests file successfully loaded.");
     }
 
 }

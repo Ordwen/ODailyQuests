@@ -98,7 +98,7 @@ public class InterfacesManager implements Listener {
         mediumQuestsInventoryName = ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(configurationFiles.getConfigFile().getConfigurationSection("interfaces.medium_quests").getString(".inventory_name")));
         hardQuestsInventoryName = ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(configurationFiles.getConfigFile().getConfigurationSection("interfaces.hard_quests").getString(".inventory_name")));
 
-        PluginLogger.info(ChatColor.GREEN + "Interfaces names successfully loaded.");
+        PluginLogger.fine("Interfaces names successfully loaded.");
     }
 
     /**

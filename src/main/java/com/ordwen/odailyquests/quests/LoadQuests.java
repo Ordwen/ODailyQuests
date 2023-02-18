@@ -46,10 +46,10 @@ public class LoadQuests {
         hardQuests.clear();
 
         /* init files */
-        FileConfiguration globalQuestsFile = QuestsFiles.getGlobalQuestsFile();
-        FileConfiguration easyQuestsFile = QuestsFiles.getEasyQuestsFile();
-        FileConfiguration mediumQuestsFile = QuestsFiles.getMediumQuestsFile();
-        FileConfiguration hardQuestsFile = QuestsFiles.getHardQuestsFile();
+        FileConfiguration globalQuestsFile = QuestsFiles.getGlobalQuestsConfiguration();
+        FileConfiguration easyQuestsFile = QuestsFiles.getEasyQuestsConfiguration();
+        FileConfiguration mediumQuestsFile = QuestsFiles.getMediumQuestsConfiguration();
+        FileConfiguration hardQuestsFile = QuestsFiles.getHardQuestsConfiguration();
 
         if (Modes.getQuestsMode() == 1) {
             /* load global quests */
@@ -399,9 +399,9 @@ public class LoadQuests {
                     }
                 }
             }
-            PluginLogger.info(ChatColor.GREEN + fileName + " array successfully loaded (" + ChatColor.YELLOW + quests.size() + ChatColor.GREEN + ").");
+            PluginLogger.info(fileName + " array successfully loaded (" + quests.size() + ").");
         } else
-            PluginLogger.error(ChatColor.RED + "Impossible to load " + fileName + " : there is no quests in " + fileName + " file !");
+            PluginLogger.error("Impossible to load " + fileName + " : there is no quests in " + fileName + " file !");
     }
 
     /**

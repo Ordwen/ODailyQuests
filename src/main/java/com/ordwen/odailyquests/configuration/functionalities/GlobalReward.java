@@ -31,8 +31,8 @@ public class GlobalReward {
             } else {
                 globalReward = new Reward(rewardType, configurationFiles.getConfigFile().getConfigurationSection("global_reward").getInt(".amount"));
             }
-            PluginLogger.info("Global reward successfully loaded.");
-        } else PluginLogger.info("Global reward is disabled.");
+            PluginLogger.fine("Global reward successfully loaded.");
+        } else PluginLogger.fine("Global reward is disabled.");
     }
 
     /**

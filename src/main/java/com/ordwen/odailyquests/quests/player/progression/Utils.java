@@ -96,8 +96,8 @@ public class Utils {
         final String msg = QuestsMessages.QUESTS_RENEWED.toString();
         if (msg != null) Bukkit.getPlayer(playerName).sendMessage(msg);
 
-        PluginLogger.info(ChatColor.GREEN + playerName + ChatColor.YELLOW + " inserted into the array.");
-        PluginLogger.info(ChatColor.GOLD + playerName + ChatColor.YELLOW + "'s quests have been renewed.");
+        PluginLogger.fine(playerName + " inserted into the array.");
+        PluginLogger.info(playerName + "'s quests have been renewed.");
     }
 
     /**
@@ -141,14 +141,14 @@ public class Utils {
             };
             */
         } else
-            PluginLogger.error(ChatColor.RED + "Impossible to load player quests. The selected mode is incorrect.");
+            PluginLogger.error("Impossible to load player quests. The selected mode is incorrect.");
 
         if (quest == null) {
-            PluginLogger.info(ChatColor.RED + "An error occurred while loading " + ChatColor.GOLD + playerName + ChatColor.RED + "'s quests.");
-            PluginLogger.info(ChatColor.RED + "Quest number " + id + " of player is null.");
-            PluginLogger.info(ChatColor.RED + "Try to do the following command to reset the player's progress :");
-            PluginLogger.info(ChatColor.GOLD + "/questsadmin reset " + playerName);
-            PluginLogger.info(ChatColor.RED + "If the problem persists, contact the developer.");
+            PluginLogger.error("An error occurred while loading " + playerName + "'s quests.");
+            PluginLogger.error( "Quest number " + id + " of player is null.");
+            PluginLogger.error("Try to do the following command to reset the player's progress :");
+            PluginLogger.error("/questsadmin reset " + playerName);
+            PluginLogger.error("If the problem persists, contact the developer.");
         }
 
         return quest;

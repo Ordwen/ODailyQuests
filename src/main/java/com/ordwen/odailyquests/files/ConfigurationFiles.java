@@ -2,7 +2,6 @@ package com.ordwen.odailyquests.files;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.enums.QuestsMessages;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -57,7 +56,7 @@ public class ConfigurationFiles {
         /* Configuration file */
         if (!configFile.exists()) {
             oDailyQuests.saveResource("config.yml", false);
-            PluginLogger.info(ChatColor.GREEN + "Config file created.");
+            PluginLogger.info("Configuration file created.");
         }
 
         config = new YamlConfiguration();
@@ -66,11 +65,11 @@ public class ConfigurationFiles {
         try {
             config.load(configFile);
         } catch (InvalidConfigurationException | IOException e) {
-            PluginLogger.info(ChatColor.RED + "An error occurred on the load of the configuration file.");
-            PluginLogger.info(ChatColor.RED + "Please inform the developer.");
+            PluginLogger.error("An error occurred on the load of the configuration file.");
+            PluginLogger.error("Please inform the developer.");
             e.printStackTrace();
         }
-        PluginLogger.info(ChatColor.GREEN + "Configuration file successfully loaded.");
+        PluginLogger.fine("Configuration file successfully loaded.");
     }
 
     /**
@@ -83,7 +82,7 @@ public class ConfigurationFiles {
         /* Messages file */
         if (!messagesFile.exists()) {
             oDailyQuests.saveResource("messages.yml", false);
-            PluginLogger.info(ChatColor.GREEN + "Messages file created.");
+            PluginLogger.info("Messages file created.");
         }
 
         FileConfiguration messages = new YamlConfiguration();
@@ -92,8 +91,8 @@ public class ConfigurationFiles {
         try {
             messages.load(messagesFile);
         } catch (InvalidConfigurationException | IOException e) {
-            PluginLogger.info(ChatColor.RED + "An error occurred on the load of the messages file.");
-            PluginLogger.info(ChatColor.RED + "Please inform the developer.");
+            PluginLogger.error("An error occurred on the load of the messages file.");
+            PluginLogger.error("Please inform the developer.");
             e.printStackTrace();
         }
 
@@ -107,11 +106,11 @@ public class ConfigurationFiles {
         try {
             messages.save(messagesFile);
         } catch(IOException e) {
-            PluginLogger.info(ChatColor.RED + "An error happened on the save of the messages file.");
-            PluginLogger.info(ChatColor.RED + "If the problem persists, contact the developer.");
+            PluginLogger.error("An error happened on the save of the messages file.");
+            PluginLogger.error("If the problem persists, contact the developer.");
             e.printStackTrace();
         }
 
-        PluginLogger.info(ChatColor.GREEN + "Messages file successfully loaded.");
+        PluginLogger.fine("Messages file successfully loaded.");
     }
 }

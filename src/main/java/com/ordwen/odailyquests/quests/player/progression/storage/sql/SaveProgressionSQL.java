@@ -110,7 +110,7 @@ public class SaveProgressionSQL {
                 index++;
             }
 
-            PluginLogger.info(ChatColor.GOLD + playerName + ChatColor.YELLOW + "'s data saved.");
+            PluginLogger.info(playerName + "'s data saved.");
             connection.close();
         } catch (SQLException e) {
             e.printStackTrace();

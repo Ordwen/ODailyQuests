@@ -49,19 +49,21 @@ public final class ODailyQuests extends JavaPlugin {
     public void onEnable() {
         INSTANCE = this;
 
-        PluginLogger.info(ChatColor.GOLD + "Plugin is starting...");
-
-        checkForUpdate();
+        PluginLogger.info("Plugin is starting...");
 
         /* Load Metrics */
         // https://bstats.org/plugin/bukkit/ODailyQuests/14277
         int pluginId = 14277;
         Metrics metrics = new Metrics(this, pluginId);
 
-        /* Load configuration files */
+        /* Load files */
         this.configurationFiles = new ConfigurationFiles(this);
-        this.configurationFiles.loadConfigurationFiles();
-        this.configurationFiles.loadMessagesFiles();
+        this.filesManager = new FilesManager(this);
+        this.filesManager.loadAllFiles();
+
+        /* Check for updates */
+        //new AutoUpdater(this).checkForUpdate(); // LAST USE : 1.3.6 -> 2.0.0
+        checkForSpigotUpdate();
 
         /* Load SQL Support */
         switch (configurationFiles.getConfigFile().getString("storage_mode")) {
@@ -69,10 +71,6 @@ public final class ODailyQuests extends JavaPlugin {
             case "H2" -> this.sqlManager = new H2Manager(this);
             default -> this.yamlManager = new YamlManager();
         }
-
-        /* Load files */
-        this.filesManager = new FilesManager(this);
-        this.filesManager.loadAllFiles();
 
         /* Load class instances */
         this.interfacesManager = new InterfacesManager(this);
@@ -127,7 +125,7 @@ public final class ODailyQuests extends JavaPlugin {
             timerTask = new TimerTask(LocalDateTime.now());
         }
 
-        PluginLogger.info(ChatColor.GREEN + "Plugin is started !");
+        PluginLogger.info("Plugin is started!");
     }
 
     @Override
@@ -149,16 +147,16 @@ public final class ODailyQuests extends JavaPlugin {
     /**
      * Check if an update is available.
      */
-    private void checkForUpdate() {
-        PluginLogger.info(ChatColor.GOLD + "Checking for update...");
+    private void checkForSpigotUpdate() {
+        PluginLogger.info("Checking for update...");
         new UpdateChecker(this, 100990).getVersion(version -> {
             if (this.getDescription().getVersion().equals(version)) {
-                PluginLogger.info(ChatColor.GREEN + "Plugin is up to date.");
+                PluginLogger.info("Plugin is up to date.");
             } else {
-                PluginLogger.info(ChatColor.GOLD + "A new update is available !");
-                PluginLogger.info(ChatColor.GOLD + "Current version : " + ChatColor.RED + this.getDescription().getVersion() + ChatColor.GOLD + ", Available version : " + ChatColor.GREEN + version);
-                PluginLogger.info(ChatColor.GOLD + "Please download latest version :");
-                PluginLogger.info(ChatColor.GOLD + "https://www.spigotmc.org/resources/odailyquests.100990/");
+                PluginLogger.warn("A new update is available !");
+                PluginLogger.warn("Current version : " + this.getDescription().getVersion() + ", Available version : " + version);
+                PluginLogger.warn("Please download latest version :");
+                PluginLogger.warn("https://www.spigotmc.org/resources/odailyquests.100990/");
             }
         });
     }

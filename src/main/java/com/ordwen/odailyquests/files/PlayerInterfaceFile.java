@@ -49,7 +49,7 @@ public class PlayerInterfaceFile {
 
         if (!playerInterfaceFile.exists()) {
             oDailyQuests.saveResource("playerInterface.yml", false);
-            PluginLogger.info(ChatColor.GREEN + "Player interface file created (YAML).");
+            PluginLogger.warn("Player interface file created (YAML).");
         }
 
         playerInterface = new YamlConfiguration();
@@ -57,11 +57,11 @@ public class PlayerInterfaceFile {
         try {
             playerInterface.load(playerInterfaceFile);
         } catch (InvalidConfigurationException | IOException e) {
-            PluginLogger.info(ChatColor.RED + "An error occurred on the load of the player interface file.");
-            PluginLogger.info(ChatColor.RED + "Please inform the developer.");
+            PluginLogger.error("An error occurred on the load of the player interface file.");
+            PluginLogger.error("Please inform the developer.");
             e.printStackTrace();
         }
-        PluginLogger.info(ChatColor.GREEN + "Player interface file successfully loaded (YAML).");
+        PluginLogger.fine("Player interface file successfully loaded (YAML).");
     }
 }
 

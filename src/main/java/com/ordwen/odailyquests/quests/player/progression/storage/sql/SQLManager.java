@@ -31,7 +31,7 @@ public abstract class SQLManager {
                 preparedStatement.execute();
 
                 preparedStatement.close();
-                PluginLogger.info(ChatColor.BLUE + "Table 'Player' created in database.");
+                PluginLogger.info("Table 'Player' created in database.");
             }
             if (!tableExists(connection, "PROGRESSION")) {
 
@@ -51,7 +51,7 @@ public abstract class SQLManager {
                 preparedStatement.execute();
 
                 preparedStatement.close();
-                PluginLogger.info(ChatColor.BLUE + "Table 'Progression' created in database.");
+                PluginLogger.info("Table 'Progression' created in database.");
             }
             connection.close();
         } catch (SQLException e) {
@@ -104,9 +104,9 @@ public abstract class SQLManager {
     protected void testConnection() throws SQLException {
         Connection con = getConnection();
         if (con.isValid(1)) {
-            PluginLogger.info(ChatColor.BLUE + "Plugin successfully connected to database " + con.getCatalog() + ".");
+            PluginLogger.info("Plugin successfully connected to database " + con.getCatalog() + ".");
             con.close();
-        } else PluginLogger.info(ChatColor.DARK_RED + "IMPOSSIBLE TO CONNECT TO DATABASE");
+        } else PluginLogger.error("IMPOSSIBLE TO CONNECT TO DATABASE");
     }
 
     /**

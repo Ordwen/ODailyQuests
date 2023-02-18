@@ -51,13 +51,13 @@ public class SaveProgressionYAML {
             index++;
         }
 
-        PluginLogger.info(ChatColor.GOLD + playerName + ChatColor.YELLOW + "'s data saved.");
+        PluginLogger.info(playerName + "'s data saved.");
 
         try {
             progressionFile.save(ProgressionFile.getProgressionFile());
         } catch (IOException e) {
-            PluginLogger.info(ChatColor.RED + "An error happened on the save of the progression file.");
-            PluginLogger.info(ChatColor.RED + "If the problem persists, contact the developer.");
+            PluginLogger.error("An error happened on the save of the progression file.");
+            PluginLogger.error("If the problem persists, contact the developer.");
             e.printStackTrace();
         }
     }

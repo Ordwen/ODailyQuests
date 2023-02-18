@@ -1,3 +1,6 @@
+# never touch this line
+version: 2.0.0
+
 # plugin prefix for messaging
 prefix: "&7[O'DailyQuests&7]"
 

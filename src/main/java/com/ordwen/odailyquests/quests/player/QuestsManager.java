@@ -63,10 +63,10 @@ public class QuestsManager implements Listener {
                 default -> PluginLogger.error("Impossible to load player quests : the selected storage mode is incorrect !");
             }
         } else {
-            PluginLogger.info(ChatColor.GOLD + playerName + ChatColor.RED + " detected into the array.");
-            PluginLogger.info(ChatColor.RED + "THAT IS NOT NORMAL.");
-            PluginLogger.info(ChatColor.RED + "The player quests will be never renewed.");
-            PluginLogger.info(ChatColor.RED + "Please inform developer.");
+            PluginLogger.error(playerName + " detected into the array.");
+            PluginLogger.error("THAT IS NOT NORMAL.");
+            PluginLogger.error("The player quests will be never renewed.");
+            PluginLogger.error("Please inform developer.");
         }
     }
 

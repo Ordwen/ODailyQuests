@@ -77,8 +77,8 @@ public class RewardManager {
                     msg = QuestsMessages.REWARD_POINTS.toString();
                     if (msg != null) player.sendMessage(msg.replace("%rewardAmount%", String.valueOf(reward.getRewardAmount())));
                 } else {
-                    PluginLogger.info(ChatColor.RED + "Impossible to give reward to " + ChatColor.GOLD + player.getName() + ChatColor.RED + ".");
-                    PluginLogger.info(ChatColor.RED + "Reward type is " + reward.getRewardType().getRewardTypeName() + " but TokenManager is not hooked.");
+                    PluginLogger.error("Impossible to give reward to " + player.getName() + ".");
+                    PluginLogger.error("Reward type is " + reward.getRewardType().getRewardTypeName() + " but TokenManager is not hooked.");
                 }
         }
     }

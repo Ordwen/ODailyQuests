@@ -1,19 +1,9 @@
 package com.ordwen.odailyquests.configuration.essentials;
 
 import com.ordwen.odailyquests.files.ConfigurationFiles;
-import com.ordwen.odailyquests.tools.AddDefault;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class QuestsAmount {
-
-    /*
-    QuestsManager ( -> categorized)
-    PlayerInterface
-    + PlaceholderAPI
-    + HolographicDisplays
-    + AdminCommands ( -> complete)
-    + PlayerQuests
-     */
 
     private final ConfigurationFiles configurationFiles;
 
@@ -30,11 +20,6 @@ public class QuestsAmount {
     public void loadQuestsAmount() {
 
         final FileConfiguration config = configurationFiles.getConfigFile();
-
-        if (!config.contains("global_quests_amount")) AddDefault.addDefaultConfigItem("global_quests_amount", 3, config, configurationFiles.getFile());
-        if (!config.contains("easy_quests_amount")) AddDefault.addDefaultConfigItem("easy_quests_amount", 1, config, configurationFiles.getFile());
-        if (!config.contains("medium_quests_amount")) AddDefault.addDefaultConfigItem("medium_quests_amount", 1, config, configurationFiles.getFile());
-        if (!config.contains("hard_quests_amount")) AddDefault.addDefaultConfigItem("hard_quests_amount", 1, config, configurationFiles.getFile());
 
         if (Modes.getQuestsMode() == 1) {
             questsAmount = config.getInt("global_quests_amount");

@@ -39,8 +39,8 @@ public class Title {
             title = ColorConvert.convertColorCode(ChatColor.translateAlternateColorCodes('&', section.getString( "text")));
             subtitle = ColorConvert.convertColorCode(ChatColor.translateAlternateColorCodes('&', section.getString("subtitle")));
 
-            PluginLogger.info("Title successfully loaded.");
-        } else PluginLogger.info("Title is disabled.");
+            PluginLogger.fine("Title successfully loaded.");
+        } else PluginLogger.fine("Title is disabled.");
     }
 
     /**

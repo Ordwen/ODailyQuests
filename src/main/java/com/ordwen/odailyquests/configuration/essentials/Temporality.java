@@ -1,7 +1,6 @@
 package com.ordwen.odailyquests.configuration.essentials;
 
 import com.ordwen.odailyquests.files.ConfigurationFiles;
-import com.ordwen.odailyquests.tools.AddDefault;
 import org.bukkit.configuration.ConfigurationSection;
 
 public class Temporality {
@@ -30,8 +29,6 @@ public class Temporality {
         d = initials.getString("days");
         h = initials.getString("hours");
         m = initials.getString("minutes");
-
-        if (!initials.contains("few_seconds")) AddDefault.addDefaultConfigItem("temporality_initials.few_seconds", "Few seconds", configurationFiles.getConfigFile(), configurationFiles.getFile());
         fewSeconds = initials.getString("few_seconds");
     }
 

@@ -90,7 +90,7 @@ public class GlobalQuestsInterface {
                 if (inv.getItem(j) == null) inv.setItem(j, emptyCaseItem);
             }
         }
-        PluginLogger.info(ChatColor.GREEN + "Global quests interface successfully loaded.");
+        PluginLogger.fine("Global quests interface successfully loaded.");
     }
 
     /**

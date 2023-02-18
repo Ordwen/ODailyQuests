@@ -40,35 +40,36 @@ public abstract class AbstractItemChecker extends AbstractProgressionIncreaser {
         }
          */
 
-        final HashMap<AbstractQuest, Progression> playerQuests = QuestsManager.getActiveQuests().get(player.getName()).getPlayerQuests();
+        if (QuestsManager.getActiveQuests().containsKey(player.getName())) {
 
-        for (AbstractQuest abstractQuest : playerQuests.keySet()) {
+            final HashMap<AbstractQuest, Progression> playerQuests = QuestsManager.getActiveQuests().get(player.getName()).getPlayerQuests();
 
-            final Progression progression = playerQuests.get(abstractQuest);
-            if (!progression.isAchieved() && abstractQuest.getType() == questType) {
+            for (AbstractQuest abstractQuest : playerQuests.keySet()) {
 
-                boolean isRequiredItem = false;
+                final Progression progression = playerQuests.get(abstractQuest);
+                if (!progression.isAchieved() && abstractQuest.getType() == questType) {
 
-                if (abstractQuest instanceof GlobalQuest) {
-                    isRequiredItem = true;
-                }
+                    boolean isRequiredItem = false;
 
-                else if (abstractQuest instanceof ItemQuest quest) {
-                    if (quest.getRequiredItems() == null) isRequiredItem = true;
-                    else {
-                        for (ItemStack item : quest.getRequiredItems()) {
-                            if (item.isSimilar(itemStack)) {
-                                isRequiredItem = true;
-                                break;
+                    if (abstractQuest instanceof GlobalQuest) {
+                        isRequiredItem = true;
+                    } else if (abstractQuest instanceof ItemQuest quest) {
+                        if (quest.getRequiredItems() == null) isRequiredItem = true;
+                        else {
+                            for (ItemStack item : quest.getRequiredItems()) {
+                                if (item.isSimilar(itemStack)) {
+                                    isRequiredItem = true;
+                                    break;
+                                }
                             }
                         }
                     }
-                }
 
-                if (isRequiredItem) {
-                    increaseProgression(player, progression, abstractQuest, amount);
-                    if (!Synchronization.isSynchronised()) {
-                        break;
+                    if (isRequiredItem) {
+                        increaseProgression(player, progression, abstractQuest, amount);
+                        if (!Synchronization.isSynchronised()) {
+                            break;
+                        }
                     }
                 }
             }

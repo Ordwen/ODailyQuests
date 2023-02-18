@@ -62,10 +62,10 @@ public class HologramsManager {
         Bukkit.getScheduler().runTaskAsynchronously(ODailyQuests.INSTANCE, () -> {
             try {
                 HologramsFile.getHologramsFileConfiguration().save(HologramsFile.getHologramsFile());
-                PluginLogger.info(ChatColor.GREEN + "Holograms file successfully saved.");
+                PluginLogger.info("Holograms file successfully saved.");
             } catch (IOException e) {
-                PluginLogger.info(ChatColor.RED + "An error happened on the save of the progression file.");
-                PluginLogger.info(ChatColor.RED + "If the problem persists, contact the developer.");
+                PluginLogger.error("An error happened on the save of the progression file.");
+                PluginLogger.error("If the problem persists, contact the developer.");
                 e.printStackTrace();
             }
         });
@@ -86,7 +86,7 @@ public class HologramsManager {
                     HolographicDisplaysHook.displayHologram(loc, lines, item);
                 }
             });
-            PluginLogger.info(ChatColor.GREEN + "Holograms successfully loaded.");
+            PluginLogger.info("Holograms successfully loaded.");
         }
     }
 }

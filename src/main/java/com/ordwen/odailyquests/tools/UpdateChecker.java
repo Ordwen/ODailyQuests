@@ -27,7 +27,7 @@ public class UpdateChecker {
                     consumer.accept(scanner.next());
                 }
             } catch (IOException exception) {
-                PluginLogger.info(ChatColor.RED + "Unable to check for updates: " + exception.getMessage());
+                PluginLogger.error("Unable to check for updates: " + exception.getMessage());
             }
         });
     }

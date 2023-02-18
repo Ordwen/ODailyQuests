@@ -78,7 +78,7 @@ public class LoadProgressionYAML {
 
                     activeQuests.put(playerName, playerQuests);
 
-                    PluginLogger.info(ChatColor.GOLD + playerName + ChatColor.YELLOW + "'s quests have been loaded.");
+                    PluginLogger.info(playerName + "'s quests have been loaded.");
 
                     final String msg;
                     if (achievedQuests == playerQuests.getPlayerQuests().size()) {

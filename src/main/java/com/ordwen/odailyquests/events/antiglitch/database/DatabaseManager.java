@@ -40,9 +40,9 @@ public class DatabaseManager {
     protected void testConnection() throws SQLException {
         Connection con = getConnection();
         if (con.isValid(1)) {
-            PluginLogger.info(ChatColor.BLUE + "Plugin successfully connected to database " + con.getCatalog() + ".");
+            PluginLogger.info("Plugin successfully connected to database " + con.getCatalog() + ".");
             con.close();
-        } else PluginLogger.info(ChatColor.DARK_RED + "IMPOSSIBLE TO CONNECT TO DATABASE");
+        } else PluginLogger.error("IMPOSSIBLE TO CONNECT TO DATABASE");
     }
 
     /**

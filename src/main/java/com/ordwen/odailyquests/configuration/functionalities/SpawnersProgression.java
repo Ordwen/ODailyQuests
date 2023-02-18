@@ -1,7 +1,6 @@
 package com.ordwen.odailyquests.configuration.functionalities;
 
 import com.ordwen.odailyquests.files.ConfigurationFiles;
-import com.ordwen.odailyquests.tools.AddDefault;
 
 public class SpawnersProgression {
 
@@ -15,9 +14,7 @@ public class SpawnersProgression {
 
     public void loadSpawnersProgression() {
         final String path = "disable_spawners_progression";
-        if (configurationFiles.getConfigFile().contains(path)) {
-            disabled = configurationFiles.getConfigFile().getBoolean(path);
-        } else AddDefault.addDefaultConfigItem(path, false, configurationFiles.getConfigFile(), configurationFiles.getFile());
+        disabled = configurationFiles.getConfigFile().getBoolean(path);
     }
 
     public static boolean isSpawnersProgressionDisabled() {

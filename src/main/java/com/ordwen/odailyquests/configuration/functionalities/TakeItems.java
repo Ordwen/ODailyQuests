@@ -1,7 +1,6 @@
 package com.ordwen.odailyquests.configuration.functionalities;
 
 import com.ordwen.odailyquests.files.ConfigurationFiles;
-import com.ordwen.odailyquests.tools.AddDefault;
 
 public class TakeItems {
 
@@ -15,9 +14,7 @@ public class TakeItems {
 
     public void loadTakeItems() {
         final String path = "take_items_for_get_quests";
-        if (configurationFiles.getConfigFile().contains(path)) {
-            enabled = configurationFiles.getConfigFile().getBoolean(path);
-        } else AddDefault.addDefaultConfigItem(path, false, configurationFiles.getConfigFile(), configurationFiles.getFile());
+        enabled = configurationFiles.getConfigFile().getBoolean(path);
     }
 
     public static boolean isTakeItemsEnabled() {
