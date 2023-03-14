@@ -2,7 +2,6 @@ package com.ordwen.odailyquests.quests.player.progression.storage.sql;
 
 import com.ordwen.odailyquests.tools.PluginLogger;
 import com.zaxxer.hikari.HikariDataSource;
-import org.bukkit.ChatColor;
 
 import java.sql.*;
 
@@ -37,9 +36,9 @@ public abstract class SQLManager {
 
                 String str = "create table PROGRESSION\n" +
                         "  (\n" +
-                        "     PRIMARYKEY smallint auto_increment  ,\n" +
+                        "     PRIMARYKEY int auto_increment  ,\n" +
                         "     PLAYERNAME char(32)  not null  ,\n" +
-                        "     PLAYERQUESTID tinyint  not null  ,\n" +
+                        "     PLAYERQUESTID smallint  not null  ,\n" +
                         "     QUESTINDEX int  not null  ,\n" +
                         "     ADVANCEMENT int  not null  ,\n" +
                         "     ISACHIEVED bit  not null  ,\n" +

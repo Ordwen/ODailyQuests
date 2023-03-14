@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.quests;
 
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.apis.hooks.heads.HeadDatabaseHook;
 import com.ordwen.odailyquests.apis.hooks.mobs.EliteMobsHook;
 import com.ordwen.odailyquests.apis.hooks.mobs.MythicMobsHook;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
@@ -10,6 +11,7 @@ import com.ordwen.odailyquests.files.QuestsFiles;
 import com.ordwen.odailyquests.rewards.Reward;
 import com.ordwen.odailyquests.rewards.RewardType;
 import com.ordwen.odailyquests.tools.ColorConvert;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -129,7 +131,25 @@ public class LoadQuests {
                 /* quest menu item */
                 int cmd = questSection.isInt(".custom_model_data") ? questSection.getInt(".custom_model_data") : -1;
                 String presumedItem = questSection.getString(".menu_item");
-                ItemStack menuItem = getItemStackFromMaterial(presumedItem, fileName, questIndex, "menu_item", cmd);
+                ItemStack menuItem = null;
+                if (presumedItem != null) {
+                    if (presumedItem.startsWith("hdb:")) {
+                        menuItem = HeadDatabaseHook.getHeadFromAPI(StringUtils.substringAfter(presumedItem, "hdb:"));
+                        if (menuItem == null) {
+                            PluginLogger.error("-----------------------------------");
+                            PluginLogger.error("Invalid head id detected.");
+                            PluginLogger.error("File : " + fileName);
+                            PluginLogger.error("Quest number : " + (questIndex + 1));
+                            PluginLogger.error("Parameter : head_id");
+                            PluginLogger.error("Value : " + presumedItem);
+                            PluginLogger.error("-----------------------------------");
+                        }
+                    } else if (presumedItem.startsWith("oraxen:")) {
+                        //menuItem = OraxenItems.getItemById(StringUtils.substringAfter(presumedItem, "oraxen:")).build();
+                    } else {
+                        menuItem = getItemStackFromMaterial(presumedItem, fileName, questIndex, "menu_item", cmd);
+                    }
+                }
 
                 /* reach type */
                 Location location = null;
@@ -226,6 +246,19 @@ public class LoadQuests {
                                         requiredItem.setItemMeta(meta);
 
                                         requiredItems.add(requiredItem);
+                                    } else if (itemType.equals("HEAD_DATABASE")) {
+                                        String id = questSection.getString("head_id");
+                                        ItemStack requiredItem = HeadDatabaseHook.getHeadFromAPI(id);
+                                        if (requiredItem != null) requiredItems.add(requiredItem);
+                                        else {
+                                            PluginLogger.error("-----------------------------------");
+                                            PluginLogger.error("Invalid head id detected.");
+                                            PluginLogger.error("File : " + fileName);
+                                            PluginLogger.error("Quest number : " + (questIndex + 1));
+                                            PluginLogger.error("Parameter : head_id");
+                                            PluginLogger.error("Value : " + id);
+                                            PluginLogger.error("-----------------------------------");
+                                        }
                                     } else {
                                         ItemStack requiredItem = getItemStackFromMaterial(itemType, fileName, questIndex, "required_item", -1);
 

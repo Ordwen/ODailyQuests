@@ -228,100 +228,100 @@ quests:
       reward_type: COMMAND
       commands:
         - "say Hello"
-    17:
-      name: "&2Shear 3 sheeps."
-      menu_item: WHITE_WOOL
-      description:
-        - "&6Reward:"
-        - "&7A \"hello\" message from the server :)"
-      quest_type: SHEAR
-      required_entity: SHEEP
-      required_amount: 3
-      reward:
-        reward_type: COMMAND
-        commands:
-          - "say Hello"
-    18:
-      name: "&cImmortal"
-      menu_item: SKELETON_SKULL
-      description:
-        - "&cDie five times."
-        - ""
-        - "&6Reward:"
-        - "&7A \"hello\" message from the server :)"
-      quest_type: PLAYER_DEATH
-      required_amount: 5
-      reward:
-        reward_type: COMMAND
-        commands:
-          - "say Hello"
-    19:
-      name: "&aExplorer"
-      menu_item: SKELETON_SKULL
-      description:
-        - "&cGo to the following coordinates:"
-        - "&cWorld: &bSpawn"
-        - "&cX: &b-4"
-        - "&cY: &b103"
-        - "&cZ: &b45"
-        - ""
-        - "&6Reward:"
-        - "&7A \"hello\" message from the server :)"
-      quest_type: LOCATION
-      location:
-        world: Spawn
-        x: -4
-        y: 103
-        z: 45
-        radius: 3
-      reward:
-        reward_type: COMMAND
-        commands:
-          - "say Hello"
-    20:
-      name: "&aFarmer"
-      menu_item: CARROT
-      description:
-        - "&eHarvest 10 fully grown carrots."
+  17:
+    name: "&2Shear 3 sheeps."
+    menu_item: WHITE_WOOL
+    description:
+      - "&6Reward:"
+      - "&7A \"hello\" message from the server :)"
+    quest_type: SHEAR
+    required_entity: SHEEP
+    required_amount: 3
+    reward:
+      reward_type: COMMAND
+      commands:
+        - "say Hello"
+  18:
+    name: "&cImmortal"
+    menu_item: SKELETON_SKULL
+    description:
+      - "&cDie five times."
+      - ""
+      - "&6Reward:"
+      - "&7A \"hello\" message from the server :)"
+    quest_type: PLAYER_DEATH
+    required_amount: 5
+    reward:
+      reward_type: COMMAND
+      commands:
+        - "say Hello"
+  19:
+    name: "&aExplorer"
+    menu_item: SKELETON_SKULL
+    description:
+      - "&cGo to the following coordinates:"
+      - "&cWorld: &bSpawn"
+      - "&cX: &b-4"
+      - "&cY: &b103"
+      - "&cZ: &b45"
+      - ""
+      - "&6Reward:"
+      - "&7A \"hello\" message from the server :)"
+    quest_type: LOCATION
+    location:
+      world: Spawn
+      x: -4
+      y: 103
+      z: 45
+      radius: 3
+    reward:
+      reward_type: COMMAND
+      commands:
+        - "say Hello"
+  20:
+    name: "&aFarmer"
+    menu_item: CARROT
+    description:
+      - "&eHarvest 10 fully grown carrots."
+      - "&eWin &b5 EXP levels&e."
+    quest_type: FARMING
+    required_item: CARROT
+    required_amount: 10
+    reward:
+      reward_type: EXP_LEVELS
+      amount: 5
+  21:
+    name: "&aSpeeeed..."
+    menu_item: POTION
+    description:
+        - "&eGet a speed potion level 1."
         - "&eWin &b5 EXP levels&e."
-      quest_type: FARMING
-      required_item: CARROT
-      required_amount: 10
-      reward:
-        reward_type: EXP_LEVELS
-        amount: 5
-    21:
-      name: "&aSpeeeed..."
-      menu_item: POTION
-      description:
-          - "&eGet a speed potion level 1."
-          - "&eWin &b5 EXP levels&e."
-      quest_type: GET
-      required_item: POTION
-      potion:
-        type: SPEED
-        upgraded: true
-        extended: false
-      required_amount: 1
-      reward:
-        reward_type: EXP_LEVELS
-        amount: 5
-    22:
-      name: "&cSpeeeed..."
-      menu_item: POTION
-      description:
-        - "&eGet a speed potion level 2."
-        - "&eWin &b5 EXP levels&e."
-      quest_type: GET
-      required_item:
-        - POTION
-        - SPLASH_POTION
-        - LINGERING_POTION
-      potion:
-        type: SPEED
-        upgraded: true
-        extended: true
-      required_amount: 1
-      reward:
-        reward_type: EXP_LEVELS
-        amount: 5
+    quest_type: GET
+    required_item: POTION
+    potion:
+      type: SPEED
+      upgraded: true
+      extended: false
+    required_amount: 1
+    reward:
+      reward_type: EXP_LEVELS
+      amount: 5
+  22:
+    name: "&cSpeeeed..."
+    menu_item: POTION
+    description:
+      - "&eGet a speed potion level 2."
+      - "&eWin &b5 EXP levels&e."
+    quest_type: GET
+    required_item:
+      - POTION
+      - SPLASH_POTION
+      - LINGERING_POTION
+    potion:
+      type: SPEED
+      upgraded: true
+      extended: true
+    required_amount: 1
+    reward:
+      reward_type: EXP_LEVELS
+      amount: 5
