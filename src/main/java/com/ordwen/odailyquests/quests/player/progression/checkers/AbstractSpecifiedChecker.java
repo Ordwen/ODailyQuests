@@ -72,7 +72,9 @@ public abstract class AbstractSpecifiedChecker extends AbstractProgressionIncrea
         ItemMeta clickedItemMeta = clickedItem.getItemMeta();
         ItemMeta menuItemMeta = menuItem.getItemMeta();
 
+        if (clickedItem.getType() != menuItem.getType()) return false;
         if (clickedItemMeta == null || menuItemMeta == null) return false;
+
         return clickedItemMeta.getPersistentDataContainer().equals(menuItemMeta.getPersistentDataContainer());
     }
 

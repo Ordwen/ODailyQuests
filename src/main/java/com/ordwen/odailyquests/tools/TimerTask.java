@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.tools;
 
+import com.magmaguy.elitemobs.quests.Quest;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
@@ -10,7 +11,6 @@ import org.bukkit.entity.Player;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.LinkedHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -30,7 +30,9 @@ public class TimerTask {
 
                 final String msg = QuestsMessages.NEW_DAY.toString();
                 if (msg != null) player.sendMessage(msg);
-                Utils.loadNewPlayerQuests(player.getName(), QuestsManager.getActiveQuests(), Modes.getTimestampMode());
+
+                int totalAchievedQuests = QuestsManager.getActiveQuests().get(player.getName()).getTotalAchievedQuests();
+                Utils.loadNewPlayerQuests(player.getName(), QuestsManager.getActiveQuests(), Modes.getTimestampMode(), totalAchievedQuests);
             }
         };
 

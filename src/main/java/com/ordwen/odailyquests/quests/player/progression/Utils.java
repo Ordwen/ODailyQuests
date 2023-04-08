@@ -78,7 +78,7 @@ public class Utils {
      * @param activeQuests        all active quests.
      * @param timestampConfigMode timestamp mode.
      */
-    public static void loadNewPlayerQuests(String playerName, HashMap<String, PlayerQuests> activeQuests, int timestampConfigMode) {
+    public static void loadNewPlayerQuests(String playerName, HashMap<String, PlayerQuests> activeQuests, int timestampConfigMode, int totalAchievedQuests) {
 
         activeQuests.remove(playerName);
 
@@ -90,6 +90,8 @@ public class Utils {
         } else {
             playerQuests = new PlayerQuests(System.currentTimeMillis(), quests);
         }
+
+        playerQuests.setTotalAchievedQuests(totalAchievedQuests);
 
         activeQuests.put(playerName, playerQuests);
 

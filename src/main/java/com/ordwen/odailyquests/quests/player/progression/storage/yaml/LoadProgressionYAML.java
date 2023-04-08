@@ -46,7 +46,7 @@ public class LoadProgressionYAML {
 
                 /* renew quests */
                 if (Utils.checkTimestamp(timestampConfigMode, temporalityMode, timestamp)) {
-                    Utils.loadNewPlayerQuests(playerName, activeQuests, timestampConfigMode);
+                    Utils.loadNewPlayerQuests(playerName, activeQuests, timestampConfigMode, totalAchievedQuests);
                 }
                 /* load non-achieved quests */
                 else {
@@ -89,7 +89,7 @@ public class LoadProgressionYAML {
                     if (msg != null) Bukkit.getPlayer(playerName).sendMessage(msg);
                 }
             } else {
-                Utils.loadNewPlayerQuests(playerName, activeQuests, timestampConfigMode);
+                Utils.loadNewPlayerQuests(playerName, activeQuests, timestampConfigMode, 0);
             }
         });
     }

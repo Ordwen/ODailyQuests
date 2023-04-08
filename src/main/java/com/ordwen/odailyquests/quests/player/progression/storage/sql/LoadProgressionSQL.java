@@ -71,7 +71,7 @@ public class LoadProgressionSQL {
 
             if (hasStoredData) {
                 if (Utils.checkTimestamp(timestampConfigMode, temporalityMode, timestamp)) {
-                    Utils.loadNewPlayerQuests(playerName, activeQuests, timestampConfigMode);
+                    Utils.loadNewPlayerQuests(playerName, activeQuests, timestampConfigMode, totalAchievedQuests);
                 }
                 else {
                     loadPlayerQuests(playerName, questsConfigMode, quests);
@@ -93,7 +93,7 @@ public class LoadProgressionSQL {
                     if (msg != null) Bukkit.getPlayer(playerName).sendMessage(msg);
                 }
             } else {
-                Utils.loadNewPlayerQuests(playerName, activeQuests, timestampConfigMode);
+                Utils.loadNewPlayerQuests(playerName, activeQuests, timestampConfigMode, 0);
             }
         }, 10);
     }

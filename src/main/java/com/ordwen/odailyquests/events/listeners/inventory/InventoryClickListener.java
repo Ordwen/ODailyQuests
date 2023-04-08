@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
@@ -18,6 +19,8 @@ public class InventoryClickListener extends AbstractSpecifiedChecker implements 
 
     @EventHandler
     public void onInventoryClickEvent(InventoryClickEvent event) {
+
+        InventoryAction action = event.getAction();
 
         if (event.getClickedInventory() == null) return;
 
@@ -47,6 +50,8 @@ public class InventoryClickListener extends AbstractSpecifiedChecker implements 
         final String inventoryName = event.getView().getTitle();
         if (inventoryName.startsWith(InterfacesManager.getPlayerQuestsInventoryName())) {
             event.setCancelled(true);
+
+            if (event.getAction() == InventoryAction.HOTBAR_SWAP) return;
 
             if (PlayerQuestsInterface.getFillItems().contains(event.getCurrentItem())) return;
 
