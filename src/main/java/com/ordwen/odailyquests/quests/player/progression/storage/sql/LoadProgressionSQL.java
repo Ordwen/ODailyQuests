@@ -1,8 +1,10 @@
 package com.ordwen.odailyquests.quests.player.progression.storage.sql;
 
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
 import com.ordwen.odailyquests.enums.QuestsMessages;
+import com.ordwen.odailyquests.files.DebugFile;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
@@ -39,9 +41,18 @@ public class LoadProgressionSQL {
      */
     public void loadProgression(String playerName, HashMap<String, PlayerQuests> activeQuests, int questsConfigMode, int timestampConfigMode, int temporalityMode) {
 
+        if (Debugger.isDebugMode()) {
+            PluginLogger.info("Entering loadProgression method for player " + playerName + ".");
+        }
+
         LinkedHashMap<AbstractQuest, Progression> quests = new LinkedHashMap<>();
 
         Bukkit.getScheduler().runTaskLaterAsynchronously(ODailyQuests.INSTANCE, () -> {
+
+            if (Debugger.isDebugMode()) {
+                PluginLogger.info("Running async task to load progression of " + playerName + " from SQL database.");
+            }
+
             boolean hasStoredData = false;
             long timestamp = 0;
             int achievedQuests = 0;
@@ -54,18 +65,41 @@ public class LoadProgressionSQL {
 
                 ResultSet resultSet = preparedStatement.executeQuery();
 
+                if (Debugger.isDebugMode()) {
+                    DebugFile.addDebug("Executing query for player " + playerName + ": " + getTimestampQuery);
+                }
+
                 if (resultSet.next()) {
                     hasStoredData = true;
                     timestamp = resultSet.getLong("PLAYERTIMESTAMP");
                     achievedQuests = resultSet.getInt("ACHIEVEDQUESTS");
                     totalAchievedQuests = resultSet.getInt("TOTALACHIEVEDQUESTS");
+
+                    if (Debugger.isDebugMode()) {
+                        DebugFile.addDebug("Player " + playerName + " has stored data.");
+                    }
+                } else {
+                    if (Debugger.isDebugMode()) {
+                        DebugFile.addDebug("Player " + playerName + " has no stored data.");
+                    }
                 }
 
                 resultSet.close();
                 preparedStatement.close();
                 connection.close();
 
+                if (Debugger.isDebugMode()) {
+                    DebugFile.addDebug("Database connection closed.");
+                }
+
             } catch (SQLException e) {
+                PluginLogger.error(ChatColor.RED + "An error occurred while loading player " + playerName + "'s quests progression.");
+
+                if (Debugger.isDebugMode()) {
+                    DebugFile.addDebug("An error occurred while loading player " + playerName + "'s quests progression.");
+                    DebugFile.addDebug(e.getMessage());
+                }
+
                 e.printStackTrace();
             }
 
@@ -81,6 +115,10 @@ public class LoadProgressionSQL {
                     playerQuests.setTotalAchievedQuests(totalAchievedQuests);
 
                     activeQuests.put(playerName, playerQuests);
+
+                    if (Debugger.isDebugMode()) {
+                        DebugFile.addDebug(playerName + " inserted in activeQuests map.");
+                    }
 
                     PluginLogger.info(playerName + "'s quests have been loaded.");
 
@@ -106,6 +144,10 @@ public class LoadProgressionSQL {
      * @param quests list of player quests.
      */
     private void loadPlayerQuests(String playerName, int questsConfigMode, LinkedHashMap<AbstractQuest, Progression> quests) {
+
+        if (Debugger.isDebugMode()) {
+            PluginLogger.info("Entering loadPlayerQuests method for player " + playerName + ".");
+        }
 
         try {
             Connection connection = sqlManager.getConnection();
@@ -139,8 +181,18 @@ public class LoadProgressionSQL {
             preparedStatement.close();
             connection.close();
         } catch (SQLException e) {
+            PluginLogger.error(ChatColor.RED + "An error occurred while loading player " + playerName + "'s quests.");
+
+            if (Debugger.isDebugMode()) {
+                DebugFile.addDebug("An error occurred while loading player " + playerName + "'s quests.");
+                DebugFile.addDebug(e.getMessage());
+            }
+
             e.printStackTrace();
         }
 
+        if (Debugger.isDebugMode()) {
+            DebugFile.addDebug("Quests of player " + playerName + " have been loaded.");
+        }
     }
 }

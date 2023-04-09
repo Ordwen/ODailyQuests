@@ -58,11 +58,11 @@ public class ProgressionFile {
 
         try {
             progression.load(progressionFile);
+            PluginLogger.fine("Progression file successfully loaded (YAML).");
         } catch (InvalidConfigurationException | IOException e) {
             PluginLogger.error("An error occurred on the load of the progression file.");
             PluginLogger.error("Please inform the developer.");
             e.printStackTrace();
         }
-        PluginLogger.fine("Progression file successfully loaded (YAML).");
     }
 }

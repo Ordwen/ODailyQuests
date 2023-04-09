@@ -1,9 +1,12 @@
 package com.ordwen.odailyquests.quests.player;
 
+import com.magmaguy.elitemobs.utils.DebugBlockLocation;
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
 import com.ordwen.odailyquests.configuration.essentials.Temporality;
+import com.ordwen.odailyquests.files.DebugFile;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.progression.storage.yaml.YamlManager;
@@ -48,8 +51,22 @@ public class QuestsManager implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
 
+        if (Debugger.isDebugMode()) {
+            DebugFile.addDebug("EVENT START");
+            DebugFile.addDebug("PlayerJoinEvent triggered.");
+        }
+
         final String playerName = event.getPlayer().getName();
+
+        if (Debugger.isDebugMode()) {
+            DebugFile.addDebug("Player " + playerName + " joined the server.");
+        }
+
         if (!activeQuests.containsKey(playerName)) {
+
+            if (Debugger.isDebugMode()) {
+                DebugFile.addDebug("Player " + playerName + " is not in the array.");
+            }
 
             switch (Modes.getStorageMode()) {
                 case "YAML" -> yamlManager.getLoadProgressionYAML().loadPlayerQuests(playerName, activeQuests,
@@ -63,19 +80,43 @@ public class QuestsManager implements Listener {
                 default -> PluginLogger.error("Impossible to load player quests : the selected storage mode is incorrect !");
             }
         } else {
+
+            if (Debugger.isDebugMode()) {
+                DebugFile.addDebug("Player " + playerName + " is already in the array.");
+            }
+
             PluginLogger.error(playerName + " detected into the array.");
             PluginLogger.error("THAT IS NOT NORMAL.");
             PluginLogger.error("The player quests will be never renewed.");
             PluginLogger.error("Please inform developer.");
         }
+
+        if (Debugger.isDebugMode()) {
+            DebugFile.addDebug("[EVENT END]");
+        }
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
+
+        if (Debugger.isDebugMode()) {
+            DebugFile.addDebug("[EVENT START]");
+            DebugFile.addDebug("PlayerQuitEvent triggered.");
+        }
+
         String playerName = event.getPlayer().getName();
+
+        if (Debugger.isDebugMode()) {
+            DebugFile.addDebug("Player " + playerName + " left the server.");
+        }
+
         final PlayerQuests playerQuests = activeQuests.get(playerName);
 
         if (playerQuests == null) {
+            if (Debugger.isDebugMode()) {
+                DebugFile.addDebug("Player " + playerName + " not found in the array.");
+            }
+
             PluginLogger.warn("Player quests not found for player " + playerName);
             return;
         }
@@ -87,6 +128,11 @@ public class QuestsManager implements Listener {
         }
 
         activeQuests.remove(playerName);
+
+        if (Debugger.isDebugMode()) {
+            DebugFile.addDebug("Player " + playerName + " removed from the array.");
+            DebugFile.addDebug("[EVENT END]");
+        }
     }
 
     /**

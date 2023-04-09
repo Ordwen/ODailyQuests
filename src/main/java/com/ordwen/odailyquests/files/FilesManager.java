@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.files;
 
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.configuration.essentials.Debugger;
 
 public class FilesManager {
 
@@ -22,5 +23,9 @@ public class FilesManager {
         new ProgressionFile(oDailyQuests).loadProgressionFile();
         new HologramsFile(oDailyQuests).loadHologramsFile();
         new PlayerInterfaceFile(oDailyQuests).loadPlayerInterfaceFile();
+
+        if (Debugger.isDebugMode()) {
+            new DebugFile(oDailyQuests).loadDebugFile();
+        }
     }
 }

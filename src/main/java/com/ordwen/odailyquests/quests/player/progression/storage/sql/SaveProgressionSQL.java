@@ -1,7 +1,9 @@
 package com.ordwen.odailyquests.quests.player.progression.storage.sql;
 
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
+import com.ordwen.odailyquests.files.DebugFile;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
@@ -58,6 +60,10 @@ public class SaveProgressionSQL {
      */
     public void saveProgression(String playerName, PlayerQuests playerQuests, boolean isAsync) {
 
+        if (Debugger.isDebugMode()) {
+            DebugFile.addDebug("Entering saveProgression method for player " + playerName);
+        }
+
         /* init variables */
         long timestamp = playerQuests.getTimestamp();
         int achievedQuests = playerQuests.getAchievedQuests();
@@ -66,8 +72,20 @@ public class SaveProgressionSQL {
         final LinkedHashMap<AbstractQuest, Progression> quests = playerQuests.getPlayerQuests();
 
         if (isAsync) {
-            Bukkit.getScheduler().runTaskAsynchronously(ODailyQuests.INSTANCE, () -> saveDatas(playerName, timestamp, achievedQuests, totalAchievedQuests, quests));
-        } else saveDatas(playerName, timestamp, achievedQuests, totalAchievedQuests, quests);
+            Bukkit.getScheduler().runTaskAsynchronously(ODailyQuests.INSTANCE, () -> {
+                if (Debugger.isDebugMode()) {
+                    DebugFile.addDebug("Saving player " + playerName + " progression asynchronously");
+                }
+
+                saveDatas(playerName, timestamp, achievedQuests, totalAchievedQuests, quests);
+            });
+        } else {
+            if (Debugger.isDebugMode()) {
+                DebugFile.addDebug("Saving player " + playerName + " progression");
+            }
+
+            saveDatas(playerName, timestamp, achievedQuests, totalAchievedQuests, quests);
+        }
     }
 
     /**
@@ -82,6 +100,10 @@ public class SaveProgressionSQL {
     private void saveDatas(String playerName, long timestamp, int achievedQuests, int totalAchievedQuests, LinkedHashMap<AbstractQuest, Progression> quests) {
         final Connection connection = sqlManager.getConnection();
 
+        if (Debugger.isDebugMode()) {
+            DebugFile.addDebug("Connection to database: " + (connection != null ? "OK" : "UNAVAILABLE"));
+        }
+
         try {
             PreparedStatement playerStatement;
             if (Modes.getStorageMode().equalsIgnoreCase("mysql")) playerStatement = connection.prepareStatement(MYSQL_PLAYER_QUERY);
@@ -93,6 +115,10 @@ public class SaveProgressionSQL {
             playerStatement.setInt(4, totalAchievedQuests);
 
             playerStatement.executeUpdate();
+
+            if (Debugger.isDebugMode()) {
+                DebugFile.addDebug("Player " + playerName + " data saved");
+            }
 
             int index = 0;
             for (AbstractQuest quest : quests.keySet()) {
@@ -107,12 +133,28 @@ public class SaveProgressionSQL {
                 progressionStatement.setBoolean(5, quests.get(quest).isAchieved());
 
                 progressionStatement.executeUpdate();
+
+                if (Debugger.isDebugMode()) {
+                    DebugFile.addDebug("Quest number " + index + " saved for player " + playerName);
+                }
+
                 index++;
+            }
+
+            if (Debugger.isDebugMode()) {
+                DebugFile.addDebug(playerName + " quests progression saved");
             }
 
             PluginLogger.info(playerName + "'s data saved.");
             connection.close();
         } catch (SQLException e) {
+            PluginLogger.error("An error occurred while saving player " + playerName + " data.");
+
+            if (Debugger.isDebugMode()) {
+                DebugFile.addDebug("An error occurred while saving player " + playerName + " data.");
+                DebugFile.addDebug(e.getMessage());
+            }
+
             e.printStackTrace();
         }
     }

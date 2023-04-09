@@ -1,7 +1,9 @@
 package com.ordwen.odailyquests.quests.player.progression;
 
+import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
 import com.ordwen.odailyquests.enums.QuestsMessages;
+import com.ordwen.odailyquests.files.DebugFile;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.LoadQuests;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
@@ -100,6 +102,10 @@ public class Utils {
 
         PluginLogger.fine(playerName + " inserted into the array.");
         PluginLogger.info(playerName + "'s quests have been renewed.");
+
+        if (Debugger.isDebugMode()) {
+            DebugFile.addDebug("Quests of player " + playerName + " have been renewed.");
+        }
     }
 
     /**

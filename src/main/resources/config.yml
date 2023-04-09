@@ -1,3 +1,6 @@
+# if the plugin doesn't work as exepected, set debug to true and send the log file to the developer.
+debug: false
+
 # never touch this line
 version: 2.0.0
 
