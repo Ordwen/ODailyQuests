@@ -16,6 +16,7 @@ public abstract class AbstractQuest {
     final ItemStack menuItem;
     final int amountRequired;
     final Reward reward;
+    final List<String> requiredWorlds;
 
     /**
      * Quest constructor.
@@ -26,7 +27,7 @@ public abstract class AbstractQuest {
      * @param amountRequired required amount of the item.
      * @param reward         reward of the quest.
      */
-    public AbstractQuest(int questIndex, String questName, List<String> questDesc, QuestType questType, ItemStack menuItem, int amountRequired, Reward reward) {
+    public AbstractQuest(int questIndex, String questName, List<String> questDesc, QuestType questType, ItemStack menuItem, int amountRequired, Reward reward, List<String> requiredWorlds) {
         this.questIndex = questIndex;
         this.questName = questName;
         this.questDesc = questDesc;
@@ -34,6 +35,7 @@ public abstract class AbstractQuest {
         this.menuItem = menuItem;
         this.amountRequired = amountRequired;
         this.reward = reward;
+        this.requiredWorlds = requiredWorlds;
     }
 
     /**
@@ -49,6 +51,7 @@ public abstract class AbstractQuest {
         this.menuItem = globalQuest.menuItem;
         this.amountRequired = globalQuest.amountRequired;
         this.reward = globalQuest.reward;
+        this.requiredWorlds = globalQuest.requiredWorlds;
     }
 
     /**
@@ -112,5 +115,14 @@ public abstract class AbstractQuest {
      */
     public Reward getReward() {
         return this.reward;
+    }
+
+    /**
+     * Get the required worlds of the quest.
+     *
+     * @return quest required worlds.
+     */
+    public List<String> getRequiredWorlds() {
+        return this.requiredWorlds;
     }
 }

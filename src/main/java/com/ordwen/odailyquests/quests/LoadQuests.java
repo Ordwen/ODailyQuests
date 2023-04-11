@@ -112,6 +112,7 @@ public class LoadQuests {
                 List<ItemStack> requiredItems = new ArrayList<>();
                 List<EntityType> entityTypes = null;
                 int requiredAmount;
+                List<String> requiredWorlds = new ArrayList<>();
 
                 /* color of sheep for quests that require a ship (obviously) */
                 DyeColor dyeColor = null;
@@ -392,8 +393,13 @@ public class LoadQuests {
                         reward = new Reward(rewardType, file.getConfigurationSection("quests." + fileQuest + ".reward").getInt(".amount"));
                     }
 
+                    /* init required worlds */
+                    if (questSection.contains(".required_worlds")) {
+                        requiredWorlds = questSection.getStringList(".required_worlds");
+                    }
+
                     /* init quest */
-                    final GlobalQuest base = new GlobalQuest(questIndex, questName, questDesc, questType, menuItem, requiredAmount, reward);
+                    final GlobalQuest base = new GlobalQuest(questIndex, questName, questDesc, questType, menuItem, requiredAmount, reward, requiredWorlds);
                     if (isGlobalType) {
                         if (questType == QuestType.VILLAGER_TRADE) {
                             quest = new VillagerQuest(base, profession, villagerLevel);

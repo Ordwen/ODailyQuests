@@ -325,3 +325,17 @@ quests:
     reward:
       reward_type: EXP_LEVELS
       amount: 5
+  23:
+    name: "Original habitat"
+    menu_item: WITHER_SKELETON_SKULL
+    description:
+      - "&cKill a Wither in the Nether."
+      - "&aWin &b50 000 &a$."
+    quest_type: KILL
+    required_entity: WITHER
+    required_amount: 1
+    required_worlds:
+        - world_nether
+    reward:
+      reward_type: MONEY
+      amount: 50000

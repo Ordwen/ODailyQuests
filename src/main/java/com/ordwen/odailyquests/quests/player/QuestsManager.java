@@ -1,12 +1,10 @@
 package com.ordwen.odailyquests.quests.player;
 
-import com.magmaguy.elitemobs.utils.DebugBlockLocation;
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
 import com.ordwen.odailyquests.configuration.essentials.Temporality;
-import com.ordwen.odailyquests.files.DebugFile;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.progression.storage.yaml.YamlManager;
@@ -30,10 +28,11 @@ public class QuestsManager implements Listener {
      * Getting instance of classes.
      */
     private final SQLManager sqlManager;
-    private final YamlManager  yamlManager;
+    private final YamlManager yamlManager;
 
     /**
      * Class instance constructor.
+     *
      * @param oDailyQuests main class instance.
      */
     public QuestsManager(ODailyQuests oDailyQuests, boolean useSQL) {
@@ -51,22 +50,17 @@ public class QuestsManager implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
 
-        if (Debugger.isDebugMode()) {
-            DebugFile.addDebug("EVENT START");
-            DebugFile.addDebug("PlayerJoinEvent triggered.");
-        }
+        Debugger.addDebug("EVENT START");
+        Debugger.addDebug("PlayerJoinEvent triggered.");
 
         final String playerName = event.getPlayer().getName();
 
-        if (Debugger.isDebugMode()) {
-            DebugFile.addDebug("Player " + playerName + " joined the server.");
-        }
+        Debugger.addDebug("Player " + playerName + " joined the server.");
 
         if (!activeQuests.containsKey(playerName)) {
 
-            if (Debugger.isDebugMode()) {
-                DebugFile.addDebug("Player " + playerName + " is not in the array.");
-            }
+            Debugger.addDebug("Player " + playerName + " is not in the array.");
+
 
             switch (Modes.getStorageMode()) {
                 case "YAML" -> yamlManager.getLoadProgressionYAML().loadPlayerQuests(playerName, activeQuests,
@@ -77,13 +71,12 @@ public class QuestsManager implements Listener {
                         Modes.getQuestsMode(),
                         Modes.getTimestampMode(),
                         Temporality.getTemporalityMode());
-                default -> PluginLogger.error("Impossible to load player quests : the selected storage mode is incorrect !");
+                default ->
+                        PluginLogger.error("Impossible to load player quests : the selected storage mode is incorrect !");
             }
         } else {
 
-            if (Debugger.isDebugMode()) {
-                DebugFile.addDebug("Player " + playerName + " is already in the array.");
-            }
+            Debugger.addDebug("Player " + playerName + " is already in the array.");
 
             PluginLogger.error(playerName + " detected into the array.");
             PluginLogger.error("THAT IS NOT NORMAL.");
@@ -91,31 +84,25 @@ public class QuestsManager implements Listener {
             PluginLogger.error("Please inform developer.");
         }
 
-        if (Debugger.isDebugMode()) {
-            DebugFile.addDebug("[EVENT END]");
-        }
+        Debugger.addDebug("[EVENT END]");
+
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
 
-        if (Debugger.isDebugMode()) {
-            DebugFile.addDebug("[EVENT START]");
-            DebugFile.addDebug("PlayerQuitEvent triggered.");
-        }
+        Debugger.addDebug("[EVENT START]");
+        Debugger.addDebug("PlayerQuitEvent triggered.");
 
         String playerName = event.getPlayer().getName();
 
-        if (Debugger.isDebugMode()) {
-            DebugFile.addDebug("Player " + playerName + " left the server.");
-        }
+        Debugger.addDebug("Player " + playerName + " left the server.");
 
         final PlayerQuests playerQuests = activeQuests.get(playerName);
 
         if (playerQuests == null) {
-            if (Debugger.isDebugMode()) {
-                DebugFile.addDebug("Player " + playerName + " not found in the array.");
-            }
+            Debugger.addDebug("Player " + playerName + " not found in the array.");
+
 
             PluginLogger.warn("Player quests not found for player " + playerName);
             return;
@@ -124,15 +111,15 @@ public class QuestsManager implements Listener {
         switch (Modes.getStorageMode()) {
             case "YAML" -> yamlManager.getSaveProgressionYAML().saveProgression(playerName, playerQuests, true);
             case "MySQL", "H2" -> sqlManager.getSaveProgressionSQL().saveProgression(playerName, playerQuests, true);
-            default -> PluginLogger.error("Impossible to save player quests : the selected storage mode is incorrect !");
+            default ->
+                    PluginLogger.error("Impossible to save player quests : the selected storage mode is incorrect !");
         }
 
         activeQuests.remove(playerName);
 
-        if (Debugger.isDebugMode()) {
-            DebugFile.addDebug("Player " + playerName + " removed from the array.");
-            DebugFile.addDebug("[EVENT END]");
-        }
+        Debugger.addDebug("Player " + playerName + " removed from the array.");
+        Debugger.addDebug("[EVENT END]");
+
     }
 
     /**
@@ -189,7 +176,8 @@ public class QuestsManager implements Listener {
                 Progression progression = new Progression(0, false);
                 quests.put(quest, progression);
             }
-        } else PluginLogger.error(ChatColor.RED + "Impossible to select quests for player. The selected mode is incorrect.");
+        } else
+            PluginLogger.error(ChatColor.RED + "Impossible to select quests for player. The selected mode is incorrect.");
 
         return quests;
     }

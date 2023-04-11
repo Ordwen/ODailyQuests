@@ -9,6 +9,10 @@ public abstract class AbstractProgressionIncreaser {
 
     public void increaseProgression(Player player, Progression progression, AbstractQuest quest, int amount) {
 
+        if (!quest.getRequiredWorlds().isEmpty() && !quest.getRequiredWorlds().contains(player.getWorld().getName())) {
+            return;
+        }
+
         for (int i = 0; i < amount; i++) {
             progression.increaseProgression();
         }

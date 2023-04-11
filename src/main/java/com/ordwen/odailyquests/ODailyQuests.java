@@ -10,6 +10,7 @@ import com.ordwen.odailyquests.commands.completers.PlayerCompleter;
 import com.ordwen.odailyquests.commands.interfaces.InterfacesManager;
 import com.ordwen.odailyquests.commands.interfaces.InventoryClickListener;
 import com.ordwen.odailyquests.configuration.ConfigurationManager;
+import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.configuration.essentials.Temporality;
 import com.ordwen.odailyquests.events.EventsManager;
@@ -35,10 +36,10 @@ public final class ODailyQuests extends JavaPlugin {
     /**
      * Getting instance of files classes.
      */
-    public ConfigurationFiles configurationFiles;
-    public ConfigurationManager configurationManager;
-    public InterfacesManager interfacesManager;
-    public FilesManager filesManager;
+    private ConfigurationFiles configurationFiles;
+    private ConfigurationManager configurationManager;
+    private InterfacesManager interfacesManager;
+    private FilesManager filesManager;
     private SQLManager sqlManager;
     private YamlManager yamlManager;
     private TimerTask timerTask;
@@ -85,6 +86,9 @@ public final class ODailyQuests extends JavaPlugin {
 
         /* Load specific settings */
         configurationManager.loadConfiguration();
+
+        /* Load debugger */
+        new Debugger(this).loadDebugMode();
 
         /* Load quests */
         LoadQuests.loadCategories();

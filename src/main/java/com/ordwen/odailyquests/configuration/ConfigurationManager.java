@@ -30,7 +30,6 @@ public class ConfigurationManager {
         new Temporality(configurationFiles).loadTemporalitySettings();
         new TimeRemain().setupInitials();
         new QuestsAmount(configurationFiles).loadQuestsAmount();
-        new Debugger(configurationFiles).loadDebugMode();
 
         // functionalities
         new Actionbar(configurationFiles).loadActionbar();
