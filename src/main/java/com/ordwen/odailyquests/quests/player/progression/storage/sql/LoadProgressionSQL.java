@@ -55,12 +55,12 @@ public class LoadProgressionSQL {
 
             try {
                 Connection connection = sqlManager.getConnection();
-                String getTimestampQuery = "SELECT PLAYERTIMESTAMP,ACHIEVEDQUESTS,TOTALACHIEVEDQUESTS FROM PLAYER WHERE PLAYERNAME = '" + playerName + "'";
-                PreparedStatement preparedStatement = connection.prepareStatement(getTimestampQuery);
+                String timestampQuery = "SELECT PLAYERTIMESTAMP,ACHIEVEDQUESTS,TOTALACHIEVEDQUESTS FROM PLAYER WHERE PLAYERNAME = '" + playerName + "'";
+                PreparedStatement preparedStatement = connection.prepareStatement(timestampQuery);
 
                 ResultSet resultSet = preparedStatement.executeQuery();
 
-                Debugger.addDebug("Executing query for player " + playerName + ": " + getTimestampQuery);
+                Debugger.addDebug("Executing query for player " + playerName + ": " + timestampQuery);
 
 
                 if (resultSet.next()) {

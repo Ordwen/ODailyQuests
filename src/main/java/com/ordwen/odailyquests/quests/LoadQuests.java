@@ -279,10 +279,12 @@ public class LoadQuests {
                                             }
 
                                             else {
-                                                PotionMeta meta = (PotionMeta) menuItem.getItemMeta();
-                                                meta.setBasePotionData(new PotionData(potionType, extended, upgraded));
-                                                menuItem.setItemMeta(meta);
-                                                requiredItem.setItemMeta(meta);
+                                                if (menuItem.getType() == Material.POTION || menuItem.getType() == Material.SPLASH_POTION || menuItem.getType() == Material.LINGERING_POTION) {
+                                                    PotionMeta meta = (PotionMeta) menuItem.getItemMeta();
+                                                    meta.setBasePotionData(new PotionData(potionType, extended, upgraded));
+                                                    menuItem.setItemMeta(meta);
+                                                    requiredItem.setItemMeta(meta);
+                                                }
                                             }
                                         }
 
@@ -307,10 +309,12 @@ public class LoadQuests {
                                             }
 
                                             else {
-                                                PotionMeta meta = (PotionMeta) menuItem.getItemMeta();
-                                                meta.setBasePotionData(new PotionData(potionType, extended, upgraded));
-                                                menuItem.setItemMeta(meta);
-                                                requiredItem.setItemMeta(meta);
+                                                if (menuItem.getType() == Material.POTION || menuItem.getType() == Material.SPLASH_POTION || menuItem.getType() == Material.LINGERING_POTION) {
+                                                    PotionMeta meta = (PotionMeta) menuItem.getItemMeta();
+                                                    meta.setBasePotionData(new PotionData(potionType, extended, upgraded));
+                                                    menuItem.setItemMeta(meta);
+                                                    requiredItem.setItemMeta(meta);
+                                                }
                                             }
                                         }
 

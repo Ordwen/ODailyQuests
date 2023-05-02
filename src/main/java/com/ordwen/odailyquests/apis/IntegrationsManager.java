@@ -10,6 +10,7 @@ import com.ordwen.odailyquests.apis.hooks.npcs.CitizensHook;
 import com.ordwen.odailyquests.apis.hooks.placeholders.PlaceholderAPIHook;
 import com.ordwen.odailyquests.apis.hooks.points.PlayerPointsHook;
 import com.ordwen.odailyquests.apis.hooks.points.TokenManagerHook;
+import com.ordwen.odailyquests.apis.hooks.stackers.RoseStackerHook;
 import com.ordwen.odailyquests.apis.hooks.stackers.WildStackerHook;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
@@ -53,7 +54,7 @@ public class IntegrationsManager {
      * Load RoseStacker.
      */
     private void loadRoseStacker() {
-        if (WildStackerHook.isWildStackerSetup()) {
+        if (RoseStackerHook.isRoseStackerSetup()) {
             PluginLogger.info("RoseStacker successfully hooked.");
         }
     }
