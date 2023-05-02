@@ -44,9 +44,7 @@ public class PlayerQuests {
         this.achievedQuests++;
         this.totalAchievedQuests++;
 
-        System.out.println("Oui");
         if (this.achievedQuests == QuestsAmount.getQuestsAmount()) {
-            System.out.println("Oui2");
             final AllQuestsCompletedEvent event = new AllQuestsCompletedEvent(player);
             ODailyQuests.INSTANCE.getServer().getPluginManager().callEvent(event);
         }

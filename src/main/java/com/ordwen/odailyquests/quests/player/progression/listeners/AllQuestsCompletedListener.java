@@ -9,7 +9,6 @@ public class AllQuestsCompletedListener implements Listener {
 
     @EventHandler
     public void onAllQuestsCompletedEvent(AllQuestsCompletedEvent event) {
-        System.out.println("Oui3");
         GlobalReward.sendGlobalReward(event.getPlayer().getName());
     }
 }
