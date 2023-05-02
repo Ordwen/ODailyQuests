@@ -1,7 +1,6 @@
-package com.ordwen.odailyquests.apis.hooks.stackers;
+package com.ordwen.odailyquests.externs.hooks.stackers;
 
 import org.bukkit.Bukkit;
-import org.bukkit.event.Listener;
 
 public class WildStackerHook {
 

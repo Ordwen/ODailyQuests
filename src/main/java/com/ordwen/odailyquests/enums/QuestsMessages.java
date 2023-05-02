@@ -14,7 +14,7 @@ public enum QuestsMessages {
     PLAYER_ONLY("player_only", "&cOnly player can execute this command."),
     INVALID_CATEGORY("invalid_category", "&cInvalid quest category."),
     INVALID_PLAYER("invalid_player", "&cThis player doesn't exist, or is offline."),
-    INVALID_QUEST_ID("invalid_quest_id","&cYou must specify a valid quest ID, between 1 and 3."),
+    INVALID_QUEST_ID("invalid_quest_id","&cYou must specify a valid quest ID."),
     INVALID_QUEST_INDEX("invalid_quest_index", "&cThe specified index is invalid."),
 
     CATEGORIZED_ENABLED("categorized_enabled", "&cCategorized quests are enabled, the global menu is not available."),

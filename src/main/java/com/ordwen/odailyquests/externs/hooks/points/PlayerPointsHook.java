@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.apis.hooks.points;
+package com.ordwen.odailyquests.externs.hooks.points;
 
 import org.black_ixx.playerpoints.PlayerPointsAPI;
 import org.bukkit.Bukkit;

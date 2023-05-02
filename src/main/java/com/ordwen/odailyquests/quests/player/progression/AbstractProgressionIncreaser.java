@@ -1,8 +1,8 @@
 package com.ordwen.odailyquests.quests.player.progression;
 
-import com.ordwen.odailyquests.quests.player.QuestsManager;
+import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.api.events.QuestCompletedEvent;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
-import com.ordwen.odailyquests.rewards.RewardManager;
 import org.bukkit.entity.Player;
 
 public abstract class AbstractProgressionIncreaser {
@@ -18,9 +18,8 @@ public abstract class AbstractProgressionIncreaser {
         }
 
         if (progression.getProgression() >= quest.getAmountRequired()) {
-            progression.setAchieved();
-            QuestsManager.getActiveQuests().get(player.getName()).increaseAchievedQuests(player.getName());
-            RewardManager.sendAllRewardItems(quest.getQuestName(), player, quest.getReward());
+            final QuestCompletedEvent event = new QuestCompletedEvent(player, progression, quest);
+            ODailyQuests.INSTANCE.getServer().getPluginManager().callEvent(event);
         }
     }
 }

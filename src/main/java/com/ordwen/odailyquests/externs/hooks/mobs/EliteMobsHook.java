@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.apis.hooks.mobs;
+package com.ordwen.odailyquests.externs.hooks.mobs;
 
 import org.bukkit.Bukkit;
 

@@ -1,14 +1,11 @@
-package com.ordwen.odailyquests.apis.hooks.npcs;
+package com.ordwen.odailyquests.externs.hooks.npcs;
 
-import com.ordwen.odailyquests.commands.interfaces.CategorizedQuestsInterfaces;
-import com.ordwen.odailyquests.commands.interfaces.GlobalQuestsInterface;
 import com.ordwen.odailyquests.commands.interfaces.InterfacesManager;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.configuration.integrations.NPCNames;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.enums.QuestsPermissions;
-import com.ordwen.odailyquests.files.ConfigurationFiles;
 import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import org.bukkit.Bukkit;

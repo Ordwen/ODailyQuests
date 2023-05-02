@@ -1,17 +1,17 @@
-package com.ordwen.odailyquests.apis;
+package com.ordwen.odailyquests.externs;
 
 import com.ordwen.odailyquests.ODailyQuests;
-import com.ordwen.odailyquests.apis.hooks.eco.VaultHook;
-import com.ordwen.odailyquests.apis.hooks.heads.HeadDatabaseHook;
-import com.ordwen.odailyquests.apis.hooks.holograms.HolographicDisplaysHook;
-import com.ordwen.odailyquests.apis.hooks.mobs.EliteMobsHook;
-import com.ordwen.odailyquests.apis.hooks.mobs.MythicMobsHook;
-import com.ordwen.odailyquests.apis.hooks.npcs.CitizensHook;
-import com.ordwen.odailyquests.apis.hooks.placeholders.PlaceholderAPIHook;
-import com.ordwen.odailyquests.apis.hooks.points.PlayerPointsHook;
-import com.ordwen.odailyquests.apis.hooks.points.TokenManagerHook;
-import com.ordwen.odailyquests.apis.hooks.stackers.RoseStackerHook;
-import com.ordwen.odailyquests.apis.hooks.stackers.WildStackerHook;
+import com.ordwen.odailyquests.externs.hooks.eco.VaultHook;
+import com.ordwen.odailyquests.externs.hooks.heads.HeadDatabaseHook;
+import com.ordwen.odailyquests.externs.hooks.holograms.HolographicDisplaysHook;
+import com.ordwen.odailyquests.externs.hooks.mobs.EliteMobsHook;
+import com.ordwen.odailyquests.externs.hooks.mobs.MythicMobsHook;
+import com.ordwen.odailyquests.externs.hooks.npcs.CitizensHook;
+import com.ordwen.odailyquests.externs.hooks.placeholders.PlaceholderAPIHook;
+import com.ordwen.odailyquests.externs.hooks.points.PlayerPointsHook;
+import com.ordwen.odailyquests.externs.hooks.points.TokenManagerHook;
+import com.ordwen.odailyquests.externs.hooks.stackers.RoseStackerHook;
+import com.ordwen.odailyquests.externs.hooks.stackers.WildStackerHook;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
 
