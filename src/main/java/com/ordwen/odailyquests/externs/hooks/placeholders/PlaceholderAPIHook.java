@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.apis.hooks.placeholders;
+package com.ordwen.odailyquests.externs.hooks.placeholders;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
@@ -8,7 +8,6 @@ import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.tools.GetPlaceholders;
 import com.ordwen.odailyquests.tools.TimeRemain;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import net.milkbowl.vault.chat.Chat;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 

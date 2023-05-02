@@ -1,9 +1,8 @@
 package com.ordwen.odailyquests.rewards;
 
-import com.ordwen.odailyquests.apis.hooks.placeholders.PlaceholderAPIHook;
-import com.ordwen.odailyquests.apis.hooks.points.PlayerPointsHook;
-import com.ordwen.odailyquests.apis.hooks.points.TokenManagerHook;
-import com.ordwen.odailyquests.apis.hooks.eco.VaultHook;
+import com.ordwen.odailyquests.externs.hooks.points.PlayerPointsHook;
+import com.ordwen.odailyquests.externs.hooks.points.TokenManagerHook;
+import com.ordwen.odailyquests.externs.hooks.eco.VaultHook;
 import com.ordwen.odailyquests.configuration.functionalities.Actionbar;
 import com.ordwen.odailyquests.configuration.functionalities.Title;
 import com.ordwen.odailyquests.enums.QuestsMessages;

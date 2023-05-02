@@ -99,7 +99,7 @@ public abstract class AbstractSpecifiedChecker extends AbstractProgressionIncrea
 
         if (hasRequiredAmount) {
             progression.setAchieved();
-            QuestsManager.getActiveQuests().get(player.getName()).increaseAchievedQuests(player.getName());
+            QuestsManager.getActiveQuests().get(player.getName()).increaseAchievedQuests(player);
 
             if (TakeItems.isTakeItemsEnabled()) {
                 int totalRemoved = 0;
@@ -200,7 +200,7 @@ public abstract class AbstractSpecifiedChecker extends AbstractProgressionIncrea
         double distance = player.getLocation().distance(requiredLocation);
         if (distance <= quest.getRadius()) {
             progression.setAchieved();
-            QuestsManager.getActiveQuests().get(player.getName()).increaseAchievedQuests(player.getName());
+            QuestsManager.getActiveQuests().get(player.getName()).increaseAchievedQuests(player);
 
             player.closeInventory();
             RewardManager.sendAllRewardItems(quest.getQuestName(), player, quest.getReward());

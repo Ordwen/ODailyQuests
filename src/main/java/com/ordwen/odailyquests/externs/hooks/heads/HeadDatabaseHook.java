@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.apis.hooks.heads;
+package com.ordwen.odailyquests.externs.hooks.heads;
 
 import me.arcaniax.hdb.api.DatabaseLoadEvent;
 import me.arcaniax.hdb.api.HeadDatabaseAPI;

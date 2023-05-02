@@ -1,12 +1,17 @@
 package com.ordwen.odailyquests.quests.player;
 
+import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
+import com.ordwen.odailyquests.api.events.AllQuestsCompletedEvent;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
-import com.ordwen.odailyquests.configuration.functionalities.GlobalReward;
+import org.bukkit.entity.Player;
 
 import java.util.LinkedHashMap;
 
+/**
+ * Represents the quests of a player and its data.
+ */
 public class PlayerQuests {
 
     /* Timestamp of last quests renew */
@@ -33,20 +38,32 @@ public class PlayerQuests {
 
     /**
      * Increase number of achieved quests.
+     * @param player player who achieved a quest.
      */
-    public void increaseAchievedQuests(String playerName) {
+    public void increaseAchievedQuests(Player player) {
         this.achievedQuests++;
         this.totalAchievedQuests++;
 
+        System.out.println("Oui");
         if (this.achievedQuests == QuestsAmount.getQuestsAmount()) {
-            GlobalReward.sendGlobalReward(playerName);
+            System.out.println("Oui2");
+            final AllQuestsCompletedEvent event = new AllQuestsCompletedEvent(player);
+            ODailyQuests.INSTANCE.getServer().getPluginManager().callEvent(event);
         }
     }
 
+    /**
+     * Set number of achieved quests.
+     * @param i number of achieved quests to set.
+     */
     public void setAchievedQuests(int i) {
         this.achievedQuests = i;
     }
 
+    /**
+     * Set total number of achieved quests.
+     * @param i total number of achieved quests to set.
+     */
     public void setTotalAchievedQuests(int i) { this.totalAchievedQuests = i; }
 
     /**
@@ -65,7 +82,7 @@ public class PlayerQuests {
 
     /**
      * Get player quests.
-     * @return player quests.
+     * @return a LinkedHashMap of quests and their progression.
      */
     public LinkedHashMap<AbstractQuest, Progression> getPlayerQuests() {
         return this.playerQuests;

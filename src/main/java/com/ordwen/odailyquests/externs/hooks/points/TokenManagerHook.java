@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.apis.hooks.points;
+package com.ordwen.odailyquests.externs.hooks.points;
 
 import me.realized.tokenmanager.api.TokenManager;
 import org.bukkit.Bukkit;

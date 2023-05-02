@@ -1,9 +1,9 @@
 package com.ordwen.odailyquests.events;
 
 import com.ordwen.odailyquests.ODailyQuests;
-import com.ordwen.odailyquests.apis.hooks.mobs.EliteMobsHook;
-import com.ordwen.odailyquests.apis.hooks.mobs.MythicMobsHook;
-import com.ordwen.odailyquests.apis.hooks.stackers.WildStackerHook;
+import com.ordwen.odailyquests.externs.hooks.mobs.EliteMobsHook;
+import com.ordwen.odailyquests.externs.hooks.mobs.MythicMobsHook;
+import com.ordwen.odailyquests.externs.hooks.stackers.WildStackerHook;
 import com.ordwen.odailyquests.events.listeners.entity.*;
 import com.ordwen.odailyquests.events.listeners.entity.custom.mobs.EliteMobDeathListener;
 import com.ordwen.odailyquests.events.listeners.entity.custom.stackers.EntityUnstackListener;

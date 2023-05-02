@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.apis.hooks.holograms;
+package com.ordwen.odailyquests.externs.hooks.holograms;
 
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;

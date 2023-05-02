@@ -1,7 +1,8 @@
 package com.ordwen.odailyquests;
 
-import com.ordwen.odailyquests.apis.IntegrationsManager;
-import com.ordwen.odailyquests.apis.hooks.holograms.HologramsManager;
+import com.ordwen.odailyquests.api.ODailyQuestsAPI;
+import com.ordwen.odailyquests.externs.IntegrationsManager;
+import com.ordwen.odailyquests.externs.hooks.holograms.HologramsManager;
 import com.ordwen.odailyquests.commands.AdminCommands;
 import com.ordwen.odailyquests.commands.PlayerCommands;
 import com.ordwen.odailyquests.commands.ReloadService;
@@ -16,6 +17,8 @@ import com.ordwen.odailyquests.configuration.essentials.Temporality;
 import com.ordwen.odailyquests.events.EventsManager;
 import com.ordwen.odailyquests.events.antiglitch.database.DatabaseManager;
 import com.ordwen.odailyquests.files.*;
+import com.ordwen.odailyquests.quests.player.progression.listeners.AllQuestsCompletedListener;
+import com.ordwen.odailyquests.quests.player.progression.listeners.QuestCompletedListener;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.h2.H2Manager;
 import com.ordwen.odailyquests.quests.player.progression.storage.yaml.YamlManager;
@@ -32,6 +35,7 @@ import java.time.LocalDateTime;
 public final class ODailyQuests extends JavaPlugin {
 
     public static ODailyQuests INSTANCE;
+    private ODailyQuestsAPI API;
 
     /**
      * Getting instance of files classes.
@@ -49,6 +53,7 @@ public final class ODailyQuests extends JavaPlugin {
     @Override
     public void onEnable() {
         INSTANCE = this;
+        API = new ODailyQuestsAPI(this);
 
         PluginLogger.info("Plugin is starting...");
 
@@ -114,6 +119,10 @@ public final class ODailyQuests extends JavaPlugin {
         //getServer().getPluginManager().registerEvents(new BlockBreakListener(), this);
         getServer().getPluginManager().registerEvents(new InventoryClickListener(), this);
         getServer().getPluginManager().registerEvents(new QuestsManager(this, sqlManager != null), this);
+
+        /* Register plugin events */
+        getServer().getPluginManager().registerEvents(new QuestCompletedListener(), this);
+        getServer().getPluginManager().registerEvents(new AllQuestsCompletedListener(), this);
 
         /* Avoid errors on reload */
         if (Bukkit.getServer().getOnlinePlayers().size() > 0) {
@@ -222,11 +231,11 @@ public final class ODailyQuests extends JavaPlugin {
     }
 
     /**
-     * Get DatabaseManager instance.
-     * @return DatabaseManager instance.
+     * Get ODailyQuestsAPI instance.
+     * @return ODailyQuestsAPI instance.
      */
-    public DatabaseManager getDatabaseManager() {
-        return databaseManager;
+    public ODailyQuestsAPI getAPI() {
+        return API;
     }
 }
 
