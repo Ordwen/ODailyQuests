@@ -46,6 +46,9 @@ public enum QuestsMessages {
     REWARD_MONEY_FAIL("reward_money_fail", "&cAn error happened. Impossible to give you the reward. Please contact an administrator."),
     TOO_FAR_FROM_LOCATION("too_far", "&cYou are too far from the required location."),
     BAD_WORLD_LOCATION("bad_world", "&cYou are in the wrong world."),
+
+    PLACEHOLDER_API_NOT_ENABLED("placeholder_api_not_enabled", "&cThe PlaceholderAPI plugin is not enabled. Please inform an administrator."),
+    PLACEHOLDER_NOT_NUMBER("placeholder_not_number", "&cThe placeholder %placeholder% is not a number. Please inform an administrator."),
     ;
 
     private final String path;

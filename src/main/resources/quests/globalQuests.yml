@@ -339,3 +339,34 @@ quests:
     reward:
       reward_type: MONEY
       amount: 50000
+  24:
+    name: "Be rich"
+    menu_item: PAPER
+    description:
+      - "&cGet more than 1,000,000$."
+      - "&aWin &b50 000 &a$."
+    quest_type: PLACEHOLDER
+    placeholder:
+      value: ""%vault_eco_balance%"
+      operator: GREATER_THAN
+      expected: 1000000
+      error_message: "&cYou need more than 1,000,000$ to complete this quest."
+    reward:
+      reward_type: MONEY
+      amount: 50000
+    25:
+      name: "Be a VIP"
+      menu_item: GOLD_INGOT
+      description:
+        - "&6Become a VIP and..."
+        - "&6show it to the world."
+      quest_type: PLACEHOLDER
+      placeholder:
+        value: ""%luckperms_in_group_vip%"
+        operator: EQUALS
+        expected: "true"
+        error_message: "&cYou are not a VIP!"
+      reward:
+        reward_type: COMMAND
+        commands:
+          - "bc &6%player% &bis now a VIP!"
