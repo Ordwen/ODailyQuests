@@ -29,6 +29,8 @@ public enum QuestType {
     VILLAGER_TRADE,
     PLAYER_DEATH,
 
+    PLACEHOLDER,
+
     CUSTOM_MOBS,
 
 }

@@ -73,7 +73,7 @@ public class InventoryClickListener extends AbstractSpecifiedChecker implements 
                 return;
             }
 
-            // complete quest for types that requires a click ( GET - REACH )
+            // complete quest for types that requires a click ( GET - LOCATION - PLACEHOLDER)
             setPlayerQuestProgression(player, clickedItem);
         }
     }

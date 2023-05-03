@@ -129,6 +129,12 @@ public class LoadQuests {
                 boolean upgraded = false;
                 boolean extended = false;
 
+                /* variables for PLACEHOLDER quests */
+                String placeholder = null;
+                String expectedValue = null;
+                ConditionType conditionType = null;
+                String errorMessage = null;
+
                 /* quest menu item */
                 int cmd = questSection.isInt(".custom_model_data") ? questSection.getInt(".custom_model_data") : -1;
                 String presumedItem = questSection.getString(".menu_item");
@@ -383,9 +389,35 @@ public class LoadQuests {
                             menuItem.setItemMeta(meta);
 
                         }
+                        /* type that requires a placeholder */
+                        case PLACEHOLDER -> {
+                            final ConfigurationSection section = file.getConfigurationSection("quests." + fileQuest + ".placeholder");
+
+                            if (section == null) {
+                                PluginLogger.error("-----------------------------------");
+                                PluginLogger.error("Invalid quest configuration detected.");
+                                PluginLogger.error("File : " + fileName);
+                                PluginLogger.error("Quest number : " + (questIndex + 1));
+                                PluginLogger.error("You need to specify a placeholder.");
+                                PluginLogger.error("Please refer to the Wiki.");
+                                PluginLogger.error("-----------------------------------");
+
+                            } else {
+                                placeholder = section.getString(".value");
+                                conditionType = ConditionType.valueOf(section.getString(".operator"));
+                                expectedValue = section.getString(".expected");
+                                errorMessage = section.getString(".error_message");
+                            }
+
+                            /* apply Persistent Data Container to the menu item to differentiate PLACEHOLDER quests */
+                            ItemMeta meta = menuItem.getItemMeta();
+                            PersistentDataContainer container = meta.getPersistentDataContainer();
+                            container.set(new NamespacedKey(ODailyQuests.INSTANCE, "quest_type"), PersistentDataType.STRING, "placeholder");
+                            menuItem.setItemMeta(meta);
+                        }
                     }
 
-                    if (questType == QuestType.LOCATION) requiredAmount = 1;
+                    if (questType == QuestType.LOCATION || questType == QuestType.PLACEHOLDER) requiredAmount = 1;
                     else requiredAmount = questSection.getInt(".required_amount");
 
                     /* init reward */
@@ -425,6 +457,8 @@ public class LoadQuests {
                             quest = new VillagerQuest(base, requiredItems, profession, villagerLevel);
                         } else if (questType == QuestType.LOCATION) {
                             quest = new LocationQuest(base, location, radius);
+                        } else if (questType == QuestType.PLACEHOLDER) {
+                            quest = new PlaceholderQuest(base, placeholder, conditionType, expectedValue, errorMessage);
                         }
                         else {
                             quest = new ItemQuest(base, requiredItems);

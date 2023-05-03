@@ -1,16 +1,20 @@
 package com.ordwen.odailyquests.quests.player.progression.checkers;
 
+import com.ordwen.odailyquests.api.events.QuestCompletedEvent;
 import com.ordwen.odailyquests.configuration.essentials.Synchronization;
 import com.ordwen.odailyquests.configuration.functionalities.DisabledWorlds;
 import com.ordwen.odailyquests.configuration.functionalities.TakeItems;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.events.antiglitch.OpenedRecipes;
+import com.ordwen.odailyquests.quests.ConditionType;
 import com.ordwen.odailyquests.quests.QuestType;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.AbstractProgressionIncreaser;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.types.*;
-import com.ordwen.odailyquests.rewards.RewardManager;
+import com.ordwen.odailyquests.tools.GetPlaceholders;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
@@ -48,13 +52,23 @@ public abstract class AbstractSpecifiedChecker extends AbstractProgressionIncrea
                         break;
                     }
                 }
-                else if (abstractQuest instanceof LocationQuest quest) {
 
+                else if (abstractQuest instanceof LocationQuest quest) {
                     if (isAppropriateQuestMenuItem(clickedItem, quest.getMenuItem()) && quest.getType() == QuestType.LOCATION) {
 
                         final Progression progression = playerQuests.get(quest);
                         if (!progression.isAchieved()) {
                             validateLocationQuestType(player, progression, quest);
+                        }
+                    }
+                }
+
+                else if (abstractQuest instanceof PlaceholderQuest quest) {
+                    if (isAppropriateQuestMenuItem(clickedItem, quest.getMenuItem()) && quest.getType() == QuestType.PLACEHOLDER) {
+
+                        final Progression progression = playerQuests.get(quest);
+                        if (!progression.isAchieved()) {
+                            validatePlaceholderQuestType(player, progression, quest);
                         }
                     }
                 }
@@ -98,8 +112,8 @@ public abstract class AbstractSpecifiedChecker extends AbstractProgressionIncrea
         }
 
         if (hasRequiredAmount) {
-            progression.setAchieved();
-            QuestsManager.getActiveQuests().get(player.getName()).increaseAchievedQuests(player);
+            final QuestCompletedEvent event = new QuestCompletedEvent(player, progression, quest);
+            Bukkit.getPluginManager().callEvent(event);
 
             if (TakeItems.isTakeItemsEnabled()) {
                 int totalRemoved = 0;
@@ -119,7 +133,6 @@ public abstract class AbstractSpecifiedChecker extends AbstractProgressionIncrea
             }
 
             player.closeInventory();
-            RewardManager.sendAllRewardItems(quest.getQuestName(), player, quest.getReward());
         } else {
             final String msg = QuestsMessages.NOT_ENOUGH_ITEM.toString();
             if (msg != null) player.sendMessage(msg);
@@ -199,14 +212,72 @@ public abstract class AbstractSpecifiedChecker extends AbstractProgressionIncrea
 
         double distance = player.getLocation().distance(requiredLocation);
         if (distance <= quest.getRadius()) {
-            progression.setAchieved();
-            QuestsManager.getActiveQuests().get(player.getName()).increaseAchievedQuests(player);
+            final QuestCompletedEvent event = new QuestCompletedEvent(player, progression, quest);
+            Bukkit.getPluginManager().callEvent(event);
 
             player.closeInventory();
-            RewardManager.sendAllRewardItems(quest.getQuestName(), player, quest.getReward());
         } else {
             final String msg = QuestsMessages.TOO_FAR_FROM_LOCATION.toString();
             if (msg != null) player.sendMessage(msg);
+        }
+    }
+
+    /**
+     * Validate PLACEHOLDER quest type.
+     *
+     * @param player player who is checking the placeholder.
+     * @param progression progression of the quest.
+     * @param quest quest to validate.
+     */
+    private void validatePlaceholderQuestType(Player player, Progression progression, PlaceholderQuest quest) {
+        final String placeholder = quest.getPlaceholder();
+        final String value = quest.getExpectedValue();
+        final ConditionType conditionType = quest.getConditionType();
+
+        if (!GetPlaceholders.isPlaceholderAPIHooked) {
+            final String msg = QuestsMessages.PLACEHOLDER_API_NOT_ENABLED.toString();
+            if (msg != null) player.sendMessage(msg);
+            return;
+        }
+
+        final String placeholderValue = GetPlaceholders.getPlaceholders(player, placeholder);
+
+        boolean valid = false;
+        switch (conditionType) {
+            case EQUALS -> valid = placeholderValue.equals(value);
+            case NOT_EQUALS -> valid = !placeholderValue.equals(value);
+
+            case GREATER_THAN, GREATER_THAN_OR_EQUALS, LESS_THAN, LESS_THAN_OR_EQUALS -> {
+                float currentNumberValue = 0;
+                float expectedNumberValue = 0;
+
+                try {
+                    currentNumberValue = Float.parseFloat(placeholderValue);
+                    expectedNumberValue = Float.parseFloat(value);
+                } catch (NumberFormatException exception) {
+                    String msg = QuestsMessages.PLACEHOLDER_NOT_NUMBER.toString();
+                    if (msg != null) {
+                        msg = msg.replace("%placeholder%", placeholder);
+                        player.sendMessage(msg);
+                    }
+                }
+
+                switch (conditionType) {
+                    case GREATER_THAN -> valid = currentNumberValue > expectedNumberValue;
+                    case GREATER_THAN_OR_EQUALS -> valid = currentNumberValue >= expectedNumberValue;
+                    case LESS_THAN -> valid = currentNumberValue < expectedNumberValue;
+                    case LESS_THAN_OR_EQUALS -> valid = currentNumberValue <= expectedNumberValue;
+                }
+            }
+        }
+
+        if (valid) {
+            final QuestCompletedEvent event = new QuestCompletedEvent(player, progression, quest);
+            Bukkit.getPluginManager().callEvent(event);
+
+            player.closeInventory();
+        } else {
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', quest.getErrorMessage()));
         }
     }
 
