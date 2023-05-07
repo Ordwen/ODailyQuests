@@ -20,11 +20,12 @@ public class InventoryClickListener extends AbstractSpecifiedChecker implements 
     @EventHandler
     public void onInventoryClickEvent(InventoryClickEvent event) {
 
-        InventoryAction action = event.getAction();
+        final ItemStack clickedItem = event.getCurrentItem();
+        final InventoryAction action = event.getAction();
+
+        final int slot = event.getRawSlot();
 
         if (event.getClickedInventory() == null) return;
-
-        final ItemStack clickedItem = event.getCurrentItem();
         if (clickedItem == null || clickedItem.getType() == Material.AIR) return;
 
         final Player player = (Player) event.getWhoClicked();
@@ -40,7 +41,7 @@ public class InventoryClickListener extends AbstractSpecifiedChecker implements 
                             player,
                             villager,
                             merchantInventory.getSelectedRecipe(),
-                            event.getCurrentItem().getAmount());
+                            clickedItem.getAmount());
                 }
             }
             return;
@@ -53,21 +54,21 @@ public class InventoryClickListener extends AbstractSpecifiedChecker implements 
 
             if (event.getAction() == InventoryAction.HOTBAR_SWAP) return;
 
-            if (PlayerQuestsInterface.getFillItems().contains(event.getCurrentItem())) return;
+            if (PlayerQuestsInterface.getFillItems().contains(clickedItem)) return;
 
-            if (PlayerQuestsInterface.getCloseItems().contains(event.getCurrentItem())) {
+            if (PlayerQuestsInterface.getCloseItems().contains(clickedItem)) {
                 event.getWhoClicked().closeInventory();
                 return;
             }
 
-            if (PlayerQuestsInterface.getPlayerCommandsItems().containsKey(event.getCurrentItem())) {
-                for (String cmd : PlayerQuestsInterface.getPlayerCommandsItems().get(event.getCurrentItem())) {
+            if (PlayerQuestsInterface.getPlayerCommandsItems().containsKey(slot)) {
+                for (String cmd : PlayerQuestsInterface.getPlayerCommandsItems().get(slot)) {
                     Bukkit.getServer().dispatchCommand(event.getWhoClicked(), cmd);
                 }
             }
 
-            if (PlayerQuestsInterface.getConsoleCommandsItems().containsKey(event.getCurrentItem())) {
-                for (String cmd : PlayerQuestsInterface.getConsoleCommandsItems().get(event.getCurrentItem())) {
+            if (PlayerQuestsInterface.getConsoleCommandsItems().containsKey(slot)) {
+                for (String cmd : PlayerQuestsInterface.getConsoleCommandsItems().get(slot)) {
                     Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd.replace("%player%", event.getWhoClicked().getName()));
                 }
                 return;
