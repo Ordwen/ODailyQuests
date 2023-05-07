@@ -1,7 +1,7 @@
 package com.ordwen.odailyquests.commands.interfaces;
 
 import com.ordwen.odailyquests.ODailyQuests;
-import com.ordwen.odailyquests.commands.interfaces.pagination.Items;
+import com.ordwen.odailyquests.commands.interfaces.playerinterface.Items;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerHead;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
 import com.ordwen.odailyquests.files.ConfigurationFiles;

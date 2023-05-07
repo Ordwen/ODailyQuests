@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.commands.interfaces.pagination;
+package com.ordwen.odailyquests.commands.interfaces.playerinterface;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
@@ -7,6 +7,7 @@ import com.ordwen.odailyquests.tools.ColorConvert;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.lang.reflect.Field;
@@ -42,25 +43,8 @@ public class Items {
      * Init previous button.
      */
     private void initPreviousButton() {
-        previous = new ItemStack(Material.PLAYER_HEAD, 1);
-        SkullMeta previousMeta = (SkullMeta) previous.getItemMeta();
-
-        GameProfile gameProfile = new GameProfile(UUID.randomUUID(), null);
-
-        String url = "http://textures.minecraft.net/texture/a2f0425d64fdc8992928d608109810c1251fe243d60d175bed427c651cbe";
-        byte[] data = Base64.getEncoder().encode(String.format("{textures:{SKIN:{url:\"%s\"}}}", url).getBytes());
-
-        gameProfile.getProperties().put("textures", new Property("textures", new String(data)));
-
-        Field profileField;
-        try {
-            profileField = previousMeta.getClass().getDeclaredField("profile");
-            profileField.setAccessible(true);
-            profileField.set(previousMeta, gameProfile);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-
+        previous = getCustomHead("a2f0425d64fdc8992928d608109810c1251fe243d60d175bed427c651cbe");
+        final ItemMeta previousMeta = previous.getItemMeta();
         previousMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(configurationFiles.getConfigFile().getConfigurationSection("interfaces").getString(".previous_item_name"))));
         previous.setItemMeta(previousMeta);
     }
@@ -69,27 +53,33 @@ public class Items {
      * Init next button.
      */
     private void initNextButton() {
-        next = new ItemStack(Material.PLAYER_HEAD, 1);
-        SkullMeta nextMeta = (SkullMeta) next.getItemMeta();
+        next = getCustomHead("6d865aae2746a9b8e9a4fe629fb08d18d0a9251e5ccbe5fa7051f53eab9b94");
+        final ItemMeta nextMeta = next.getItemMeta();
+        nextMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(configurationFiles.getConfigFile().getConfigurationSection("interfaces").getString(".next_item_name"))));
+        next.setItemMeta(nextMeta);
+    }
 
-        GameProfile gameProfile = new GameProfile(UUID.randomUUID(), null);
+    public static ItemStack getCustomHead(String texture) {
+        ItemStack itemStack = new ItemStack(Material.PLAYER_HEAD, 1);
+        SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
 
-        String url = "http://textures.minecraft.net/texture/6d865aae2746a9b8e9a4fe629fb08d18d0a9251e5ccbe5fa7051f53eab9b94";
-        byte[] data = Base64.getEncoder().encode(String.format("{textures:{SKIN:{url:\"%s\"}}}", url).getBytes());
+        GameProfile gameProfile = new GameProfile(UUID.randomUUID(), "ODQ");
+
+        String toEncore = "{textures:{SKIN:{url:\"https://textures.minecraft.net/texture/" + texture + "\"}}}";
+        byte[] data = Base64.getEncoder().encodeToString(toEncore.getBytes()).getBytes();
 
         gameProfile.getProperties().put("textures", new Property("textures", new String(data)));
 
-        Field profileField;
         try {
-            profileField = nextMeta.getClass().getDeclaredField("profile");
+            Field profileField = skullMeta.getClass().getDeclaredField("profile");
             profileField.setAccessible(true);
-            profileField.set(nextMeta, gameProfile);
+            profileField.set(skullMeta, gameProfile);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
 
-        nextMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(configurationFiles.getConfigFile().getConfigurationSection("interfaces").getString(".next_item_name"))));
-        next.setItemMeta(nextMeta);
+        itemStack.setItemMeta(skullMeta);
+        return itemStack;
     }
 
     /**

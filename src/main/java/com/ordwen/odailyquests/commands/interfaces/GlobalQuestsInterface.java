@@ -1,12 +1,11 @@
 package com.ordwen.odailyquests.commands.interfaces;
 
-import com.ordwen.odailyquests.commands.interfaces.pagination.Items;
+import com.ordwen.odailyquests.commands.interfaces.playerinterface.Items;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.LoadQuests;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
