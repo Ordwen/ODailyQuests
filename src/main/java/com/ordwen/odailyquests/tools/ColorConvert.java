@@ -18,6 +18,6 @@ public class ColorConvert {
             matcher = pattern.matcher(msg);
         }
 
-        return msg;
+        return ChatColor.translateAlternateColorCodes('&', msg);
     }
 }

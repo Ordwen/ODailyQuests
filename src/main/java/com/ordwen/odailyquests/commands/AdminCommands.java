@@ -115,13 +115,21 @@ public class AdminCommands implements CommandExecutor {
                     case "show" -> {
                         if (sender instanceof Player) {
                             if (Bukkit.getPlayerExact(args[1]) != null) {
-                                ((Player) sender).openInventory(PlayerQuestsInterface.getPlayerQuestsInterface(args[1]));
+                                ((Player) sender).openInventory(PlayerQuestsInterface.getPlayerQuestsInterface(Bukkit.getPlayer(args[1])));
                             } else {
                                 final String msg = QuestsMessages.INVALID_PLAYER.toString();
                                 if (msg != null) sender.sendMessage(msg);
                             }
                         } else {
                             final String msg = QuestsMessages.PLAYER_ONLY.toString();
+                            if (msg != null) sender.sendMessage(msg);
+                        }
+                    }
+                    case "open" -> {
+                        if (Bukkit.getPlayerExact(args[1]) != null) {
+                            Bukkit.getPlayerExact(args[1]).openInventory(PlayerQuestsInterface.getPlayerQuestsInterface(Bukkit.getPlayer(args[1])));
+                        } else {
+                            final String msg = QuestsMessages.INVALID_PLAYER.toString();
                             if (msg != null) sender.sendMessage(msg);
                         }
                     }

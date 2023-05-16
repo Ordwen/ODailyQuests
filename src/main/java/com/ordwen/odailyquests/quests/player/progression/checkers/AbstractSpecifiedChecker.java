@@ -6,13 +6,13 @@ import com.ordwen.odailyquests.configuration.functionalities.DisabledWorlds;
 import com.ordwen.odailyquests.configuration.functionalities.TakeItems;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.events.antiglitch.OpenedRecipes;
+import com.ordwen.odailyquests.externs.hooks.placeholders.PAPIHook;
 import com.ordwen.odailyquests.quests.ConditionType;
 import com.ordwen.odailyquests.quests.QuestType;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.AbstractProgressionIncreaser;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.types.*;
-import com.ordwen.odailyquests.tools.GetPlaceholders;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -234,13 +234,13 @@ public abstract class AbstractSpecifiedChecker extends AbstractProgressionIncrea
         final String value = quest.getExpectedValue();
         final ConditionType conditionType = quest.getConditionType();
 
-        if (!GetPlaceholders.isPlaceholderAPIHooked) {
+        if (!PAPIHook.isPlaceholderAPIHooked()) {
             final String msg = QuestsMessages.PLACEHOLDER_API_NOT_ENABLED.toString();
             if (msg != null) player.sendMessage(msg);
             return;
         }
 
-        final String placeholderValue = GetPlaceholders.getPlaceholders(player, placeholder);
+        final String placeholderValue = PAPIHook.getPlaceholders(player, placeholder);
 
         boolean valid = false;
         switch (conditionType) {

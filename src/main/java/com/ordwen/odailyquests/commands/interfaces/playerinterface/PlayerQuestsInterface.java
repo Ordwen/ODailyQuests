@@ -1,6 +1,6 @@
 package com.ordwen.odailyquests.commands.interfaces.playerinterface;
 
-import com.ordwen.odailyquests.commands.interfaces.InterfacesManager;
+import com.ordwen.odailyquests.externs.hooks.placeholders.PAPIHook;
 import com.ordwen.odailyquests.files.PlayerInterfaceFile;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.QuestType;
@@ -8,13 +8,13 @@ import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.tools.ColorConvert;
-import com.ordwen.odailyquests.tools.GetPlaceholders;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -25,6 +25,7 @@ import java.util.*;
 public class PlayerQuestsInterface {
 
     /* init variables */
+    private static String interfaceName;
     private static Inventory playerQuestsInventoryBase;
     private static int size;
     private static String achieved;
@@ -36,7 +37,7 @@ public class PlayerQuestsInterface {
 
     /* item slots */
     private static int slotPlayerHead = -1;
-    private static final HashMap<Integer, Integer> slotQuests = new HashMap<>();
+    private static final HashMap<Integer, List<Integer>> slotQuests = new HashMap<>();
 
     /* item lists */
     private static HashSet<ItemStack> fillItems;
@@ -53,6 +54,7 @@ public class PlayerQuestsInterface {
     public void loadPlayerQuestsInterface() {
 
         ConfigurationSection interfaceConfig = PlayerInterfaceFile.getPlayerInterfaceFileConfiguration().getConfigurationSection("player_interface");
+        interfaceName = ColorConvert.convertColorCode(interfaceConfig.getString(".inventory_name"));
         isPlayerHeadEnabled = interfaceConfig.getConfigurationSection("player_head").getBoolean(".enabled");
         isGlowingEnabled = interfaceConfig.getBoolean("glowing_if_achieved");
 
@@ -81,8 +83,16 @@ public class PlayerQuestsInterface {
         final ConfigurationSection questsSection = interfaceConfig.getConfigurationSection("quests");
 
         slotQuests.clear();
-        for (String i : questsSection.getKeys(false)) {
-            slotQuests.put(Integer.parseInt(i) - 1, questsSection.getInt(i) - 1);
+        for (String index : questsSection.getKeys(false)) {
+            int slot = Integer.parseInt(index) - 1;
+            if (questsSection.isList(index)) {
+                final List<Integer> values = questsSection.getIntegerList(index);
+                slotQuests.put(slot, values);
+            }
+            else {
+                int value = questsSection.getInt(index);
+                slotQuests.put(slot, Collections.singletonList(value));
+            }
         }
 
         final ConfigurationSection itemsSection = interfaceConfig.getConfigurationSection("items");
@@ -169,9 +179,9 @@ public class PlayerQuestsInterface {
      *
      * @return player quests inventory.
      */
-    public static Inventory getPlayerQuestsInterface(String playerName) {
+    public static Inventory getPlayerQuestsInterface(Player player) {
 
-        Inventory playerQuestsInventoryIndividual = Bukkit.createInventory(null, size, InterfacesManager.getPlayerQuestsInventoryName());
+        Inventory playerQuestsInventoryIndividual = Bukkit.createInventory(null, size, PAPIHook.getPlaceholders(player, interfaceName));
         playerQuestsInventoryIndividual.setContents(playerQuestsInventoryBase.getContents());
 
         if (!papiItems.isEmpty()) {
@@ -182,7 +192,7 @@ public class PlayerQuestsInterface {
                 final List<String> lore = meta.getLore();
 
                 for (String str : lore) {
-                    lore.set(lore.indexOf(str), GetPlaceholders.getPlaceholders(Bukkit.getPlayer(playerName), str));
+                    lore.set(lore.indexOf(str), PAPIHook.getPlaceholders(player, str));
                 }
                 meta.setLore(lore);
                 itemCopy.setItemMeta(meta);
@@ -191,11 +201,11 @@ public class PlayerQuestsInterface {
         }
 
         HashMap<String, PlayerQuests> activeQuests = QuestsManager.getActiveQuests();
-        HashMap<AbstractQuest, Progression> playerQuests = activeQuests.get(playerName).getPlayerQuests();
+        HashMap<AbstractQuest, Progression> playerQuests = activeQuests.get(player.getName()).getPlayerQuests();
 
         /* load player head */
         if (isPlayerHeadEnabled) {
-            playerQuestsInventoryIndividual.setItem(slotPlayerHead, PlayerHead.getPlayerHead(Bukkit.getPlayer(playerName)));
+            playerQuestsInventoryIndividual.setItem(slotPlayerHead, PlayerHead.getPlayerHead(player));
         }
 
         /* load quests */
@@ -232,7 +242,9 @@ public class PlayerQuestsInterface {
             itemStack.setItemMeta(itemMeta);
 
             if (slotQuests.get(i) != null) {
-                playerQuestsInventoryIndividual.setItem(slotQuests.get(i), itemStack);
+                for (int slot : slotQuests.get(i)) {
+                    playerQuestsInventoryIndividual.setItem(slot - 1, itemStack);
+                }
             }
             else {
                 PluginLogger.error("An error occurred when loading the player interface.");
@@ -242,6 +254,15 @@ public class PlayerQuestsInterface {
             i++;
         }
         return playerQuestsInventoryIndividual;
+    }
+
+    /**
+     * Get the name of the interface.
+     * @param player player to get the name.
+     * @return name of the interface.
+     */
+    public static String getInterfaceName(Player player) {
+        return PAPIHook.getPlaceholders(player, interfaceName);
     }
 
     /**

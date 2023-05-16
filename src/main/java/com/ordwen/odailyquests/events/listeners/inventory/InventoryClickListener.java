@@ -1,6 +1,5 @@
 package com.ordwen.odailyquests.events.listeners.inventory;
 
-import com.ordwen.odailyquests.commands.interfaces.InterfacesManager;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
 import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractSpecifiedChecker;
 import org.bukkit.Bukkit;
@@ -49,7 +48,7 @@ public class InventoryClickListener extends AbstractSpecifiedChecker implements 
 
         // do action related to the clicked item
         final String inventoryName = event.getView().getTitle();
-        if (inventoryName.startsWith(InterfacesManager.getPlayerQuestsInventoryName())) {
+        if (inventoryName.startsWith(PlayerQuestsInterface.getInterfaceName(player))) {
             event.setCancelled(true);
 
             if (event.getAction() == InventoryAction.HOTBAR_SWAP) return;

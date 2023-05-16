@@ -1,11 +1,9 @@
 package com.ordwen.odailyquests.externs.hooks.placeholders;
 
-import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.LoadQuests;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
-import com.ordwen.odailyquests.tools.GetPlaceholders;
 import com.ordwen.odailyquests.tools.TimeRemain;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.ChatColor;
@@ -13,13 +11,10 @@ import org.bukkit.OfflinePlayer;
 
 import java.util.ArrayList;
 
-public class PlaceholderAPIHook extends PlaceholderExpansion {
+public class PAPIExpansion extends PlaceholderExpansion {
 
-    private final ODailyQuests oDailyQuests;
-
-    public PlaceholderAPIHook(ODailyQuests oDailyQuests) {
-        this.oDailyQuests = oDailyQuests;
-        GetPlaceholders.isPlaceholderAPIHooked = true;
+    public PAPIExpansion() {
+        PAPIHook.setPlaceholderAPIHooked(true);
     }
 
     @Override

@@ -27,69 +27,69 @@ public class PlayerCommands implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (sender instanceof Player) {
+        if (sender instanceof Player player) {
             if (sender.hasPermission(QuestsPermissions.QUEST_USE.getPermission())) {
                 if (args.length >= 1) {
                     switch (args[0]) {
-                        case "show":
+                        case "show" -> {
                             if (sender.hasPermission(QuestsPermissions.QUEST_SHOW.getPermission())) {
                                 if (args.length == 2) {
                                     switch (args[1]) {
-                                        case "global":
+                                        case "global" -> {
                                             if (configurationFiles.getConfigFile().getInt("quests_mode") != 1) {
                                                 final String msg = QuestsMessages.CATEGORIZED_ENABLED.toString();
                                                 if (msg != null) sender.sendMessage(msg);
 
                                             } else if (sender.hasPermission(QuestsPermissions.QUESTS_SHOW_GLOBAL.getPermission())) {
-                                                ((Player) sender).openInventory(InterfacesManager.getGlobalQuestsInterface().getGlobalQuestsInterfaceFirstPage());
+                                                player.openInventory(InterfacesManager.getGlobalQuestsInterface().getGlobalQuestsInterfaceFirstPage());
                                             } else {
                                                 final String msg = QuestsMessages.NO_PERMISSION_CATEGORY.toString();
                                                 if (msg != null) sender.sendMessage(msg);
                                             }
-                                            break;
-                                        case "easy":
+                                        }
+                                        case "easy" -> {
                                             if (configurationFiles.getConfigFile().getInt("quests_mode") != 2) {
                                                 final String msg = QuestsMessages.CATEGORIZED_DISABLED.toString();
                                                 if (msg != null) sender.sendMessage(msg);
                                             } else {
                                                 if (sender.hasPermission(QuestsPermissions.QUESTS_SHOW_EASY.getPermission())) {
-                                                    ((Player) sender).openInventory(InterfacesManager.getCategorizedQuestsInterfaces().getEasyQuestsInterfaceFirstPage());
+                                                    player.openInventory(InterfacesManager.getCategorizedQuestsInterfaces().getEasyQuestsInterfaceFirstPage());
                                                 } else {
                                                     final String msg = QuestsMessages.NO_PERMISSION_CATEGORY.toString();
                                                     if (msg != null) sender.sendMessage(msg);
                                                 }
                                             }
-                                            break;
-                                        case "medium":
+                                        }
+                                        case "medium" -> {
                                             if (configurationFiles.getConfigFile().getInt("quests_mode") != 2) {
                                                 final String msg = QuestsMessages.CATEGORIZED_DISABLED.toString();
                                                 if (msg != null) sender.sendMessage(msg);
                                             } else {
                                                 if (sender.hasPermission(QuestsPermissions.QUESTS_SHOW_MEDIUM.getPermission())) {
-                                                    ((Player) sender).openInventory(InterfacesManager.getCategorizedQuestsInterfaces().getMediumQuestsInterfaceFirstPage());
+                                                    player.openInventory(InterfacesManager.getCategorizedQuestsInterfaces().getMediumQuestsInterfaceFirstPage());
                                                 } else {
                                                     final String msg = QuestsMessages.NO_PERMISSION_CATEGORY.toString();
                                                     if (msg != null) sender.sendMessage(msg);
                                                 }
                                             }
-                                            break;
-                                        case "hard":
+                                        }
+                                        case "hard" -> {
                                             if (configurationFiles.getConfigFile().getInt("quests_mode") != 2) {
                                                 final String msg = QuestsMessages.CATEGORIZED_DISABLED.toString();
                                                 if (msg != null) sender.sendMessage(msg);
                                             } else {
                                                 if (sender.hasPermission(QuestsPermissions.QUESTS_SHOW_HARD.getPermission())) {
-                                                    ((Player) sender).openInventory(InterfacesManager.getCategorizedQuestsInterfaces().getHardQuestsInterfaceFirstPage());
+                                                    player.openInventory(InterfacesManager.getCategorizedQuestsInterfaces().getHardQuestsInterfaceFirstPage());
                                                 } else {
                                                     final String msg = QuestsMessages.NO_PERMISSION_CATEGORY.toString();
                                                     if (msg != null) sender.sendMessage(msg);
                                                 }
                                             }
-                                            break;
-                                        default:
+                                        }
+                                        default -> {
                                             final String msg = QuestsMessages.INVALID_CATEGORY.toString();
                                             if (msg != null) sender.sendMessage(msg);
-                                            break;
+                                        }
                                     }
                                 } else {
                                     final String msg = QuestsMessages.PLAYER_HELP.toString();
@@ -99,18 +99,16 @@ public class PlayerCommands implements CommandExecutor {
                                 final String msg = QuestsMessages.NO_PERMISSION.toString();
                                 if (msg != null) sender.sendMessage(msg);
                             }
-                            break;
-                        case "me":
-                            ((Player) sender).openInventory(PlayerQuestsInterface.getPlayerQuestsInterface(sender.getName()));
-                            break;
-                        case "help":
-                        default:
+                        }
+                        case "me" ->
+                                player.openInventory(PlayerQuestsInterface.getPlayerQuestsInterface(player));
+                        default -> {
                             final String msg = QuestsMessages.PLAYER_HELP.toString();
                             if (msg != null) sender.sendMessage(msg);
-                            break;
+                        }
                     }
                 } else
-                    ((Player) sender).openInventory(PlayerQuestsInterface.getPlayerQuestsInterface(sender.getName()));
+                    player.openInventory(PlayerQuestsInterface.getPlayerQuestsInterface(player));
             } else {
                 final String msg = QuestsMessages.NO_PERMISSION.toString();
                 if (msg != null) sender.sendMessage(msg);

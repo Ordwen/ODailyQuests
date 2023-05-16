@@ -143,13 +143,7 @@ public class LoadQuests {
                     if (presumedItem.startsWith("hdb:")) {
                         menuItem = HeadDatabaseHook.getHeadFromAPI(StringUtils.substringAfter(presumedItem, "hdb:"));
                         if (menuItem == null) {
-                            PluginLogger.error("-----------------------------------");
-                            PluginLogger.error("Invalid head id detected.");
-                            PluginLogger.error("File : " + fileName);
-                            PluginLogger.error("Quest number : " + (questIndex + 1));
-                            PluginLogger.error("Parameter : head_id");
-                            PluginLogger.error("Value : " + presumedItem);
-                            PluginLogger.error("-----------------------------------");
+                            invalidHeadId(fileName, questIndex, presumedItem);
                         }
                     } else if (presumedItem.startsWith("oraxen:")) {
                         //menuItem = OraxenItems.getItemById(StringUtils.substringAfter(presumedItem, "oraxen:")).build();
@@ -258,13 +252,7 @@ public class LoadQuests {
                                         ItemStack requiredItem = HeadDatabaseHook.getHeadFromAPI(id);
                                         if (requiredItem != null) requiredItems.add(requiredItem);
                                         else {
-                                            PluginLogger.error("-----------------------------------");
-                                            PluginLogger.error("Invalid head id detected.");
-                                            PluginLogger.error("File : " + fileName);
-                                            PluginLogger.error("Quest number : " + (questIndex + 1));
-                                            PluginLogger.error("Parameter : head_id");
-                                            PluginLogger.error("Value : " + id);
-                                            PluginLogger.error("-----------------------------------");
+                                            invalidHeadId(fileName, questIndex, id);
                                         }
                                     } else {
                                         ItemStack requiredItem = getItemStackFromMaterial(itemType, fileName, questIndex, "required_item", -1);
@@ -479,6 +467,16 @@ public class LoadQuests {
             PluginLogger.info(fileName + " array successfully loaded (" + quests.size() + ").");
         } else
             PluginLogger.error("Impossible to load " + fileName + " : there is no quests in " + fileName + " file !");
+    }
+
+    private static void invalidHeadId(String fileName, int questIndex, String id) {
+        PluginLogger.error("-----------------------------------");
+        PluginLogger.error("Invalid head id detected.");
+        PluginLogger.error("File : " + fileName);
+        PluginLogger.error("Quest number : " + (questIndex + 1));
+        PluginLogger.error("Parameter : head_id");
+        PluginLogger.error("Value : " + id);
+        PluginLogger.error("-----------------------------------");
     }
 
     /**

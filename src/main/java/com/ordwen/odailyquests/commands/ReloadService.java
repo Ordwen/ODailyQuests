@@ -109,7 +109,11 @@ public class ReloadService {
     public void reload() {
         oDailyQuests.getFilesManager().loadAllFiles();
         oDailyQuests.getConfigurationManager().loadConfiguration();
+
         oDailyQuests.getInterfacesManager().initAllObjects();
+        oDailyQuests.getInterfacesManager().loadInterfaces();
+        oDailyQuests.getInterfacesManager().loadPlayerQuestsInterface();
+
         LoadQuests.loadCategories();
 
         saveConnectedPlayerQuests(true);

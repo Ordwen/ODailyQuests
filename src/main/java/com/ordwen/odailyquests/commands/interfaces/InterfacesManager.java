@@ -5,10 +5,10 @@ import com.ordwen.odailyquests.commands.interfaces.playerinterface.Items;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerHead;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
-import com.ordwen.odailyquests.files.PlayerInterfaceFile;
 import com.ordwen.odailyquests.tools.ColorConvert;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
@@ -39,7 +39,6 @@ public class InterfacesManager implements Listener {
 
     /* variables */
     private static List<ItemStack> emptyCaseItems;
-    private static String playerQuestsInventoryName;
     private static String globalQuestsInventoryName;
     private static String easyQuestsInventoryName;
     private static String mediumQuestsInventoryName;
@@ -92,11 +91,12 @@ public class InterfacesManager implements Listener {
      * Init variables.
      */
     public void initInventoryNames() {
-        playerQuestsInventoryName = ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(PlayerInterfaceFile.getPlayerInterfaceFileConfiguration().getConfigurationSection("player_interface").getString(".inventory_name")));
-        globalQuestsInventoryName = ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(configurationFiles.getConfigFile().getConfigurationSection("interfaces.global_quests").getString(".inventory_name")));
-        easyQuestsInventoryName = ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(configurationFiles.getConfigFile().getConfigurationSection("interfaces.easy_quests").getString(".inventory_name")));
-        mediumQuestsInventoryName = ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(configurationFiles.getConfigFile().getConfigurationSection("interfaces.medium_quests").getString(".inventory_name")));
-        hardQuestsInventoryName = ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(configurationFiles.getConfigFile().getConfigurationSection("interfaces.hard_quests").getString(".inventory_name")));
+        final ConfigurationSection section = configurationFiles.getConfigFile().getConfigurationSection("interfaces");
+
+        globalQuestsInventoryName = ColorConvert.convertColorCode(section.getString(".global_quests.inventory_name"));
+        easyQuestsInventoryName = ColorConvert.convertColorCode(section.getString(".easy_quests.inventory_name"));
+        mediumQuestsInventoryName = ColorConvert.convertColorCode(section.getString(".medium_quests.inventory_name"));
+        hardQuestsInventoryName = ColorConvert.convertColorCode(section.getString(".hard_quests.inventory_name"));
 
         PluginLogger.fine("Interfaces names successfully loaded.");
     }
@@ -121,10 +121,6 @@ public class InterfacesManager implements Listener {
                 ColorConvert.convertColorCode(configurationFiles.getConfigFile().getConfigurationSection("interfaces").getString(".next_item_name")));
         previousPageItemName = ChatColor.translateAlternateColorCodes('&',
                 ColorConvert.convertColorCode(configurationFiles.getConfigFile().getConfigurationSection("interfaces").getString(".previous_item_name")));
-    }
-
-    public static String getPlayerQuestsInventoryName() {
-        return playerQuestsInventoryName;
     }
 
     public static String getGlobalQuestsInventoryName() {

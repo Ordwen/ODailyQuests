@@ -7,7 +7,7 @@ import com.ordwen.odailyquests.externs.hooks.holograms.HolographicDisplaysHook;
 import com.ordwen.odailyquests.externs.hooks.mobs.EliteMobsHook;
 import com.ordwen.odailyquests.externs.hooks.mobs.MythicMobsHook;
 import com.ordwen.odailyquests.externs.hooks.npcs.CitizensHook;
-import com.ordwen.odailyquests.externs.hooks.placeholders.PlaceholderAPIHook;
+import com.ordwen.odailyquests.externs.hooks.placeholders.PAPIExpansion;
 import com.ordwen.odailyquests.externs.hooks.points.PlayerPointsHook;
 import com.ordwen.odailyquests.externs.hooks.points.TokenManagerHook;
 import com.ordwen.odailyquests.externs.hooks.stackers.RoseStackerHook;
@@ -132,7 +132,7 @@ public class IntegrationsManager {
      */
     private void loadPAPI() {
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            new PlaceholderAPIHook(oDailyQuests).register();
+            new PAPIExpansion().register();
             PluginLogger.info("PlaceholderAPI successfully hooked.");
         } else
             PluginLogger.warn("PlaceholderAPI not detected. Placeholders will not work.");

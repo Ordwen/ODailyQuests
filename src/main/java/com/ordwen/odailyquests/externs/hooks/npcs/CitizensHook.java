@@ -31,7 +31,7 @@ public class CitizensHook implements Listener {
         /* Player interface */
         if (npcName.equals(NPCNames.getPlayerNPCName())) {
             if (event.getClicker().hasPermission(QuestsPermissions.QUESTS_SHOW_PLAYER.getPermission())) {
-                event.getClicker().openInventory(PlayerQuestsInterface.getPlayerQuestsInterface(event.getClicker().getName()));
+                event.getClicker().openInventory(PlayerQuestsInterface.getPlayerQuestsInterface(event.getClicker()));
             } else {
                 final String msg = QuestsMessages.NO_PERMISSION_CATEGORY.toString();
                 if (msg != null) event.getClicker().sendMessage(msg);
