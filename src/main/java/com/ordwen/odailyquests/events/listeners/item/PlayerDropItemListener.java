@@ -15,7 +15,7 @@ public class PlayerDropItemListener implements Listener {
     public void onPlayerDropItemEvent(PlayerDropItemEvent event) {
         if (event.isCancelled()) return;
 
-        if (Antiglitch.storeItems) {
+        if (Antiglitch.isStoreDroppedItems()) {
             final ItemStack item = event.getItemDrop().getItemStack();
             final ItemMeta itemMeta = item.getItemMeta();
 

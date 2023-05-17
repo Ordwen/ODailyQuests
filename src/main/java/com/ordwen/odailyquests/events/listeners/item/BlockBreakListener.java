@@ -23,7 +23,7 @@ public class BlockBreakListener extends AbstractItemChecker implements Listener 
 
         AtomicBoolean valid = new AtomicBoolean(true);
 
-        if (Antiglitch.storeItems) {
+        if (Antiglitch.isStorePlacedBlocks()) {
             block.getMetadata("odailyquests:placed").forEach(metadataValue -> {
                 if (metadataValue.asString().equals(player.getUniqueId().toString())) {
                     valid.set(false);

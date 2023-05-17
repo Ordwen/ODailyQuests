@@ -21,7 +21,7 @@ public class PickupItemListener extends AbstractItemChecker implements Listener 
 
             final ItemStack item = event.getItem().getItemStack();
 
-            if (Antiglitch.storeItems) {
+            if (Antiglitch.isStoreDroppedItems()) {
                 if (item.hasItemMeta()) {
                     final PersistentDataContainer pdc = item.getItemMeta().getPersistentDataContainer();
                     final String droppedKey = pdc.get(Antiglitch.DROPPED_BY, PersistentDataType.STRING);

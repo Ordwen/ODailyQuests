@@ -53,7 +53,7 @@ public class BlockDropItemListener extends AbstractItemChecker implements Listen
 
         // check if the dropped item is a block that can be posed
         else if (data.getMaterial().isBlock()) {
-            if (Antiglitch.storeItems) {
+            if (Antiglitch.isStoreBrokenBlocks()) {
 
                 for (Item item : event.getItems()) {
                     final ItemStack drop = item.getItemStack();
