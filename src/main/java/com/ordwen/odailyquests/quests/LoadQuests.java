@@ -157,7 +157,7 @@ public class LoadQuests {
                 int radius = 1;
 
                 /* init variables (reward constructor) */
-                Reward reward;
+                Reward reward = null;
                 RewardType rewardType;
 
                 /* init quest items */
@@ -409,12 +409,15 @@ public class LoadQuests {
                     else requiredAmount = questSection.getInt(".required_amount");
 
                     /* init reward */
-                    rewardType = RewardType.valueOf(file.getConfigurationSection("quests." + fileQuest + ".reward").getString(".reward_type"));
+                    if (questSection.contains(".reward")) {
+                        final ConfigurationSection rewardSection = questSection.getConfigurationSection(".reward");
+                        rewardType = RewardType.valueOf(rewardSection.getString(".reward_type"));
 
-                    if (rewardType == RewardType.COMMAND) {
-                        reward = new Reward(rewardType, file.getConfigurationSection("quests." + fileQuest + ".reward").getStringList(".commands"));
-                    } else {
-                        reward = new Reward(rewardType, file.getConfigurationSection("quests." + fileQuest + ".reward").getInt(".amount"));
+                        if (rewardType == RewardType.COMMAND) {
+                            reward = new Reward(rewardType, rewardSection.getStringList(".commands"));
+                        } else {
+                            reward = new Reward(rewardType, rewardSection.getInt(".amount"));
+                        }
                     }
 
                     /* init required worlds */
