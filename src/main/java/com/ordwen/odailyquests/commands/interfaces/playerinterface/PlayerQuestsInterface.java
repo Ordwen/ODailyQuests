@@ -226,7 +226,7 @@ public class PlayerQuestsInterface {
                 }
                 lore.add(ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(achieved)));
             } else {
-                if (quest.getType() == QuestType.GET) {
+                if (quest.getQuestType() == QuestType.GET) {
                     lore.add(ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(completeGetType)));
                 } else {
                     lore.add(ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(progression))

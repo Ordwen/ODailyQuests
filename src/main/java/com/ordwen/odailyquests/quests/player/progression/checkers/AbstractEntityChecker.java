@@ -39,7 +39,7 @@ public abstract class AbstractEntityChecker extends AbstractProgressionIncreaser
             for (AbstractQuest abstractQuest : playerQuests.keySet()) {
 
                 final Progression progression = playerQuests.get(abstractQuest);
-                if (!progression.isAchieved() && abstractQuest.getType() == questType) {
+                if (!progression.isAchieved() && abstractQuest.getQuestType() == questType) {
 
                     boolean isRequiredEntity = false;
 

@@ -1,7 +1,5 @@
 package com.ordwen.odailyquests.quests.player.progression.checkers;
 
-import com.ordwen.odailyquests.ODailyQuests;
-import com.ordwen.odailyquests.configuration.essentials.Antiglitch;
 import com.ordwen.odailyquests.configuration.essentials.Synchronization;
 import com.ordwen.odailyquests.configuration.functionalities.DisabledWorlds;
 import com.ordwen.odailyquests.quests.types.GlobalQuest;
@@ -47,7 +45,7 @@ public abstract class AbstractItemChecker extends AbstractProgressionIncreaser {
             for (AbstractQuest abstractQuest : playerQuests.keySet()) {
 
                 final Progression progression = playerQuests.get(abstractQuest);
-                if (!progression.isAchieved() && abstractQuest.getType() == questType) {
+                if (!progression.isAchieved() && abstractQuest.getQuestType() == questType) {
 
                     boolean isRequiredItem = false;
 

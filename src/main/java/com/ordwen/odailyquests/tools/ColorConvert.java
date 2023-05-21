@@ -10,6 +10,7 @@ public class ColorConvert {
     private static final Pattern pattern = Pattern.compile("#[a-fA-F0-9]{6}");
 
     public static String convertColorCode(String msg) {
+        if (msg == null) return null;
 
         Matcher matcher = pattern.matcher(msg);
         while (matcher.find()) {

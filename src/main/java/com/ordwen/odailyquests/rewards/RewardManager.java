@@ -31,7 +31,7 @@ public class RewardManager {
      * @param reward     quest reward.
      */
     public static void sendQuestReward(Player player, Reward reward) {
-        if (reward == null) return;
+        if (reward.getRewardType() == RewardType.NONE) return;
 
         String msg;
         switch (reward.getRewardType()) {

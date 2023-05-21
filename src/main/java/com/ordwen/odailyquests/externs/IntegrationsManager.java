@@ -2,7 +2,6 @@ package com.ordwen.odailyquests.externs;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.externs.hooks.eco.VaultHook;
-import com.ordwen.odailyquests.externs.hooks.heads.HeadDatabaseHook;
 import com.ordwen.odailyquests.externs.hooks.holograms.HolographicDisplaysHook;
 import com.ordwen.odailyquests.externs.hooks.mobs.EliteMobsHook;
 import com.ordwen.odailyquests.externs.hooks.mobs.MythicMobsHook;
@@ -38,7 +37,6 @@ public class IntegrationsManager {
         loadPAPI();
         loadWildStacker();
         loadRoseStacker();
-        loadHeadDatabase();
     }
 
     /**
@@ -136,16 +134,5 @@ public class IntegrationsManager {
             PluginLogger.info("PlaceholderAPI successfully hooked.");
         } else
             PluginLogger.warn("PlaceholderAPI not detected. Placeholders will not work.");
-    }
-
-    /**
-     * Hook - HeadDatabase
-     */
-    private void loadHeadDatabase() {
-        if (HeadDatabaseHook.isHeadDatabaseHooked()) {
-            Bukkit.getPluginManager().registerEvents(new HeadDatabaseHook(), oDailyQuests);
-            PluginLogger.info("HeadDatabase successfully hooked.");
-        } else
-            PluginLogger.warn("HeadDatabase not detected. Heads will not work.");
     }
 }

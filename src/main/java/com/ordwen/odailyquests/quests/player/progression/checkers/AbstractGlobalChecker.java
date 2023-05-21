@@ -30,7 +30,7 @@ public abstract class AbstractGlobalChecker extends AbstractProgressionIncreaser
         for (AbstractQuest abstractQuest : playerQuests.keySet()) {
 
             final Progression progression = playerQuests.get(abstractQuest);
-            if (!progression.isAchieved() && abstractQuest.getType() == questType) {
+            if (!progression.isAchieved() && abstractQuest.getQuestType() == questType) {
 
                 increaseProgression(player, progression, abstractQuest, amount);
                 if (!Synchronization.isSynchronised()) {

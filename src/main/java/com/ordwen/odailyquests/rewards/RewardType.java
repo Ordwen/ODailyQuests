@@ -8,7 +8,10 @@ public enum RewardType {
     EXP_POINTS("EXP_POINTS"),
     EXP_LEVELS("EXP_LEVELS"),
     MONEY("MONEY"),
-    POINTS("POINTS");
+    POINTS("POINTS"),
+    NONE("NONE"),
+
+    ;
 
     private final String rewardTypeName;
 

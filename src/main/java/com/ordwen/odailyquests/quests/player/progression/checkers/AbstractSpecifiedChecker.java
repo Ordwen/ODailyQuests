@@ -43,7 +43,7 @@ public abstract class AbstractSpecifiedChecker extends AbstractProgressionIncrea
             for (AbstractQuest abstractQuest : playerQuests.keySet()) {
 
                 if (abstractQuest instanceof ItemQuest quest) {
-                    if (isAppropriateQuestMenuItem(clickedItem, quest.getMenuItem()) && quest.getType() == QuestType.GET) {
+                    if (isAppropriateQuestMenuItem(clickedItem, quest.getMenuItem()) && quest.getQuestType() == QuestType.GET) {
 
                         final Progression progression = playerQuests.get(abstractQuest);
                         if (!progression.isAchieved()) {
@@ -54,7 +54,7 @@ public abstract class AbstractSpecifiedChecker extends AbstractProgressionIncrea
                 }
 
                 else if (abstractQuest instanceof LocationQuest quest) {
-                    if (isAppropriateQuestMenuItem(clickedItem, quest.getMenuItem()) && quest.getType() == QuestType.LOCATION) {
+                    if (isAppropriateQuestMenuItem(clickedItem, quest.getMenuItem()) && quest.getQuestType() == QuestType.LOCATION) {
 
                         final Progression progression = playerQuests.get(quest);
                         if (!progression.isAchieved()) {
@@ -64,7 +64,7 @@ public abstract class AbstractSpecifiedChecker extends AbstractProgressionIncrea
                 }
 
                 else if (abstractQuest instanceof PlaceholderQuest quest) {
-                    if (isAppropriateQuestMenuItem(clickedItem, quest.getMenuItem()) && quest.getType() == QuestType.PLACEHOLDER) {
+                    if (isAppropriateQuestMenuItem(clickedItem, quest.getMenuItem()) && quest.getQuestType() == QuestType.PLACEHOLDER) {
 
                         final Progression progression = playerQuests.get(quest);
                         if (!progression.isAchieved()) {
@@ -156,7 +156,7 @@ public abstract class AbstractSpecifiedChecker extends AbstractProgressionIncrea
                 if (abstractQuest instanceof VillagerQuest quest) {
                     boolean valid = false;
                     Progression questProgression = playerQuests.get(quest);
-                    if (!questProgression.isAchieved() && quest.getType() == QuestType.VILLAGER_TRADE) {
+                    if (!questProgression.isAchieved() && quest.getQuestType() == QuestType.VILLAGER_TRADE) {
 
                         if (quest.getRequiredItems() == null) valid = true;
                         else {

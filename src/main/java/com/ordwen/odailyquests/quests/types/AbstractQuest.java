@@ -2,7 +2,6 @@ package com.ordwen.odailyquests.quests.types;
 
 import com.ordwen.odailyquests.quests.QuestType;
 import com.ordwen.odailyquests.rewards.Reward;
-import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
@@ -68,7 +67,7 @@ public abstract class AbstractQuest {
      *
      * @return the type of the quest.
      */
-    public QuestType getType() {
+    public QuestType getQuestType() {
         return this.questType;
     }
 
