@@ -44,7 +44,6 @@ public abstract class AbstractSpecifiedChecker extends AbstractProgressionIncrea
 
                 if (abstractQuest instanceof ItemQuest quest) {
                     if (isAppropriateQuestMenuItem(clickedItem, quest.getMenuItem()) && quest.getQuestType() == QuestType.GET) {
-
                         final Progression progression = playerQuests.get(abstractQuest);
                         if (!progression.isAchieved()) {
                             validateGetQuestType(player, progression, quest);
@@ -291,7 +290,19 @@ public abstract class AbstractSpecifiedChecker extends AbstractProgressionIncrea
     private int getAmount(PlayerInventory playerInventory, ItemStack item) {
         int amount = 0;
         for (ItemStack itemStack : playerInventory.getContents()) {
-            if (itemStack != null && itemStack.isSimilar(item)) amount += itemStack.getAmount();
+            if (itemStack != null && itemStack.isSimilar(item)) {
+
+                // check if item have CustomModelData
+                if (item.hasItemMeta() && item.getItemMeta().hasCustomModelData()) {
+                    if (itemStack.hasItemMeta() && itemStack.getItemMeta().hasCustomModelData()) {
+                        if (itemStack.getItemMeta().getCustomModelData() == item.getItemMeta().getCustomModelData()) {
+                            amount += itemStack.getAmount();
+                        }
+                    }
+                } else {
+                    amount += itemStack.getAmount();
+                }
+            }
         }
         return amount;
     }

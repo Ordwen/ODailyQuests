@@ -36,7 +36,7 @@ public class PlayerQuestsInterface {
     private static boolean isGlowingEnabled;
 
     /* item slots */
-    private static int slotPlayerHead = -1;
+    private static Set<Integer> slotsPlayerHead = new HashSet<>();
     private static final HashMap<Integer, List<Integer>> slotQuests = new HashMap<>();
 
     /* item lists */
@@ -61,7 +61,11 @@ public class PlayerQuestsInterface {
         /* load item slots */
         if (isPlayerHeadEnabled) {
             final ConfigurationSection section = interfaceConfig.getConfigurationSection("player_head");
-            slotPlayerHead = section.getInt(".slot") - 1;
+
+            if (section.isList(".slot"))
+                slotsPlayerHead = new HashSet<>(section.getIntegerList(".slot"));
+            else
+                slotsPlayerHead.add(section.getInt(".slot") - 1);
         }
 
         /* create base of inventory */
@@ -205,7 +209,10 @@ public class PlayerQuestsInterface {
 
         /* load player head */
         if (isPlayerHeadEnabled) {
-            playerQuestsInventoryIndividual.setItem(slotPlayerHead, PlayerHead.getPlayerHead(player));
+            final ItemStack playerHead = PlayerHead.getPlayerHead(player);
+            for (int slot : slotsPlayerHead) {
+                playerQuestsInventoryIndividual.setItem(slot, playerHead);
+            }
         }
 
         /* load quests */
@@ -218,20 +225,32 @@ public class PlayerQuestsInterface {
             itemMeta.setDisplayName(quest.getQuestName());
 
             List<String> lore = new ArrayList<>(quest.getQuestDesc());
-            lore.add(ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(status)));
+
+            if (quest.isUsingPlaceholders()) {
+                for (String str : lore) {
+                    lore.set(lore.indexOf(str), PAPIHook.getPlaceholders(player, str));
+                }
+
+                itemMeta.setDisplayName(PAPIHook.getPlaceholders(player, itemMeta.getDisplayName()));
+            }
+
+            lore.add(ColorConvert.convertColorCode(PAPIHook.getPlaceholders(player, status)));
 
             if (playerQuests.get(quest).isAchieved()) {
                 if (isGlowingEnabled) {
                     itemMeta.addEnchant(Enchantment.SILK_TOUCH, 1, false);
                 }
-                lore.add(ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(achieved)));
+                lore.add(ColorConvert.convertColorCode(achieved));
             } else {
                 if (quest.getQuestType() == QuestType.GET) {
-                    lore.add(ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(completeGetType)));
-                } else {
-                    lore.add(ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(progression))
+                    lore.add(ColorConvert.convertColorCode(PAPIHook.getPlaceholders(player, completeGetType)
                             .replace("%progress%", String.valueOf(playerQuests.get(quest).getProgression()))
-                            .replace("%required%", String.valueOf(quest.getAmountRequired())));
+                            .replace("%required%", String.valueOf(quest.getAmountRequired()))
+                    ));
+                } else {
+                    lore.add(ColorConvert.convertColorCode(PAPIHook.getPlaceholders(player, progression)
+                            .replace("%progress%", String.valueOf(playerQuests.get(quest).getProgression()))
+                            .replace("%required%", String.valueOf(quest.getAmountRequired()))));
                 }
             }
 

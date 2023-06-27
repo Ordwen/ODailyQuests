@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.rewards;
 
+import com.ordwen.odailyquests.externs.hooks.placeholders.PAPIHook;
 import com.ordwen.odailyquests.externs.hooks.points.PlayerPointsHook;
 import com.ordwen.odailyquests.externs.hooks.points.TokenManagerHook;
 import com.ordwen.odailyquests.externs.hooks.eco.VaultHook;
@@ -7,7 +8,6 @@ import com.ordwen.odailyquests.configuration.functionalities.Actionbar;
 import com.ordwen.odailyquests.configuration.functionalities.Title;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.tools.PluginLogger;
-import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -37,7 +37,7 @@ public class RewardManager {
         switch (reward.getRewardType()) {
             case COMMAND -> {
                 for (String cmd : reward.getRewardCommands()) {
-                    cmd = PlaceholderAPI.setPlaceholders(player, ChatColor.translateAlternateColorCodes('&', cmd));
+                    cmd = PAPIHook.getPlaceholders(player, ChatColor.translateAlternateColorCodes('&', cmd));
                     Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd.replace("%player%", player.getName()));
                 }
                 msg = QuestsMessages.REWARD_COMMAND.toString();

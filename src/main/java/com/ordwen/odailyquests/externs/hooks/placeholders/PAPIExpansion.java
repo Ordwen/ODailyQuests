@@ -29,7 +29,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
 
     @Override
     public String getVersion() {
-        return "1.0.2";
+        return "1.0.3";
     }
 
     @Override
@@ -54,16 +54,19 @@ public class PAPIExpansion extends PlaceholderExpansion {
             return TimeRemain.timeRemain(player.getName());
         }
         if (params.startsWith("progress")) {
-            return String.valueOf(getQuestProgression(params, playerQuests));
+            return String.valueOf(getPlayerQuestProgression(params, playerQuests));
+        }
+        if (params.startsWith("name")) {
+            return getPlayerQuestName(params, playerQuests);
         }
         if (params.startsWith("desc")) {
-            return getQuestDescription(params, playerQuests);
+            return getPlayerQuestDescription(params, playerQuests);
         }
         if (params.startsWith("iscompleted")) {
-            return isQuestCompleted(params, playerQuests);
+            return isPlayerQuestCompleted(params, playerQuests);
         }
         if (params.startsWith("requiredamount")) {
-            return getQuestRequiredAmount(params, playerQuests);
+            return getPlayerQuestRequiredAmount(params, playerQuests);
         }
 
         // quests placeholders
@@ -89,7 +92,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
      * @param playerQuests the player quests.
      * @return the result.
      */
-    private String isQuestCompleted(String params, PlayerQuests playerQuests) {
+    private String isPlayerQuestCompleted(String params, PlayerQuests playerQuests) {
         int index;
         try {
             index = Integer.parseInt(params.substring(params.indexOf('_') + 1)) - 1;
@@ -109,12 +112,37 @@ public class PAPIExpansion extends PlaceholderExpansion {
     }
 
     /**
+     * Get the name of the current player quest.
+     * @param params the placeholder.
+     * @param playerQuests the player quests.
+     * @return the name of the quest.
+     */
+    private String getPlayerQuestName(String params, PlayerQuests playerQuests) {
+        int index;
+        try {
+            index = Integer.parseInt(params.substring(params.indexOf("_") + 1)) - 1;
+        } catch (Exception e) {
+            return ChatColor.RED + "Invalid index.";
+        }
+
+        int i = 0;
+        for (AbstractQuest quest : playerQuests.getPlayerQuests().keySet()) {
+            if (i == index) {
+                return quest.getQuestName();
+            }
+            i++;
+        }
+
+        return ChatColor.RED + "Invalid index.";
+    }
+
+    /**
      * Get the required amount of a quest.
      * @param params the placeholder.
      * @param playerQuests the player quests.
      * @return the required amount.
      */
-    private String getQuestRequiredAmount(String params, PlayerQuests playerQuests) {
+    private String getPlayerQuestRequiredAmount(String params, PlayerQuests playerQuests) {
         int index;
         try {
             index = Integer.parseInt(params.substring(params.indexOf('_') + 1)) - 1;
@@ -139,7 +167,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
      * @param playerQuests the player quests
      * @return the line of the description
      */
-    private String getQuestDescription(String params, PlayerQuests playerQuests) {
+    private String getPlayerQuestDescription(String params, PlayerQuests playerQuests) {
         int index;
         try {
             index = Integer.parseInt(params.substring(params.indexOf("_") + 1, params.lastIndexOf("_"))) - 1;
@@ -173,7 +201,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
      * @param playerQuests the player quests
      * @return current progression
      */
-    public int getQuestProgression(String params, PlayerQuests playerQuests) {
+    public int getPlayerQuestProgression(String params, PlayerQuests playerQuests) {
         int index;
         try {
             index = Integer.parseInt(params.substring(params.indexOf("_") + 1)) - 1;

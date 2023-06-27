@@ -16,6 +16,7 @@ public abstract class AbstractQuest {
     final int amountRequired;
     final Reward reward;
     final List<String> requiredWorlds;
+    final boolean isUsingPlaceholders;
 
     /**
      * Quest constructor.
@@ -26,7 +27,7 @@ public abstract class AbstractQuest {
      * @param amountRequired required amount of the item.
      * @param reward         reward of the quest.
      */
-    public AbstractQuest(int questIndex, String questName, List<String> questDesc, QuestType questType, ItemStack menuItem, int amountRequired, Reward reward, List<String> requiredWorlds) {
+    public AbstractQuest(int questIndex, String questName, List<String> questDesc, QuestType questType, ItemStack menuItem, int amountRequired, Reward reward, List<String> requiredWorlds, boolean isUsingPlaceholders) {
         this.questIndex = questIndex;
         this.questName = questName;
         this.questDesc = questDesc;
@@ -35,6 +36,7 @@ public abstract class AbstractQuest {
         this.amountRequired = amountRequired;
         this.reward = reward;
         this.requiredWorlds = requiredWorlds;
+        this.isUsingPlaceholders = isUsingPlaceholders;
     }
 
     /**
@@ -51,6 +53,7 @@ public abstract class AbstractQuest {
         this.amountRequired = globalQuest.amountRequired;
         this.reward = globalQuest.reward;
         this.requiredWorlds = globalQuest.requiredWorlds;
+        this.isUsingPlaceholders = globalQuest.isUsingPlaceholders;
     }
 
     /**
@@ -123,5 +126,14 @@ public abstract class AbstractQuest {
      */
     public List<String> getRequiredWorlds() {
         return this.requiredWorlds;
+    }
+
+    /**
+     * Get whether the quest is using placeholders.
+     *
+     * @return quest isUsingPlaceholders.
+     */
+    public boolean isUsingPlaceholders() {
+        return this.isUsingPlaceholders;
     }
 }

@@ -1,7 +1,6 @@
 package com.ordwen.odailyquests.enums;
 
 import com.ordwen.odailyquests.tools.ColorConvert;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 
 @SuppressWarnings("SpellCheckingInspection")
@@ -81,7 +80,7 @@ public enum QuestsMessages {
         String msg = LANG.getString(this.path, defaultMessage);
 
         if (msg.trim().isEmpty()) return null;
-        else return ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(msg));
+        else return ColorConvert.convertColorCode(msg);
     }
 
     /**

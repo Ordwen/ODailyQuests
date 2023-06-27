@@ -10,6 +10,8 @@ import com.ordwen.odailyquests.files.QuestsFiles;
 import com.ordwen.odailyquests.rewards.Reward;
 import com.ordwen.odailyquests.rewards.RewardType;
 import com.ordwen.odailyquests.tools.ColorConvert;
+import dev.lone.itemsadder.api.CustomStack;
+import io.th0rgal.oraxen.api.OraxenItems;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -130,6 +132,9 @@ public class LoadQuests {
         List<String> questDesc = questSection.getStringList(".description");
         for (String string : questDesc) questDesc.set(questDesc.indexOf(string), ColorConvert.convertColorCode(string));
 
+        /* check if quest uses placeholders */
+        boolean usePlaceholders = questSection.getBoolean(".use_placeholders");
+
         /* quest type */
         QuestType questType;
         final String supposedType = questSection.getString(".quest_type");
@@ -161,7 +166,7 @@ public class LoadQuests {
         /* reward */
         Reward reward = createReward(questSection, fileName, questIndex);
 
-        return new GlobalQuest(questIndex, questName, questDesc, questType, menuItem, requiredAmount, reward, requiredWorlds);
+        return new GlobalQuest(questIndex, questName, questDesc, questType, menuItem, requiredAmount, reward, requiredWorlds, usePlaceholders);
     }
 
     /**
@@ -283,7 +288,11 @@ public class LoadQuests {
         if (base.getQuestType() == QuestType.GET) {
             ItemMeta meta = menuItem.getItemMeta();
             PersistentDataContainer container = meta.getPersistentDataContainer();
+
             container.set(new NamespacedKey(ODailyQuests.INSTANCE, "quest_type"), PersistentDataType.STRING, "get");
+            container.set(new NamespacedKey(ODailyQuests.INSTANCE, "quest_index"), PersistentDataType.INTEGER, questIndex);
+            container.set(new NamespacedKey(ODailyQuests.INSTANCE, "file_name"), PersistentDataType.STRING, fileName);
+
             menuItem.setItemMeta(meta);
         }
 
@@ -395,7 +404,11 @@ public class LoadQuests {
         /* apply Persistent Data Container to the menu item to differentiate LOCATION quests */
         ItemMeta meta = menuItem.getItemMeta();
         PersistentDataContainer container = meta.getPersistentDataContainer();
+
         container.set(new NamespacedKey(ODailyQuests.INSTANCE, "quest_type"), PersistentDataType.STRING, "location");
+        container.set(new NamespacedKey(ODailyQuests.INSTANCE, "quest_index"), PersistentDataType.INTEGER, questIndex);
+        container.set(new NamespacedKey(ODailyQuests.INSTANCE, "file_name"), PersistentDataType.STRING, fileName);
+
         menuItem.setItemMeta(meta);
 
         return new LocationQuest(base, location, radius);
@@ -432,7 +445,11 @@ public class LoadQuests {
         /* apply Persistent Data Container to the menu item to differentiate PLACEHOLDER quests */
         ItemMeta meta = menuItem.getItemMeta();
         PersistentDataContainer container = meta.getPersistentDataContainer();
+
         container.set(new NamespacedKey(ODailyQuests.INSTANCE, "quest_type"), PersistentDataType.STRING, "placeholder");
+        container.set(new NamespacedKey(ODailyQuests.INSTANCE, "quest_index"), PersistentDataType.INTEGER, questIndex);
+        container.set(new NamespacedKey(ODailyQuests.INSTANCE, "file_name"), PersistentDataType.STRING, fileName);
+
         menuItem.setItemMeta(meta);
 
         return new PlaceholderQuest(base, placeholder, conditionType, expectedValue, errorMessage);
@@ -531,19 +548,45 @@ public class LoadQuests {
     private static ItemStack getItemStackFromMaterial(String material, String fileName, int questIndex, String parameter, int cmd) {
         ItemStack requiredItem;
 
-        try {
-            requiredItem = new ItemStack(Material.valueOf(material));
+        if (material.contains(":")) {
+            String[] split = material.split(":");
 
-            if (cmd != -1) {
-                final ItemMeta meta = requiredItem.getItemMeta();
-                if (meta == null) return requiredItem;
-
-                meta.setCustomModelData(cmd);
-                requiredItem.setItemMeta(meta);
+            switch (split[0]) {
+                case "oraxen" -> {
+                    if (!OraxenItems.exists(split[1])) {
+                        configurationError(fileName, questIndex, parameter, "This item does not exist in Oraxen.");
+                        return null;
+                    }
+                    requiredItem = OraxenItems.getItemById(split[1]).build();
+                }
+                case "itemsadder" -> {
+                    if (!CustomStack.isInRegistry(split[1])) {
+                        configurationError(fileName, questIndex, parameter, "This item does not exist in ItemsAdder.");
+                        return null;
+                    }
+                    requiredItem = CustomStack.getInstance(split[1]).getItemStack();
+                }
+                default -> {
+                    // TO DO: custom model data
+                    configurationError(fileName, questIndex, parameter, "Invalid material type detected.");
+                    return null;
+                }
             }
-        } catch (Exception e) {
-            configurationError(fileName, questIndex, parameter, "Invalid material type detected.");
-            return null;
+        } else {
+            try {
+                requiredItem = new ItemStack(Material.valueOf(material));
+
+                if (cmd != -1) {
+                    final ItemMeta meta = requiredItem.getItemMeta();
+                    if (meta == null) return requiredItem;
+
+                    meta.setCustomModelData(cmd);
+                    requiredItem.setItemMeta(meta);
+                }
+            } catch (Exception e) {
+                configurationError(fileName, questIndex, parameter, "Invalid material type detected.");
+                return null;
+            }
         }
 
         return requiredItem;

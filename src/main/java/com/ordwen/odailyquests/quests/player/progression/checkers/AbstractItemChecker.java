@@ -29,15 +29,6 @@ public abstract class AbstractItemChecker extends AbstractProgressionIncreaser {
             return;
         }
 
-        /*
-        if (Antiglitch.storeItems && id != null) {
-            if (ODailyQuests.INSTANCE.getDatabaseManager().checkIfContainsObject(player.getName(), id)) {
-                System.out.println("Player " + player.getName() + " already has item " + id + " in database.");
-                return;
-            }
-        }
-         */
-
         if (QuestsManager.getActiveQuests().containsKey(player.getName())) {
 
             final HashMap<AbstractQuest, Progression> playerQuests = QuestsManager.getActiveQuests().get(player.getName()).getPlayerQuests();
@@ -72,11 +63,5 @@ public abstract class AbstractItemChecker extends AbstractProgressionIncreaser {
                 }
             }
         }
-
-        /*
-        if (Antiglitch.storeItems && id != null) {
-            ODailyQuests.INSTANCE.getDatabaseManager().addObjectId(player.getName(), id);
-        }
-         */
     }
 }

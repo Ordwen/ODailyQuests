@@ -19,6 +19,7 @@ public class PlayerHead {
 
     private static ItemStack playerHead;
     private static SkullMeta skullMeta;
+    private static boolean usePlaceholders = false;
 
     /**
      * Init player head.
@@ -29,12 +30,14 @@ public class PlayerHead {
         playerHead = new ItemStack(Material.PLAYER_HEAD, 1);
         skullMeta = (SkullMeta) playerHead.getItemMeta();
 
-        skullMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(playerHeadSection.getString(".item_name"))));
+        skullMeta.setDisplayName(ColorConvert.convertColorCode(playerHeadSection.getString(".item_name")));
         skullMeta.setLore(playerHeadSection.getStringList(".item_description"));
 
-        if (playerHeadSection.isInt(".custom_model_data")) {
+        if (playerHeadSection.isInt(".custom_model_data"))
             skullMeta.setCustomModelData(playerHeadSection.getInt(".custom_model_data"));
-        }
+
+        if (playerHeadSection.isBoolean(".use_placeholders"))
+            usePlaceholders = playerHeadSection.getBoolean(".use_placeholders");
     }
 
     /**
@@ -49,13 +52,17 @@ public class PlayerHead {
         List<String> itemDesc = meta.getLore();
 
         for (String string : itemDesc) {
-            itemDesc.set(itemDesc.indexOf(string), PAPIHook.getPlaceholders(player, string));
-        }
 
-        for (String string : itemDesc) {
-            itemDesc.set(itemDesc.indexOf(string), ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(string)
+            int index = itemDesc.indexOf(string);
+
+            if (usePlaceholders) {
+                string = PAPIHook.getPlaceholders(player, string);
+                System.out.println(string);
+            }
+
+            itemDesc.set(index, ColorConvert.convertColorCode(string)
                     .replace("%achieved%", String.valueOf(QuestsManager.getActiveQuests().get(player.getName()).getAchievedQuests()))
-                    .replace("%drawIn%", TimeRemain.timeRemain(player.getName()))));
+                    .replace("%drawIn%", TimeRemain.timeRemain(player.getName())));
         }
 
         meta.setLore(itemDesc);
