@@ -145,7 +145,6 @@ public class AdminCommands implements CommandExecutor {
                                         if (!playerQuests.get(quest).isAchieved()) {
                                             final QuestCompletedEvent event = new QuestCompletedEvent(target, progression, quest);
                                             ODailyQuests.INSTANCE.getServer().getPluginManager().callEvent(event);
-                                            //playerQuests.replace(quest, progression);
                                             break;
                                         } else {
                                             final String msg = QuestsMessages.QUEST_ALREADY_ACHIEVED.toString();

@@ -27,86 +27,22 @@ public class AutoUpdater {
             PluginLogger.warn("It looks like you were using an older version of the plugin. Let's update your files!");
 
             // --------------
-            // 1.3.6 -> 2.0.0
+            // 2.1.0 -> 2.1.1
             // --------------
 
-            // PLAYER INTERFACE FILE
+            // CONFIG
 
-            PluginLogger.info("Updating playerInterface.yml...");
-            final FileConfiguration pif = PlayerInterfaceFile.getPlayerInterfaceFileConfiguration();
-            final int slot1 = pif.getInt("first_quest_slot");
-            final int slot2 = pif.getInt("second_quest_slot");
-            final int slot3 = pif.getInt("third_quest_slot");
+            // Add use_itemsadder: false to config
+            final FileConfiguration configFile = plugin.getConfig();
+            final File file = new File(plugin.getDataFolder(), "config.yml");
 
-            pif.set("quests.1", slot1);
-            pif.set("quests.2", slot2);
-            pif.set("quests.3", slot3);
-
-            try {
-                pif.save(PlayerInterfaceFile.getPlayerInterfaceFile());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            if (!configFile.contains("use_itemsadder")) {
+                AddDefault.addDefaultConfigItem("use_itemsadder", "false", configFile, file);
             }
-
-            PluginLogger.fine("Done!");
-
-            // QUESTS FILES
-
-            PluginLogger.info("Updating globalQuests.yml...");
-            updateQuestsFile(QuestsFiles.getGlobalQuestsConfiguration(), QuestsFiles.getGlobalQuestsFile());
-            PluginLogger.fine("Done!");
-
-            PluginLogger.info("Updating easyQuests.yml...");
-            updateQuestsFile(QuestsFiles.getEasyQuestsConfiguration(), QuestsFiles.getEasyQuestsFile());
-            PluginLogger.fine("Done!");
-
-            PluginLogger.info("Updating mediumQuests.yml...");
-            updateQuestsFile(QuestsFiles.getMediumQuestsConfiguration(), QuestsFiles.getMediumQuestsFile());
-            PluginLogger.fine("Done!");
-
-            PluginLogger.info("Updating hardQuests.yml...");
-            updateQuestsFile(QuestsFiles.getHardQuestsConfiguration(), QuestsFiles.getHardQuestsFile());
-            PluginLogger.fine("Done!");
-
-            // CONFIGURATION FILE
-
-            PluginLogger.info("Updating config.yml...");
-
-            final FileConfiguration config = plugin.getConfigurationFiles().getConfigFile();
-            final File file = plugin.getConfigurationFiles().getFile();
-
-            AddDefault.addDefaultConfigItem("global_quests_amount", 3, config, file);
-            AddDefault.addDefaultConfigItem("easy_quests_amount", 1, config, file);
-            AddDefault.addDefaultConfigItem("medium_quests_amount", 1, config, file);
-            AddDefault.addDefaultConfigItem("hard_quests_amount", 1, config, file);
-
-            AddDefault.addDefaultConfigItem("version", currentVersion, config, file);
-
-            PluginLogger.fine("Done!");
 
             // --------------
 
             PluginLogger.fine("All files have been updated!");
-        }
-    }
-
-    private void updateQuestsFile(FileConfiguration fileConfiguration, File file) {
-        for (String fileQuest : fileConfiguration.getConfigurationSection("quests").getKeys(false)) {
-            ConfigurationSection questSection = fileConfiguration.getConfigurationSection("quests." + fileQuest);
-            if (questSection.contains(".entity_type")) {
-                final String entityType = questSection.getString(".entity_type");
-
-                final List<String> entityTypes = new ArrayList<>();
-                entityTypes.add(entityType);
-
-                questSection.set("required_entity", entityTypes);
-            }
-        }
-
-        try {
-            fileConfiguration.save(file);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 }

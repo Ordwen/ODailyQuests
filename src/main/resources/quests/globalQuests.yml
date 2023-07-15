@@ -319,7 +319,7 @@ quests:
       - LINGERING_POTION
     potion:
       type: SPEED
-      upgraded: true
+      upgraded: false
       extended: true
     required_amount: 1
     reward:

@@ -3,6 +3,8 @@ package com.ordwen.odailyquests.commands;
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.configuration.essentials.Temporality;
+import com.ordwen.odailyquests.configuration.integrations.ItemsAdderEnabled;
+import com.ordwen.odailyquests.externs.hooks.holograms.HologramsManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.yaml.YamlManager;
 import com.ordwen.odailyquests.quests.LoadQuests;
@@ -42,7 +44,7 @@ public class ReloadService {
      */
     public void loadConnectedPlayerQuests() {
         switch (configurationFiles.getConfigFile().getString("storage_mode")) {
-            case "YAML":
+            case "YAML" -> {
                 if (yamlManager == null) restartNeeded();
                 else {
                     for (Player player : Bukkit.getServer().getOnlinePlayers()) {
@@ -54,8 +56,8 @@ public class ReloadService {
                         }
                     }
                 }
-                break;
-            case "MySQL", "H2":
+            }
+            case "MySQL", "H2" -> {
                 if (sqlManager == null) restartNeeded();
                 else {
                     for (Player player : Bukkit.getServer().getOnlinePlayers()) {
@@ -67,10 +69,9 @@ public class ReloadService {
                         }
                     }
                 }
-                break;
-            default:
-                PluginLogger.error("Impossible to load player quests : the selected storage mode is incorrect !");
-                break;
+            }
+            default ->
+                    PluginLogger.error("Impossible to load player quests : the selected storage mode is incorrect !");
         }
     }
 
@@ -79,7 +80,7 @@ public class ReloadService {
      */
     public void saveConnectedPlayerQuests(boolean isAsync) {
         switch (configurationFiles.getConfigFile().getString("storage_mode")) {
-            case "YAML":
+            case "YAML" -> {
                 if (yamlManager == null) restartNeeded();
                 else {
                     for (Player player : Bukkit.getServer().getOnlinePlayers()) {
@@ -87,8 +88,8 @@ public class ReloadService {
                         QuestsManager.getActiveQuests().remove(player.getName());
                     }
                 }
-                break;
-            case "MySQL", "H2":
+            }
+            case "MySQL", "H2" -> {
                 if (sqlManager == null) restartNeeded();
                 else {
                     for (Player player : Bukkit.getServer().getOnlinePlayers()) {
@@ -96,10 +97,9 @@ public class ReloadService {
                         QuestsManager.getActiveQuests().remove(player.getName());
                     }
                 }
-                break;
-            default:
-                PluginLogger.error("Impossible to save player quests : the selected storage mode is incorrect !");
-                break;
+            }
+            default ->
+                    PluginLogger.error("Impossible to save player quests : the selected storage mode is incorrect !");
         }
     }
 
@@ -108,17 +108,23 @@ public class ReloadService {
      */
     public void reload() {
         oDailyQuests.getFilesManager().loadAllFiles();
+
+        /* Load holograms */
+        HologramsManager.loadHolograms();
+
+        /* Load specific settings */
         oDailyQuests.getConfigurationManager().loadConfiguration();
 
-        oDailyQuests.getInterfacesManager().initAllObjects();
-        oDailyQuests.getInterfacesManager().loadInterfaces();
-        oDailyQuests.getInterfacesManager().loadPlayerQuestsInterface();
+        /* Load quests */
+        if (!ItemsAdderEnabled.isEnabled() || ItemsAdderEnabled.isLoaded())
+            LoadQuests.loadCategories();
 
-        LoadQuests.loadCategories();
+        /* Load interfaces */
+        oDailyQuests.getInterfacesManager().initAllObjects();
 
         saveConnectedPlayerQuests(true);
         Bukkit.getScheduler().runTaskLater(oDailyQuests, () -> {
-            loadConnectedPlayerQuests();;
+            loadConnectedPlayerQuests();
         }, 20L);
     }
 

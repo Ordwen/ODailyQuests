@@ -136,6 +136,9 @@ store_broken_blocks: false
 # However, these items are still normally usable.
 store_dropped_items: false
 
+# Enable this if you are using IA items for quest menu or required items.
+use_itemsadder: false
+
 # ===========================================================
 
 # interfaces settings

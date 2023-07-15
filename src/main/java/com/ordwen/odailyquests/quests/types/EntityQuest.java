@@ -18,6 +18,14 @@ public class EntityQuest extends AbstractQuest {
         this.entityName = entityName;
     }
 
+    public EntityQuest(GlobalQuest globalQuest, String entityName) {
+        super(globalQuest);
+        this.entityName = entityName;
+
+        this.entityTypes = null;
+        this.dyeColor = null;
+    }
+
     /**
      * Get the entity required by the quest.
      * @return quest item-required.

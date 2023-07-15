@@ -57,6 +57,11 @@ public class SaveProgressionSQL {
      * @param playerQuests player quests.
      */
     public void saveProgression(String playerName, PlayerQuests playerQuests, boolean isAsync) {
+        if (playerQuests == null) {
+            PluginLogger.warn("Impossible to save progression for player " + playerName + " because playerQuests is null.");
+            PluginLogger.warn("It can happen if the server is starting/reloading and the player's quests are not loaded yet.");
+            return;
+        }
 
         Debugger.addDebug("Entering saveProgression method for player " + playerName);
 
@@ -70,7 +75,6 @@ public class SaveProgressionSQL {
         if (isAsync) {
             Bukkit.getScheduler().runTaskAsynchronously(ODailyQuests.INSTANCE, () -> {
                 Debugger.addDebug("Saving player " + playerName + " progression asynchronously");
-
 
                 saveDatas(playerName, timestamp, achievedQuests, totalAchievedQuests, quests);
             });
@@ -93,7 +97,7 @@ public class SaveProgressionSQL {
     private void saveDatas(String playerName, long timestamp, int achievedQuests, int totalAchievedQuests, LinkedHashMap<AbstractQuest, Progression> quests) {
         final Connection connection = sqlManager.getConnection();
 
-            Debugger.addDebug("Connection to database: " + (connection != null ? "OK" : "UNAVAILABLE"));
+        Debugger.addDebug("Connection to database: " + (connection != null ? "OK" : "UNAVAILABLE"));
 
         try {
             PreparedStatement playerStatement;
@@ -107,8 +111,7 @@ public class SaveProgressionSQL {
 
             playerStatement.executeUpdate();
 
-                Debugger.addDebug("Player " + playerName + " data saved");
-
+            Debugger.addDebug("Player " + playerName + " data saved");
 
             int index = 0;
             for (AbstractQuest quest : quests.keySet()) {
@@ -124,8 +127,7 @@ public class SaveProgressionSQL {
 
                 progressionStatement.executeUpdate();
 
-                    Debugger.addDebug("Quest number " + index + " saved for player " + playerName);
-
+                Debugger.addDebug("Quest number " + index + " saved for player " + playerName);
 
                 index++;
             }

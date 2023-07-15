@@ -2,7 +2,6 @@ package com.ordwen.odailyquests;
 
 import com.ordwen.odailyquests.api.ODailyQuestsAPI;
 import com.ordwen.odailyquests.externs.IntegrationsManager;
-import com.ordwen.odailyquests.externs.hooks.holograms.HologramsManager;
 import com.ordwen.odailyquests.commands.AdminCommands;
 import com.ordwen.odailyquests.commands.PlayerCommands;
 import com.ordwen.odailyquests.commands.ReloadService;
@@ -22,7 +21,6 @@ import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.h2.H2Manager;
 import com.ordwen.odailyquests.quests.player.progression.storage.yaml.YamlManager;
 import com.ordwen.odailyquests.tools.*;
-import com.ordwen.odailyquests.quests.LoadQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.mysql.MySQLManager;
 import org.bukkit.Bukkit;
@@ -66,7 +64,7 @@ public final class ODailyQuests extends JavaPlugin {
         this.filesManager.loadAllFiles();
 
         /* Check for updates */
-        //new AutoUpdater(this).checkForUpdate(); // LAST USE : 1.3.6 -> 2.0.0
+        new AutoUpdater(this).checkForUpdate(); // LAST USE : 2.1.0 -> 2.1.1
         checkForSpigotUpdate();
 
         /* Load SQL Support */
@@ -84,20 +82,14 @@ public final class ODailyQuests extends JavaPlugin {
         /* Load dependencies */
         new IntegrationsManager(this).loadAllDependencies();
 
-        /* Load holograms */
-        HologramsManager.loadHolograms();
-
-        /* Load specific settings */
-        configurationManager.loadConfiguration();
-
         /* Load debugger */
         new Debugger(this).loadDebugMode();
 
-        /* Load quests */
-        LoadQuests.loadCategories();
+        /* Load all elements */
+        reloadService.reload();
 
-        /* Load interfaces */
-        interfacesManager.initAllObjects();
+        /* Load listeners */
+        new EventsManager(this).registerListeners();
 
         /* Load commands */
         getCommand("dquests").setExecutor(new PlayerCommands(this));
@@ -107,14 +99,9 @@ public final class ODailyQuests extends JavaPlugin {
         getCommand("dquests").setTabCompleter(new PlayerCompleter());
         getCommand("dqadmin").setTabCompleter(new AdminCompleter());
 
-        /* Load listeners */
-        new EventsManager(this).registerListeners();
-
-        //getServer().getPluginManager().registerEvents(new BlockBreakListener(), this);
+        /* Register plugin events */
         getServer().getPluginManager().registerEvents(new InventoryClickListener(), this);
         getServer().getPluginManager().registerEvents(new QuestsManager(this, sqlManager != null), this);
-
-        /* Register plugin events */
         getServer().getPluginManager().registerEvents(new QuestCompletedListener(), this);
         getServer().getPluginManager().registerEvents(new AllQuestsCompletedListener(), this);
 

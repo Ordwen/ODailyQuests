@@ -3,6 +3,7 @@ package com.ordwen.odailyquests.configuration;
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.*;
 import com.ordwen.odailyquests.configuration.functionalities.*;
+import com.ordwen.odailyquests.configuration.integrations.ItemsAdderEnabled;
 import com.ordwen.odailyquests.configuration.integrations.NPCNames;
 import com.ordwen.odailyquests.configuration.integrations.WildStackerEnabled;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
@@ -49,6 +50,7 @@ public class ConfigurationManager {
         // integrations
         new NPCNames(configurationFiles).loadNPCNames();
         new WildStackerEnabled(configurationFiles).loadWildStackerEnabled();
+        new ItemsAdderEnabled(configurationFiles).loadItemsAdderEnabled();
 
         // utils
         Synchronization.isSynchronised = configurationFiles.getConfigFile().getBoolean("synchronised_progression");

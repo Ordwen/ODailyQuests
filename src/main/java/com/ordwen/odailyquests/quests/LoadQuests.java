@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.quests;
 
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.configuration.integrations.ItemsAdderEnabled;
 import com.ordwen.odailyquests.externs.hooks.mobs.EliteMobsHook;
 import com.ordwen.odailyquests.externs.hooks.mobs.MythicMobsHook;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
@@ -151,16 +152,13 @@ public class LoadQuests {
         /* required worlds */
         List<String> requiredWorlds = questSection.getStringList(".required_worlds");
 
-        /* quest menu item */
-        int cmd = questSection.isInt(".custom_model_data") ? questSection.getInt(".custom_model_data") : -1;
-
         String presumedItem = questSection.getString(".menu_item");
         if (presumedItem == null) {
             configurationError(fileName, questIndex, "menu_item", "The menu item is not defined.");
             return null;
         }
 
-        ItemStack menuItem = getItemStackFromMaterial(presumedItem, fileName, questIndex, "menu_item", cmd);
+        ItemStack menuItem = getItemStackFromMaterial(presumedItem, fileName, questIndex, "menu_item");
         if (menuItem == null) return null;
 
         /* reward */
@@ -209,6 +207,25 @@ public class LoadQuests {
     }
 
     /**
+     * Load a quest that require a custom mob.
+     * @param base the base quest.
+     * @param questSection the current quest section.
+     * @param fileName the file name where the quest is.
+     * @param questIndex the quest index in the file.
+     * @return an entity quest.
+     */
+    private static AbstractQuest loadCustomMobQuest(GlobalQuest base, ConfigurationSection questSection, String fileName, int questIndex) {
+
+        final String entityName = ColorConvert.convertColorCode(questSection.getString(".entity_name"));
+        if (entityName == null) {
+            configurationError(fileName, questIndex, null, "There is no entity name defined for quest type CUSTOM_MOBS.");
+            return null;
+        }
+
+        return new EntityQuest(base, entityName);
+    }
+
+    /**
      * Load a quest that require items.
      *
      * @param base         the base quest.
@@ -230,9 +247,6 @@ public class LoadQuests {
         Villager.Profession profession = null;
         int villagerLevel = 0;
 
-        /* custom model date */
-        int cmd = questSection.isInt(".custom_model_data") ? questSection.getInt(".custom_model_data") : -1;
-
         final List<String> requiredItemStrings = new ArrayList<>();
         if (questSection.isList(".required_item")) {
             requiredItemStrings.addAll(questSection.getStringList(".required_item"));
@@ -250,14 +264,14 @@ public class LoadQuests {
                     configurationError(fileName, questIndex, null, "The custom item is not defined.");
                     return null;
                 }
-                final ItemStack item = loadCustomItem(section, fileName, questIndex, cmd);
+                final ItemStack item = loadCustomItem(section, fileName, questIndex);
                 if (item == null) return null;
 
                 requiredItems.add(item);
             }
 
             else {
-                ItemStack requiredItem = getItemStackFromMaterial(itemType, fileName, questIndex, "required_item", cmd);
+                ItemStack requiredItem = getItemStackFromMaterial(itemType, fileName, questIndex, "required_item");
 
                 if (itemType.equals("POTION") || itemType.equals("SPLASH_POTION") || itemType.equals("LINGERING_POTION")) {
                     final PotionMeta potionMeta = loadPotionItem(questSection, fileName, questIndex, requiredItem);
@@ -345,11 +359,10 @@ public class LoadQuests {
      * @param section configuration section of the custom item
      * @param fileName file name where the quest is
      * @param questIndex quest index in the file
-     * @param cmd custom model data
      * @return the custom item
      */
-    private static ItemStack loadCustomItem(ConfigurationSection section, String fileName, int questIndex, int cmd) {
-        ItemStack requiredItem = getItemStackFromMaterial(section.getString(".type"), fileName, questIndex, "type (CUSTOM_ITEM)", cmd);
+    private static ItemStack loadCustomItem(ConfigurationSection section, String fileName, int questIndex) {
+        ItemStack requiredItem = getItemStackFromMaterial(section.getString(".type"), fileName, questIndex, "type (CUSTOM_ITEM)");
         if (requiredItem == null) return null;
 
         ItemMeta meta = requiredItem.getItemMeta();
@@ -485,9 +498,15 @@ public class LoadQuests {
                     case MILKING, EXP_POINTS, EXP_LEVELS, CARVE, PLAYER_DEATH, FIREBALL_REFLECT -> quests.add(base);
 
                     /* types that requires an entity */
-                    case KILL, BREED, TAME, SHEAR, CUSTOM_MOBS -> {
+                    case KILL, BREED, TAME, SHEAR -> {
                         AbstractQuest entityQuest = loadEntityQuest(base, questSection, fileName, questIndex);
                         if (entityQuest != null) quests.add(entityQuest);
+                    }
+
+                    /* types that requires a custom mob */
+                    case CUSTOM_MOBS -> {
+                        AbstractQuest customMobsQuest = loadCustomMobQuest(base, questSection, fileName, questIndex);
+                        if (customMobsQuest != null) quests.add(customMobsQuest);
                     }
 
                     /* types that requires an item */
@@ -499,13 +518,13 @@ public class LoadQuests {
                     /* type that requires a location */
                     case LOCATION -> {
                         AbstractQuest locationQuest = loadLocationQuest(base, questSection, fileName, questIndex, menuItem);
-                        if (locationQuest != null) quests.add(locationQuest);
+                        quests.add(locationQuest);
                     }
 
                     /* type that requires a placeholder */
                     case PLACEHOLDER -> {
                         AbstractQuest placeholderQuest = loadPlaceholderQuest(base, questSection, fileName, questIndex, menuItem);
-                        if (placeholderQuest != null) quests.add(placeholderQuest);
+                        quests.add(placeholderQuest);
                     }
                 }
 
@@ -545,7 +564,7 @@ public class LoadQuests {
      * @param questIndex the quest index
      * @return the item stack
      */
-    private static ItemStack getItemStackFromMaterial(String material, String fileName, int questIndex, String parameter, int cmd) {
+    private static ItemStack getItemStackFromMaterial(String material, String fileName, int questIndex, String parameter) {
         ItemStack requiredItem;
 
         if (material.contains(":")) {
@@ -554,20 +573,55 @@ public class LoadQuests {
             switch (split[0]) {
                 case "oraxen" -> {
                     if (!OraxenItems.exists(split[1])) {
-                        configurationError(fileName, questIndex, parameter, "This item does not exist in Oraxen.");
+                        configurationError(fileName, questIndex, parameter, "The item " + split[1] + " does not exist in Oraxen.");
                         return null;
                     }
                     requiredItem = OraxenItems.getItemById(split[1]).build();
                 }
                 case "itemsadder" -> {
-                    if (!CustomStack.isInRegistry(split[1])) {
-                        configurationError(fileName, questIndex, parameter, "This item does not exist in ItemsAdder.");
+                    if (!ItemsAdderEnabled.isEnabled()) {
+                        configurationError(fileName, questIndex, parameter, "ItemsAdder is not enabled in the config file.");
                         return null;
                     }
-                    requiredItem = CustomStack.getInstance(split[1]).getItemStack();
+
+                    if (split.length != 3) {
+                        configurationError(fileName, questIndex, parameter, "You need to provide the namespace and the id of the item.");
+                        return null;
+                    }
+
+                    final String iaItem = split[1] + ':' + split[2];
+
+                    if (!CustomStack.isInRegistry(iaItem)) {
+                        configurationError(fileName, questIndex, parameter, "The item " + iaItem + " does not exist in ItemsAdder.");
+                        return null;
+                    }
+
+                    requiredItem = CustomStack.getInstance(iaItem).getItemStack();
+                }
+                case "custommodeldata" -> {
+                    if (split.length != 3) {
+                        configurationError(fileName, questIndex, parameter, "You need to provide the item and the custom model data.");
+                        return null;
+                    }
+
+                    try {
+                        requiredItem = new ItemStack(Material.valueOf(split[1]));
+                    } catch (Exception e) {
+                        configurationError(fileName, questIndex, parameter, "Invalid material type detected.");
+                        return null;
+                    }
+
+                    final ItemMeta meta = requiredItem.getItemMeta();
+                    if (meta == null) return requiredItem;
+
+                    try {
+                        meta.setCustomModelData(Integer.parseInt(split[2]));
+                    } catch (Exception e) {
+                        configurationError(fileName, questIndex, parameter, "Invalid custom model data detected.");
+                        return null;
+                    }
                 }
                 default -> {
-                    // TO DO: custom model data
                     configurationError(fileName, questIndex, parameter, "Invalid material type detected.");
                     return null;
                 }
@@ -575,14 +629,6 @@ public class LoadQuests {
         } else {
             try {
                 requiredItem = new ItemStack(Material.valueOf(material));
-
-                if (cmd != -1) {
-                    final ItemMeta meta = requiredItem.getItemMeta();
-                    if (meta == null) return requiredItem;
-
-                    meta.setCustomModelData(cmd);
-                    requiredItem.setItemMeta(meta);
-                }
             } catch (Exception e) {
                 configurationError(fileName, questIndex, parameter, "Invalid material type detected.");
                 return null;
