@@ -5,13 +5,15 @@
 # Please be attentive to the indentation and respect the scheme.
 # This could cause several bugs.
 # ==============================================================
-# AVAILABLE QUESTS TYPES:
-# [ BREAK , PLACE , CRAFT , PICKUP , LAUNCH , CONSUME ]
-# Type LAUNCH only affects : ENDER_PEARL, EGG, ARROW.
-# Type CONSUME only affects : potions, food, milk-buckets.
+# AVAILABLE QUESTS TYPES :
+# https://ordwenplugins.gitbook.io/odailyquests/quests/quests-types
 # ==============================================================
 # AVAILABLE REWARDS TYPES :
-# [ COMMAND , EXP , MONEY , POINTS ]
+# https://ordwenplugins.gitbook.io/odailyquests/quests/rewards-types
+# ==============================================================
+# AVAILABLE PLUGIN PLACEHOLDERS FOR QUESTS DESCRIPTIONS :
+# %progress% is replaced by the progression of the quest.
+# %required% is replaced by the required amount to complete the quest.
 # ==============================================================
 # More tips available on Wiki :
 # https://ordwenplugins.gitbook.io/odailyquests/

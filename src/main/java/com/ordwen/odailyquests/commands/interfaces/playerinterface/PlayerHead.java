@@ -1,12 +1,11 @@
 package com.ordwen.odailyquests.commands.interfaces.playerinterface;
 
-import com.ordwen.odailyquests.externs.hooks.placeholders.PAPIExpansion;
 import com.ordwen.odailyquests.externs.hooks.placeholders.PAPIHook;
 import com.ordwen.odailyquests.files.PlayerInterfaceFile;
+import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.tools.ColorConvert;
 import com.ordwen.odailyquests.tools.TimeRemain;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -47,6 +46,7 @@ public class PlayerHead {
     public static ItemStack getPlayerHead(Player player) {
 
         SkullMeta meta = PlayerHead.skullMeta.clone();
+        if (usePlaceholders) meta.setDisplayName(PAPIHook.getPlaceholders(player, meta.getDisplayName()));
 
         meta.setOwningPlayer(player);
         List<String> itemDesc = meta.getLore();
@@ -57,11 +57,11 @@ public class PlayerHead {
 
             if (usePlaceholders) {
                 string = PAPIHook.getPlaceholders(player, string);
-                System.out.println(string);
             }
 
+            final PlayerQuests playerQuests = QuestsManager.getActiveQuests().get(player.getName());
             itemDesc.set(index, ColorConvert.convertColorCode(string)
-                    .replace("%achieved%", String.valueOf(QuestsManager.getActiveQuests().get(player.getName()).getAchievedQuests()))
+                    .replace("%achieved%", String.valueOf(playerQuests.getAchievedQuests()))
                     .replace("%drawIn%", TimeRemain.timeRemain(player.getName())));
         }
 

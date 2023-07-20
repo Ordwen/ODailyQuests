@@ -1,9 +1,7 @@
 # ======================================================
 # Here you can create your own player quests interface.
 #
-# NEVER DELETE A %variable%
-# %progress% is replaced by the progression of the quest.
-# %required% is replaced by the required amount to complete the quest.
+# Never delete a %variable% unless you know what you're doing.
 # %achieved% is replaced by the number of completed quests.
 # %drawIn% is replaced by the time remaining before the next quests draw.
 # ======================================================

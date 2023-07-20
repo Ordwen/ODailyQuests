@@ -10,6 +10,7 @@ import com.ordwen.odailyquests.quests.player.QuestsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import com.ordwen.odailyquests.tools.PluginLogger;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -57,15 +58,17 @@ public class Utils {
         /* check if last quests renewed is older than selected temporality */
         else if (timestampConfigMode == 2) {
             switch (temporalityMode) {
-                case 1:
+                case 1 -> {
                     return System.currentTimeMillis() - timestamp >= 86400000L;
-                case 2:
+                }
+                case 2 -> {
                     return System.currentTimeMillis() - timestamp >= 604800000L;
-                case 3:
+                }
+                case 3 -> {
                     return System.currentTimeMillis() - timestamp >= 2678400000L;
-                default:
-                    PluginLogger.error(ChatColor.RED + "Impossible to check player quests timestamp. The selected mode is incorrect.");
-                    break;
+                }
+                default ->
+                        PluginLogger.error(ChatColor.RED + "Impossible to check player quests timestamp. The selected mode is incorrect.");
             }
         } else
             PluginLogger.error(ChatColor.RED + "Impossible to load player quests timestamp. The selected mode is incorrect.");
@@ -94,10 +97,16 @@ public class Utils {
 
         playerQuests.setTotalAchievedQuests(totalAchievedQuests);
 
-        activeQuests.put(playerName, playerQuests);
+        final Player player = Bukkit.getPlayer(playerName);
+        if (player == null) {
+            PluginLogger.warn("It seems that " + playerName + " disconnected before the end of the quest renewal.");
+            return;
+        }
 
         final String msg = QuestsMessages.QUESTS_RENEWED.toString();
-        if (msg != null) Bukkit.getPlayer(playerName).sendMessage(msg);
+        if (msg != null) player.sendMessage(msg);
+
+        activeQuests.put(playerName, playerQuests);
 
         PluginLogger.fine(playerName + " inserted into the array.");
         PluginLogger.info(playerName + "'s quests have been renewed.");
@@ -120,8 +129,6 @@ public class Utils {
         if (questsConfigMode == 1) {
             quest = getQuestAtIndex(LoadQuests.getGlobalQuests(), questIndex, playerName);
         } else if (questsConfigMode == 2) {
-            // id >> numéro de quête du joueur
-            // questIndex >> index de la quête dans le tableau
 
             final int questsAmount = QuestsAmount.getQuestsAmount();
 
@@ -137,14 +144,6 @@ public class Utils {
                 quest = getQuestAtIndex(LoadQuests.getHardQuests(), questIndex, playerName);
             }
 
-            /*
-            quest = switch (id) {
-                case 1 -> getQuestAtIndex(LoadQuests.getEasyQuests(), questIndex, playerName);
-                case 2 -> getQuestAtIndex(LoadQuests.getMediumQuests(), questIndex, playerName);
-                case 3 -> getQuestAtIndex(LoadQuests.getHardQuests(), questIndex, playerName);
-                default -> null;
-            };
-            */
         } else
             PluginLogger.error("Impossible to load player quests. The selected mode is incorrect.");
 

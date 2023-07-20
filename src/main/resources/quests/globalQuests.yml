@@ -5,18 +5,21 @@
 # Please be attentive to the indentation and respect the scheme.
 # This could cause several bugs.
 # ==============================================================
-# AVAILABLE QUESTS TYPES:
+# AVAILABLE QUESTS TYPES :
 # https://ordwenplugins.gitbook.io/odailyquests/quests/quests-types
 # ==============================================================
 # AVAILABLE REWARDS TYPES :
 # https://ordwenplugins.gitbook.io/odailyquests/quests/rewards-types
+# ==============================================================
+# AVAILABLE PLUGIN PLACEHOLDERS FOR QUESTS DESCRIPTIONS :
+# %progress% is replaced by the progression of the quest.
+# %required% is replaced by the required amount to complete the quest.
 # ==============================================================
 # More tips available on Wiki :
 # https://ordwenplugins.gitbook.io/odailyquests/
 # Need help ? https://discord.gg/Q8sw5KFvqg
 # For more affected objects or types, please make suggestion.
 # ==============================================================
-# Please have at least 3 quests for global mode.
 quests:
   1:
     name: "&aStone"
