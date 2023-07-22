@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.commands.interfaces.playerinterface;
+package com.ordwen.odailyquests.commands.interfaces.playerinterface.items;
 
 public enum ItemType {
 

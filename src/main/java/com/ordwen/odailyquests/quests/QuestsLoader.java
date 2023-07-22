@@ -1,18 +1,16 @@
 package com.ordwen.odailyquests.quests;
 
 import com.ordwen.odailyquests.ODailyQuests;
-import com.ordwen.odailyquests.configuration.integrations.ItemsAdderEnabled;
 import com.ordwen.odailyquests.externs.hooks.mobs.EliteMobsHook;
 import com.ordwen.odailyquests.externs.hooks.mobs.MythicMobsHook;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
+import com.ordwen.odailyquests.quests.getters.QuestItemGetter;
 import com.ordwen.odailyquests.quests.types.*;
 import com.ordwen.odailyquests.files.QuestsFiles;
 import com.ordwen.odailyquests.rewards.Reward;
 import com.ordwen.odailyquests.rewards.RewardType;
 import com.ordwen.odailyquests.tools.ColorConvert;
-import dev.lone.itemsadder.api.CustomStack;
-import io.th0rgal.oraxen.api.OraxenItems;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -30,7 +28,7 @@ import org.bukkit.potion.PotionType;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LoadQuests {
+public class QuestsLoader extends QuestItemGetter {
 
     /* Init quests lists */
     private static final ArrayList<AbstractQuest> globalQuests = new ArrayList<>();
@@ -41,7 +39,7 @@ public class LoadQuests {
     /**
      * Load all quests from files.
      */
-    public static void loadCategories() {
+    public void loadCategories() {
 
         globalQuests.clear();
         easyQuests.clear();
@@ -97,7 +95,7 @@ public class LoadQuests {
      * @param questIndex   the quest index in the file.
      * @return the reward of the quest.
      */
-    private static Reward createReward(ConfigurationSection questSection, String fileName, int questIndex) {
+    private Reward createReward(ConfigurationSection questSection, String fileName, int questIndex) {
         if (!questSection.isConfigurationSection(".reward")) return new Reward(RewardType.NONE, 0);
         final ConfigurationSection rewardSection = questSection.getConfigurationSection(".reward");
 
@@ -124,7 +122,7 @@ public class LoadQuests {
      * @param questIndex   the quest index in the file.
      * @return the global quest.
      */
-    private static GlobalQuest createBasicQuest(ConfigurationSection questSection, String fileName, int questIndex) {
+    private GlobalQuest createBasicQuest(ConfigurationSection questSection, String fileName, int questIndex) {
 
         /* quest name */
         String questName = ColorConvert.convertColorCode(questSection.getString(".name"));
@@ -176,7 +174,7 @@ public class LoadQuests {
      * @param questIndex   the quest index in the file.
      * @return an entity quest.
      */
-    private static AbstractQuest loadEntityQuest(GlobalQuest base, ConfigurationSection questSection, String fileName, int questIndex) {
+    private AbstractQuest loadEntityQuest(GlobalQuest base, ConfigurationSection questSection, String fileName, int questIndex) {
         if (!questSection.contains(".required_entity")) return base;
 
         /* all required entities */
@@ -214,7 +212,7 @@ public class LoadQuests {
      * @param questIndex the quest index in the file.
      * @return an entity quest.
      */
-    private static AbstractQuest loadCustomMobQuest(GlobalQuest base, ConfigurationSection questSection, String fileName, int questIndex) {
+    private AbstractQuest loadCustomMobQuest(GlobalQuest base, ConfigurationSection questSection, String fileName, int questIndex) {
 
         final String entityName = ColorConvert.convertColorCode(questSection.getString(".entity_name"));
         if (entityName == null) {
@@ -234,7 +232,7 @@ public class LoadQuests {
      * @param questIndex   the quest index in the file.
      * @return an item quest.
      */
-    private static AbstractQuest loadItemQuest(GlobalQuest base, ConfigurationSection questSection, String fileName, int questIndex) {
+    private AbstractQuest loadItemQuest(GlobalQuest base, ConfigurationSection questSection, String fileName, int questIndex) {
         if (!questSection.contains(".required_item")) return base;
 
         /* menu item */
@@ -323,7 +321,7 @@ public class LoadQuests {
      * @param requiredItem current required item
      * @return potion meta
      */
-    private static PotionMeta loadPotionItem(ConfigurationSection section, String fileName, int questIndex, ItemStack requiredItem) {
+    private PotionMeta loadPotionItem(ConfigurationSection section, String fileName, int questIndex, ItemStack requiredItem) {
         PotionMeta potionMeta = null;
 
         PotionType potionType = null;
@@ -361,7 +359,7 @@ public class LoadQuests {
      * @param questIndex quest index in the file
      * @return the custom item
      */
-    private static ItemStack loadCustomItem(ConfigurationSection section, String fileName, int questIndex) {
+    private ItemStack loadCustomItem(ConfigurationSection section, String fileName, int questIndex) {
         ItemStack requiredItem = getItemStackFromMaterial(section.getString(".type"), fileName, questIndex, "type (CUSTOM_ITEM)");
         if (requiredItem == null) return null;
 
@@ -388,7 +386,7 @@ public class LoadQuests {
      * @param menuItem menu item of the quest
      * @return the location quest
      */
-    private static LocationQuest loadLocationQuest(GlobalQuest base, ConfigurationSection questSection, String fileName, int questIndex, ItemStack menuItem) {
+    private LocationQuest loadLocationQuest(GlobalQuest base, ConfigurationSection questSection, String fileName, int questIndex, ItemStack menuItem) {
         final ConfigurationSection section = questSection.getConfigurationSection("location");
 
         /* reach type */
@@ -437,7 +435,7 @@ public class LoadQuests {
      * @param menuItem menu item of the quest
      * @return the placeholder quest
      */
-    private static PlaceholderQuest loadPlaceholderQuest(GlobalQuest base, ConfigurationSection questSection, String fileName, int questIndex, ItemStack menuItem) {
+    private PlaceholderQuest loadPlaceholderQuest(GlobalQuest base, ConfigurationSection questSection, String fileName, int questIndex, ItemStack menuItem) {
         final ConfigurationSection section = questSection.getConfigurationSection(".placeholder");
 
         /* variables for PLACEHOLDER quests */
@@ -475,7 +473,7 @@ public class LoadQuests {
      * @param quests   list for quests.
      * @param fileName file name for PluginLogger.
      */
-    public static void loadQuests(FileConfiguration file, ArrayList<AbstractQuest> quests, String fileName) {
+    public void loadQuests(FileConfiguration file, ArrayList<AbstractQuest> quests, String fileName) {
 
         /* load quests */
         if (file.getConfigurationSection("quests") != null) {
@@ -537,94 +535,19 @@ public class LoadQuests {
     }
 
     /**
-     * Display an error message in the console when a quest cannot be loaded because of a configuration error.
-     *
-     * @param fileName   the name of the file where the error occurred
-     * @param questIndex the index of the quest in the file
-     * @param parameter  the parameter that caused the error
-     * @param reason     the reason of the error
-     */
-    private static void configurationError(String fileName, int questIndex, String parameter, String reason) {
-        PluginLogger.error("-----------------------------------");
-        PluginLogger.error("Invalid quest configuration detected.");
-        PluginLogger.error("File : " + fileName);
-        PluginLogger.error("Quest number : " + (questIndex + 1));
-        PluginLogger.error("Reason : " + reason);
-
-        if (parameter != null) {
-            PluginLogger.error("Parameter : " + parameter);
-        }
-
-        PluginLogger.error("-----------------------------------");
-    }
-
-    /**
      * @param material   the material to get
      * @param fileName   the file name
      * @param questIndex the quest index
      * @return the item stack
      */
-    private static ItemStack getItemStackFromMaterial(String material, String fileName, int questIndex, String parameter) {
+    private ItemStack getItemStackFromMaterial(String material, String fileName, int questIndex, String parameter) {
         ItemStack requiredItem;
 
         if (material.contains(":")) {
-            String[] split = material.split(":");
-
-            switch (split[0]) {
-                case "oraxen" -> {
-                    if (!OraxenItems.exists(split[1])) {
-                        configurationError(fileName, questIndex, parameter, "The item " + split[1] + " does not exist in Oraxen.");
-                        return null;
-                    }
-                    requiredItem = OraxenItems.getItemById(split[1]).build();
-                }
-                case "itemsadder" -> {
-                    if (!ItemsAdderEnabled.isEnabled()) {
-                        configurationError(fileName, questIndex, parameter, "ItemsAdder is not enabled in the config file.");
-                        return null;
-                    }
-
-                    if (split.length != 3) {
-                        configurationError(fileName, questIndex, parameter, "You need to provide the namespace and the id of the item.");
-                        return null;
-                    }
-
-                    final String iaItem = split[1] + ':' + split[2];
-
-                    if (!CustomStack.isInRegistry(iaItem)) {
-                        configurationError(fileName, questIndex, parameter, "The item " + iaItem + " does not exist in ItemsAdder.");
-                        return null;
-                    }
-
-                    requiredItem = CustomStack.getInstance(iaItem).getItemStack();
-                }
-                case "custommodeldata" -> {
-                    if (split.length != 3) {
-                        configurationError(fileName, questIndex, parameter, "You need to provide the item and the custom model data.");
-                        return null;
-                    }
-
-                    try {
-                        requiredItem = new ItemStack(Material.valueOf(split[1]));
-                    } catch (Exception e) {
-                        configurationError(fileName, questIndex, parameter, "Invalid material type detected.");
-                        return null;
-                    }
-
-                    final ItemMeta meta = requiredItem.getItemMeta();
-                    if (meta == null) return requiredItem;
-
-                    try {
-                        meta.setCustomModelData(Integer.parseInt(split[2]));
-                    } catch (Exception e) {
-                        configurationError(fileName, questIndex, parameter, "Invalid custom model data detected.");
-                        return null;
-                    }
-                }
-                default -> {
-                    configurationError(fileName, questIndex, parameter, "Invalid material type detected.");
-                    return null;
-                }
+            requiredItem = super.getItem(material, fileName, questIndex, parameter);
+            if (requiredItem == null) {
+                configurationError(fileName, questIndex, parameter, "Invalid material type detected.");
+                return null;
             }
         } else {
             try {
@@ -644,7 +567,7 @@ public class LoadQuests {
      * @param value      the value
      * @return the entity type
      */
-    private static EntityType getEntityType(String fileName, int questIndex, String value) {
+    private EntityType getEntityType(String fileName, int questIndex, String value) {
         EntityType entityType;
         try {
             entityType = EntityType.valueOf(value);
@@ -661,7 +584,7 @@ public class LoadQuests {
      * @param questIndex the quest index
      * @return the dye color
      */
-    private static DyeColor getDyeColor(String dye, String fileName, int questIndex) {
+    private DyeColor getDyeColor(String dye, String fileName, int questIndex) {
         if (dye == null) return null;
 
         DyeColor dyeColor;

@@ -1,9 +1,9 @@
 package com.ordwen.odailyquests.commands.interfaces;
 
-import com.ordwen.odailyquests.commands.interfaces.playerinterface.Items;
+import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.Buttons;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
-import com.ordwen.odailyquests.quests.LoadQuests;
+import com.ordwen.odailyquests.quests.QuestsLoader;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -48,16 +48,16 @@ public class CategorizedQuestsInterfaces {
         emptyCaseItems.addAll(Arrays.asList(easyEmptyCaseItem, mediumEmptyCaseItem, hardEmptyCaseItem));
 
         /* Easy quests inventory */
-        int neededInventories = (int) Math.ceil(LoadQuests.getEasyQuests().size() / invSize);
-        loadSelectedInterface(InterfacesManager.getEasyQuestsInventoryName(), easyEmptyCaseItem, neededInventories, easyQuestsInventories, LoadQuests.getEasyQuests());
+        int neededInventories = (int) Math.ceil(QuestsLoader.getEasyQuests().size() / invSize);
+        loadSelectedInterface(InterfacesManager.getEasyQuestsInventoryName(), easyEmptyCaseItem, neededInventories, easyQuestsInventories, QuestsLoader.getEasyQuests());
 
         /* Medium quests inventory */
-        neededInventories = (int) Math.ceil(LoadQuests.getMediumQuests().size() / invSize);
-        loadSelectedInterface(InterfacesManager.getMediumQuestsInventoryName(), mediumEmptyCaseItem, neededInventories, mediumQuestsInventories, LoadQuests.getMediumQuests());
+        neededInventories = (int) Math.ceil(QuestsLoader.getMediumQuests().size() / invSize);
+        loadSelectedInterface(InterfacesManager.getMediumQuestsInventoryName(), mediumEmptyCaseItem, neededInventories, mediumQuestsInventories, QuestsLoader.getMediumQuests());
 
         /* Hard quests inventory */
-        neededInventories = (int) Math.ceil(LoadQuests.getHardQuests().size() / invSize);
-        loadSelectedInterface(InterfacesManager.getHardQuestsInventoryName(), hardEmptyCaseItem, neededInventories, hardQuestsInventories, LoadQuests.getHardQuests());
+        neededInventories = (int) Math.ceil(QuestsLoader.getHardQuests().size() / invSize);
+        loadSelectedInterface(InterfacesManager.getHardQuestsInventoryName(), hardEmptyCaseItem, neededInventories, hardQuestsInventories, QuestsLoader.getHardQuests());
     }
 
     /**
@@ -74,10 +74,10 @@ public class CategorizedQuestsInterfaces {
         for (int i = 0; i < neededInventories; i++) {
             Inventory inv = Bukkit.createInventory(null, 54, inventoryName + " - " + (i + 1));
             if (i > 0) {
-                inv.setItem(45, Items.getPreviousButton());
+                inv.setItem(45, Buttons.getPreviousButton());
             }
             if (i < neededInventories - 1) {
-                inv.setItem(53, Items.getNextButton());
+                inv.setItem(53, Buttons.getNextButton());
             }
             questsInventories.add(inv);
         }

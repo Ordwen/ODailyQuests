@@ -1,9 +1,9 @@
 package com.ordwen.odailyquests.commands.interfaces;
 
-import com.ordwen.odailyquests.commands.interfaces.playerinterface.Items;
+import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.Buttons;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
-import com.ordwen.odailyquests.quests.LoadQuests;
+import com.ordwen.odailyquests.quests.QuestsLoader;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -44,16 +44,16 @@ public class GlobalQuestsInterface {
 
         emptyCaseItem = new ItemStack(Material.valueOf(configurationFiles.getConfigFile().getConfigurationSection("interfaces.global_quests").getString(".empty_item")));
         float invSize = 45;
-        int neededInventories = (int) Math.ceil(LoadQuests.getGlobalQuests().size() / invSize);
+        int neededInventories = (int) Math.ceil(QuestsLoader.getGlobalQuests().size() / invSize);
 
         for (int i = 0; i < neededInventories; i++) {
             Inventory inv = Bukkit.createInventory(null, 54, InterfacesManager.getGlobalQuestsInventoryName() + " - " + (i + 1));
 
             if (i > 0) {
-                inv.setItem(45, Items.getPreviousButton());
+                inv.setItem(45, Buttons.getPreviousButton());
             }
             if (i < neededInventories - 1) {
-                inv.setItem(53, Items.getNextButton());
+                inv.setItem(53, Buttons.getNextButton());
             }
 
             inventories.add(inv);
@@ -65,8 +65,8 @@ public class GlobalQuestsInterface {
             /* add quests items on slots */
             while (i < invSize && !allQuestsLoaded) {
 
-                if (currentQuestIndex < LoadQuests.getGlobalQuests().size()) {
-                    AbstractQuest quest = LoadQuests.getGlobalQuests().get(currentQuestIndex);
+                if (currentQuestIndex < QuestsLoader.getGlobalQuests().size()) {
+                    AbstractQuest quest = QuestsLoader.getGlobalQuests().get(currentQuestIndex);
 
                     ItemStack itemStack = quest.getMenuItem();
                     ItemMeta itemMeta = itemStack.getItemMeta();

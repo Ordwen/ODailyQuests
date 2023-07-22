@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.commands.interfaces.playerinterface;
+package com.ordwen.odailyquests.commands.interfaces.playerinterface.items;
 
 import com.ordwen.odailyquests.externs.hooks.placeholders.PAPIHook;
 import com.ordwen.odailyquests.files.PlayerInterfaceFile;

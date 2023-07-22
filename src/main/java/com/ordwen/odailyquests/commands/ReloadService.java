@@ -7,9 +7,8 @@ import com.ordwen.odailyquests.configuration.integrations.ItemsAdderEnabled;
 import com.ordwen.odailyquests.externs.hooks.holograms.HologramsManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.yaml.YamlManager;
-import com.ordwen.odailyquests.quests.LoadQuests;
+import com.ordwen.odailyquests.quests.QuestsLoader;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
-import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -17,7 +16,7 @@ import org.bukkit.entity.Player;
 public class ReloadService {
 
     private final ODailyQuests oDailyQuests;
-    private final ConfigurationFiles configurationFiles;
+    private final QuestsLoader questsLoader;
     private final SQLManager sqlManager;
     private final YamlManager yamlManager;
 
@@ -28,7 +27,7 @@ public class ReloadService {
      */
     public ReloadService(ODailyQuests oDailyQuests, boolean useSQL) {
         this.oDailyQuests = oDailyQuests;
-        this.configurationFiles = oDailyQuests.getConfigurationFiles();
+        this.questsLoader = oDailyQuests.getQuestsLoader();
 
         if (useSQL) {
             this.sqlManager = oDailyQuests.getSQLManager();
@@ -43,7 +42,7 @@ public class ReloadService {
      * Load all quests from connected players, to avoid errors on reload.
      */
     public void loadConnectedPlayerQuests() {
-        switch (configurationFiles.getConfigFile().getString("storage_mode")) {
+        switch (Modes.getStorageMode()) {
             case "YAML" -> {
                 if (yamlManager == null) restartNeeded();
                 else {
@@ -79,7 +78,7 @@ public class ReloadService {
      * Save all quests from connected players, to avoid errors on reload.
      */
     public void saveConnectedPlayerQuests(boolean isAsync) {
-        switch (configurationFiles.getConfigFile().getString("storage_mode")) {
+        switch (Modes.getStorageMode()) {
             case "YAML" -> {
                 if (yamlManager == null) restartNeeded();
                 else {
@@ -117,15 +116,13 @@ public class ReloadService {
 
         /* Load quests */
         if (!ItemsAdderEnabled.isEnabled() || ItemsAdderEnabled.isLoaded())
-            LoadQuests.loadCategories();
+            questsLoader.loadCategories();
 
         /* Load interfaces */
         oDailyQuests.getInterfacesManager().initAllObjects();
 
         saveConnectedPlayerQuests(true);
-        Bukkit.getScheduler().runTaskLater(oDailyQuests, () -> {
-            loadConnectedPlayerQuests();
-        }, 20L);
+        Bukkit.getScheduler().runTaskLater(oDailyQuests, this::loadConnectedPlayerQuests, 20L);
     }
 
     private void restartNeeded() {

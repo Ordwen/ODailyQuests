@@ -1,10 +1,9 @@
-package com.ordwen.odailyquests.commands.interfaces.playerinterface;
+package com.ordwen.odailyquests.commands.interfaces.playerinterface.items;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.tools.ColorConvert;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -13,7 +12,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 import java.lang.reflect.Field;
 import java.util.*;
 
-public class Items {
+public class Buttons {
 
     /* instance */
     private static ConfigurationFiles configurationFiles;
@@ -23,8 +22,8 @@ public class Items {
      *
      * @param configurationFiles configuration files class.
      */
-    public Items(ConfigurationFiles configurationFiles) {
-        Items.configurationFiles = configurationFiles;
+    public Buttons(ConfigurationFiles configurationFiles) {
+        Buttons.configurationFiles = configurationFiles;
     }
 
     /* init items */
@@ -45,7 +44,7 @@ public class Items {
     private void initPreviousButton() {
         previous = getCustomHead("a2f0425d64fdc8992928d608109810c1251fe243d60d175bed427c651cbe");
         final ItemMeta previousMeta = previous.getItemMeta();
-        previousMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(configurationFiles.getConfigFile().getConfigurationSection("interfaces").getString(".previous_item_name"))));
+        previousMeta.setDisplayName(ColorConvert.convertColorCode(configurationFiles.getConfigFile().getConfigurationSection("interfaces").getString(".previous_item_name")));
         previous.setItemMeta(previousMeta);
     }
 
@@ -55,7 +54,7 @@ public class Items {
     private void initNextButton() {
         next = getCustomHead("6d865aae2746a9b8e9a4fe629fb08d18d0a9251e5ccbe5fa7051f53eab9b94");
         final ItemMeta nextMeta = next.getItemMeta();
-        nextMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(configurationFiles.getConfigFile().getConfigurationSection("interfaces").getString(".next_item_name"))));
+        nextMeta.setDisplayName(ColorConvert.convertColorCode(configurationFiles.getConfigFile().getConfigurationSection("interfaces").getString(".next_item_name")));
         next.setItemMeta(nextMeta);
     }
 

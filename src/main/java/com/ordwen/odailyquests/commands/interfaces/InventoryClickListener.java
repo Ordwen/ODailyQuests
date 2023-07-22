@@ -1,6 +1,6 @@
 package com.ordwen.odailyquests.commands.interfaces;
 
-import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerHead;
+import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.PlayerHead;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

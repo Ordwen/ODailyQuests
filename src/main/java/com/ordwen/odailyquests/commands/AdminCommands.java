@@ -10,7 +10,7 @@ import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.enums.QuestsPermissions;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
-import com.ordwen.odailyquests.quests.LoadQuests;
+import com.ordwen.odailyquests.quests.QuestsLoader;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
@@ -199,9 +199,9 @@ public class AdminCommands implements CommandExecutor {
                                     }
                                     switch (args[2]) {
                                         case "global" -> {
-                                            if (LoadQuests.getGlobalQuests().size() != 0) {
+                                            if (QuestsLoader.getGlobalQuests().size() != 0) {
                                                 HolographicDisplaysHook.createHologram(index,
-                                                        LoadQuests.getGlobalQuests(),
+                                                        QuestsLoader.getGlobalQuests(),
                                                         ((Player) sender).getPlayer());
                                             } else {
                                                 final String msg = QuestsMessages.HOLO_CATEGORIZED_ENABLED.toString();
@@ -209,9 +209,9 @@ public class AdminCommands implements CommandExecutor {
                                             }
                                         }
                                         case "easy" -> {
-                                            if (LoadQuests.getEasyQuests().size() != 0) {
+                                            if (QuestsLoader.getEasyQuests().size() != 0) {
                                                 HolographicDisplaysHook.createHologram(index,
-                                                        LoadQuests.getEasyQuests(),
+                                                        QuestsLoader.getEasyQuests(),
                                                         ((Player) sender).getPlayer());
                                             } else {
                                                 final String msg = QuestsMessages.HOLO_CATEGORIZED_DISABLED.toString();
@@ -219,9 +219,9 @@ public class AdminCommands implements CommandExecutor {
                                             }
                                         }
                                         case "medium" -> {
-                                            if (LoadQuests.getMediumQuests().size() != 0) {
+                                            if (QuestsLoader.getMediumQuests().size() != 0) {
                                                 HolographicDisplaysHook.createHologram(index,
-                                                        LoadQuests.getMediumQuests(),
+                                                        QuestsLoader.getMediumQuests(),
                                                         ((Player) sender).getPlayer());
                                             } else {
                                                 final String msg = QuestsMessages.HOLO_CATEGORIZED_DISABLED.toString();
@@ -229,9 +229,9 @@ public class AdminCommands implements CommandExecutor {
                                             }
                                         }
                                         case "hard" -> {
-                                            if (LoadQuests.getHardQuests().size() != 0) {
+                                            if (QuestsLoader.getHardQuests().size() != 0) {
                                                 HolographicDisplaysHook.createHologram(index,
-                                                        LoadQuests.getHardQuests(),
+                                                        QuestsLoader.getHardQuests(),
                                                         ((Player) sender).getPlayer());
                                             } else {
                                                 final String msg = QuestsMessages.HOLO_CATEGORIZED_DISABLED.toString();

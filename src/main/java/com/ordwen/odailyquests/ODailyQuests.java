@@ -15,6 +15,7 @@ import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.configuration.essentials.Temporality;
 import com.ordwen.odailyquests.events.EventsManager;
 import com.ordwen.odailyquests.files.*;
+import com.ordwen.odailyquests.quests.QuestsLoader;
 import com.ordwen.odailyquests.quests.player.progression.listeners.AllQuestsCompletedListener;
 import com.ordwen.odailyquests.quests.player.progression.listeners.QuestCompletedListener;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
@@ -45,6 +46,7 @@ public final class ODailyQuests extends JavaPlugin {
     private YamlManager yamlManager;
     private TimerTask timerTask;
     private ReloadService reloadService;
+    private QuestsLoader questsLoader;
 
     @Override
     public void onEnable() {
@@ -73,6 +75,9 @@ public final class ODailyQuests extends JavaPlugin {
             case "H2" -> this.sqlManager = new H2Manager(this);
             default -> this.yamlManager = new YamlManager();
         }
+
+        /* Init quests loader */
+        this.questsLoader = new QuestsLoader();
 
         /* Load class instances */
         this.interfacesManager = new InterfacesManager(this);
@@ -208,6 +213,14 @@ public final class ODailyQuests extends JavaPlugin {
      */
     public YamlManager getYamlManager() {
         return yamlManager;
+    }
+
+    /**
+     * Get QuestsLoader instance.
+     * @return QuestsLoader instance.
+     */
+    public QuestsLoader getQuestsLoader() {
+        return questsLoader;
     }
 
     /**

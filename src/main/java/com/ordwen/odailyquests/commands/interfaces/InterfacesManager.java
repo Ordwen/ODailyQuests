@@ -1,8 +1,8 @@
 package com.ordwen.odailyquests.commands.interfaces;
 
 import com.ordwen.odailyquests.ODailyQuests;
-import com.ordwen.odailyquests.commands.interfaces.playerinterface.Items;
-import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerHead;
+import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.Buttons;
+import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.PlayerHead;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.tools.ColorConvert;
@@ -48,7 +48,7 @@ public class InterfacesManager implements Listener {
      * Load all interfaces objects.
      */
     public void initAllObjects() {
-        new Items(configurationFiles).initItems();
+        new Buttons(configurationFiles).initItems();
 
         initInventoryNames();
         loadInterfaces();
