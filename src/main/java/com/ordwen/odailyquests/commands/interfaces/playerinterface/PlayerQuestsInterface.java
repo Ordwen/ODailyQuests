@@ -45,7 +45,7 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
 
     /* item lists */
     private static final Set<ItemStack> fillItems = new HashSet<>();
-    private static final Set<ItemStack> closeItems = new HashSet<>();
+    private static final Map<Integer, ItemStack> closeItems = new HashMap<>();
     private static final Map<Integer, List<String>> playerCommandsItems = new HashMap<>();
     private static final Map<Integer, List<String>> consoleCommandsItems = new HashMap<>();
 
@@ -172,8 +172,7 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
                 item = Buttons.getCustomHead(texture);
 
             } else if (material.contains(":")) {
-                final String[] split = material.split(":", 2);
-                item = getItem(split[0], element, "material");
+                item = getItem(material, element, "material");
 
             } else item = new ItemStack(Material.valueOf(material));
 
@@ -201,7 +200,10 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
 
                 case CLOSE -> {
                     item.setItemMeta(getItemMeta(item, itemData));
-                    closeItems.add(item);
+
+                    for (int slot : slots) {
+                        closeItems.put(slot - 1, item);
+                    }
                 }
 
                 case PLAYER_COMMAND -> {
@@ -250,12 +252,12 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
 
         final String name = section.getString("name");
         if (name != null) {
-            meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(name)));
+            meta.setDisplayName(ColorConvert.convertColorCode(name));
         }
 
         final List<String> lore = section.getStringList("lore");
         for (String str : lore) {
-            lore.set(lore.indexOf(str), ChatColor.translateAlternateColorCodes('&', ColorConvert.convertColorCode(str)));
+            lore.set(lore.indexOf(str), ColorConvert.convertColorCode(str));
         }
         meta.setLore(lore);
 
@@ -399,7 +401,7 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
      *
      * @return close items set.
      */
-    public static Set<ItemStack> getCloseItems() {
+    public static Map<Integer, ItemStack> getCloseItems() {
         return closeItems;
     }
 

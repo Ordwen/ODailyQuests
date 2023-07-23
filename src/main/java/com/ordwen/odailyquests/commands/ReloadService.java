@@ -114,12 +114,11 @@ public class ReloadService {
         /* Load specific settings */
         oDailyQuests.getConfigurationManager().loadConfiguration();
 
-        /* Load quests */
-        if (!ItemsAdderEnabled.isEnabled() || ItemsAdderEnabled.isLoaded())
+        /* Load quests & interface */
+        if (!ItemsAdderEnabled.isEnabled() || ItemsAdderEnabled.isLoaded()) {
             questsLoader.loadCategories();
-
-        /* Load interfaces */
-        oDailyQuests.getInterfacesManager().initAllObjects();
+            oDailyQuests.getInterfacesManager().initAllObjects();
+        }
 
         saveConnectedPlayerQuests(true);
         Bukkit.getScheduler().runTaskLater(oDailyQuests, this::loadConnectedPlayerQuests, 20L);

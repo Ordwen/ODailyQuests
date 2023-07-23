@@ -16,6 +16,7 @@ public abstract class ExternalItemGetter implements IExternalItemGetter {
      */
     @Override
     public Pair<String, ItemStack> getOraxenItem(String namespace) {
+
         if (!OraxenItems.exists(namespace)) {
             return new Pair<>("The item " + namespace + " does not exist in Oraxen.", null);
         }
@@ -30,11 +31,6 @@ public abstract class ExternalItemGetter implements IExternalItemGetter {
      */
     @Override
     public Pair<String, ItemStack> getItemsAdderItem(String namespace) {
-        System.out.println("ExternalItemGetter.getItemsAdderItem");
-
-        if (!ItemsAdderEnabled.isEnabled()) {
-            return new Pair<>("ItemsAdder is not enabled in the config file.", null);
-        }
 
         if (!namespace.contains(":")) {
             return new Pair<>("You need to provide the namespace and the id of the item.", null);
