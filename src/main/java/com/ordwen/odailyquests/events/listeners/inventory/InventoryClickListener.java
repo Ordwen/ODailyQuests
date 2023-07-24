@@ -55,7 +55,7 @@ public class InventoryClickListener extends AbstractSpecifiedChecker implements 
 
             if (PlayerQuestsInterface.getFillItems().contains(clickedItem)) return;
 
-            if (PlayerQuestsInterface.getCloseItems().containsKey(slot)) {
+            if (PlayerQuestsInterface.getCloseItems().contains(clickedItem)) {
                 event.getWhoClicked().closeInventory();
                 return;
             }

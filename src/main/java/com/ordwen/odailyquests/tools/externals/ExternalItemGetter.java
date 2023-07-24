@@ -1,7 +1,6 @@
 package com.ordwen.odailyquests.tools.externals;
 
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.Buttons;
-import com.ordwen.odailyquests.configuration.integrations.ItemsAdderEnabled;
 import com.ordwen.odailyquests.tools.Pair;
 import dev.lone.itemsadder.api.CustomStack;
 import io.th0rgal.oraxen.api.OraxenItems;

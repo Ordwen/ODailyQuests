@@ -9,6 +9,7 @@ import com.ordwen.odailyquests.quests.types.ItemQuest;
 import com.ordwen.odailyquests.quests.QuestType;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
+import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -25,7 +26,13 @@ public abstract class AbstractItemChecker extends AbstractProgressionIncreaser {
      * @param questType the quest type to increase progression for.
      */
     public void setPlayerQuestProgression(Player player, ItemStack itemStack, int amount, QuestType questType, String id) {
+
+        //PluginLogger.warn("setPlayerQuestProgression called for " + player.getName() + " with item " + itemStack.getType().name() + " and amount " + amount + " and quest type " + questType.name() + " and id " + id);
+
         if (DisabledWorlds.isWorldDisabled(player.getWorld().getName())) {
+
+            //PluginLogger.warn("World " + player.getWorld().getName() + " is disabled.");
+
             return;
         }
 
@@ -35,8 +42,12 @@ public abstract class AbstractItemChecker extends AbstractProgressionIncreaser {
 
             for (AbstractQuest abstractQuest : playerQuests.keySet()) {
 
+                //PluginLogger.warn("Checking quest " + abstractQuest.getQuestName());
+
                 final Progression progression = playerQuests.get(abstractQuest);
                 if (!progression.isAchieved() && abstractQuest.getQuestType() == questType) {
+
+                    //PluginLogger.warn("Quest " + abstractQuest.getQuestName() + " is not achieved and has the right quest type.");
 
                     boolean isRequiredItem = false;
 
@@ -55,6 +66,9 @@ public abstract class AbstractItemChecker extends AbstractProgressionIncreaser {
                     }
 
                     if (isRequiredItem) {
+
+                        //PluginLogger.warn("Quest " + abstractQuest.getQuestName() + " can be progressed with this item.");
+
                         increaseProgression(player, progression, abstractQuest, amount);
                         if (!Synchronization.isSynchronised()) {
                             break;

@@ -21,6 +21,8 @@
 # For more affected objects or types, please make suggestion.
 # ==============================================================
 quests:
+
+  # example quest that is using the BREAK quest type
   1:
     name: "&aStone"
     menu_item: STONE
@@ -33,6 +35,8 @@ quests:
     reward:
       reward_type: MONEY
       amount: 500
+
+  # example quest that is using the GET quest type
   2:
     name: "&6&lGold blocks"
     menu_item: GOLD_BLOCK
@@ -47,6 +51,8 @@ quests:
       commands:
         - "msg %player% Hello !"
         - "give %player% diamond_block 32"
+
+  # example quest that is using the KILL quest type
   3:
     name: "Too many zombies"
     menu_item: ZOMBIE_HEAD
@@ -59,6 +65,8 @@ quests:
     reward:
       reward_type: POINTS
       amount: 500
+
+  # example quest that is using the TAME quest type
   4:
     name: "Best friend"
     menu_item: LEAD
@@ -71,6 +79,8 @@ quests:
     reward:
       reward_type: MONEY
       amount: 500
+
+  # example quest that is using the BREED quest type
   5:
     name: "More sheeps !"
     menu_item: WHITE_WOOL
@@ -83,6 +93,8 @@ quests:
     reward:
       reward_type: MONEY
       amount: 5000
+
+  # example quest that is using the SHEAR quest type
   6:
     name: "Mushrooms..."
     menu_item: RED_MUSHROOM
@@ -95,6 +107,8 @@ quests:
     reward:
       reward_type: EXP_POINTS
       amount: 5
+
+  # example quest that is using the VILLAGE_TRADE quest type
   7:
     name: "Emeralds !"
     menu_item: EMERALD
@@ -107,6 +121,8 @@ quests:
     reward:
       reward_type: EXP_LEVELS
       amount: 5
+
+  # example quest that is using the VILLAGER_TRADE quest type with a specific villager profession and level
   8:
     name: "Cookieeeeees"
     menu_item: COOKIE
@@ -122,6 +138,8 @@ quests:
     reward:
       reward_type: MONEY
       amount: 5000
+
+  # example quest that is using the CUSTOM_MOBS quest type with a mob from MythicMobs
   9:
     name: "&b&lThe Big Boss Of Skeletons"
     menu_item: SKELETON_SKULL
@@ -134,6 +152,8 @@ quests:
     reward:
       reward_type: EXP_LEVELS
       amount: 5
+
+  # example quest that is using the GET quest type with a custom item
   10:
     name: "&d&lBeautiful flower"
     menu_item: ALLIUM
@@ -153,6 +173,8 @@ quests:
       reward_type: COMMAND
       commands:
         - "give %player% diamond_block 32"
+
+  # example quest that is using the CRAFT quest type with a custom item
   11:
     name: "&aCraft the Saint Cobblestone."
     menu_item: COBBLESTONE
@@ -170,6 +192,8 @@ quests:
     reward:
       reward_type: MONEY
       amount: 5000000
+
+  # example quest that is using the MILKING quest type
   12:
     name: "&aMiiiiilk."
     menu_item: MILK_BUCKET
@@ -181,6 +205,8 @@ quests:
     reward:
       reward_type: MONEY
       amount: 5000000
+
+  # example quest that is using the EXP_POINTS quest type
   13:
     name: "&2Get 500 EXP points."
     menu_item: EXPERIENCE_BOTTLE
@@ -193,6 +219,8 @@ quests:
       reward_type: COMMAND
       commands:
         - "say Hello"
+
+  # example quest that is using the EXP_LEVELS quest type
   14:
     name: "&2Get 5 EXP levels."
     menu_item: EXPERIENCE_BOTTLE
@@ -205,6 +233,8 @@ quests:
       reward_type: COMMAND
       commands:
         - "say Hello"
+
+  # example quest that is using the CARVE quest type
   15:
     name: "&2Carve 5 pumpkins."
     menu_item: PUMPKIN
@@ -217,7 +247,24 @@ quests:
       reward_type: COMMAND
       commands:
         - "say Hello"
+
+  # example quest that is using the SHEAR quest type
   16:
+    name: "&2Shear 3 sheeps."
+    menu_item: WHITE_WOOL
+    description:
+      - "&6Reward:"
+      - "&7A \"hello\" message from the server :)"
+    quest_type: SHEAR
+    required_entity: SHEEP
+    required_amount: 3
+    reward:
+      reward_type: COMMAND
+      commands:
+        - "say Hello"
+
+  # example quest that is using the SHEAR quest type with a specific color
+  17:
     name: "&2Shear 3 purple sheeps."
     menu_item: PURPLE_WOOL
     description:
@@ -231,19 +278,8 @@ quests:
       reward_type: COMMAND
       commands:
         - "say Hello"
-  17:
-    name: "&2Shear 3 sheeps."
-    menu_item: WHITE_WOOL
-    description:
-      - "&6Reward:"
-      - "&7A \"hello\" message from the server :)"
-    quest_type: SHEAR
-    required_entity: SHEEP
-    required_amount: 3
-    reward:
-      reward_type: COMMAND
-      commands:
-        - "say Hello"
+
+  # example quest that is using the PLAYER_DEATH quest type
   18:
     name: "&cImmortal"
     menu_item: SKELETON_SKULL
@@ -258,6 +294,8 @@ quests:
       reward_type: COMMAND
       commands:
         - "say Hello"
+
+  # example quest that is using the LOCATION quest type
   19:
     name: "&aExplorer"
     menu_item: SKELETON_SKULL
@@ -281,6 +319,8 @@ quests:
       reward_type: COMMAND
       commands:
         - "say Hello"
+
+  # example quest that is using the FARMING quest type
   20:
     name: "&aFarmer"
     menu_item: CARROT
@@ -293,6 +333,8 @@ quests:
     reward:
       reward_type: EXP_LEVELS
       amount: 5
+
+  # example quest that is using an upgraded potion
   21:
     name: "&aSpeeeed..."
     menu_item: POTION
@@ -309,6 +351,8 @@ quests:
     reward:
       reward_type: EXP_LEVELS
       amount: 5
+
+  # example quest that is using an extended potion
   22:
     name: "&cSpeeeed..."
     menu_item: POTION
@@ -328,6 +372,8 @@ quests:
     reward:
       reward_type: EXP_LEVELS
       amount: 5
+
+  # example quest that is using the required_worlds parameter
   23:
     name: "Original habitat"
     menu_item: WITHER_SKELETON_SKULL
@@ -342,6 +388,8 @@ quests:
     reward:
       reward_type: MONEY
       amount: 50000
+
+  # example quest that is using Vault placeholders
   24:
     name: "Be rich"
     menu_item: PAPER
@@ -357,6 +405,8 @@ quests:
     reward:
       reward_type: MONEY
       amount: 50000
+
+    # example quest that is using LuckPerms placeholders
     25:
       name: "Be a VIP"
       menu_item: GOLD_INGOT
@@ -373,3 +423,74 @@ quests:
         reward_type: COMMAND
         commands:
           - "bc &6%player% &bis now a VIP!"
+
+    # example quest that is using ItemsAdder
+    26:
+      name: "Get some Thanos dust"
+      menu_item: "itemsadder:thanos_namespace:thanos_dust"
+      description:
+            - "&6Get some Thanos dust."
+            - "&6Win &b50 000 &6$."
+      quest_type: GET
+      required_item: "itemsadder:thanos_namespace:thanos_dust"
+      required_amount: 1
+      reward:
+          reward_type: MONEY
+          amount: 50000
+
+    # example quest that is using Oraxen
+    27:
+      name: "Get some Thanos dust"
+      menu_item: "oraxen:thanos_dust"
+      description:
+        - "&6Get some Thanos dust."
+        - "&6Win &b50 000 &6$."
+      quest_type: GET
+      required_item: "oraxen:thanos_dust"
+      required_amount: 1
+      reward:
+        reward_type: MONEY
+        amount: 50000
+
+    # example quest that is using a custom head
+    28:
+      name: "Get the Thanos head"
+      menu_item: "customhead:8f217869a64e9f215d9cc44f5a8bd7d7ea08cd73d2f95b97dc78e3a38ae2fa23"
+      description:
+        - "&6Get the Thanos head."
+        - "&6Win &b50 000 &6$."
+      quest_type: GET
+      required_item: "customhead:8f217869a64e9f215d9cc44f5a8bd7d7ea08cd73d2f95b97dc78e3a38ae2fa23"
+      required_amount: 1
+      reward:
+        reward_type: MONEY
+        amount: 50000
+
+    # example quest that is using a custom model data
+    29:
+      name: "Get the Thanos head"
+      menu_item: "custommodeldata:player_head:1234"
+      description:
+        - "&6Get the Thanos head."
+        - "&6Win &b50 000 &6$."
+      quest_type: GET
+      required_item: "custommodeldata:player_head:1234"
+      required_amount: 1
+      reward:
+        reward_type: MONEY
+        amount: 50000
+
+    # example quest that is using the achieved_menu_item parameter
+    30:
+      name: "&aStone"
+      menu_item: STONE
+      achieved_menu_item: "customhead:b5a3b49beec3ab23ae0b60dab56e9cc8fa16769a25830b5d8d6c46378f54430" # checkmark head
+      description:
+        - "&bMine 32 stones."
+        - "&bWin &c500$&b."
+      quest_type: BREAK
+      required_item: STONE
+      required_amount: 32
+      reward:
+        reward_type: MONEY
+        amount: 500

@@ -13,6 +13,7 @@ public abstract class AbstractQuest {
     final List<String> questDesc;
     final QuestType questType;
     final ItemStack menuItem;
+    final ItemStack achievedItem;
     final int amountRequired;
     final Reward reward;
     final List<String> requiredWorlds;
@@ -27,12 +28,13 @@ public abstract class AbstractQuest {
      * @param amountRequired required amount of the item.
      * @param reward         reward of the quest.
      */
-    public AbstractQuest(int questIndex, String questName, List<String> questDesc, QuestType questType, ItemStack menuItem, int amountRequired, Reward reward, List<String> requiredWorlds, boolean isUsingPlaceholders) {
+    public AbstractQuest(int questIndex, String questName, List<String> questDesc, QuestType questType, ItemStack menuItem, ItemStack achievedItem, int amountRequired, Reward reward, List<String> requiredWorlds, boolean isUsingPlaceholders) {
         this.questIndex = questIndex;
         this.questName = questName;
         this.questDesc = questDesc;
         this.questType = questType;
         this.menuItem = menuItem;
+        this.achievedItem = achievedItem;
         this.amountRequired = amountRequired;
         this.reward = reward;
         this.requiredWorlds = requiredWorlds;
@@ -50,6 +52,7 @@ public abstract class AbstractQuest {
         this.questDesc = globalQuest.questDesc;
         this.questType = globalQuest.questType;
         this.menuItem = globalQuest.menuItem;
+        this.achievedItem = globalQuest.achievedItem;
         this.amountRequired = globalQuest.amountRequired;
         this.reward = globalQuest.reward;
         this.requiredWorlds = globalQuest.requiredWorlds;
@@ -90,6 +93,15 @@ public abstract class AbstractQuest {
      */
     public ItemStack getMenuItem() {
         return this.menuItem;
+    }
+
+    /**
+     * Get achieved item.
+     *
+     * @return achieved item.
+     */
+    public ItemStack getAchievedItem() {
+        return this.achievedItem;
     }
 
     /**

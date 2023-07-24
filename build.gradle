@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'com.ordwen'
-version = '2.1.1-SNAPSHOT-9'
+version = '2.1.1-SNAPSHOT-10'
 
 repositories {
     mavenCentral()
@@ -85,7 +85,8 @@ dependencies {
     /* custom items */
     compileOnly 'com.github.oraxen:oraxen:1.157.0'
     compileOnly 'com.github.LoneDev6:API-ItemsAdder:3.5.0b'
-
+    compileOnly name: 'CustomCrops-api-3.3.1.2'
+    
     /* Mojang auth API for heads */
     compileOnly 'com.mojang:authlib:1.5.21'
 }

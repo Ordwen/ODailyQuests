@@ -45,7 +45,7 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
 
     /* item lists */
     private static final Set<ItemStack> fillItems = new HashSet<>();
-    private static final Map<Integer, ItemStack> closeItems = new HashMap<>();
+    private static final Set<ItemStack> closeItems = new HashSet<>();
     private static final Map<Integer, List<String>> playerCommandsItems = new HashMap<>();
     private static final Map<Integer, List<String>> consoleCommandsItems = new HashMap<>();
 
@@ -89,6 +89,7 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
 
     /**
      * Reload player quests interface.
+     *
      * @param interfaceConfig configuration section of the interface.
      */
     private void initVariables(ConfigurationSection interfaceConfig) {
@@ -130,6 +131,7 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
 
     /**
      * Load quests slots.
+     *
      * @param questsSection configuration section of the quests.
      */
     private void loadQuestsSlots(ConfigurationSection questsSection) {
@@ -138,8 +140,7 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
             if (questsSection.isList(index)) {
                 final List<Integer> values = questsSection.getIntegerList(index);
                 slotQuests.put(slot, values);
-            }
-            else {
+            } else {
                 int value = questsSection.getInt(index);
                 slotQuests.put(slot, Collections.singletonList(value));
             }
@@ -148,6 +149,7 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
 
     /**
      * Load items.
+     *
      * @param itemsSection configuration section of the items.
      */
     private void loadItems(ConfigurationSection itemsSection) {
@@ -202,7 +204,7 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
                     item.setItemMeta(getItemMeta(item, itemData));
 
                     for (int slot : slots) {
-                        closeItems.put(slot - 1, item);
+                        closeItems.add(item);
                     }
                 }
 
@@ -241,7 +243,7 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
      * Load the ItemMeta of an item.
      *
      * @param itemStack item to load.
-     * @param section section of the item.
+     * @param section   section of the item.
      * @return ItemMeta of the item.
      */
     private ItemMeta getItemMeta(ItemStack itemStack, ConfigurationSection section) {
@@ -290,8 +292,8 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
             }
         }
 
-        HashMap<String, PlayerQuests> activeQuests = QuestsManager.getActiveQuests();
-        HashMap<AbstractQuest, Progression> playerQuests = activeQuests.get(player.getName()).getPlayerQuests();
+        final Map<String, PlayerQuests> activeQuests = QuestsManager.getActiveQuests();
+        final Map<AbstractQuest, Progression> playerQuests = activeQuests.get(player.getName()).getPlayerQuests();
 
         /* load player head */
         if (isPlayerHeadEnabled) {
@@ -305,7 +307,13 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
         int i = 0;
         for (AbstractQuest quest : playerQuests.keySet()) {
 
-            final ItemStack itemStack = quest.getMenuItem().clone();
+            ItemStack itemStack;
+            if (playerQuests.get(quest).isAchieved()) {
+                itemStack = quest.getAchievedItem().clone();
+            } else {
+                itemStack = quest.getMenuItem().clone();
+            }
+
             final ItemMeta itemMeta = itemStack.getItemMeta().clone();
             itemMeta.setDisplayName(quest.getQuestName());
 
@@ -339,8 +347,15 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
                 }
             }
 
-            itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-            itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            itemMeta.addItemFlags(
+                    ItemFlag.HIDE_ATTRIBUTES,
+                    ItemFlag.HIDE_ENCHANTS,
+                    ItemFlag.HIDE_POTION_EFFECTS,
+                    ItemFlag.HIDE_UNBREAKABLE,
+                    ItemFlag.HIDE_DESTROYS,
+                    ItemFlag.HIDE_PLACED_ON,
+                    ItemFlag.HIDE_DYE
+            );
 
             itemMeta.setLore(lore);
             itemStack.setItemMeta(itemMeta);
@@ -349,10 +364,9 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
                 for (int slot : slotQuests.get(i)) {
                     playerQuestsInventoryIndividual.setItem(slot - 1, itemStack);
                 }
-            }
-            else {
+            } else {
                 PluginLogger.error("An error occurred when loading the player interface.");
-                PluginLogger.error("The slot for the quest number " + (i+1) + " is not defined in the playerInterface file.");
+                PluginLogger.error("The slot for the quest number " + (i + 1) + " is not defined in the playerInterface file.");
             }
 
             i++;
@@ -362,6 +376,7 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
 
     /**
      * Get the name of the interface.
+     *
      * @param player player to get the name.
      * @return name of the interface.
      */
@@ -401,7 +416,7 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
      *
      * @return close items set.
      */
-    public static Map<Integer, ItemStack> getCloseItems() {
+    public static Set<ItemStack> getCloseItems() {
         return closeItems;
     }
 

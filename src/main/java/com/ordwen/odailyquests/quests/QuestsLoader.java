@@ -156,13 +156,23 @@ public class QuestsLoader extends QuestItemGetter {
             return null;
         }
 
-        ItemStack menuItem = getItemStackFromMaterial(presumedItem, fileName, questIndex, "menu_item");
+        final ItemStack menuItem = getItemStackFromMaterial(presumedItem, fileName, questIndex, "menu_item");
         if (menuItem == null) return null;
+
+        ItemStack achievedItem;
+        if (questSection.isString("achieved_menu_item")) {
+            final String presumedAchievedItem = questSection.getString("achieved_menu_item");
+            achievedItem = getItemStackFromMaterial(presumedAchievedItem, fileName, questIndex, "achieved_menu_item");
+            if (achievedItem == null) return null;
+        }
+        else {
+            achievedItem = menuItem;
+        }
 
         /* reward */
         Reward reward = createReward(questSection, fileName, questIndex);
 
-        return new GlobalQuest(questIndex, questName, questDesc, questType, menuItem, requiredAmount, reward, requiredWorlds, usePlaceholders);
+        return new GlobalQuest(questIndex, questName, questDesc, questType, menuItem, achievedItem, requiredAmount, reward, requiredWorlds, usePlaceholders);
     }
 
     /**

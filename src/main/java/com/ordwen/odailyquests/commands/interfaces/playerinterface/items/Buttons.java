@@ -4,14 +4,13 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.tools.ColorConvert;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.*;
 
 public class Buttons {
@@ -66,19 +65,16 @@ public class Buttons {
 
         final GameProfile gameProfile = new GameProfile(UUID.randomUUID(), "ODQ");
 
-        final OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(gameProfile.getId());
-        skullMeta.setOwningPlayer(offlinePlayer);
-
         final String toEncode = "{textures:{SKIN:{url:\"https://textures.minecraft.net/texture/" + texture + "\"}}}";
         final byte[] data = Base64.getEncoder().encodeToString(toEncode.getBytes()).getBytes();
 
         gameProfile.getProperties().put("textures", new Property("textures", new String(data)));
 
         try {
-            final Field profileField = skullMeta.getClass().getDeclaredField("profile");
-            profileField.setAccessible(true);
-            profileField.set(skullMeta, gameProfile);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
+            final Method setProfileMethod = skullMeta.getClass().getDeclaredMethod("setProfile", GameProfile.class);
+            setProfileMethod.setAccessible(true);
+            setProfileMethod.invoke(skullMeta, gameProfile);
+        } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();
         }
 
