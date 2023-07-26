@@ -2,7 +2,7 @@ package com.ordwen.odailyquests.events.listeners.item;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.Antiglitch;
-import com.ordwen.odailyquests.quests.QuestType;
+import com.ordwen.odailyquests.enums.QuestType;
 import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractItemChecker;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;

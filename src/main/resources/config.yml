@@ -106,7 +106,16 @@ title:
 # Available placeholders : %player% , %questName%
 actionbar:
   enabled: true
-  text: "&eNot bad for an old men!"
+  text: "&eYou have completed the quest %questName%&e!"
+
+# Set a message that will be displayed to the player when he progresses in a quest.
+# Available placeholders : %player% , %questName% , %progress% , %required%
+# Available types : ACTIONBAR, BOSSBAR, CHAT
+# /!\ The CHAT type is not recommended, it can cause chat spam.
+progression_message:
+    enabled: true
+    text: "&aYou have completed &b%progress%&a/&b%required% &a(&e%questName%&a)!"
+    type: ACTIONBAR
 
 # Disables the progression of quests where you have to kill an entity if it comes from a Spawner.
 disable_spawners_progression: false

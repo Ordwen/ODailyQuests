@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.quests;
 
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.enums.QuestType;
 import com.ordwen.odailyquests.externs.hooks.mobs.EliteMobsHook;
 import com.ordwen.odailyquests.externs.hooks.mobs.MythicMobsHook;
 import com.ordwen.odailyquests.configuration.essentials.Modes;

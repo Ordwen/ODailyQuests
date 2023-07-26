@@ -2,7 +2,7 @@ package com.ordwen.odailyquests.events.listeners.entity;
 
 import com.ordwen.odailyquests.configuration.integrations.WildStackerEnabled;
 import com.ordwen.odailyquests.events.antiglitch.EntitySource;
-import com.ordwen.odailyquests.quests.QuestType;
+import com.ordwen.odailyquests.enums.QuestType;
 import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractEntityChecker;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

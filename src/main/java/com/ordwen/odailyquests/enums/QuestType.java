@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.quests;
+package com.ordwen.odailyquests.enums;
 
 /**
  * List of all possible quests types

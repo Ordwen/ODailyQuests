@@ -5,7 +5,7 @@ import com.ordwen.odailyquests.configuration.functionalities.DisabledWorlds;
 import com.ordwen.odailyquests.quests.player.progression.AbstractProgressionIncreaser;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.types.EntityQuest;
-import com.ordwen.odailyquests.quests.QuestType;
+import com.ordwen.odailyquests.enums.QuestType;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import org.bukkit.DyeColor;

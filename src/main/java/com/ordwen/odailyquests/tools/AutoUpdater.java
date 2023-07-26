@@ -1,15 +1,12 @@
 package com.ordwen.odailyquests.tools;
 
 import com.ordwen.odailyquests.ODailyQuests;
-import com.ordwen.odailyquests.files.PlayerInterfaceFile;
-import com.ordwen.odailyquests.files.QuestsFiles;
-import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class AutoUpdater {
 
@@ -32,12 +29,29 @@ public class AutoUpdater {
 
             // CONFIG
 
-            // Add use_itemsadder: false to config
-            final FileConfiguration configFile = plugin.getConfig();
+            final FileConfiguration configFile = new YamlConfiguration();
             final File file = new File(plugin.getDataFolder(), "config.yml");
+
+            try {
+                configFile.load(file);
+            } catch (IOException | InvalidConfigurationException e) {
+                throw new RuntimeException(e);
+            }
+
+            // Add use_itemsadder: false to config
 
             if (!configFile.contains("use_itemsadder")) {
                 AddDefault.addDefaultConfigItem("use_itemsadder", "false", configFile, file);
+                PluginLogger.warn("ItemsAdder support has been added to the config file.");
+            }
+
+            // Add progression message to config
+
+            if (!configFile.contains("progression_message")) {
+                AddDefault.addDefaultConfigItem("progression_message.enabled", true, configFile, file);
+                AddDefault.addDefaultConfigItem("progression_message.message", "&a%player% &7has progressed in the quest &a%questName% &7(%progression%/%required%)", configFile, file);
+                AddDefault.addDefaultConfigItem("progression_message.type", "ACTIONBAR", configFile, file);
+                PluginLogger.warn("Progression message has been added to the config file.");
             }
 
             // --------------

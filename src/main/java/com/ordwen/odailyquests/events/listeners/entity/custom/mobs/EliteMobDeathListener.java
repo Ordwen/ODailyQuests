@@ -1,7 +1,7 @@
 package com.ordwen.odailyquests.events.listeners.entity.custom.mobs;
 
 import com.magmaguy.elitemobs.api.EliteMobDeathEvent;
-import com.ordwen.odailyquests.quests.QuestType;
+import com.ordwen.odailyquests.enums.QuestType;
 import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractEntityChecker;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

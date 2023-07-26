@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.quests.player.progression.checkers;
 
 import com.ordwen.odailyquests.api.events.QuestCompletedEvent;
+import com.ordwen.odailyquests.api.progression.ValidateItemQuest;
 import com.ordwen.odailyquests.configuration.essentials.Synchronization;
 import com.ordwen.odailyquests.configuration.functionalities.DisabledWorlds;
 import com.ordwen.odailyquests.configuration.functionalities.TakeItems;
@@ -8,7 +9,7 @@ import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.events.antiglitch.OpenedRecipes;
 import com.ordwen.odailyquests.externs.hooks.placeholders.PAPIHook;
 import com.ordwen.odailyquests.quests.ConditionType;
-import com.ordwen.odailyquests.quests.QuestType;
+import com.ordwen.odailyquests.enums.QuestType;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.AbstractProgressionIncreaser;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
@@ -46,7 +47,7 @@ public abstract class AbstractSpecifiedChecker extends AbstractProgressionIncrea
                     if (isAppropriateQuestMenuItem(clickedItem, quest.getMenuItem()) && quest.getQuestType() == QuestType.GET) {
                         final Progression progression = playerQuests.get(abstractQuest);
                         if (!progression.isAchieved()) {
-                            validateGetQuestType(player, progression, quest);
+                            ValidateItemQuest.makeQuestProgress(player, progression, quest);
                         }
                         break;
                     }
@@ -89,53 +90,6 @@ public abstract class AbstractSpecifiedChecker extends AbstractProgressionIncrea
         if (clickedItemMeta == null || menuItemMeta == null) return false;
 
         return clickedItemMeta.getPersistentDataContainer().equals(menuItemMeta.getPersistentDataContainer());
-    }
-
-    /**
-     * Validate GET quest type.
-     *
-     * @param player      player who is getting the item.
-     * @param progression progression of the quest.
-     * @param quest       quest to validate.
-     */
-    private void validateGetQuestType(Player player, Progression progression, ItemQuest quest) {
-        boolean hasRequiredAmount = false;
-        int amount = 0;
-
-        for (ItemStack item : quest.getRequiredItems()) {
-            amount += getAmount(player.getInventory(), item);
-        }
-
-        if (amount >= quest.getAmountRequired()) {
-            hasRequiredAmount = true;
-        }
-
-        if (hasRequiredAmount) {
-            final QuestCompletedEvent event = new QuestCompletedEvent(player, progression, quest);
-            Bukkit.getPluginManager().callEvent(event);
-
-            if (TakeItems.isTakeItemsEnabled()) {
-                int totalRemoved = 0;
-                for (ItemStack item : quest.getRequiredItems()) {
-                    if (totalRemoved > quest.getAmountRequired()) break;
-
-                    final ItemStack toRemove = item.clone();
-
-                    int current = getAmount(player.getInventory(), item);
-                    int removeAmount = Math.min(current, quest.getAmountRequired() - totalRemoved);
-
-                    toRemove.setAmount(removeAmount);
-                    player.getInventory().removeItem(toRemove);
-
-                    totalRemoved += current;
-                }
-            }
-
-            player.closeInventory();
-        } else {
-            final String msg = QuestsMessages.NOT_ENOUGH_ITEM.toString();
-            if (msg != null) player.sendMessage(msg);
-        }
     }
 
     /**
@@ -278,32 +232,5 @@ public abstract class AbstractSpecifiedChecker extends AbstractProgressionIncrea
         } else {
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', quest.getErrorMessage()));
         }
-    }
-
-    /**
-     * Count amount of an item in player inventory.
-     *
-     * @param playerInventory player inventory to check.
-     * @param item            material to check.
-     * @return amount of material.
-     */
-    private int getAmount(PlayerInventory playerInventory, ItemStack item) {
-        int amount = 0;
-        for (ItemStack itemStack : playerInventory.getContents()) {
-            if (itemStack != null && itemStack.isSimilar(item)) {
-
-                // check if item have CustomModelData
-                if (item.hasItemMeta() && item.getItemMeta().hasCustomModelData()) {
-                    if (itemStack.hasItemMeta() && itemStack.getItemMeta().hasCustomModelData()) {
-                        if (itemStack.getItemMeta().getCustomModelData() == item.getItemMeta().getCustomModelData()) {
-                            amount += itemStack.getAmount();
-                        }
-                    }
-                } else {
-                    amount += itemStack.getAmount();
-                }
-            }
-        }
-        return amount;
     }
 }

@@ -1,6 +1,6 @@
 package com.ordwen.odailyquests.quests.types;
 
-import com.ordwen.odailyquests.quests.QuestType;
+import com.ordwen.odailyquests.enums.QuestType;
 import com.ordwen.odailyquests.rewards.Reward;
 import org.bukkit.inventory.ItemStack;
 

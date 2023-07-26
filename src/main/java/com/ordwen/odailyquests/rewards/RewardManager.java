@@ -4,8 +4,8 @@ import com.ordwen.odailyquests.externs.hooks.placeholders.PAPIHook;
 import com.ordwen.odailyquests.externs.hooks.points.PlayerPointsHook;
 import com.ordwen.odailyquests.externs.hooks.points.TokenManagerHook;
 import com.ordwen.odailyquests.externs.hooks.eco.VaultHook;
-import com.ordwen.odailyquests.configuration.functionalities.Actionbar;
-import com.ordwen.odailyquests.configuration.functionalities.Title;
+import com.ordwen.odailyquests.configuration.functionalities.progression.ActionBar;
+import com.ordwen.odailyquests.configuration.functionalities.progression.Title;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
@@ -20,7 +20,7 @@ public class RewardManager {
         if (msg != null) player.sendMessage(msg.replace("%questName%", questName));
 
         Title.sendTitle(player, questName);
-        Actionbar.sendActionbar(player, questName);
+        ActionBar.sendActionbar(player, questName);
         sendQuestReward(player, reward);
     }
 

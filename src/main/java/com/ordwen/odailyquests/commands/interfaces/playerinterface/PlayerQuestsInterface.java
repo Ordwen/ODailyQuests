@@ -7,7 +7,7 @@ import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.getters
 import com.ordwen.odailyquests.externs.hooks.placeholders.PAPIHook;
 import com.ordwen.odailyquests.files.PlayerInterfaceFile;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
-import com.ordwen.odailyquests.quests.QuestType;
+import com.ordwen.odailyquests.enums.QuestType;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
@@ -202,10 +202,7 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
 
                 case CLOSE -> {
                     item.setItemMeta(getItemMeta(item, itemData));
-
-                    for (int slot : slots) {
-                        closeItems.add(item);
-                    }
+                    closeItems.add(item);
                 }
 
                 case PLAYER_COMMAND -> {

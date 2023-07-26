@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.configuration.functionalities;
+package com.ordwen.odailyquests.configuration.functionalities.progression;
 
 import com.ordwen.odailyquests.tools.ColorConvert;
 import net.md_5.bungee.api.ChatMessageType;
@@ -9,11 +9,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-public class Actionbar {
+public class ActionBar {
 
-    private ConfigurationFiles configurationFiles;
+    private final ConfigurationFiles configurationFiles;
 
-    public Actionbar(ConfigurationFiles configurationFiles) {
+    public ActionBar(ConfigurationFiles configurationFiles) {
         this.configurationFiles = configurationFiles;
     }
 

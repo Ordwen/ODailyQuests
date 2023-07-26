@@ -1,6 +1,6 @@
 package com.ordwen.odailyquests.events.listeners.item;
 
-import com.ordwen.odailyquests.quests.QuestType;
+import com.ordwen.odailyquests.enums.QuestType;
 import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractItemChecker;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

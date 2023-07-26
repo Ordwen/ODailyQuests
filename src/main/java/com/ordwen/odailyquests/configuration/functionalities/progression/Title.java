@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.configuration.functionalities;
+package com.ordwen.odailyquests.configuration.functionalities.progression;
 
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.tools.ColorConvert;
