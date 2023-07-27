@@ -270,7 +270,17 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
      */
     public static Inventory getPlayerQuestsInterface(Player player) {
 
-        Inventory playerQuestsInventoryIndividual = Bukkit.createInventory(null, size, PAPIHook.getPlaceholders(player, interfaceName));
+        final Map<String, PlayerQuests> activeQuests = QuestsManager.getActiveQuests();
+        if (!activeQuests.containsKey(player.getName())) {
+            PluginLogger.error("Impossible to find the player " + player.getName() + " in the active quests.");
+            PluginLogger.error("It can happen if the player try to open the interface while the server/plugin is reloading.");
+            PluginLogger.error("If the problem persist, please contact the developer.");
+            return null;
+        }
+
+        final Map<AbstractQuest, Progression> playerQuests = activeQuests.get(player.getName()).getPlayerQuests();
+
+        final Inventory playerQuestsInventoryIndividual = Bukkit.createInventory(null, size, PAPIHook.getPlaceholders(player, interfaceName));
         playerQuestsInventoryIndividual.setContents(playerQuestsInventoryBase.getContents());
 
         if (!papiItems.isEmpty()) {
@@ -288,9 +298,6 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
                 playerQuestsInventoryIndividual.setItem(papiItems.get(item), itemCopy);
             }
         }
-
-        final Map<String, PlayerQuests> activeQuests = QuestsManager.getActiveQuests();
-        final Map<AbstractQuest, Progression> playerQuests = activeQuests.get(player.getName()).getPlayerQuests();
 
         /* load player head */
         if (isPlayerHeadEnabled) {

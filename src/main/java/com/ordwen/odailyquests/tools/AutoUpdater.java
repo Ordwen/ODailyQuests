@@ -17,10 +17,25 @@ public class AutoUpdater {
     }
 
     public void checkForUpdate() {
-        final String configVersion = plugin.getConfig().getString("version");
+
+        final FileConfiguration configFile = new YamlConfiguration();
+        final File file = new File(plugin.getDataFolder(), "config.yml");
+
+        try {
+            configFile.load(file);
+        } catch (IOException | InvalidConfigurationException e) {
+            throw new RuntimeException(e);
+        }
+
+        final String configVersion = configFile.getString("version");
+        if (configVersion == null) {
+            PluginLogger.error("The 'version' field is missing from the config file. The auto updater cannot work without it.");
+            return;
+        }
+
         final String currentVersion = plugin.getDescription().getVersion();
 
-        if (configVersion == null | !configVersion.equals(currentVersion)) {
+        if (!configVersion.equals(currentVersion)) {
             PluginLogger.warn("It looks like you were using an older version of the plugin. Let's update your files!");
 
             // --------------
@@ -28,15 +43,6 @@ public class AutoUpdater {
             // --------------
 
             // CONFIG
-
-            final FileConfiguration configFile = new YamlConfiguration();
-            final File file = new File(plugin.getDataFolder(), "config.yml");
-
-            try {
-                configFile.load(file);
-            } catch (IOException | InvalidConfigurationException e) {
-                throw new RuntimeException(e);
-            }
 
             // Add use_itemsadder: false to config
 

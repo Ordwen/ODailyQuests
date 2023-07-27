@@ -10,6 +10,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
 
 public class PlayerCommands implements CommandExecutor {
@@ -100,15 +101,32 @@ public class PlayerCommands implements CommandExecutor {
                                 if (msg != null) sender.sendMessage(msg);
                             }
                         }
-                        case "me" ->
-                                player.openInventory(PlayerQuestsInterface.getPlayerQuestsInterface(player));
+                        case "me" -> {
+                            final Inventory inventory = PlayerQuestsInterface.getPlayerQuestsInterface(player);
+
+                            if (inventory == null) {
+                                player.sendMessage("§cImpossible to open the quests interface. Is the plugin still loading?");
+                                player.sendMessage("§cIf the problem persists, please contact the server administrator.");
+                                return true;
+                            }
+
+                            player.openInventory(inventory);
+                        }
                         default -> {
                             final String msg = QuestsMessages.PLAYER_HELP.toString();
                             if (msg != null) sender.sendMessage(msg);
                         }
                     }
-                } else
-                    player.openInventory(PlayerQuestsInterface.getPlayerQuestsInterface(player));
+                } else {
+                    final Inventory inventory = PlayerQuestsInterface.getPlayerQuestsInterface(player);
+
+                    if (inventory == null) {
+                        player.sendMessage("§cImpossible to open the quests interface. Is the plugin still loading?");
+                        player.sendMessage("§cIf the problem persists, please contact the server administrator.");
+                        return true;
+                    }
+                    player.openInventory(inventory);
+                }
             } else {
                 final String msg = QuestsMessages.NO_PERMISSION.toString();
                 if (msg != null) sender.sendMessage(msg);

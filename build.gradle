@@ -1,10 +1,9 @@
 plugins {
-    id 'com.github.johnrengelman.shadow' version '7.1.2'
     id 'java'
 }
 
 group = 'com.ordwen'
-version = '2.1.1-SNAPSHOT-11'
+version = '2.2.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
@@ -56,8 +55,8 @@ repositories {
 dependencies {
 
     /* database management */
-    implementation 'com.zaxxer:HikariCP:5.0.1'
-    implementation 'com.h2database:h2:2.1.214'
+    compileOnly 'com.zaxxer:HikariCP:5.0.1'
+    compileOnly 'com.h2database:h2:2.1.214'
 
     /* spigot */
     compileOnly 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
@@ -85,8 +84,7 @@ dependencies {
     /* custom items */
     compileOnly 'com.github.oraxen:oraxen:1.157.0'
     compileOnly 'com.github.LoneDev6:API-ItemsAdder:3.5.0b'
-    compileOnly name: 'CustomCrops-api-3.3.1.2'
-    
+
     /* Mojang auth API for heads */
     compileOnly 'com.mojang:authlib:1.5.21'
 }
@@ -104,12 +102,6 @@ java {
 tasks.withType(JavaCompile).configureEach {
     if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
         options.release = targetJavaVersion
-    }
-}
-
-shadowJar {
-    manifest {
-        attributes 'Main-Class': 'com.ordwen.odailyquests.ODailyQuests'
     }
 }
 

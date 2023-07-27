@@ -3,7 +3,6 @@ package com.ordwen.odailyquests.externs;
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.externs.hooks.eco.VaultHook;
 import com.ordwen.odailyquests.externs.hooks.holograms.HolographicDisplaysHook;
-import com.ordwen.odailyquests.externs.hooks.items.CustomCropsHook;
 import com.ordwen.odailyquests.externs.hooks.mobs.EliteMobsHook;
 import com.ordwen.odailyquests.externs.hooks.mobs.MythicMobsHook;
 import com.ordwen.odailyquests.externs.hooks.npcs.CitizensHook;
@@ -32,7 +31,6 @@ public class IntegrationsManager {
         loadVault();
         loadEliteMobs();
         loadMythicMobs();
-        loadCustomCrops();
         loadPointsPlugin();
         loadCitizens();
         loadHolographicDisplays();
@@ -74,15 +72,6 @@ public class IntegrationsManager {
     private void loadEliteMobs() {
         if (EliteMobsHook.isEliteMobsSetup()) {
             PluginLogger.info("EliteMobs successfully hooked.");
-        }
-    }
-
-    /**
-     * Hook - CustomCrops
-     */
-    private void loadCustomCrops() {
-        if (CustomCropsHook.isCustomCropsSetup()) {
-            PluginLogger.info("CustomCrops successfully hooked.");
         }
     }
 

@@ -32,5 +32,4 @@ public enum QuestType {
     PLACEHOLDER,
 
     CUSTOM_MOBS,
-
 }
