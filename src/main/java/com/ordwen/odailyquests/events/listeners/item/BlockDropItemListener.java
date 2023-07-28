@@ -62,16 +62,11 @@ public class BlockDropItemListener extends AbstractItemChecker implements Listen
             final List<Item> drops = event.getItems();
             if (drops.size() == 0) return;
 
-            System.out.println(dataMaterial);
-            System.out.println(drops);
-
             boolean isSlicedMelon = false;
             int amount = 0;
             for (Item item : drops) {
                 final Material itemMaterial = item.getItemStack().getType();
                 if (itemMaterial == Material.MELON_SLICE) isSlicedMelon = true;
-
-                System.out.println(itemMaterial);
 
                 if (isSlicedMelon) {
                     if (itemMaterial == Material.MELON_SLICE) {

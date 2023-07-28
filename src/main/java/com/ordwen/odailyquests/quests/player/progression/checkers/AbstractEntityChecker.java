@@ -45,7 +45,6 @@ public abstract class AbstractEntityChecker extends AbstractProgressionIncreaser
 
                     if (abstractQuest instanceof EntityQuest quest) {
 
-                        System.out.println(quest.getEntityTypes() == null);
                         if (quest.getEntityTypes() == null) isRequiredEntity = true;
                         else {
                             for (EntityType type : quest.getEntityTypes()) {
@@ -53,7 +52,6 @@ public abstract class AbstractEntityChecker extends AbstractProgressionIncreaser
                                 if (isRequiredEntity) break;
                             }
                         }
-
 
                         if (isRequiredEntity) {
                             if (quest.getDyeColor() != null) {

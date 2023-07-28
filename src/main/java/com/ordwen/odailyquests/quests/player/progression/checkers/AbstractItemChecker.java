@@ -62,9 +62,6 @@ public abstract class AbstractItemChecker extends AbstractProgressionIncreaser {
                                         }
                                     }
                                 } else {
-                                    System.out.println("required item: " + item);
-                                    System.out.println("given item: " + itemStack);
-                                    System.out.println("is similar: " + item.isSimilar(itemStack));
                                     if (item.isSimilar(itemStack)) {
                                         isRequiredItem = true;
                                         break;

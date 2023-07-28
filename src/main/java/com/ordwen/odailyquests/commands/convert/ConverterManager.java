@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.commands.convert;
 
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.tools.PluginLogger;
 
 public class ConverterManager {
 
@@ -19,11 +20,11 @@ public class ConverterManager {
                     case "H2", "h2":
                         return new YAMLtoH2Converter().convert(oDailyQuests);
                     default:
-                        System.out.println("The new format is not supported.");
+                        PluginLogger.error("The new format is not supported.");
                         return false;
                 }
             default:
-                System.out.println("The old format is not supported.");
+                PluginLogger.error("The old format is not supported.");
                 return false;
         }
     }
