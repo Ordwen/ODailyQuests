@@ -7,6 +7,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public class AutoUpdater {
 
@@ -39,7 +40,7 @@ public class AutoUpdater {
             PluginLogger.warn("It looks like you were using an older version of the plugin. Let's update your files!");
 
             // --------------
-            // 2.1.0 -> 2.1.1
+            // 2.1.0 -> 2.2.0
             // --------------
 
             // CONFIG
@@ -47,7 +48,7 @@ public class AutoUpdater {
             // Add use_itemsadder: false to config
 
             if (!configFile.contains("use_itemsadder")) {
-                AddDefault.addDefaultConfigItem("use_itemsadder", "false", configFile, file);
+                AddDefault.addDefaultConfigItem("use_itemsadder", false, configFile, file);
                 PluginLogger.warn("ItemsAdder support has been added to the config file.");
             }
 
@@ -61,6 +62,27 @@ public class AutoUpdater {
             }
 
             // --------------
+            // 2.2.1 -> 2.2.2
+            // --------------
+
+            // CONFIG
+
+            if (!configFile.contains("categories_rewards")) {
+                // easy
+                AddDefault.addDefaultConfigItem("categories_rewards.easy.enabled", true, configFile, file);
+                AddDefault.addDefaultConfigItem("categories_rewards.easy.reward_type", "COMMAND", configFile, file);
+                AddDefault.addDefaultConfigItem("categories_rewards.easy.commands", List.of("give %player% diamond 16"), configFile, file);
+
+                // medium
+                AddDefault.addDefaultConfigItem("categories_rewards.medium.enabled", true, configFile, file);
+                AddDefault.addDefaultConfigItem("categories_rewards.medium.reward_type", "COMMAND", configFile, file);
+                AddDefault.addDefaultConfigItem("categories_rewards.medium.commands", List.of("give %player% diamond 32"), configFile, file);
+
+                // hard
+                AddDefault.addDefaultConfigItem("categories_rewards.hard.enabled", true, configFile, file);
+                AddDefault.addDefaultConfigItem("categories_rewards.hard.reward_type", "COMMAND", configFile, file);
+                AddDefault.addDefaultConfigItem("categories_rewards.hard.commands", List.of("give %player% diamond 64"), configFile, file);
+            }
 
             PluginLogger.fine("All files have been updated!");
         }

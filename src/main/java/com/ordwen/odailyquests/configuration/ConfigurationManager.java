@@ -6,6 +6,8 @@ import com.ordwen.odailyquests.configuration.functionalities.*;
 import com.ordwen.odailyquests.configuration.functionalities.progression.ActionBar;
 import com.ordwen.odailyquests.configuration.functionalities.progression.ProgressionMessage;
 import com.ordwen.odailyquests.configuration.functionalities.progression.Title;
+import com.ordwen.odailyquests.configuration.functionalities.rewards.CategoriesRewards;
+import com.ordwen.odailyquests.configuration.functionalities.rewards.GlobalReward;
 import com.ordwen.odailyquests.configuration.integrations.ItemsAdderEnabled;
 import com.ordwen.odailyquests.configuration.integrations.NPCNames;
 import com.ordwen.odailyquests.configuration.integrations.WildStackerEnabled;
@@ -47,6 +49,7 @@ public class ConfigurationManager {
         new Title(configurationFiles).loadTitle();
         new DisabledWorlds(configurationFiles).loadDisabledWorlds();
         new GlobalReward(configurationFiles).initGlobalReward();
+        new CategoriesRewards(configurationFiles).initCategoriesRewards();
         new SpawnersProgression(configurationFiles).loadSpawnersProgression();
         new TakeItems(configurationFiles).loadTakeItems();
         new ProgressionMessage(configurationFiles).loadProgressionMessage();

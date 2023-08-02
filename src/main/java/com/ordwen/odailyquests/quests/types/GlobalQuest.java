@@ -8,7 +8,7 @@ import java.util.List;
 
 public class GlobalQuest extends AbstractQuest {
 
-    public GlobalQuest(int questIndex, String questName, List<String> questDesc, QuestType questType, ItemStack menuItem, ItemStack achievedItem, int amountRequired, Reward reward, List<String> requiredWorlds, boolean isUsingPlaceholders) {
-        super(questIndex, questName, questDesc, questType, menuItem, achievedItem, amountRequired, reward, requiredWorlds, isUsingPlaceholders);
+    public GlobalQuest(int questIndex, String questName, String categoryName, List<String> questDesc, QuestType questType, ItemStack menuItem, ItemStack achievedItem, int amountRequired, Reward reward, List<String> requiredWorlds, boolean isUsingPlaceholders) {
+        super(questIndex, questName, categoryName, questDesc, questType, menuItem, achievedItem, amountRequired, reward, requiredWorlds, isUsingPlaceholders);
     }
 }

@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.externs.hooks.placeholders;
 
+import com.ordwen.odailyquests.tools.ColorConvert;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.entity.Player;
 
@@ -30,7 +31,7 @@ public class PAPIHook {
      * @return string with replaced placeholders if PAPI is hooked, original string otherwise
      */
     public static String getPlaceholders(Player player, String str) {
-        if (isPlaceholderAPIHooked) return (PlaceholderAPI.setPlaceholders(player, str));
+        if (isPlaceholderAPIHooked) return (ColorConvert.convertColorCode(PlaceholderAPI.setPlaceholders(player, str)));
         else return str;
     }
 }

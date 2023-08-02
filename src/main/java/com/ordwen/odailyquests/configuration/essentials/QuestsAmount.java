@@ -32,6 +32,27 @@ public class QuestsAmount {
         }
     }
 
+    /**
+     * Get the amount of quests by category.
+     * @param name category name.
+     * @return amount of quests by category.
+     */
+    public static int getQuestsAmountByCategory(String name) {
+        switch (name) {
+            case "easyQuests" -> {
+                return easyQuestsAmount;
+            }
+            case "mediumQuests" -> {
+                return mediumQuestsAmount;
+            }
+            case "hardQuests" -> {
+                return hardQuestsAmount;
+            }
+        }
+
+        return -1;
+    }
+
     public static int getQuestsAmount() {
         return questsAmount;
     }

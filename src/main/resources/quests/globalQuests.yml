@@ -494,3 +494,20 @@ quests:
       reward:
         reward_type: MONEY
         amount: 500
+
+    # example quest that is using the CoinsEngine reward type
+    31:
+      name: "&aStone"
+      menu_item: STONE
+      achieved_menu_item: "customhead:b5a3b49beec3ab23ae0b60dab56e9cc8fa16769a25830b5d8d6c46378f54430" # checkmark head
+      description:
+        - "&bMine 32 stones."
+        - "&bWin &c500$&b."
+      quest_type: BREAK
+      required_item: STONE
+      required_amount: 32
+      reward:
+        reward_type: COINS_ENGINE
+        currency_label: "quests_coins" # name from the CoinsEngine configuration file
+        currency_display_name: "&6&lQuests Coins" # name that will be used in the reward message to the player
+        amount: 500

@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.rewards;
 
+import com.ordwen.odailyquests.externs.hooks.eco.CoinsEngineHook;
 import com.ordwen.odailyquests.externs.hooks.placeholders.PAPIHook;
 import com.ordwen.odailyquests.externs.hooks.points.PlayerPointsHook;
 import com.ordwen.odailyquests.externs.hooks.points.TokenManagerHook;
@@ -7,10 +8,13 @@ import com.ordwen.odailyquests.externs.hooks.eco.VaultHook;
 import com.ordwen.odailyquests.configuration.functionalities.progression.ActionBar;
 import com.ordwen.odailyquests.configuration.functionalities.progression.Title;
 import com.ordwen.odailyquests.enums.QuestsMessages;
+import com.ordwen.odailyquests.tools.ColorConvert;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import su.nightexpress.coinsengine.api.CoinsEngineAPI;
+import su.nightexpress.coinsengine.api.currency.Currency;
 
 public class RewardManager {
 
@@ -35,58 +39,106 @@ public class RewardManager {
 
         String msg;
         switch (reward.getRewardType()) {
+
             case COMMAND -> {
                 for (String cmd : reward.getRewardCommands()) {
-                    cmd = PAPIHook.getPlaceholders(player, ChatColor.translateAlternateColorCodes('&', cmd));
+                    cmd = ColorConvert.convertColorCode(PAPIHook.getPlaceholders(player, cmd));
                     Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd.replace("%player%", player.getName()));
                 }
+
                 msg = QuestsMessages.REWARD_COMMAND.toString();
                 if (msg != null) player.sendMessage(msg);
             }
+
             case EXP_LEVELS -> {
                 player.giveExpLevels(reward.getRewardAmount());
                 msg = QuestsMessages.REWARD_EXP_LEVELS.toString();
-                if (msg != null)
-                    player.sendMessage(msg.replace("%rewardAmount%", String.valueOf(reward.getRewardAmount())));
+                if (msg != null) player.sendMessage(msg.replace("%rewardAmount%", String.valueOf(reward.getRewardAmount())));
             }
+
             case EXP_POINTS -> {
                 player.giveExp(reward.getRewardAmount());
                 msg = QuestsMessages.REWARD_EXP_POINTS.toString();
-                if (msg != null)
-                    player.sendMessage(msg.replace("%rewardAmount%", String.valueOf(reward.getRewardAmount())));
+                if (msg != null) player.sendMessage(msg.replace("%rewardAmount%", String.valueOf(reward.getRewardAmount())));
             }
+
             case MONEY -> {
                 if (VaultHook.getEconomy() != null) {
                     VaultHook.getEconomy().depositPlayer(player, reward.getRewardAmount());
 
                     msg = QuestsMessages.REWARD_MONEY.toString();
-                    if (msg != null)
-                        player.sendMessage(msg.replace("%rewardAmount%", String.valueOf(reward.getRewardAmount())));
-                } else {
+                    if (msg != null) player.sendMessage(msg.replace("%rewardAmount%", String.valueOf(reward.getRewardAmount())));
+                }
 
-                    msg = QuestsMessages.REWARD_MONEY_FAIL.toString();
-                    if (msg != null) player.sendMessage(msg);
-                    PluginLogger.error("Impossible to give money to player " + player.getName() + ". Vault is not properly setup!");
+                else {
+                    PluginLogger.error("Impossible to give reward to " + player.getName() + ".");
+                    PluginLogger.error("Reward type is " + reward.getRewardType() + " but Vault is not hooked.");
+                    player.sendMessage(ChatColor.RED + "Impossible to give you your reward. Please contact an administrator.");
                 }
             }
+
             case POINTS -> {
                 if (TokenManagerHook.getTokenManagerAPI() != null) {
                     TokenManagerHook.getTokenManagerAPI().addTokens(player, reward.getRewardAmount());
 
                     msg = QuestsMessages.REWARD_POINTS.toString();
-                    if (msg != null)
-                        player.sendMessage(msg.replace("%rewardAmount%", String.valueOf(reward.getRewardAmount())));
-                } else if (PlayerPointsHook.isPlayerPointsSetup()) {
+                    if (msg != null) player.sendMessage(msg.replace("%rewardAmount%", String.valueOf(reward.getRewardAmount())));
+                }
+
+                else if (PlayerPointsHook.isPlayerPointsSetup()) {
                     PlayerPointsHook.getPlayerPointsAPI().give(player.getUniqueId(), reward.getRewardAmount());
 
                     msg = QuestsMessages.REWARD_POINTS.toString();
-                    if (msg != null)
-                        player.sendMessage(msg.replace("%rewardAmount%", String.valueOf(reward.getRewardAmount())));
-                } else {
+                    if (msg != null)  player.sendMessage(msg.replace("%rewardAmount%", String.valueOf(reward.getRewardAmount())));
+                }
+
+                else {
                     PluginLogger.error("Impossible to give reward to " + player.getName() + ".");
-                    PluginLogger.error("Reward type is " + reward.getRewardType().getRewardTypeName() + " but TokenManager is not hooked.");
+                    PluginLogger.error("Reward type is " + reward.getRewardType() + " but no points plugin is hooked.");
+                    player.sendMessage(ChatColor.RED + "Impossible to give you your reward. Please contact an administrator.");
                 }
             }
+
+            case COINS_ENGINE -> {
+                if (!CoinsEngineHook.isCoinsEngineHooked()) {
+                    rewardTypeError(player, reward.getRewardType());
+                    return;
+                }
+
+                final Currency currency = CoinsEngineAPI.getCurrency(reward.getRewardCurrency());
+                if (currency == null) {
+                    currencyError(player, reward.getRewardCurrency());
+                    return;
+                }
+
+                CoinsEngineAPI.addBalance(player, currency, reward.getRewardAmount());
+                msg = QuestsMessages.REWARD_COINS_ENGINE.toString();
+                if (msg != null) player.sendMessage(msg
+                                .replace("%rewardAmount%", String.valueOf(reward.getRewardAmount()))
+                                .replace("%currencyName%", ColorConvert.convertColorCode(reward.getRewardCurrencyDisplayName())));
+            }
         }
+    }
+
+    /**
+     * Send error message to player if reward type is not supported.
+     * @param player to send the message.
+     * @param rewardType reward type.
+     */
+    private static void rewardTypeError(Player player, RewardType rewardType) {
+        PluginLogger.error("Impossible to give reward to " + player.getName() + ".");
+        PluginLogger.error("Reward type is " + rewardType + " but there is no supported plugin hooked");
+        player.sendMessage(ChatColor.RED + "Impossible to give you your reward. Please contact an administrator.");
+    }
+
+    /**
+     * Send error message to player if currency is not supported.
+     * @param player to send the message.
+     * @param currencyName currency name.
+     */
+    private static void currencyError(Player player, String currencyName) {
+        PluginLogger.error("Impossible to give reward to " + player.getName() + ".");
+        PluginLogger.error("Currency name is " + currencyName + " but there is no currency with this name.");
+        player.sendMessage(ChatColor.RED + "Impossible to give you your reward. Please contact an administrator.");
     }
 }

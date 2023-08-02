@@ -38,7 +38,7 @@ public class ProgressionMessage {
      */
     public void loadProgressionMessage() {
         isEnabled = configurationFiles.getConfigFile().getBoolean("progression_message.enabled");
-        message = configurationFiles.getConfigFile().getString("progression_message.message");
+        message = configurationFiles.getConfigFile().getString("progression_message.text");
 
         final String type = configurationFiles.getConfigFile().getString("progression_message.type");
         if (type == null) {
@@ -67,7 +67,7 @@ public class ProgressionMessage {
             final String toSend = ColorConvert.convertColorCode(message
                     .replace("%player%", player.getDisplayName())
                     .replace("%questName%", questName)
-                    .replace("%progression%", String.valueOf(progression))
+                    .replace("%progress%", String.valueOf(progression))
                     .replace("%required%", String.valueOf(required)));
 
             switch (progressionMessageType) {

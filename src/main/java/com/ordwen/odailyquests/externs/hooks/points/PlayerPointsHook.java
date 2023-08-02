@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.externs.hooks.points;
 
+import org.black_ixx.playerpoints.PlayerPoints;
 import org.black_ixx.playerpoints.PlayerPointsAPI;
 import org.bukkit.Bukkit;
 
@@ -10,10 +11,12 @@ public class PlayerPointsHook {
     /**
      * Setup TokenManagerAPI.
      */
-    public static void setupPlayerPointsAPI() {
+    public static boolean setupPlayerPointsAPI() {
         if (Bukkit.getPluginManager().isPluginEnabled("PlayerPoints")) {
-            playerPointsAPI = org.black_ixx.playerpoints.PlayerPoints.getInstance().getAPI();
+            playerPointsAPI = PlayerPoints.getInstance().getAPI();
+            return true;
         }
+        return false;
     }
 
     public static boolean isPlayerPointsSetup() {

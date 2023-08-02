@@ -2,8 +2,8 @@ package com.ordwen.odailyquests.commands.interfaces;
 
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.Buttons;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
+import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
-import com.ordwen.odailyquests.quests.QuestsLoader;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -44,7 +44,7 @@ public class GlobalQuestsInterface {
 
         emptyCaseItem = new ItemStack(Material.valueOf(configurationFiles.getConfigFile().getConfigurationSection("interfaces.global_quests").getString(".empty_item")));
         float invSize = 45;
-        int neededInventories = (int) Math.ceil(QuestsLoader.getGlobalQuests().size() / invSize);
+        int neededInventories = (int) Math.ceil(CategoriesLoader.getGlobalQuests().size() / invSize);
 
         for (int i = 0; i < neededInventories; i++) {
             Inventory inv = Bukkit.createInventory(null, 54, InterfacesManager.getGlobalQuestsInventoryName() + " - " + (i + 1));
@@ -65,8 +65,8 @@ public class GlobalQuestsInterface {
             /* add quests items on slots */
             while (i < invSize && !allQuestsLoaded) {
 
-                if (currentQuestIndex < QuestsLoader.getGlobalQuests().size()) {
-                    AbstractQuest quest = QuestsLoader.getGlobalQuests().get(currentQuestIndex);
+                if (currentQuestIndex < CategoriesLoader.getGlobalQuests().size()) {
+                    AbstractQuest quest = CategoriesLoader.getGlobalQuests().get(currentQuestIndex);
 
                     ItemStack itemStack = quest.getMenuItem();
                     ItemMeta itemMeta = itemStack.getItemMeta();

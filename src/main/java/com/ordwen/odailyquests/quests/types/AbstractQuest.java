@@ -10,6 +10,7 @@ public abstract class AbstractQuest {
 
     final int questIndex;
     final String questName;
+    final String categoryName;
     final List<String> questDesc;
     final QuestType questType;
     final ItemStack menuItem;
@@ -28,9 +29,10 @@ public abstract class AbstractQuest {
      * @param amountRequired required amount of the item.
      * @param reward         reward of the quest.
      */
-    public AbstractQuest(int questIndex, String questName, List<String> questDesc, QuestType questType, ItemStack menuItem, ItemStack achievedItem, int amountRequired, Reward reward, List<String> requiredWorlds, boolean isUsingPlaceholders) {
+    public AbstractQuest(int questIndex, String questName, String categoryName, List<String> questDesc, QuestType questType, ItemStack menuItem, ItemStack achievedItem, int amountRequired, Reward reward, List<String> requiredWorlds, boolean isUsingPlaceholders) {
         this.questIndex = questIndex;
         this.questName = questName;
+        this.categoryName = categoryName;
         this.questDesc = questDesc;
         this.questType = questType;
         this.menuItem = menuItem;
@@ -49,6 +51,7 @@ public abstract class AbstractQuest {
     public AbstractQuest(GlobalQuest globalQuest) {
         this.questIndex = globalQuest.questIndex;
         this.questName = globalQuest.questName;
+        this.categoryName = globalQuest.categoryName;
         this.questDesc = globalQuest.questDesc;
         this.questType = globalQuest.questType;
         this.menuItem = globalQuest.menuItem;
@@ -84,6 +87,15 @@ public abstract class AbstractQuest {
      */
     public String getQuestName() {
         return this.questName;
+    }
+
+    /**
+     * Get the name of the category.
+     *
+     * @return category name.
+     */
+    public String getCategoryName() {
+        return this.categoryName;
     }
 
     /**

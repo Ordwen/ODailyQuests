@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.externs;
 
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.externs.hooks.eco.CoinsEngineHook;
 import com.ordwen.odailyquests.externs.hooks.eco.VaultHook;
 import com.ordwen.odailyquests.externs.hooks.holograms.HolographicDisplaysHook;
 import com.ordwen.odailyquests.externs.hooks.mobs.EliteMobsHook;
@@ -29,6 +30,7 @@ public class IntegrationsManager {
      */
     public void loadAllDependencies() {
         loadVault();
+        loadCoinsEngine();
         loadEliteMobs();
         loadMythicMobs();
         loadPointsPlugin();
@@ -79,16 +81,22 @@ public class IntegrationsManager {
      * Hook - TokenManager / PlayerPoints
      */
     private void loadPointsPlugin() {
-        if (!TokenManagerHook.setupTokenManager()) {
-            PlayerPointsHook.setupPlayerPointsAPI();
-            if (PlayerPointsHook.isPlayerPointsSetup()) {
-                PluginLogger.info("PlayerPoints successfully hooked.");
-            } else {
-                PluginLogger.warn("No compatible plugin detected for reward type 'POINTS'.");
-                PluginLogger.warn("Quests with reward type 'POINTS' will not work.");
-            }
-        } else {
+        if (TokenManagerHook.setupTokenManager()) {
             PluginLogger.info("TokenManager successfully hooked.");
+            return;
+        }
+
+        if (PlayerPointsHook.setupPlayerPointsAPI()) {
+            PluginLogger.info("PlayerPoints successfully hooked.");
+        }
+    }
+
+    /**
+     * Hook - CoinsEngine
+     */
+    private void loadCoinsEngine() {
+        if (CoinsEngineHook.setupCoinsEngineAPI()) {
+            PluginLogger.info("CoinsEngine successfully hooked.");
         }
     }
 
@@ -96,10 +104,7 @@ public class IntegrationsManager {
      * Hook - Vault
      */
     private void loadVault() {
-        if (!VaultHook.setupEconomy()) {
-            PluginLogger.warn("No compatible plugin detected for reward type 'MONEY'.");
-            PluginLogger.warn("Quests with reward type 'MONEY' will not work.");
-        } else {
+        if (VaultHook.setupEconomy()) {
             PluginLogger.info("Vault successfully hooked.");
         }
     }
@@ -111,8 +116,7 @@ public class IntegrationsManager {
         if (CitizensHook.setupCitizens()) {
             getServer().getPluginManager().registerEvents(new CitizensHook(), oDailyQuests);
             PluginLogger.info("Citizens successfully hooked.");
-        } else
-            PluginLogger.warn("Citizens not detected. NPCs will not work.");
+        }
     }
 
     /**
@@ -121,8 +125,7 @@ public class IntegrationsManager {
     private void loadHolographicDisplays() {
         if (HolographicDisplaysHook.isHolographicDisplaysSetup()) {
             PluginLogger.info("HolographicDisplays successfully hooked.");
-        } else
-            PluginLogger.warn("HolographicDisplays not detected. Holograms will not work.");
+        }
     }
 
     /**
@@ -132,7 +135,6 @@ public class IntegrationsManager {
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new PAPIExpansion().register();
             PluginLogger.info("PlaceholderAPI successfully hooked.");
-        } else
-            PluginLogger.warn("PlaceholderAPI not detected. Placeholders will not work.");
+        }
     }
 }

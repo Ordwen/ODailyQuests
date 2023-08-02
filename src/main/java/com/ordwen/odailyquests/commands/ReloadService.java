@@ -5,9 +5,9 @@ import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.configuration.essentials.Temporality;
 import com.ordwen.odailyquests.configuration.integrations.ItemsAdderEnabled;
 import com.ordwen.odailyquests.externs.hooks.holograms.HologramsManager;
+import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.yaml.YamlManager;
-import com.ordwen.odailyquests.quests.QuestsLoader;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
@@ -16,7 +16,7 @@ import org.bukkit.entity.Player;
 public class ReloadService {
 
     private final ODailyQuests oDailyQuests;
-    private final QuestsLoader questsLoader;
+    private final CategoriesLoader categoriesLoader;
     private final SQLManager sqlManager;
     private final YamlManager yamlManager;
 
@@ -27,7 +27,7 @@ public class ReloadService {
      */
     public ReloadService(ODailyQuests oDailyQuests, boolean useSQL) {
         this.oDailyQuests = oDailyQuests;
-        this.questsLoader = oDailyQuests.getQuestsLoader();
+        this.categoriesLoader = oDailyQuests.getCategoriesLoader();
 
         if (useSQL) {
             this.sqlManager = oDailyQuests.getSQLManager();
@@ -116,7 +116,7 @@ public class ReloadService {
 
         /* Load quests & interface */
         if (!ItemsAdderEnabled.isEnabled() || ItemsAdderEnabled.isLoaded()) {
-            questsLoader.loadCategories();
+            categoriesLoader.loadCategories();
             oDailyQuests.getInterfacesManager().initAllObjects();
         }
 

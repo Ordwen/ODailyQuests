@@ -13,6 +13,7 @@ import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.tools.ColorConvert;
 import com.ordwen.odailyquests.tools.PluginLogger;
+import com.ordwen.odailyquests.tools.TimeRemain;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -50,7 +51,7 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
     private static final Map<Integer, List<String>> consoleCommandsItems = new HashMap<>();
 
     /* items with placeholders */
-    private static final Map<ItemStack, Integer> papiItems = new HashMap<>();
+    private static final Map<Integer, ItemStack> papiItems = new HashMap<>();
 
     /**
      * Load player quests interface.
@@ -226,7 +227,7 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
 
             if (itemsSection.contains(element + ".use_placeholders") && itemsSection.getBoolean(element + ".use_placeholders")) {
                 for (int slot : slots) {
-                    papiItems.put(item, slot - 1);
+                    papiItems.put(slot - 1, item);
                 }
             }
 
@@ -278,24 +279,30 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
             return null;
         }
 
-        final Map<AbstractQuest, Progression> playerQuests = activeQuests.get(player.getName()).getPlayerQuests();
+        final PlayerQuests playerQuests = activeQuests.get(player.getName());
+        final Map<AbstractQuest, Progression> questsMap = playerQuests.getPlayerQuests();
 
         final Inventory playerQuestsInventoryIndividual = Bukkit.createInventory(null, size, PAPIHook.getPlaceholders(player, interfaceName));
         playerQuestsInventoryIndividual.setContents(playerQuestsInventoryBase.getContents());
 
         if (!papiItems.isEmpty()) {
-            for (ItemStack item : papiItems.keySet()) {
+            for (Integer slot : papiItems.keySet()) {
 
-                final ItemStack itemCopy = item.clone();
+                final ItemStack itemCopy = papiItems.get(slot).clone();
                 final ItemMeta meta = itemCopy.getItemMeta();
                 final List<String> lore = meta.getLore();
 
+                meta.setDisplayName(PAPIHook.getPlaceholders(player, meta.getDisplayName()));
+
                 for (String str : lore) {
-                    lore.set(lore.indexOf(str), PAPIHook.getPlaceholders(player, str));
+                    lore.set(lore.indexOf(str), PAPIHook.getPlaceholders(player, str)
+                            .replace("%achieved%", String.valueOf(playerQuests.getAchievedQuests()))
+                            .replace("%drawIn%", TimeRemain.timeRemain(player.getName())));
                 }
+
                 meta.setLore(lore);
                 itemCopy.setItemMeta(meta);
-                playerQuestsInventoryIndividual.setItem(papiItems.get(item), itemCopy);
+                playerQuestsInventoryIndividual.setItem(slot, itemCopy);
             }
         }
 
@@ -309,10 +316,10 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
 
         /* load quests */
         int i = 0;
-        for (AbstractQuest quest : playerQuests.keySet()) {
+        for (AbstractQuest quest : questsMap.keySet()) {
 
             ItemStack itemStack;
-            if (playerQuests.get(quest).isAchieved()) {
+            if (questsMap.get(quest).isAchieved()) {
                 itemStack = quest.getAchievedItem().clone();
             } else {
                 itemStack = quest.getMenuItem().clone();
@@ -333,7 +340,7 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
 
             lore.add(ColorConvert.convertColorCode(PAPIHook.getPlaceholders(player, status)));
 
-            if (playerQuests.get(quest).isAchieved()) {
+            if (questsMap.get(quest).isAchieved()) {
                 if (isGlowingEnabled) {
                     itemMeta.addEnchant(Enchantment.SILK_TOUCH, 1, false);
                 }
@@ -341,12 +348,12 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
             } else {
                 if (quest.getQuestType() == QuestType.GET) {
                     lore.add(ColorConvert.convertColorCode(PAPIHook.getPlaceholders(player, completeGetType)
-                            .replace("%progress%", String.valueOf(playerQuests.get(quest).getProgression()))
+                            .replace("%progress%", String.valueOf(questsMap.get(quest).getProgression()))
                             .replace("%required%", String.valueOf(quest.getAmountRequired()))
                     ));
                 } else {
                     lore.add(ColorConvert.convertColorCode(PAPIHook.getPlaceholders(player, progression)
-                            .replace("%progress%", String.valueOf(playerQuests.get(quest).getProgression()))
+                            .replace("%progress%", String.valueOf(questsMap.get(quest).getProgression()))
                             .replace("%required%", String.valueOf(quest.getAmountRequired()))));
                 }
             }

@@ -7,6 +7,7 @@ import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.enums.QuestType;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
+import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -21,6 +22,11 @@ public abstract class AbstractGlobalChecker extends AbstractProgressionIncreaser
      * @param questType the quest type to increase progression for.
      */
     public void setPlayerQuestProgression(Player player, int amount, QuestType questType) {
+        if (!QuestsManager.getActiveQuests().containsKey(player.getName())) {
+            PluginLogger.warn(player.getName() + " is not in the active quests list.");
+            return;
+        }
+
         if (DisabledWorlds.isWorldDisabled(player.getWorld().getName())) {
             return;
         }

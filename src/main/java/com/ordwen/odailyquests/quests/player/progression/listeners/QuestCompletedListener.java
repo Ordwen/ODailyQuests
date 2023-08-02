@@ -16,7 +16,7 @@ public class QuestCompletedListener implements Listener {
         final var quest = event.getAbstractQuest();
 
         progression.setAchieved();
-        QuestsManager.getActiveQuests().get(player.getName()).increaseAchievedQuests(player);
         RewardManager.sendAllRewardItems(PAPIHook.getPlaceholders(player, quest.getQuestName()), player, quest.getReward());
+        QuestsManager.getActiveQuests().get(player.getName()).increaseAchievedQuests(quest.getCategoryName(), player);
     }
 }

@@ -3,8 +3,8 @@ package com.ordwen.odailyquests.quests.player.progression;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
 import com.ordwen.odailyquests.enums.QuestsMessages;
+import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
-import com.ordwen.odailyquests.quests.QuestsLoader;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import org.bukkit.Bukkit;
@@ -127,21 +127,21 @@ public class Utils {
         AbstractQuest quest = null;
 
         if (questsConfigMode == 1) {
-            quest = getQuestAtIndex(QuestsLoader.getGlobalQuests(), questIndex, playerName);
+            quest = getQuestAtIndex(CategoriesLoader.getGlobalQuests(), questIndex, playerName);
         } else if (questsConfigMode == 2) {
 
             final int questsAmount = QuestsAmount.getQuestsAmount();
 
             if (id <= (questsAmount - QuestsAmount.getMediumQuestsAmount() - QuestsAmount.getHardQuestsAmount())) {
-                quest = getQuestAtIndex(QuestsLoader.getEasyQuests(), questIndex, playerName);
+                quest = getQuestAtIndex(CategoriesLoader.getEasyQuests(), questIndex, playerName);
             }
 
             else if (id <= (questsAmount - QuestsAmount.getHardQuestsAmount())) {
-                quest = getQuestAtIndex(QuestsLoader.getMediumQuests(), questIndex, playerName);
+                quest = getQuestAtIndex(CategoriesLoader.getMediumQuests(), questIndex, playerName);
             }
 
             else {
-                quest = getQuestAtIndex(QuestsLoader.getHardQuests(), questIndex, playerName);
+                quest = getQuestAtIndex(CategoriesLoader.getHardQuests(), questIndex, playerName);
             }
 
         } else

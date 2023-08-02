@@ -32,17 +32,21 @@ public enum QuestsMessages {
     QUESTS_RENEWED_ADMIN("quests_renewed_admin", "&eYou have reset the quests of %target%."),
     QUEST_ACHIEVED("quest_achieved", "&aYou finished the quest &e%questName%&a, well done !"),
     ALL_QUESTS_ACHIEVED("all_quests_achieved", "&aYou have finished all your daily quests, well done !"),
+    EASY_QUESTS_ACHIEVED("easy_reward", "&aYou have completed all your easy quests!"),
+    MEDIUM_QUESTS_ACHIEVED("medium_reward", "&aYou have completed all your medium quests!"),
+    HARD_QUESTS_ACHIEVED("hard_reward", "&aYou have completed all your hard quests!"),
     NOT_ENOUGH_ITEM("not_enough_items","&cYou don't have the required amount to complete this quest."),
     TOTAL_AMOUNT_RESET("total_amount_reset", "&eYour total number of completed quests has been reset by an admin."),
     TOTAL_AMOUNT_RESET_ADMIN("total_amount_reset_admin", "&e%target%'s total number of completed quests has been reset by an admin."),
+
     REWARD_COMMAND("reward_command", "&aYou receive some rewards commands."),
     REWARD_EXP_LEVELS("reward_exp_levels", "&aYou receive &e%rewardAmount% &bEXP &alevels."),
     REWARD_EXP_POINTS("reward_exp_points", "&aYou receive &e%rewardAmount% &bEXP &apoints."),
     REWARD_MONEY("reward_money", "&aYou receive &e%rewardAmount% &b$&a."),
     REWARD_POINTS("reward_points", "&aYou receive &e%rewardAmount% &bpoints&a."),
+    REWARD_COINS_ENGINE("reward_coins_engine", "&aYou receive &e%rewardAmount% &b%currencyName%&a."),
 
     NEW_DAY("new_day", "&6It's a new day!"),
-    REWARD_MONEY_FAIL("reward_money_fail", "&cAn error happened. Impossible to give you the reward. Please contact an administrator."),
     TOO_FAR_FROM_LOCATION("too_far", "&cYou are too far from the required location."),
     BAD_WORLD_LOCATION("bad_world", "&cYou are in the wrong world."),
 

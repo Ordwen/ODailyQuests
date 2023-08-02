@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.configuration.functionalities;
+package com.ordwen.odailyquests.configuration.functionalities.rewards;
 
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
@@ -7,6 +7,7 @@ import com.ordwen.odailyquests.rewards.RewardManager;
 import com.ordwen.odailyquests.rewards.RewardType;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 
 public class GlobalReward {
 
@@ -23,13 +24,14 @@ public class GlobalReward {
      * Load global reward.
      */
     public void initGlobalReward() {
-        isEnabled = configurationFiles.getConfigFile().getConfigurationSection("global_reward").getBoolean("enabled");
+        final ConfigurationSection globalRewardSection = configurationFiles.getConfigFile().getConfigurationSection("global_reward");
+        isEnabled = globalRewardSection.getBoolean("enabled");
         if (isEnabled) {
-            RewardType rewardType = RewardType.valueOf(configurationFiles.getConfigFile().getConfigurationSection("global_reward").getString(".reward_type"));
+            RewardType rewardType = RewardType.valueOf(globalRewardSection.getString(".reward_type"));
             if (rewardType == RewardType.COMMAND) {
-                globalReward = new Reward(rewardType, configurationFiles.getConfigFile().getConfigurationSection("global_reward").getStringList(".commands"));
+                globalReward = new Reward(rewardType, globalRewardSection.getStringList(".commands"));
             } else {
-                globalReward = new Reward(rewardType, configurationFiles.getConfigFile().getConfigurationSection("global_reward").getInt(".amount"));
+                globalReward = new Reward(rewardType, globalRewardSection.getInt(".amount"));
             }
             PluginLogger.fine("Global reward successfully loaded.");
         } else PluginLogger.fine("Global reward is disabled.");

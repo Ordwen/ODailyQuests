@@ -4,11 +4,8 @@ import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.enums.QuestType;
 import com.ordwen.odailyquests.externs.hooks.mobs.EliteMobsHook;
 import com.ordwen.odailyquests.externs.hooks.mobs.MythicMobsHook;
-import com.ordwen.odailyquests.configuration.essentials.Modes;
-import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
 import com.ordwen.odailyquests.quests.getters.QuestItemGetter;
 import com.ordwen.odailyquests.quests.types.*;
-import com.ordwen.odailyquests.files.QuestsFiles;
 import com.ordwen.odailyquests.rewards.Reward;
 import com.ordwen.odailyquests.rewards.RewardType;
 import com.ordwen.odailyquests.tools.ColorConvert;
@@ -30,63 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class QuestsLoader extends QuestItemGetter {
-
-    /* Init quests lists */
-    private static final ArrayList<AbstractQuest> globalQuests = new ArrayList<>();
-    private static final ArrayList<AbstractQuest> easyQuests = new ArrayList<>();
-    private static final ArrayList<AbstractQuest> mediumQuests = new ArrayList<>();
-    private static final ArrayList<AbstractQuest> hardQuests = new ArrayList<>();
-
-    /**
-     * Load all quests from files.
-     */
-    public void loadCategories() {
-
-        globalQuests.clear();
-        easyQuests.clear();
-        mediumQuests.clear();
-        hardQuests.clear();
-
-        /* init files */
-        FileConfiguration globalQuestsFile = QuestsFiles.getGlobalQuestsConfiguration();
-        FileConfiguration easyQuestsFile = QuestsFiles.getEasyQuestsConfiguration();
-        FileConfiguration mediumQuestsFile = QuestsFiles.getMediumQuestsConfiguration();
-        FileConfiguration hardQuestsFile = QuestsFiles.getHardQuestsConfiguration();
-
-        if (Modes.getQuestsMode() == 1) {
-            /* load global quests */
-            loadQuests(globalQuestsFile, globalQuests, "Global Quests");
-            if (globalQuests.size() < QuestsAmount.getQuestsAmount()) {
-                PluginLogger.error("Impossible to enable the plugin.");
-                PluginLogger.error("You need to have at least " + QuestsAmount.getQuestsAmount() + " quests in your globalQuest.yml file.");
-                Bukkit.getPluginManager().disablePlugin(ODailyQuests.INSTANCE);
-            }
-        } else if (Modes.getQuestsMode() == 2) {
-            /* load easy quests */
-            loadQuests(easyQuestsFile, easyQuests, "Easy Quests");
-            if (easyQuests.size() < QuestsAmount.getEasyQuestsAmount()) {
-                PluginLogger.error("Impossible to enable the plugin.");
-                PluginLogger.error("You need to have at least " + QuestsAmount.getEasyQuestsAmount() + " quest in your easyQuests.yml file.");
-                Bukkit.getPluginManager().disablePlugin(ODailyQuests.INSTANCE);
-            }
-            /* load medium quests */
-            loadQuests(mediumQuestsFile, mediumQuests, "Medium Quests");
-            if (mediumQuests.size() < QuestsAmount.getMediumQuestsAmount()) {
-                PluginLogger.error("Impossible to enable the plugin.");
-                PluginLogger.error("You need to have at least " + QuestsAmount.getMediumQuestsAmount() + " quest in your mediumQuests.yml file.");
-                Bukkit.getPluginManager().disablePlugin(ODailyQuests.INSTANCE);
-            }
-            /* load hard quests */
-            loadQuests(hardQuestsFile, hardQuests, "Hard Quests");
-            if (hardQuests.size() < QuestsAmount.getHardQuestsAmount()) {
-                PluginLogger.error("Impossible to enable the plugin.");
-                PluginLogger.error("You need to have at least " + QuestsAmount.getHardQuestsAmount() + " quest in your hardQuests.yml file.");
-                Bukkit.getPluginManager().disablePlugin(ODailyQuests.INSTANCE);
-            }
-        } else {
-            PluginLogger.error("Impossible to load the quests. The selected mode is incorrect.");
-        }
-    }
 
     /**
      * Load the reward of a quest.
@@ -111,6 +51,19 @@ public class QuestsLoader extends QuestItemGetter {
         return switch (rewardType) {
             case NONE -> new Reward(RewardType.NONE, 0);
             case COMMAND -> new Reward(RewardType.COMMAND, rewardSection.getStringList(".commands"));
+
+            case COINS_ENGINE -> {
+                final String currencyLabel = rewardSection.getString(".currency_label");
+                final String currencyDisplayName = rewardSection.getString(".currency_display_name");
+
+                if (currencyLabel == null || currencyDisplayName == null) {
+                    configurationError(fileName, questIndex, "currency_label", "currency_label or currency_display_name is null.");
+                    yield new Reward(RewardType.NONE, 0);
+                }
+
+                yield new Reward(RewardType.COINS_ENGINE, currencyLabel, currencyDisplayName, rewardSection.getInt(".amount"));
+            }
+
             default -> new Reward(rewardType, rewardSection.getInt(".amount"));
         };
     }
@@ -147,6 +100,7 @@ public class QuestsLoader extends QuestItemGetter {
 
         /* required amount */
         int requiredAmount = questType == QuestType.LOCATION || questType == QuestType.PLACEHOLDER ? 1 : questSection.getInt(".required_amount");
+        if (requiredAmount == -1) return null;
 
         /* required worlds */
         List<String> requiredWorlds = questSection.getStringList(".required_worlds");
@@ -173,7 +127,7 @@ public class QuestsLoader extends QuestItemGetter {
         /* reward */
         Reward reward = createReward(questSection, fileName, questIndex);
 
-        return new GlobalQuest(questIndex, questName, questDesc, questType, menuItem, achievedItem, requiredAmount, reward, requiredWorlds, usePlaceholders);
+        return new GlobalQuest(questIndex, questName, fileName, questDesc, questType, menuItem, achievedItem, requiredAmount, reward, requiredWorlds, usePlaceholders);
     }
 
     /**
@@ -606,33 +560,5 @@ public class QuestsLoader extends QuestItemGetter {
             return null;
         }
         return dyeColor;
-    }
-
-    /**
-     * Get global quests.
-     */
-    public static ArrayList<AbstractQuest> getGlobalQuests() {
-        return globalQuests;
-    }
-
-    /**
-     * Get easy quests.
-     */
-    public static ArrayList<AbstractQuest> getEasyQuests() {
-        return easyQuests;
-    }
-
-    /**
-     * Get medium quests.
-     */
-    public static ArrayList<AbstractQuest> getMediumQuests() {
-        return mediumQuests;
-    }
-
-    /**
-     * Get hard quests.
-     */
-    public static ArrayList<AbstractQuest> getHardQuests() {
-        return hardQuests;
     }
 }

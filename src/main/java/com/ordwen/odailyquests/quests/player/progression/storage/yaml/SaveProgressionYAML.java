@@ -12,6 +12,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class SaveProgressionYAML {
 
@@ -37,7 +39,7 @@ public class SaveProgressionYAML {
         int achievedQuests = playerQuests.getAchievedQuests();
         int totalAchievedQuests = playerQuests.getTotalAchievedQuests();
 
-        final HashMap<AbstractQuest, Progression> quests = playerQuests.getPlayerQuests();
+        final LinkedHashMap<AbstractQuest, Progression> quests = playerQuests.getPlayerQuests();
 
         progressionFile.set(playerName + ".timestamp", timestamp);
         progressionFile.set(playerName + ".achievedQuests", achievedQuests);

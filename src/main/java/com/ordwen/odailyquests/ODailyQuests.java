@@ -15,7 +15,8 @@ import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.configuration.essentials.Temporality;
 import com.ordwen.odailyquests.events.EventsManager;
 import com.ordwen.odailyquests.files.*;
-import com.ordwen.odailyquests.quests.QuestsLoader;
+import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
+import com.ordwen.odailyquests.quests.player.progression.listeners.AllCategoryQuestsCompletedListener;
 import com.ordwen.odailyquests.quests.player.progression.listeners.AllQuestsCompletedListener;
 import com.ordwen.odailyquests.quests.player.progression.listeners.QuestCompletedListener;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
@@ -46,7 +47,7 @@ public final class ODailyQuests extends JavaPlugin {
     private YamlManager yamlManager;
     private TimerTask timerTask;
     private ReloadService reloadService;
-    private QuestsLoader questsLoader;
+    private CategoriesLoader categoriesLoader;
 
     @Override
     public void onEnable() {
@@ -76,8 +77,8 @@ public final class ODailyQuests extends JavaPlugin {
             default -> this.yamlManager = new YamlManager();
         }
 
-        /* Init quests loader */
-        this.questsLoader = new QuestsLoader();
+        /* Init categories loader */
+        this.categoriesLoader = new CategoriesLoader();
 
         /* Load class instances */
         this.interfacesManager = new InterfacesManager(this);
@@ -109,6 +110,7 @@ public final class ODailyQuests extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new QuestsManager(this, sqlManager != null), this);
         getServer().getPluginManager().registerEvents(new QuestCompletedListener(), this);
         getServer().getPluginManager().registerEvents(new AllQuestsCompletedListener(), this);
+        getServer().getPluginManager().registerEvents(new AllCategoryQuestsCompletedListener(), this);
 
         /* Avoid errors on reload */
         if (Bukkit.getServer().getOnlinePlayers().size() > 0) {
@@ -219,8 +221,8 @@ public final class ODailyQuests extends JavaPlugin {
      * Get QuestsLoader instance.
      * @return QuestsLoader instance.
      */
-    public QuestsLoader getQuestsLoader() {
-        return questsLoader;
+    public CategoriesLoader getCategoriesLoader() {
+        return categoriesLoader;
     }
 
     /**

@@ -13,19 +13,24 @@ public class ConverterManager {
     public boolean convert(String oldFormat, String newFormat) {
 
         switch (oldFormat) {
-            case "YAML", "yaml":
+            case "YAML", "yaml" -> {
                 switch (newFormat) {
-                    case "MySQL", "mysql":
+                    case "MySQL", "mysql" -> {
                         return new YAMLtoMySQLConverter().convert(oDailyQuests);
-                    case "H2", "h2":
+                    }
+                    case "H2", "h2" -> {
                         return new YAMLtoH2Converter().convert(oDailyQuests);
-                    default:
+                    }
+                    default -> {
                         PluginLogger.error("The new format is not supported.");
                         return false;
+                    }
                 }
-            default:
+            }
+            default -> {
                 PluginLogger.error("The old format is not supported.");
                 return false;
+            }
         }
     }
 }

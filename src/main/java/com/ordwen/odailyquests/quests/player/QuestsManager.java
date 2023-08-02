@@ -5,10 +5,10 @@ import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
 import com.ordwen.odailyquests.configuration.essentials.Temporality;
+import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.progression.storage.yaml.YamlManager;
-import com.ordwen.odailyquests.quests.QuestsLoader;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.ChatColor;
@@ -130,7 +130,7 @@ public class QuestsManager implements Listener {
         LinkedHashMap<AbstractQuest, Progression> quests = new LinkedHashMap<>();
 
         if (Modes.getQuestsMode() == 1) {
-            ArrayList<AbstractQuest> globalQuests = QuestsLoader.getGlobalQuests();
+            ArrayList<AbstractQuest> globalQuests = CategoriesLoader.getGlobalQuests();
 
             for (int i = 0; i < QuestsAmount.getQuestsAmount(); i++) {
                 AbstractQuest quest;
@@ -143,9 +143,9 @@ public class QuestsManager implements Listener {
             }
         } else if (Modes.getQuestsMode() == 2) {
 
-            final ArrayList<AbstractQuest> easyQuests = QuestsLoader.getEasyQuests();
-            final ArrayList<AbstractQuest> mediumQuests = QuestsLoader.getMediumQuests();
-            final ArrayList<AbstractQuest> hardQuests = QuestsLoader.getHardQuests();
+            final ArrayList<AbstractQuest> easyQuests = CategoriesLoader.getEasyQuests();
+            final ArrayList<AbstractQuest> mediumQuests = CategoriesLoader.getMediumQuests();
+            final ArrayList<AbstractQuest> hardQuests = CategoriesLoader.getHardQuests();
 
             for (int i = 0; i < QuestsAmount.getEasyQuestsAmount(); i++) {
                 AbstractQuest quest;

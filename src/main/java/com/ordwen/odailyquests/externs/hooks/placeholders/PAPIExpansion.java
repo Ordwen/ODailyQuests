@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.externs.hooks.placeholders;
 
+import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.QuestsLoader;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
@@ -71,16 +72,16 @@ public class PAPIExpansion extends PlaceholderExpansion {
 
         // quests placeholders
         if (params.startsWith("global")) {
-            return getQuestName(params, QuestsLoader.getGlobalQuests());
+            return getQuestName(params, CategoriesLoader.getGlobalQuests());
         }
         if (params.startsWith("easy")) {
-            return getQuestName(params, QuestsLoader.getEasyQuests());
+            return getQuestName(params, CategoriesLoader.getEasyQuests());
         }
         if (params.startsWith("medium")) {
-            return getQuestName(params, QuestsLoader.getMediumQuests());
+            return getQuestName(params, CategoriesLoader.getMediumQuests());
         }
         if (params.startsWith("hard")) {
-            return getQuestName(params, QuestsLoader.getHardQuests());
+            return getQuestName(params, CategoriesLoader.getHardQuests());
         }
 
         return null;
