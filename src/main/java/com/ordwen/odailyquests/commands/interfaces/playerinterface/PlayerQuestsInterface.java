@@ -332,7 +332,14 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
 
             if (quest.isUsingPlaceholders()) {
                 for (String str : lore) {
-                    lore.set(lore.indexOf(str), PAPIHook.getPlaceholders(player, str));
+                    lore.set(
+                            lore.indexOf(str),
+                            PAPIHook.getPlaceholders(player, str)
+                                    .replace("%progress%", String.valueOf(questsMap.get(quest).getProgression()))
+                                    .replace("%required%", String.valueOf(quest.getAmountRequired()))
+                                    .replace("%achieved%", String.valueOf(playerQuests.getAchievedQuests()))
+                                    .replace("%drawIn%", TimeRemain.timeRemain(player.getName()))
+                    );
                 }
 
                 itemMeta.setDisplayName(PAPIHook.getPlaceholders(player, itemMeta.getDisplayName()));

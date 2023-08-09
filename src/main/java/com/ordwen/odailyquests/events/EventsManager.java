@@ -2,7 +2,8 @@ package com.ordwen.odailyquests.events;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.integrations.ItemsAdderEnabled;
-import com.ordwen.odailyquests.events.listeners.integrations.ItemsAdderLoadDataListener;
+import com.ordwen.odailyquests.events.listeners.integrations.itemsadder.CustomBlockBreakListener;
+import com.ordwen.odailyquests.events.listeners.integrations.itemsadder.ItemsAdderLoadDataListener;
 import com.ordwen.odailyquests.externs.hooks.mobs.EliteMobsHook;
 import com.ordwen.odailyquests.externs.hooks.mobs.MythicMobsHook;
 import com.ordwen.odailyquests.externs.hooks.stackers.WildStackerHook;
@@ -75,7 +76,9 @@ public class EventsManager {
         Bukkit.getPluginManager().registerEvents(new InventoryCloseListener(), oDailyQuests);
 
         // other plugins events
-        if (ItemsAdderEnabled.isEnabled())
+        if (ItemsAdderEnabled.isEnabled()) {
             Bukkit.getPluginManager().registerEvents(new ItemsAdderLoadDataListener(oDailyQuests), oDailyQuests);
+            Bukkit.getPluginManager().registerEvents(new CustomBlockBreakListener(), oDailyQuests);
+        }
     }
 }

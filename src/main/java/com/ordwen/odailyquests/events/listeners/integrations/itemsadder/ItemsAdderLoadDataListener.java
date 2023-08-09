@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.events.listeners.integrations;
+package com.ordwen.odailyquests.events.listeners.integrations.itemsadder;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.integrations.ItemsAdderEnabled;
