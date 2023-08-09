@@ -1,7 +1,10 @@
 package com.ordwen.odailyquests.enums;
 
+import com.ordwen.odailyquests.externs.hooks.placeholders.PAPIHook;
 import com.ordwen.odailyquests.tools.ColorConvert;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 
 @SuppressWarnings("SpellCheckingInspection")
 public enum QuestsMessages {
@@ -84,7 +87,24 @@ public enum QuestsMessages {
         String msg = LANG.getString(this.path, defaultMessage);
 
         if (msg.trim().isEmpty()) return null;
-        else return ColorConvert.convertColorCode(msg);
+        else return ColorConvert.convertColorCode(PAPIHook.getPlaceholders(null, msg));
+    }
+
+    public String getMessage(Player player) {
+        String msg = LANG.getString(this.path, defaultMessage);
+
+        if (msg.trim().isEmpty()) return null;
+        else return ColorConvert.convertColorCode(PAPIHook.getPlaceholders(player, msg));
+    }
+
+    public String getMessage(String playerName) {
+        final Player player = Bukkit.getPlayer(playerName);
+        if (player == null) return null;
+
+        String msg = LANG.getString(this.path, defaultMessage);
+        if (msg.trim().isEmpty()) return null;
+
+        else return ColorConvert.convertColorCode(PAPIHook.getPlaceholders(player, msg));
     }
 
     /**

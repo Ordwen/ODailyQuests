@@ -20,7 +20,7 @@ public class RewardManager {
 
     public static void sendAllRewardItems(String questName, Player player, Reward reward) {
 
-        final String msg = QuestsMessages.QUEST_ACHIEVED.toString();
+        final String msg = QuestsMessages.QUEST_ACHIEVED.getMessage(player);
         if (msg != null) player.sendMessage(msg.replace("%questName%", questName));
 
         Title.sendTitle(player, questName);
@@ -46,19 +46,19 @@ public class RewardManager {
                     Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd.replace("%player%", player.getName()));
                 }
 
-                msg = QuestsMessages.REWARD_COMMAND.toString();
+                msg = QuestsMessages.REWARD_COMMAND.getMessage(player);
                 if (msg != null) player.sendMessage(msg);
             }
 
             case EXP_LEVELS -> {
                 player.giveExpLevels(reward.getRewardAmount());
-                msg = QuestsMessages.REWARD_EXP_LEVELS.toString();
+                msg = QuestsMessages.REWARD_EXP_LEVELS.getMessage(player);
                 if (msg != null) player.sendMessage(msg.replace("%rewardAmount%", String.valueOf(reward.getRewardAmount())));
             }
 
             case EXP_POINTS -> {
                 player.giveExp(reward.getRewardAmount());
-                msg = QuestsMessages.REWARD_EXP_POINTS.toString();
+                msg = QuestsMessages.REWARD_EXP_POINTS.getMessage(player);
                 if (msg != null) player.sendMessage(msg.replace("%rewardAmount%", String.valueOf(reward.getRewardAmount())));
             }
 
@@ -66,7 +66,7 @@ public class RewardManager {
                 if (VaultHook.getEconomy() != null) {
                     VaultHook.getEconomy().depositPlayer(player, reward.getRewardAmount());
 
-                    msg = QuestsMessages.REWARD_MONEY.toString();
+                    msg = QuestsMessages.REWARD_MONEY.getMessage(player);
                     if (msg != null) player.sendMessage(msg.replace("%rewardAmount%", String.valueOf(reward.getRewardAmount())));
                 }
 
@@ -81,14 +81,14 @@ public class RewardManager {
                 if (TokenManagerHook.getTokenManagerAPI() != null) {
                     TokenManagerHook.getTokenManagerAPI().addTokens(player, reward.getRewardAmount());
 
-                    msg = QuestsMessages.REWARD_POINTS.toString();
+                    msg = QuestsMessages.REWARD_POINTS.getMessage(player);
                     if (msg != null) player.sendMessage(msg.replace("%rewardAmount%", String.valueOf(reward.getRewardAmount())));
                 }
 
                 else if (PlayerPointsHook.isPlayerPointsSetup()) {
                     PlayerPointsHook.getPlayerPointsAPI().give(player.getUniqueId(), reward.getRewardAmount());
 
-                    msg = QuestsMessages.REWARD_POINTS.toString();
+                    msg = QuestsMessages.REWARD_POINTS.getMessage(player);
                     if (msg != null)  player.sendMessage(msg.replace("%rewardAmount%", String.valueOf(reward.getRewardAmount())));
                 }
 
@@ -112,7 +112,7 @@ public class RewardManager {
                 }
 
                 CoinsEngineAPI.addBalance(player, currency, reward.getRewardAmount());
-                msg = QuestsMessages.REWARD_COINS_ENGINE.toString();
+                msg = QuestsMessages.REWARD_COINS_ENGINE.getMessage(player);
                 if (msg != null) player.sendMessage(msg
                                 .replace("%rewardAmount%", String.valueOf(reward.getRewardAmount()))
                                 .replace("%currencyName%", ColorConvert.convertColorCode(reward.getRewardCurrencyDisplayName())));

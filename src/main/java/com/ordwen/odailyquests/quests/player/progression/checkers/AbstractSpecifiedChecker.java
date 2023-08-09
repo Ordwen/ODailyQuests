@@ -158,7 +158,7 @@ public abstract class AbstractSpecifiedChecker extends AbstractProgressionIncrea
         final Location requiredLocation = quest.getRequiredLocation();
 
         if (!requiredLocation.getWorld().equals(player.getLocation().getWorld())) {
-            final String msg = QuestsMessages.BAD_WORLD_LOCATION.toString();
+            final String msg = QuestsMessages.BAD_WORLD_LOCATION.getMessage(player);
             if (msg != null) player.sendMessage(msg);
             return;
         }
@@ -170,7 +170,7 @@ public abstract class AbstractSpecifiedChecker extends AbstractProgressionIncrea
 
             player.closeInventory();
         } else {
-            final String msg = QuestsMessages.TOO_FAR_FROM_LOCATION.toString();
+            final String msg = QuestsMessages.TOO_FAR_FROM_LOCATION.getMessage(player);
             if (msg != null) player.sendMessage(msg);
         }
     }

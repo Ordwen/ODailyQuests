@@ -43,7 +43,7 @@ public class GlobalReward {
      */
     public static void sendGlobalReward(String playerName) {
         if (isEnabled) {
-            final String msg = QuestsMessages.ALL_QUESTS_ACHIEVED.toString();
+            final String msg = QuestsMessages.ALL_QUESTS_ACHIEVED.getMessage(playerName);
             if (msg != null) Bukkit.getPlayer(playerName).sendMessage(msg);
             RewardManager.sendQuestReward(Bukkit.getPlayer(playerName), globalReward);
         }

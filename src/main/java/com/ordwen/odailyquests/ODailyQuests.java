@@ -113,7 +113,7 @@ public final class ODailyQuests extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new AllCategoryQuestsCompletedListener(), this);
 
         /* Avoid errors on reload */
-        if (Bukkit.getServer().getOnlinePlayers().size() > 0) {
+        if (!Bukkit.getServer().getOnlinePlayers().isEmpty()) {
             reloadService.loadConnectedPlayerQuests();
 
             PluginLogger.error("It seems that you have reloaded the server.");
@@ -135,7 +135,7 @@ public final class ODailyQuests extends JavaPlugin {
         if (timerTask != null) timerTask.stop();
 
         /* Avoid errors on reload */
-        if (Bukkit.getServer().getOnlinePlayers().size() > 0) {
+        if (!Bukkit.getServer().getOnlinePlayers().isEmpty()) {
             reloadService.saveConnectedPlayerQuests(false);
         }
 

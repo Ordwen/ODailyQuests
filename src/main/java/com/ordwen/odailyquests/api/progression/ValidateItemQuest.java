@@ -54,7 +54,7 @@ public class ValidateItemQuest {
 
             player.closeInventory();
         } else {
-            final String msg = QuestsMessages.NOT_ENOUGH_ITEM.toString();
+            final String msg = QuestsMessages.NOT_ENOUGH_ITEM.getMessage(player);
             if (msg != null) player.sendMessage(msg);
         }
     }

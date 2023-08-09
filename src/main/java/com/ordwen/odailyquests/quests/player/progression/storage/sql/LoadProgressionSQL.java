@@ -102,16 +102,19 @@ public class LoadProgressionSQL {
                     playerQuests.setAchievedQuests(achievedQuests);
                     playerQuests.setTotalAchievedQuests(totalAchievedQuests);
 
-                    activeQuests.put(playerName, playerQuests);
-
-                    Debugger.addDebug(playerName + " inserted in activeQuests map.");
-                    PluginLogger.info(playerName + "'s quests have been loaded.");
+                    if (Bukkit.getPlayer(playerName) != null) {
+                        activeQuests.put(playerName, playerQuests);
+                        PluginLogger.info(playerName + "'s quests have been loaded.");
+                    } else {
+                        PluginLogger.warn("It looks like " + playerName + " has disconnected before his quests were loaded.");
+                        return;
+                    }
 
                     final String msg;
                     if (achievedQuests == playerQuests.getPlayerQuests().size()) {
-                        msg = QuestsMessages.ALL_QUESTS_ACHIEVED_CONNECT.toString();
+                        msg = QuestsMessages.ALL_QUESTS_ACHIEVED_CONNECT.getMessage(playerName);
                     } else {
-                        msg = QuestsMessages.QUESTS_IN_PROGRESS.toString();
+                        msg = QuestsMessages.QUESTS_IN_PROGRESS.getMessage(playerName);
                     }
                     if (msg != null) Bukkit.getPlayer(playerName).sendMessage(msg);
                 }

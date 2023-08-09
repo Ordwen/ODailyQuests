@@ -114,7 +114,7 @@ public class CategoriesRewards {
      */
     private static void sendEasyReward(Player player) {
         if (isEasyRewardEnabled) {
-            final String msg = QuestsMessages.EASY_QUESTS_ACHIEVED.toString();
+            final String msg = QuestsMessages.EASY_QUESTS_ACHIEVED.getMessage(player);
             if (msg != null) player.sendMessage(msg);
 
             RewardManager.sendQuestReward(player, easyReward);
@@ -127,7 +127,7 @@ public class CategoriesRewards {
      */
     private static void sendMediumReward(Player player) {
         if (isMediumRewardEnabled) {
-            final String msg = QuestsMessages.MEDIUM_QUESTS_ACHIEVED.toString();
+            final String msg = QuestsMessages.MEDIUM_QUESTS_ACHIEVED.getMessage(player);
             if (msg != null) player.sendMessage(msg);
 
             RewardManager.sendQuestReward(player, mediumReward);
@@ -140,7 +140,7 @@ public class CategoriesRewards {
      */
     private static void sendHardReward(Player player) {
         if (isHardRewardEnabled) {
-            final String msg = QuestsMessages.HARD_QUESTS_ACHIEVED.toString();
+            final String msg = QuestsMessages.HARD_QUESTS_ACHIEVED.getMessage(player);
             if (msg != null) player.sendMessage(msg);
 
             RewardManager.sendQuestReward(player, hardReward);

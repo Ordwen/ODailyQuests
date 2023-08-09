@@ -91,7 +91,7 @@ public class AdminCommands implements CommandExecutor {
                                         String msg = QuestsMessages.QUESTS_RENEWED_ADMIN.toString();
                                         if (msg != null) sender.sendMessage(msg.replace("%target%", target.getName()));
 
-                                        msg = QuestsMessages.QUESTS_RENEWED.toString();
+                                        msg = QuestsMessages.QUESTS_RENEWED.getMessage(target);
                                         if (msg != null) target.sendMessage(msg);
                                     } else {
                                         final String msg = QuestsMessages.INVALID_PLAYER.toString();
@@ -105,7 +105,7 @@ public class AdminCommands implements CommandExecutor {
                                         String msg = QuestsMessages.TOTAL_AMOUNT_RESET_ADMIN.toString();
                                         if (msg != null) sender.sendMessage(msg.replace("%target%", target.getName()));
 
-                                        msg = QuestsMessages.TOTAL_AMOUNT_RESET.toString();
+                                        msg = QuestsMessages.TOTAL_AMOUNT_RESET.getMessage(target);
                                         if (msg != null) target.sendMessage(msg);
                                     } else {
                                         final String msg = QuestsMessages.INVALID_PLAYER.toString();

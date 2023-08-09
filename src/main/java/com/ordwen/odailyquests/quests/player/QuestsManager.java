@@ -61,7 +61,6 @@ public class QuestsManager implements Listener {
 
             Debugger.addDebug("Player " + playerName + " is not in the array.");
 
-
             switch (Modes.getStorageMode()) {
                 case "YAML" -> yamlManager.getLoadProgressionYAML().loadPlayerQuests(playerName, activeQuests,
                         Modes.getQuestsMode(),
@@ -78,10 +77,8 @@ public class QuestsManager implements Listener {
 
             Debugger.addDebug("Player " + playerName + " is already in the array.");
 
-            PluginLogger.error(playerName + " detected into the array.");
-            PluginLogger.error("THAT IS NOT NORMAL.");
-            PluginLogger.error("The player quests will be never renewed.");
-            PluginLogger.error("Please inform developer.");
+            PluginLogger.warn(playerName + " detected into the array. This is not supposed to happen!");
+            PluginLogger.warn("If the player can't make his quests progress, please contact the plugin developer.");
         }
 
         Debugger.addDebug("[EVENT END]");

@@ -103,13 +103,17 @@ public class Utils {
             return;
         }
 
-        final String msg = QuestsMessages.QUESTS_RENEWED.toString();
+        final String msg = QuestsMessages.QUESTS_RENEWED.getMessage(player);
         if (msg != null) player.sendMessage(msg);
 
-        activeQuests.put(playerName, playerQuests);
-
-        PluginLogger.fine(playerName + " inserted into the array.");
-        PluginLogger.info(playerName + "'s quests have been renewed.");
+        if (Bukkit.getPlayer(playerName) != null) {
+            activeQuests.put(playerName, playerQuests);
+            PluginLogger.fine(playerName + " inserted into the array.");
+            PluginLogger.info(playerName + "'s quests have been renewed.");
+        } else {
+            PluginLogger.warn("It looks like " + playerName + " has disconnected before his quests were loaded.");
+            return;
+        }
 
         Debugger.addDebug("Quests of player " + playerName + " have been renewed.");
     }

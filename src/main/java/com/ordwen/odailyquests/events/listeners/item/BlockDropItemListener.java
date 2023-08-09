@@ -40,27 +40,28 @@ public class BlockDropItemListener extends AbstractItemChecker implements Listen
         final BlockData data = event.getBlockState().getBlockData();
         final Material dataMaterial = data.getMaterial();
 
-        AtomicBoolean valid = new AtomicBoolean(true);
-
-        // check if the block have been placed by the player
-        if (dataMaterial.isBlock()) {
-            if (Antiglitch.isStorePlacedBlocks()) {
-                event.getBlock().getMetadata("odailyquests:placed").forEach(metadataValue -> {
-                    if (metadataValue.asString().equals(event.getPlayer().getUniqueId().toString())) {
-                        valid.set(false);
-                    }
-                });
-            }
-        }
-
-        if (!valid.get()) {
-            return;
-        }
-
         // check if the dropped item figure in the non-crops items list
         if (farmableItems.contains(data.getMaterial())) {
+
+            final AtomicBoolean valid = new AtomicBoolean(true);
+
+            // check if the block have been placed by the player
+            if (dataMaterial.isBlock()) {
+                if (Antiglitch.isStorePlacedBlocks()) {
+                    event.getBlock().getMetadata("odailyquests:placed").forEach(metadataValue -> {
+                        if (metadataValue.asString().equals(event.getPlayer().getUniqueId().toString())) {
+                            valid.set(false);
+                        }
+                    });
+                }
+            }
+
+            if (!valid.get()) {
+                return;
+            }
+
             final List<Item> drops = event.getItems();
-            if (drops.size() == 0) return;
+            if (drops.isEmpty()) return;
 
             boolean isSlicedMelon = false;
             int amount = 0;
