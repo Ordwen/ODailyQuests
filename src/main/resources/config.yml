@@ -90,19 +90,21 @@ global_reward:
 # Will be given when the player has completed all his daily quests of a precise category.
 # The syntax is the same as for quest rewards, and the global reward.
 # Will be by default disabled if the quests mode is set to 1.
-# THE REWARD NAME MUST BE THE SAME AS THE FILE NAME (without the .yml).
 categories_rewards:
   easy:
+    enabled: true
     reward_type: COMMAND
     commands:
       - "eco give %player% 1000"
       - "give %player% diamond_block 16"
   medium:
+    enabled: true
     reward_type: COMMAND
     commands:
       - "eco give %player% 2000"
       - "give %player% diamond_block 32"
   hard:
+    enabled: true
     reward_type: COMMAND
     commands:
       - "eco give %player% 3000"
