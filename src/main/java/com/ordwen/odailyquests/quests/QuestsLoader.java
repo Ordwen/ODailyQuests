@@ -2,8 +2,6 @@ package com.ordwen.odailyquests.quests;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.enums.QuestType;
-import com.ordwen.odailyquests.externs.hooks.mobs.EliteMobsHook;
-import com.ordwen.odailyquests.externs.hooks.mobs.MythicMobsHook;
 import com.ordwen.odailyquests.quests.getters.QuestItemGetter;
 import com.ordwen.odailyquests.quests.types.*;
 import com.ordwen.odailyquests.rewards.Reward;
@@ -24,6 +22,7 @@ import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class QuestsLoader extends QuestItemGetter {
@@ -149,13 +148,6 @@ public class QuestsLoader extends QuestItemGetter {
         String presumedDyeColor = questSection.getString(".sheep_color");
         DyeColor dyeColor = getDyeColor(presumedDyeColor, fileName, questIndex);
 
-        /* name for quest that require an entity handled by a custom mobs plugin */
-        String entityName = ColorConvert.convertColorCode(questSection.getString(".entity_name"));
-        if (entityName != null && !(EliteMobsHook.isEliteMobsSetup() || MythicMobsHook.isMythicMobsSetup())) {
-            configurationError(fileName, questIndex, null, "There is no compatible plugin found for quest type CUSTOM_MOBS.");
-            return null;
-        }
-
         if (questSection.isString(".required_entity")) {
             EntityType entityType = getEntityType(fileName, questIndex, questSection.getString(".required_entity"));
             entityTypes.add(entityType);
@@ -166,7 +158,7 @@ public class QuestsLoader extends QuestItemGetter {
             }
         }
 
-        return new EntityQuest(base, entityTypes, dyeColor, entityName);
+        return new EntityQuest(base, entityTypes, dyeColor);
     }
 
     /**
@@ -179,13 +171,23 @@ public class QuestsLoader extends QuestItemGetter {
      */
     private AbstractQuest loadCustomMobQuest(GlobalQuest base, ConfigurationSection questSection, String fileName, int questIndex) {
 
-        final String entityName = ColorConvert.convertColorCode(questSection.getString(".entity_name"));
-        if (entityName == null) {
+        final List<String> entityNames = new ArrayList<>();
+        if (questSection.isString(".entity_name")) {
+            entityNames.add(questSection.getString(".entity_name"));
+        } else {
+            entityNames.addAll(questSection.getStringList(".entity_name"));
+        }
+
+        for (String entityName : entityNames) {
+            entityNames.set(entityNames.indexOf(entityName), ColorConvert.convertColorCode(entityName));
+        }
+
+        if (entityNames.isEmpty()) {
             configurationError(fileName, questIndex, null, "There is no entity name defined for quest type CUSTOM_MOBS.");
             return null;
         }
 
-        return new EntityQuest(base, entityName);
+        return new EntityQuest(base, entityNames);
     }
 
     /**
@@ -289,14 +291,26 @@ public class QuestsLoader extends QuestItemGetter {
     private PotionMeta loadPotionItem(ConfigurationSection section, String fileName, int questIndex, ItemStack requiredItem) {
         PotionMeta potionMeta = null;
 
-        PotionType potionType = null;
+        PotionType potionType;
         boolean upgraded = false;
         boolean extended = false;
 
         final ConfigurationSection potionSection = section.getConfigurationSection(".potion");
         if (potionSection == null) return null;
 
-        if (potionSection.contains("type")) potionType = PotionType.valueOf(potionSection.getString("type"));
+        if (potionSection.contains("type")) {
+            try {
+                potionType = PotionType.valueOf(potionSection.getString("type"));
+            }
+            catch (IllegalArgumentException e) {
+                configurationError(fileName, questIndex, "type", "Invalid potion type.");
+                return null;
+            }
+        } else {
+            configurationError(fileName, questIndex, "type", "Potion type is not defined.");
+            return null;
+        }
+
         if (potionSection.contains("upgraded")) upgraded = potionSection.getBoolean("upgraded");
         if (potionSection.contains("extended")) extended = potionSection.getBoolean("extended");
 

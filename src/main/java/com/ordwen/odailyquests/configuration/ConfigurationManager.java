@@ -43,6 +43,7 @@ public class ConfigurationManager {
         new Temporality(configurationFiles).loadTemporalitySettings();
         new TimeRemain().setupInitials();
         new QuestsAmount(configurationFiles).loadQuestsAmount();
+        new UseCustomFurnaceResults(configurationFiles).loadUseCustomFurnaceResults();
 
         // functionalities
         new ActionBar(configurationFiles).loadActionbar();

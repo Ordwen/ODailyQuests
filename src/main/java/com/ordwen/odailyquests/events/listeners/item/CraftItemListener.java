@@ -18,6 +18,7 @@ public class CraftItemListener extends AbstractItemChecker implements Listener {
     @EventHandler
     public void onCraftItemEvent(CraftItemEvent event) {
         if (event.isCancelled()) return;
+        if (event.getCurrentItem() == null) return;
 
         ItemStack test;
         final Player player = (Player) event.getWhoClicked();
@@ -29,13 +30,15 @@ public class CraftItemListener extends AbstractItemChecker implements Listener {
                 }
             }
             test = new ItemStack(Material.valueOf(complexRecipe.getKey().getKey().toUpperCase()));
-        } else test = event.getRecipe().getResult().clone();
-
+        } else {
+            test = event.getCurrentItem().clone();
+        }
 
         ClickType click = event.getClick();
         int recipeAmount = test.getAmount();
 
         final ItemStack cursorItem = player.getItemOnCursor();
+
         if (cursorItem.getType() != Material.AIR) {
             if (cursorItem.getType() == test.getType()) {
                 if (cursorItem.getAmount() + recipeAmount > cursorItem.getMaxStackSize()) {

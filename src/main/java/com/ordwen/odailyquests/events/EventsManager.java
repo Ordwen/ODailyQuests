@@ -1,7 +1,9 @@
 package com.ordwen.odailyquests.events;
 
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.configuration.essentials.UseCustomFurnaceResults;
 import com.ordwen.odailyquests.configuration.integrations.ItemsAdderEnabled;
+import com.ordwen.odailyquests.events.listeners.customs.CustomFurnaceExtractListener;
 import com.ordwen.odailyquests.events.listeners.integrations.itemsadder.CustomBlockBreakListener;
 import com.ordwen.odailyquests.events.listeners.integrations.itemsadder.ItemsAdderLoadDataListener;
 import com.ordwen.odailyquests.externs.hooks.mobs.EliteMobsHook;
@@ -74,6 +76,11 @@ public class EventsManager {
 
         // inventory events
         Bukkit.getPluginManager().registerEvents(new InventoryCloseListener(), oDailyQuests);
+
+        // custom events
+        if (ItemsAdderEnabled.isEnabled() || UseCustomFurnaceResults.isEnabled()) {
+            Bukkit.getPluginManager().registerEvents(new CustomFurnaceExtractListener(), oDailyQuests);
+        }
 
         // other plugins events
         if (ItemsAdderEnabled.isEnabled()) {

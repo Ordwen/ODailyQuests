@@ -9,18 +9,18 @@ public class EntityQuest extends AbstractQuest {
 
     final List<EntityType> entityTypes;
     final DyeColor dyeColor;
-    final String entityName;
+    final List<String> entityNames;
 
-    public EntityQuest(GlobalQuest globalQuest, List<EntityType> entityTypes, DyeColor dyeColor, String entityName) {
+    public EntityQuest(GlobalQuest globalQuest, List<EntityType> entityTypes, DyeColor dyeColor) {
         super(globalQuest);
         this.entityTypes = entityTypes;
         this.dyeColor = dyeColor;
-        this.entityName = entityName;
+        entityNames = null;
     }
 
-    public EntityQuest(GlobalQuest globalQuest, String entityName) {
+    public EntityQuest(GlobalQuest globalQuest, List<String> entityNames) {
         super(globalQuest);
-        this.entityName = entityName;
+        this.entityNames = entityNames;
 
         this.entityTypes = null;
         this.dyeColor = null;
@@ -46,7 +46,7 @@ public class EntityQuest extends AbstractQuest {
      * Get required entity name
      * @return entity name
      */
-    public String getEntityName() {
-        return this.entityName;
+    public List<String> getEntityNames() {
+        return this.entityNames;
     }
 }

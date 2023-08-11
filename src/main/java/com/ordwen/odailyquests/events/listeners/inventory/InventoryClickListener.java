@@ -1,6 +1,9 @@
 package com.ordwen.odailyquests.events.listeners.inventory;
 
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
+import com.ordwen.odailyquests.configuration.essentials.UseCustomFurnaceResults;
+import com.ordwen.odailyquests.configuration.integrations.ItemsAdderEnabled;
+import com.ordwen.odailyquests.events.customs.CustomFurnaceExtractEvent;
 import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractSpecifiedChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -46,6 +49,18 @@ public class InventoryClickListener extends AbstractSpecifiedChecker implements 
             return;
         }
 
+        // check if player is extracting from furnace
+        if (UseCustomFurnaceResults.isEnabled() || ItemsAdderEnabled.isEnabled()) {
+            if (event.getInventory().getType() == InventoryType.FURNACE && event.getSlotType() == InventoryType.SlotType.RESULT) {
+                //if (action == InventoryAction.HOTBAR_SWAP || action == InventoryAction.HOTBAR_MOVE_AND_READD) return;
+
+                final CustomFurnaceExtractEvent customFurnaceExtractEvent = new CustomFurnaceExtractEvent(player, clickedItem);
+                Bukkit.getServer().getPluginManager().callEvent(customFurnaceExtractEvent);
+
+                return;
+            }
+        }
+
         // do action related to the clicked item
         final String inventoryName = event.getView().getTitle();
         if (inventoryName.startsWith(PlayerQuestsInterface.getInterfaceName(player))) {
@@ -64,6 +79,7 @@ public class InventoryClickListener extends AbstractSpecifiedChecker implements 
                 for (String cmd : PlayerQuestsInterface.getPlayerCommandsItems().get(slot)) {
                     Bukkit.getServer().dispatchCommand(event.getWhoClicked(), cmd);
                 }
+                return;
             }
 
             if (PlayerQuestsInterface.getConsoleCommandsItems().containsKey(slot)) {

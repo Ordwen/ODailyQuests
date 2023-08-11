@@ -42,21 +42,17 @@ public abstract class AbstractItemChecker extends AbstractProgressionIncreaser {
                     boolean isRequiredItem = false;
 
                     if (abstractQuest instanceof GlobalQuest) {
+
                         isRequiredItem = true;
                     } else if (abstractQuest instanceof ItemQuest quest) {
+
                         if (quest.getRequiredItems() == null) isRequiredItem = true;
                         else {
                             for (ItemStack item : quest.getRequiredItems()) {
 
-                                if (item.hasItemMeta()
-                                        && item.getItemMeta().hasCustomModelData()) {
-
-                                    if (itemStack.hasItemMeta()
-                                            && itemStack.getItemMeta().hasCustomModelData()) {
-
-                                        if (itemStack.getType() == item.getType()
-                                                && itemStack.getItemMeta().getCustomModelData() == item.getItemMeta().getCustomModelData()) {
-
+                                if (item.hasItemMeta() && item.getItemMeta().hasCustomModelData()) {
+                                    if (itemStack.hasItemMeta() && itemStack.getItemMeta().hasCustomModelData()) {
+                                        if (itemStack.getType() == item.getType() && itemStack.getItemMeta().getCustomModelData() == item.getItemMeta().getCustomModelData()) {
                                             isRequiredItem = true;
                                             break;
                                         }

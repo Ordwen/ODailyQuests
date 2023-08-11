@@ -173,6 +173,11 @@ store_dropped_items: false
 # NEVER enable this if you are NOT using ItemsAdder. The quests will not load.
 use_itemsadder: false
 
+# Enable this if some plugins are modifying the furnace results.
+# You should enable it if the furnace results can have a custom model data (e.g. with Oraxen).
+# Enabled by default if you are using ItemsAdder.
+use_custom_furnace_results: false
+
 # ===========================================================
 
 # interfaces settings
