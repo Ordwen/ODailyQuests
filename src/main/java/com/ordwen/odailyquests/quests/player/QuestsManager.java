@@ -29,6 +29,7 @@ public class QuestsManager implements Listener {
      */
     private final SQLManager sqlManager;
     private final YamlManager yamlManager;
+    private final ODailyQuests plugin;
 
     /**
      * Class instance constructor.
@@ -36,6 +37,8 @@ public class QuestsManager implements Listener {
      * @param oDailyQuests main class instance.
      */
     public QuestsManager(ODailyQuests oDailyQuests, boolean useSQL) {
+        this.plugin = oDailyQuests;
+
         if (useSQL) {
             this.sqlManager = oDailyQuests.getSQLManager();
             this.yamlManager = null;
@@ -87,7 +90,6 @@ public class QuestsManager implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-
         Debugger.addDebug("[EVENT START]");
         Debugger.addDebug("PlayerQuitEvent triggered.");
 
@@ -106,10 +108,9 @@ public class QuestsManager implements Listener {
         }
 
         switch (Modes.getStorageMode()) {
-            case "YAML" -> yamlManager.getSaveProgressionYAML().saveProgression(playerName, playerQuests, true);
-            case "MySQL", "H2" -> sqlManager.getSaveProgressionSQL().saveProgression(playerName, playerQuests, true);
-            default ->
-                    PluginLogger.error("Impossible to save player quests : the selected storage mode is incorrect !");
+            case "YAML" -> yamlManager.getSaveProgressionYAML().saveProgression(playerName, playerQuests, !plugin.isServerStopping());
+            case "MySQL", "H2" -> sqlManager.getSaveProgressionSQL().saveProgression(playerName, playerQuests, !plugin.isServerStopping());
+            default -> PluginLogger.error("Impossible to save player quests : the selected storage mode is incorrect !");
         }
 
         activeQuests.remove(playerName);

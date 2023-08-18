@@ -6,6 +6,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class InventoryClickListener implements Listener {
 
@@ -13,6 +15,12 @@ public class InventoryClickListener implements Listener {
     public void onInventoryClick(InventoryClickEvent event) {
 
         final String inventoryName = event.getView().getTitle();
+        final Player player = (Player) event.getWhoClicked();
+        
+        final ItemStack clickedItem = event.getCurrentItem();
+        if (clickedItem == null) return;
+
+        final ItemMeta clickedItemMeta = clickedItem.getItemMeta();
 
         if (inventoryName.startsWith(InterfacesManager.getGlobalQuestsInventoryName())
                 || inventoryName.startsWith(InterfacesManager.getEasyQuestsInventoryName())
@@ -20,38 +28,52 @@ public class InventoryClickListener implements Listener {
                 || inventoryName.startsWith(InterfacesManager.getHardQuestsInventoryName())) {
             event.setCancelled(true);
 
-            if (event.getCurrentItem() != null
-                    && !InterfacesManager.getEmptyCaseItems().contains(event.getCurrentItem())
+            if (!InterfacesManager.getEmptyCaseItems().contains(clickedItem)
                     && event.getClick().isLeftClick()
                     && event.getSlot() < event.getView().getTopInventory().getSize()
                     && !event.getSlotType().equals(InventoryType.SlotType.QUICKBAR)) {
 
-                if (!event.getCurrentItem().equals(PlayerHead.getPlayerHead((Player) event.getWhoClicked()))) {
+                if (!clickedItem.equals(PlayerHead.getPlayerHead((Player) player))) {
 
-                    int page = Integer.parseInt(inventoryName.substring(inventoryName.length() - 1));
-                    if (event.getCurrentItem().getItemMeta() != null) {
-                        if (event.getCurrentItem().getItemMeta().getDisplayName().equals(InterfacesManager.getNextPageItemName())) {
-                            event.getWhoClicked().closeInventory();
+                    int page = Integer.parseInt(inventoryName.substring(inventoryName.length() - 1)) - 1;
+                    if (clickedItemMeta != null) {
+                        if (clickedItemMeta.getDisplayName().equals(InterfacesManager.getNextPageItemName())) {
+                            player.closeInventory();
+                            
                             if (inventoryName.startsWith(InterfacesManager.getGlobalQuestsInventoryName())) {
-                                event.getWhoClicked().openInventory(InterfacesManager.getGlobalQuestsInterface().getGlobalQuestsNextPage(page));
-                            } else if (inventoryName.startsWith(InterfacesManager.getEasyQuestsInventoryName())) {
-                                event.getWhoClicked().openInventory(InterfacesManager.getCategorizedQuestsInterfaces().getInterfaceNextPage(InterfacesManager.getCategorizedQuestsInterfaces().getEasyQuestsInventories(), page));
-                            } else if (inventoryName.startsWith(InterfacesManager.getMediumQuestsInventoryName())) {
-                                event.getWhoClicked().openInventory(InterfacesManager.getCategorizedQuestsInterfaces().getInterfaceNextPage(InterfacesManager.getCategorizedQuestsInterfaces().getMediumQuestsInventories(), page));
-                            } else if (inventoryName.startsWith(InterfacesManager.getHardQuestsInventoryName())) {
-                                event.getWhoClicked().openInventory(InterfacesManager.getCategorizedQuestsInterfaces().getInterfaceNextPage(InterfacesManager.getCategorizedQuestsInterfaces().getHardQuestsInventories(), page));
+                                player.openInventory(InterfacesManager.getInterfaceNextPage("global", page, player));
+                            } 
+                            
+                            else if (inventoryName.startsWith(InterfacesManager.getEasyQuestsInventoryName())) {
+                                player.openInventory(InterfacesManager.getInterfaceNextPage("easy", page, player));
+                            }
+                            
+                            else if (inventoryName.startsWith(InterfacesManager.getMediumQuestsInventoryName())) {
+                                player.openInventory(InterfacesManager.getInterfaceNextPage("medium", page, player));
+                            } 
+                            
+                            else if (inventoryName.startsWith(InterfacesManager.getHardQuestsInventoryName())) {
+                                player.openInventory(InterfacesManager.getInterfaceNextPage("hard", page, player));
                             }
                         }
-                        if (event.getCurrentItem().getItemMeta().getDisplayName().equals(InterfacesManager.getPreviousPageItemName())) {
-                            event.getWhoClicked().closeInventory();
+                        
+                        if (clickedItemMeta.getDisplayName().equals(InterfacesManager.getPreviousPageItemName())) {
+                            player.closeInventory();
+
                             if (inventoryName.startsWith(InterfacesManager.getGlobalQuestsInventoryName())) {
-                                event.getWhoClicked().openInventory(InterfacesManager.getGlobalQuestsInterface().getGlobalQuestsPreviousPage(page));
-                            } else if (inventoryName.startsWith(InterfacesManager.getEasyQuestsInventoryName())) {
-                                event.getWhoClicked().openInventory(InterfacesManager.getCategorizedQuestsInterfaces().getInterfacePreviousPage(InterfacesManager.getCategorizedQuestsInterfaces().getEasyQuestsInventories(), page));
-                            } else if (inventoryName.startsWith(InterfacesManager.getMediumQuestsInventoryName())) {
-                                event.getWhoClicked().openInventory(InterfacesManager.getCategorizedQuestsInterfaces().getInterfacePreviousPage(InterfacesManager.getCategorizedQuestsInterfaces().getMediumQuestsInventories(), page));
-                            } else if (inventoryName.startsWith(InterfacesManager.getHardQuestsInventoryName())) {
-                                event.getWhoClicked().openInventory(InterfacesManager.getCategorizedQuestsInterfaces().getInterfacePreviousPage(InterfacesManager.getCategorizedQuestsInterfaces().getHardQuestsInventories(), page));
+                                player.openInventory(InterfacesManager.getInterfacePreviousPage("global", page, player));
+                            }
+
+                            else if (inventoryName.startsWith(InterfacesManager.getEasyQuestsInventoryName())) {
+                                player.openInventory(InterfacesManager.getInterfacePreviousPage("easy", page, player));
+                            }
+
+                            else if (inventoryName.startsWith(InterfacesManager.getMediumQuestsInventoryName())) {
+                                player.openInventory(InterfacesManager.getInterfacePreviousPage("medium", page, player));
+                            }
+
+                            else if (inventoryName.startsWith(InterfacesManager.getHardQuestsInventoryName())) {
+                                player.openInventory(InterfacesManager.getInterfacePreviousPage("hard", page, player));
                             }
                         }
                     }

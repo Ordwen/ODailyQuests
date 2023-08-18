@@ -6,7 +6,7 @@ import java.util.HashSet;
 
 public class EntitySource {
 
-    private final static HashSet<Entity> entitiesFromSpawners = new HashSet<Entity>();
+    private final static HashSet<Entity> entitiesFromSpawners = new HashSet<>();
 
     /**
      * Adds an entity from a spawner.

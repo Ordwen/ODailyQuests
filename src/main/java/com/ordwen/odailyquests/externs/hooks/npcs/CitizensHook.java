@@ -9,13 +9,12 @@ import com.ordwen.odailyquests.enums.QuestsPermissions;
 import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 public class CitizensHook implements Listener {
-
-    //private final ConfigurationFiles configurationFiles;
-
+    
     /**
      * Setup CitizensAPI.
      */
@@ -26,75 +25,76 @@ public class CitizensHook implements Listener {
 
     @EventHandler
     public void onNPCClickEvent(NPCRightClickEvent event) {
-        String npcName = event.getNPC().getName();
+        final String npcName = event.getNPC().getName();
+        final Player player = event.getClicker();
 
         /* Player interface */
         if (npcName.equals(NPCNames.getPlayerNPCName())) {
-            if (event.getClicker().hasPermission(QuestsPermissions.QUESTS_SHOW_PLAYER.getPermission())) {
-                event.getClicker().openInventory(PlayerQuestsInterface.getPlayerQuestsInterface(event.getClicker()));
+            if (player.hasPermission(QuestsPermissions.QUESTS_SHOW_PLAYER.getPermission())) {
+                player.openInventory(PlayerQuestsInterface.getPlayerQuestsInterface(player));
             } else {
                 final String msg = QuestsMessages.NO_PERMISSION_CATEGORY.toString();
-                if (msg != null) event.getClicker().sendMessage(msg);
+                if (msg != null) player.sendMessage(msg);
             }
         }
 
         /* Global interface */
         if (npcName.equals(NPCNames.getGlobalNPCName())) {
             if (Modes.getQuestsMode() == 1) {
-                if (event.getClicker().hasPermission(QuestsPermissions.QUESTS_SHOW_GLOBAL.getPermission())) {
-                    event.getClicker().openInventory(InterfacesManager.getGlobalQuestsInterface().getGlobalQuestsInterfaceFirstPage());
+                if (player.hasPermission(QuestsPermissions.QUESTS_SHOW_GLOBAL.getPermission())) {
+                    player.openInventory(InterfacesManager.getInterfaceFirstPage("global", player));
                 } else {
                     final String msg = QuestsMessages.NO_PERMISSION_CATEGORY.toString();
-                    if (msg != null) event.getClicker().sendMessage(msg);
+                    if (msg != null) player.sendMessage(msg);
                 }
             } else {
                 final String msg = QuestsMessages.GLOBAL_DISABLED.toString();
-                if (msg != null) event.getClicker().sendMessage(msg);
+                if (msg != null) player.sendMessage(msg);
             }
         }
 
         /* Easy interface */
         if (npcName.equals(NPCNames.getEasyNPCName())) {
             if (Modes.getQuestsMode() == 2) {
-                if (event.getClicker().hasPermission(QuestsPermissions.QUESTS_SHOW_EASY.getPermission())) {
-                    event.getClicker().openInventory(InterfacesManager.getCategorizedQuestsInterfaces().getEasyQuestsInterfaceFirstPage());
+                if (player.hasPermission(QuestsPermissions.QUESTS_SHOW_EASY.getPermission())) {
+                    player.openInventory(InterfacesManager.getInterfaceFirstPage("easy", player));
                 } else {
                     final String msg = QuestsMessages.NO_PERMISSION_CATEGORY.toString();
-                    if (msg != null) event.getClicker().sendMessage(msg);
+                    if (msg != null) player.sendMessage(msg);
                 }
             } else {
                 final String msg = QuestsMessages.CATEGORIZED_DISABLED.toString();
-                if (msg != null) event.getClicker().sendMessage(msg);
+                if (msg != null) player.sendMessage(msg);
             }
         }
 
         /* Medium interface */
         if (npcName.equals(NPCNames.getMediumNPCName())) {
             if (Modes.getQuestsMode() == 2) {
-                if (event.getClicker().hasPermission(QuestsPermissions.QUESTS_SHOW_MEDIUM.getPermission())) {
-                    event.getClicker().openInventory(InterfacesManager.getCategorizedQuestsInterfaces().getMediumQuestsInterfaceFirstPage());
+                if (player.hasPermission(QuestsPermissions.QUESTS_SHOW_MEDIUM.getPermission())) {
+                    player.openInventory(InterfacesManager.getInterfaceFirstPage("medium", player));
                 } else {
                     final String msg = QuestsMessages.NO_PERMISSION_CATEGORY.toString();
-                    if (msg != null) event.getClicker().sendMessage(msg);
+                    if (msg != null) player.sendMessage(msg);
                 }
             } else {
                 final String msg = QuestsMessages.CATEGORIZED_DISABLED.toString();
-                if (msg != null) event.getClicker().sendMessage(msg);
+                if (msg != null) player.sendMessage(msg);
             }
         }
 
         /* Hard interface */
         if (npcName.equals(NPCNames.getHardNPCName())) {
             if (Modes.getQuestsMode() == 2) {
-                if (event.getClicker().hasPermission(QuestsPermissions.QUESTS_SHOW_HARD.getPermission())) {
-                    event.getClicker().openInventory(InterfacesManager.getCategorizedQuestsInterfaces().getHardQuestsInterfaceFirstPage());
+                if (player.hasPermission(QuestsPermissions.QUESTS_SHOW_HARD.getPermission())) {
+                    player.openInventory(InterfacesManager.getInterfaceFirstPage("hard", player));
                 } else {
                     final String msg = QuestsMessages.NO_PERMISSION_CATEGORY.toString();
-                    if (msg != null) event.getClicker().sendMessage(msg);
+                    if (msg != null) player.sendMessage(msg);
                 }
             } else {
                 final String msg = QuestsMessages.CATEGORIZED_DISABLED.toString();
-                if (msg != null) event.getClicker().sendMessage(msg);
+                if (msg != null) player.sendMessage(msg);
             }
         }
     }

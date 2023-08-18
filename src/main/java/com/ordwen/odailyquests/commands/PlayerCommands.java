@@ -42,7 +42,7 @@ public class PlayerCommands implements CommandExecutor {
                                                 if (msg != null) sender.sendMessage(msg);
 
                                             } else if (sender.hasPermission(QuestsPermissions.QUESTS_SHOW_GLOBAL.getPermission())) {
-                                                player.openInventory(InterfacesManager.getGlobalQuestsInterface().getGlobalQuestsInterfaceFirstPage());
+                                                player.openInventory(InterfacesManager.getInterfaceFirstPage("global", player));
                                             } else {
                                                 final String msg = QuestsMessages.NO_PERMISSION_CATEGORY.toString();
                                                 if (msg != null) sender.sendMessage(msg);
@@ -54,7 +54,7 @@ public class PlayerCommands implements CommandExecutor {
                                                 if (msg != null) sender.sendMessage(msg);
                                             } else {
                                                 if (sender.hasPermission(QuestsPermissions.QUESTS_SHOW_EASY.getPermission())) {
-                                                    player.openInventory(InterfacesManager.getCategorizedQuestsInterfaces().getEasyQuestsInterfaceFirstPage());
+                                                    player.openInventory(InterfacesManager.getInterfaceFirstPage("easy", player));
                                                 } else {
                                                     final String msg = QuestsMessages.NO_PERMISSION_CATEGORY.toString();
                                                     if (msg != null) sender.sendMessage(msg);
@@ -67,7 +67,7 @@ public class PlayerCommands implements CommandExecutor {
                                                 if (msg != null) sender.sendMessage(msg);
                                             } else {
                                                 if (sender.hasPermission(QuestsPermissions.QUESTS_SHOW_MEDIUM.getPermission())) {
-                                                    player.openInventory(InterfacesManager.getCategorizedQuestsInterfaces().getMediumQuestsInterfaceFirstPage());
+                                                    player.openInventory(InterfacesManager.getInterfaceFirstPage("medium", player));
                                                 } else {
                                                     final String msg = QuestsMessages.NO_PERMISSION_CATEGORY.toString();
                                                     if (msg != null) sender.sendMessage(msg);
@@ -80,7 +80,7 @@ public class PlayerCommands implements CommandExecutor {
                                                 if (msg != null) sender.sendMessage(msg);
                                             } else {
                                                 if (sender.hasPermission(QuestsPermissions.QUESTS_SHOW_HARD.getPermission())) {
-                                                    player.openInventory(InterfacesManager.getCategorizedQuestsInterfaces().getHardQuestsInterfaceFirstPage());
+                                                    player.openInventory(InterfacesManager.getInterfaceFirstPage("hard", player));
                                                 } else {
                                                     final String msg = QuestsMessages.NO_PERMISSION_CATEGORY.toString();
                                                     if (msg != null) sender.sendMessage(msg);

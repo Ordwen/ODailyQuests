@@ -1,11 +1,13 @@
 package com.ordwen.odailyquests.externs.hooks.placeholders;
 
+import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
-import com.ordwen.odailyquests.quests.QuestsLoader;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
+import com.ordwen.odailyquests.tools.ColorConvert;
 import com.ordwen.odailyquests.tools.TimeRemain;
+import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -30,7 +32,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
 
     @Override
     public String getVersion() {
-        return "1.0.3";
+        return "1.0.4";
     }
 
     @Override
@@ -53,6 +55,9 @@ public class PAPIExpansion extends PlaceholderExpansion {
         }
         if (params.equalsIgnoreCase("drawin")) {
             return TimeRemain.timeRemain(player.getName());
+        }
+        if (params.startsWith("interface")) {
+            return getInterfaceMessage(params, player, playerQuests);
         }
         if (params.startsWith("progress")) {
             return String.valueOf(getPlayerQuestProgression(params, playerQuests));
@@ -88,6 +93,34 @@ public class PAPIExpansion extends PlaceholderExpansion {
     }
 
     /**
+     * Get interface placeholders.
+     * @param params the placeholder.
+     * @param player the player.
+     * @param playerQuests the player quests.
+     * @return the result.
+     */
+    private String getInterfaceMessage(String params, OfflinePlayer player, PlayerQuests playerQuests) {
+        if (params.equals("interface_complete_get_type")) {
+            return ColorConvert.convertColorCode(PlaceholderAPI.setPlaceholders(player, PlayerQuestsInterface.getCompleteGetType()));
+        }
+
+        else if (params.startsWith("interface_status_")) {
+            final String supposedIndex = params.substring("interface_status_".length());
+            int index;
+
+            try {
+                index = Integer.parseInt(supposedIndex) - 1;
+            } catch (Exception e) {
+                return ChatColor.RED + "Invalid index.";
+            }
+
+            return ColorConvert.convertColorCode(PlaceholderAPI.setPlaceholders(player, getQuestStatus(index, playerQuests)));
+        }
+
+        return ChatColor.RED + "Invalid placeholder.";
+    }
+
+    /**
      * Check if the quest is completed.
      * @param params the placeholder.
      * @param playerQuests the player quests.
@@ -105,6 +138,27 @@ public class PAPIExpansion extends PlaceholderExpansion {
         for (AbstractQuest quest : playerQuests.getPlayerQuests().keySet()) {
             if (i == index) {
                 return String.valueOf(playerQuests.getPlayerQuests().get(quest).isAchieved());
+            }
+            i++;
+        }
+
+        return ChatColor.RED + "Invalid index.";
+    }
+
+    /**
+     * Get the corresponding text for the quest status.
+     * @param index the quest index.
+     * @param playerQuests the player quests.
+     * @return the achieved message or the progress message.
+     */
+    private String getQuestStatus(int index, PlayerQuests playerQuests) {
+
+        int i = 0;
+        for (AbstractQuest quest : playerQuests.getPlayerQuests().keySet()) {
+            if (i == index) {
+                return (playerQuests.getPlayerQuests().get(quest).isAchieved() ? PlayerQuestsInterface.getAchieved() : PlayerQuestsInterface.getProgression())
+                        .replace("%progress%", String.valueOf(playerQuests.getPlayerQuests().get(quest).getProgression()))
+                        .replace("%required%", String.valueOf(quest.getAmountRequired()));
             }
             i++;
         }

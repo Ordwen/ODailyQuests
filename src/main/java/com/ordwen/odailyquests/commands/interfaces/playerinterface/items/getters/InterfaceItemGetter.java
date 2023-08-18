@@ -20,6 +20,7 @@ public class InterfaceItemGetter extends ItemGetter implements IInterfaceItem {
         return switch (split[0]) {
             case "oraxen" -> this.getOraxenItem(split[1], itemIndex, parameter);
             case "itemsadder" -> this.getItemsAdderItem(split[1], itemIndex, parameter);
+            case "mmoitems" -> this.getMMOItemsItem(split[1], itemIndex, parameter);
             case "customhead" -> this.getCustomHead(split[1], itemIndex, parameter);
             case "custommodeldata" -> this.getCustomModelDataItem(split[1], itemIndex, parameter);
             default -> null;
@@ -54,6 +55,24 @@ public class InterfaceItemGetter extends ItemGetter implements IInterfaceItem {
     @Override
     public ItemStack getItemsAdderItem(String namespace, String itemIndex, String parameter) {
         final Pair<String, ItemStack> result = super.getItemsAdderItem(namespace);
+        if (!result.first().isEmpty()) {
+            configurationError(itemIndex, parameter, result.first());
+            return null;
+        }
+
+        return result.second();
+    }
+
+    /**
+     * Get an item from MMOItems.
+     * @param namespace the namespace of the item
+     * @param itemIndex the index of the item in the file
+     * @param parameter the parameter involved
+     * @return the ItemStack or null if the item cannot be loaded
+     */
+    @Override
+    public ItemStack getMMOItemsItem(String namespace, String itemIndex, String parameter) {
+        final Pair<String, ItemStack> result = super.getMMOItemsItem(namespace);
         if (!result.first().isEmpty()) {
             configurationError(itemIndex, parameter, result.first());
             return null;

@@ -7,9 +7,10 @@ import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsI
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.tools.ColorConvert;
 import com.ordwen.odailyquests.tools.PluginLogger;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -21,8 +22,7 @@ public class InterfacesManager implements Listener {
      * Getting instance of classes.
      */
     private final ConfigurationFiles configurationFiles;
-    private static GlobalQuestsInterface globalQuestsInterface;
-    private static CategorizedQuestsInterfaces categorizedQuestsInterfaces;
+    private static QuestsInterfaces questsInterfaces;
 
     private static String nextPageItemName;
     private static String previousPageItemName;
@@ -77,15 +77,12 @@ public class InterfacesManager implements Listener {
      */
     public void loadQuestsInterfaces() {
         initPaginationItemNames();
+        questsInterfaces = new QuestsInterfaces(configurationFiles);
 
         if (configurationFiles.getConfigFile().getInt("quests_mode") == 2) {
-            categorizedQuestsInterfaces = new CategorizedQuestsInterfaces(configurationFiles);
-            categorizedQuestsInterfaces.loadCategorizedInterfaces();
+            questsInterfaces.loadCategorizedInterfaces();
         }
-        else {
-            globalQuestsInterface = new GlobalQuestsInterface(configurationFiles);
-            globalQuestsInterface.loadGlobalQuestsInterface();
-        }
+        else questsInterfaces.loadGlobalInterface();
     }
     /**
      * Init variables.
@@ -107,20 +104,15 @@ public class InterfacesManager implements Listener {
     public void initEmptyCaseItems() {
         emptyCaseItems = new ArrayList<>();
         emptyCaseItems.addAll(PlayerQuestsInterface.getFillItems());
-        if (GlobalQuestsInterface.getEmptyCaseItem() != null) {
-            emptyCaseItems.add(GlobalQuestsInterface.getEmptyCaseItem());
-        }
-        emptyCaseItems.addAll(CategorizedQuestsInterfaces.getEmptyCaseItems());
+        emptyCaseItems.addAll(QuestsInterfaces.getEmptyCaseItems());
     }
 
     /**
      * Init pagination item names.
      */
     public void initPaginationItemNames() {
-        nextPageItemName = ChatColor.translateAlternateColorCodes('&',
-                ColorConvert.convertColorCode(configurationFiles.getConfigFile().getConfigurationSection("interfaces").getString(".next_item_name")));
-        previousPageItemName = ChatColor.translateAlternateColorCodes('&',
-                ColorConvert.convertColorCode(configurationFiles.getConfigFile().getConfigurationSection("interfaces").getString(".previous_item_name")));
+        nextPageItemName = ColorConvert.convertColorCode(configurationFiles.getConfigFile().getConfigurationSection("interfaces").getString(".next_item_name"));
+        previousPageItemName = ColorConvert.convertColorCode(configurationFiles.getConfigFile().getConfigurationSection("interfaces").getString(".previous_item_name"));
     }
 
     public static String getGlobalQuestsInventoryName() {
@@ -138,11 +130,21 @@ public class InterfacesManager implements Listener {
     public static String getHardQuestsInventoryName() {
         return hardQuestsInventoryName;
     }
-    public static CategorizedQuestsInterfaces getCategorizedQuestsInterfaces() { return  categorizedQuestsInterfaces; }
-    public static GlobalQuestsInterface getGlobalQuestsInterface() { return globalQuestsInterface; }
     public static List<ItemStack> getEmptyCaseItems() { return emptyCaseItems; }
     public static String getNextPageItemName() { return nextPageItemName; }
     public static String getPreviousPageItemName() { return previousPageItemName; }
+
+    public static Inventory getInterfaceFirstPage(String category, Player player) {
+        return questsInterfaces.getInterfacePage(category, 0, player);
+    }
+
+    public static Inventory getInterfaceNextPage(String category, int page, Player player) {
+        return questsInterfaces.getInterfacePage(category, page + 1, player);
+    }
+
+    public static Inventory getInterfacePreviousPage(String category, int page, Player player) {
+        return questsInterfaces.getInterfacePage(category, page - 1, player);
+    }
 }
 
 

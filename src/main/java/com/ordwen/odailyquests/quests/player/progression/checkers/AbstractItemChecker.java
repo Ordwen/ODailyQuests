@@ -42,7 +42,6 @@ public abstract class AbstractItemChecker extends AbstractProgressionIncreaser {
                     boolean isRequiredItem = false;
 
                     if (abstractQuest instanceof GlobalQuest) {
-
                         isRequiredItem = true;
                     } else if (abstractQuest instanceof ItemQuest quest) {
 

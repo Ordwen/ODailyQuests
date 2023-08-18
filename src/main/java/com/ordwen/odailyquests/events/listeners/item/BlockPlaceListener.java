@@ -30,11 +30,13 @@ public class BlockPlaceListener extends AbstractItemChecker implements Listener 
             final ItemStack placedItem = player.getInventory().getItemInMainHand();
             final ItemMeta placedItemMeta = placedItem.getItemMeta();
 
-            final PersistentDataContainer pdc = placedItemMeta.getPersistentDataContainer();
-            final String placedItemKey = pdc.get(Antiglitch.BROKEN_KEY, PersistentDataType.STRING);
+            if (placedItemMeta != null) {
+                final PersistentDataContainer pdc = placedItemMeta.getPersistentDataContainer();
+                final String placedItemKey = pdc.get(Antiglitch.BROKEN_KEY, PersistentDataType.STRING);
 
-            if (placedItemKey != null && placedItemKey.equals(player.getUniqueId().toString())) {
-                valid = false;
+                if (placedItemKey != null && placedItemKey.equals(player.getUniqueId().toString())) {
+                    valid = false;
+                }
             }
         }
 

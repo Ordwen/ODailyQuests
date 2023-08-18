@@ -22,7 +22,6 @@ import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class QuestsLoader extends QuestItemGetter {
@@ -102,7 +101,7 @@ public class QuestsLoader extends QuestItemGetter {
         if (requiredAmount == -1) return null;
 
         /* required worlds */
-        List<String> requiredWorlds = questSection.getStringList(".required_worlds");
+        final List<String> requiredWorlds = questSection.getStringList(".required_worlds");
 
         String presumedItem = questSection.getString(".menu_item");
         if (presumedItem == null) {
@@ -224,7 +223,7 @@ public class QuestsLoader extends QuestItemGetter {
 
             /* check if the required item is a custom item */
             if (itemType.equals("CUSTOM_ITEM")) {
-                ConfigurationSection section = questSection.getConfigurationSection(".custom_item");
+                final ConfigurationSection section = questSection.getConfigurationSection(".custom_item");
                 if (section == null) {
                     configurationError(fileName, questIndex, null, "The custom item is not defined.");
                     return null;
@@ -236,7 +235,8 @@ public class QuestsLoader extends QuestItemGetter {
             }
 
             else {
-                ItemStack requiredItem = getItemStackFromMaterial(itemType, fileName, questIndex, "required_item");
+                final ItemStack requiredItem = getItemStackFromMaterial(itemType, fileName, questIndex, "required_item");
+                if (requiredItem == null) return null;
 
                 if (itemType.equals("POTION") || itemType.equals("SPLASH_POTION") || itemType.equals("LINGERING_POTION")) {
                     final PotionMeta potionMeta = loadPotionItem(questSection, fileName, questIndex, requiredItem);

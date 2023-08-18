@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'com.ordwen'
-version = '2.2.4-SNAPSHOT-5'
+version = '2.2.4-SNAPSHOT-9'
 
 repositories {
     mavenCentral()
@@ -47,6 +47,10 @@ repositories {
     maven {
         url = 'https://repo.rosewooddev.io/repository/public/'
     }
+    maven {
+        name = "phoenix"
+        url = "https://nexus.phoenixdevt.fr/repository/maven-public/"
+    }
     flatDir {
         dirs 'libs'
     }
@@ -88,6 +92,8 @@ dependencies {
     /* custom items */
     compileOnly 'com.github.oraxen:oraxen:1.157.0'
     compileOnly 'com.github.LoneDev6:API-ItemsAdder:3.5.0b'
+    compileOnly 'net.Indyuce:MMOItems-API:6.9.2-SNAPSHOT'
+    compileOnly 'io.lumine:MythicLib-dist:1.5.2-SNAPSHOT'
 
     /* Mojang auth API for heads */
     compileOnly 'com.mojang:authlib:1.5.21'

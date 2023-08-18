@@ -39,6 +39,7 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
     private static String completeGetType;
     private static boolean isPlayerHeadEnabled;
     private static boolean isGlowingEnabled;
+    private static boolean isStatusDisabled;
 
     /* item slots */
     private static final Set<Integer> slotsPlayerHead = new HashSet<>();
@@ -110,6 +111,7 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
         /* get booleans */
         isPlayerHeadEnabled = interfaceConfig.getConfigurationSection("player_head").getBoolean(".enabled");
         isGlowingEnabled = interfaceConfig.getBoolean("glowing_if_achieved");
+        isStatusDisabled = interfaceConfig.getBoolean("disable_status");
 
         /* create base of inventory */
         size = interfaceConfig.getInt(".size");
@@ -339,29 +341,41 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
                                     .replace("%required%", String.valueOf(quest.getAmountRequired()))
                                     .replace("%achieved%", String.valueOf(playerQuests.getAchievedQuests()))
                                     .replace("%drawIn%", TimeRemain.timeRemain(player.getName()))
+                                    .replace("%status%", getQuestStatus(questsMap.get(quest), quest, player))
                     );
                 }
 
                 itemMeta.setDisplayName(PAPIHook.getPlaceholders(player, itemMeta.getDisplayName()));
             }
 
-            lore.add(ColorConvert.convertColorCode(PAPIHook.getPlaceholders(player, status)));
+            if (!status.isEmpty() && !isStatusDisabled) lore.add(ColorConvert.convertColorCode(PAPIHook.getPlaceholders(player, status)));
 
             if (questsMap.get(quest).isAchieved()) {
+
                 if (isGlowingEnabled) {
                     itemMeta.addEnchant(Enchantment.SILK_TOUCH, 1, false);
                 }
-                lore.add(ColorConvert.convertColorCode(achieved));
-            } else {
+
+                if (!achieved.isEmpty() && !isStatusDisabled) {
+                    lore.add(ColorConvert.convertColorCode(achieved));
+                }
+            }
+
+            else {
+
                 if (quest.getQuestType() == QuestType.GET) {
-                    lore.add(ColorConvert.convertColorCode(PAPIHook.getPlaceholders(player, completeGetType)
+                    if (!completeGetType.isEmpty()) lore.add(ColorConvert.convertColorCode(PAPIHook.getPlaceholders(player, completeGetType)
                             .replace("%progress%", String.valueOf(questsMap.get(quest).getProgression()))
                             .replace("%required%", String.valueOf(quest.getAmountRequired()))
                     ));
-                } else {
-                    lore.add(ColorConvert.convertColorCode(PAPIHook.getPlaceholders(player, progression)
-                            .replace("%progress%", String.valueOf(questsMap.get(quest).getProgression()))
-                            .replace("%required%", String.valueOf(quest.getAmountRequired()))));
+                }
+
+                else {
+                    if (!progression.isEmpty() && !isStatusDisabled) {
+                        lore.add(ColorConvert.convertColorCode(PAPIHook.getPlaceholders(player, progression)
+                                .replace("%progress%", String.valueOf(questsMap.get(quest).getProgression()))
+                                .replace("%required%", String.valueOf(quest.getAmountRequired()))));
+                    }
                 }
             }
 
@@ -382,7 +396,9 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
                 for (int slot : slotQuests.get(i)) {
                     playerQuestsInventoryIndividual.setItem(slot - 1, itemStack);
                 }
-            } else {
+            }
+
+            else {
                 PluginLogger.error("An error occurred when loading the player interface.");
                 PluginLogger.error("The slot for the quest number " + (i + 1) + " is not defined in the playerInterface file.");
             }
@@ -393,6 +409,23 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
     }
 
     /**
+     * Get the corresponding text for the quest status.
+     * @param progression the current progression of the quest.
+     * @param quest the quest.
+     * @param player the player.
+     * @return the achieved message or the progress message.
+     */
+    private static String getQuestStatus(Progression progression, AbstractQuest quest, Player player) {
+        if (progression.isAchieved()) {
+            return PAPIHook.getPlaceholders(player, getAchieved());
+        } else {
+            return PAPIHook.getPlaceholders(player, getProgression()
+                    .replace("%progress%", String.valueOf(progression.getProgression()))
+                    .replace("%required%", String.valueOf(quest.getAmountRequired())));
+        }
+    }
+
+    /**
      * Get the name of the interface.
      *
      * @param player player to get the name.
@@ -400,6 +433,30 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
      */
     public static String getInterfaceName(Player player) {
         return PAPIHook.getPlaceholders(player, interfaceName);
+    }
+
+    /**
+     * Get the "achieved" message.
+     * @return "achieved" message.
+     */
+    public static String getAchieved() {
+        return achieved;
+    }
+
+    /**
+     * Get the "progression" message.
+     * @return "progression" message.
+     */
+    public static String getProgression() {
+        return progression;
+    }
+
+    /**
+     * Get the "completeGetType" message.
+     * @return "completeGetType" message.
+     */
+    public static String getCompleteGetType() {
+        return completeGetType;
     }
 
     /**

@@ -13,6 +13,9 @@ import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class ReloadService {
 
     private final ODailyQuests oDailyQuests;
@@ -78,27 +81,33 @@ public class ReloadService {
      * Save all quests from connected players, to avoid errors on reload.
      */
     public void saveConnectedPlayerQuests(boolean isAsync) {
+
+        final Set<String> playersToRemove = new HashSet<>();
+
         switch (Modes.getStorageMode()) {
             case "YAML" -> {
                 if (yamlManager == null) restartNeeded();
                 else {
-                    for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-                        yamlManager.getSaveProgressionYAML().saveProgression(player.getName(), QuestsManager.getActiveQuests().get(player.getName()), isAsync);
-                        QuestsManager.getActiveQuests().remove(player.getName());
+                    for (String player : QuestsManager.getActiveQuests().keySet()) {
+                        yamlManager.getSaveProgressionYAML().saveProgression(player, QuestsManager.getActiveQuests().get(player), isAsync);
+                        playersToRemove.add(player);
                     }
                 }
             }
             case "MySQL", "H2" -> {
                 if (sqlManager == null) restartNeeded();
                 else {
-                    for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-                        sqlManager.getSaveProgressionSQL().saveProgression(player.getName(), QuestsManager.getActiveQuests().get(player.getName()), isAsync);
-                        QuestsManager.getActiveQuests().remove(player.getName());
+                    for (String player : QuestsManager.getActiveQuests().keySet()) {
+                        sqlManager.getSaveProgressionSQL().saveProgression(player, QuestsManager.getActiveQuests().get(player), isAsync);
+                        playersToRemove.add(player);
                     }
                 }
             }
-            default ->
-                    PluginLogger.error("Impossible to save player quests : the selected storage mode is incorrect !");
+            default -> PluginLogger.error("Impossible to save player quests : the selected storage mode is incorrect !");
+        }
+
+        for (String player : playersToRemove) {
+            QuestsManager.getActiveQuests().remove(player);
         }
     }
 

@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests;
 
 import com.ordwen.odailyquests.api.ODailyQuestsAPI;
+import com.ordwen.odailyquests.commands.CommandPreprocessListener;
 import com.ordwen.odailyquests.externs.IntegrationsManager;
 import com.ordwen.odailyquests.commands.AdminCommands;
 import com.ordwen.odailyquests.commands.PlayerCommands;
@@ -48,6 +49,8 @@ public final class ODailyQuests extends JavaPlugin {
     private TimerTask timerTask;
     private ReloadService reloadService;
     private CategoriesLoader categoriesLoader;
+
+    boolean isServerStopping = false;
 
     @Override
     public void onEnable() {
@@ -111,6 +114,7 @@ public final class ODailyQuests extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new QuestCompletedListener(), this);
         getServer().getPluginManager().registerEvents(new AllQuestsCompletedListener(), this);
         getServer().getPluginManager().registerEvents(new AllCategoryQuestsCompletedListener(), this);
+        getServer().getPluginManager().registerEvents(new CommandPreprocessListener(this), this);
 
         /* Avoid errors on reload */
         if (!Bukkit.getServer().getOnlinePlayers().isEmpty()) {
@@ -135,12 +139,9 @@ public final class ODailyQuests extends JavaPlugin {
         if (timerTask != null) timerTask.stop();
 
         /* Avoid errors on reload */
-        if (!Bukkit.getServer().getOnlinePlayers().isEmpty()) {
-            reloadService.saveConnectedPlayerQuests(false);
-        }
+        reloadService.saveConnectedPlayerQuests(false);
 
         if (sqlManager != null) sqlManager.close();
-
         PluginLogger.info(ChatColor.RED + "Plugin is shutting down...");
     }
 
@@ -159,6 +160,22 @@ public final class ODailyQuests extends JavaPlugin {
                 PluginLogger.warn("https://www.spigotmc.org/resources/odailyquests.100990/");
             }
         });
+    }
+
+    /**
+     * Check if the server is stopping.
+     * @return true if the server is stopping.
+     */
+    public boolean isServerStopping() {
+        return this.isServerStopping;
+    }
+
+    /**
+     * Set if the server is stopping.
+     * @param isServerStopping true if the server is stopping.
+     */
+    public void setServerStopping(boolean isServerStopping) {
+        this.isServerStopping = isServerStopping;
     }
 
     /**

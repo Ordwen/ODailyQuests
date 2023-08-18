@@ -28,6 +28,15 @@ public class AutoUpdater {
             throw new RuntimeException(e);
         }
 
+        final FileConfiguration playerInterfaceFile = new YamlConfiguration();
+        final File playerInterface = new File(plugin.getDataFolder(), "playerInterface.yml");
+
+        try {
+            playerInterfaceFile.load(playerInterface);
+        } catch (IOException | InvalidConfigurationException e) {
+            throw new RuntimeException(e);
+        }
+
         final String configVersion = configFile.getString("version");
         if (configVersion == null) {
             PluginLogger.error("The 'version' field is missing from the config file. The auto updater cannot work without it.");
@@ -56,7 +65,7 @@ public class AutoUpdater {
 
             if (!configFile.contains("progression_message")) {
                 AddDefault.addDefaultConfigItem("progression_message.enabled", true, configFile, file);
-                AddDefault.addDefaultConfigItem("progression_message.message", "&a%player% &7has progressed in the quest &a%questName% &7(%progression%/%required%)", configFile, file);
+                AddDefault.addDefaultConfigItem("progression_message.text", "&a%player% &7has progressed in the quest &a%questName% &7(%progression%/%required%)", configFile, file);
                 AddDefault.addDefaultConfigItem("progression_message.type", "ACTIONBAR", configFile, file);
                 PluginLogger.warn("Progression message has been added to the config file.");
             }
@@ -84,7 +93,30 @@ public class AutoUpdater {
                 AddDefault.addDefaultConfigItem("categories_rewards.hard.commands", List.of("give %player% diamond 64"), configFile, file);
             }
 
+            // --------------
+            // 2.2.3 -> 2.2.4
+            // --------------
+
+            // CONFIG
+
+            if (!configFile.contains("use_custom_furnace_results")) {
+                AddDefault.addDefaultConfigItem("use_custom_furnace_results", false, configFile, file);
+            }
+
+            if (!configFile.contains("disable_logs")) {
+                AddDefault.addDefaultConfigItem("disable_logs", false, configFile, file);
+            }
+
+            // PLAYER INTERFACE
+
+            if (!playerInterfaceFile.contains("player_interface.disable_status")) {
+                AddDefault.addDefaultConfigItem("disable_status", false, playerInterfaceFile, playerInterface);
+            }
+
             PluginLogger.fine("All files have been updated!");
         }
+
+        // update the config version
+        configFile.set("version", currentVersion + "SNAPSHOT");
     }
 }

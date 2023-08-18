@@ -8,9 +8,13 @@
 player_interface:
   size: 27
   inventory_name: "&bMy quests"
-  progress: "&eIN PROGRESS (&a%progress%&e/&c%required%&e)"
+  # disable the status of the quest if you want to handle it manually by placeholders
+  disable_status: false
+  # the 3 following lines will not be used if disable_status is set to true
   status: "&eStatus :"
+  progress: "&eIN PROGRESS (&a%progress%&e/&c%required%&e)"
   achieved: "&aACHIEVED"
+  # if you want to glow the item when the quest is achieved
   glowing_if_achieved: true
   complete_get_type: "&eClick to complete this quest !"
   player_head:
@@ -20,6 +24,7 @@ player_interface:
     item_description:
       - "&eCompleted quests : &b%achieved%&e/&63"
       - "&eNext draw in : &c%drawIn%"
+
   # ========================================================
   # Available types : FILL, PLAYER_COMMAND, CONSOLE_COMMAND
   # Placeholders : %player%

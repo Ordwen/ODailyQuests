@@ -12,12 +12,15 @@ public class EntityDeathListener extends AbstractEntityChecker implements Listen
 
     @EventHandler
     public void onEntityDeathEvent(EntityDeathEvent event) {
+
         final boolean isEntityFromSpawner = EntitySource.isEntityFromSpawner(event.getEntity());
         EntitySource.removeEntityFromSpawner(event.getEntity());
 
         if (WildStackerEnabled.isEnabled()) return;
         if (event.getEntity().getKiller() == null) return;
-        if (isEntityFromSpawner) return;
+        if (isEntityFromSpawner) {
+            return;
+        }
 
         setPlayerQuestProgression(event.getEntity().getKiller(), event.getEntityType(), null, 1, QuestType.KILL, null);
     }

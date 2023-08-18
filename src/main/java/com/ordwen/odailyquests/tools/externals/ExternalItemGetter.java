@@ -4,6 +4,9 @@ import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.Buttons
 import com.ordwen.odailyquests.tools.Pair;
 import dev.lone.itemsadder.api.CustomStack;
 import io.th0rgal.oraxen.api.OraxenItems;
+import net.Indyuce.mmoitems.MMOItems;
+import net.Indyuce.mmoitems.api.Type;
+import net.Indyuce.mmoitems.api.item.mmoitem.MMOItem;
 import org.bukkit.inventory.ItemStack;
 
 public abstract class ExternalItemGetter implements IExternalItemGetter {
@@ -40,6 +43,32 @@ public abstract class ExternalItemGetter implements IExternalItemGetter {
         }
 
         return new Pair<>("", CustomStack.getInstance(namespace).getItemStack());
+    }
+
+    /**
+     * Get an MMOItems item by its namespace.
+     * @param namespace the namespace of the item
+     * @return the ItemStack or null if it does not exist
+     */
+    @Override
+    public Pair<String, ItemStack> getMMOItemsItem(String namespace) {
+        if (!namespace.contains(":")) {
+            return new Pair<>("You need to provide the category and the id of the item.", null);
+        }
+
+        final String[] split = namespace.split(":", 2);
+
+        final Type type = MMOItems.plugin.getTypes().get(split[0]);
+        if (type == null) {
+            return new Pair<>("The category " + split[0] + " does not exist in MMOItems.", null);
+        }
+
+        final MMOItem item = MMOItems.plugin.getMMOItem(type, split[1]);
+        if (item == null) {
+            return new Pair<>("The item " + split[1] + " does not exist in MMOItems.", null);
+        }
+
+        return new Pair<>("", item.newBuilder().build());
     }
 
     /**

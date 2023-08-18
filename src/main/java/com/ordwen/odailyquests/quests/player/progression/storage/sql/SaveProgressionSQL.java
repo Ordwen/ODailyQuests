@@ -2,6 +2,7 @@ package com.ordwen.odailyquests.quests.player.progression.storage.sql;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
+import com.ordwen.odailyquests.configuration.essentials.Logs;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
@@ -79,8 +80,7 @@ public class SaveProgressionSQL {
                 saveDatas(playerName, timestamp, achievedQuests, totalAchievedQuests, quests);
             });
         } else {
-                Debugger.addDebug("Saving player " + playerName + " progression");
-
+            Debugger.addDebug("Saving player " + playerName + " progression");
             saveDatas(playerName, timestamp, achievedQuests, totalAchievedQuests, quests);
         }
     }
@@ -132,17 +132,15 @@ public class SaveProgressionSQL {
                 index++;
             }
 
-                Debugger.addDebug(playerName + " quests progression saved");
+            Debugger.addDebug(playerName + " quests progression saved");
 
-
-            PluginLogger.info(playerName + "'s data saved.");
+            if (Logs.isEnabled()) PluginLogger.info(playerName + "'s data saved.");
             connection.close();
         } catch (SQLException e) {
             PluginLogger.error("An error occurred while saving player " + playerName + " data.");
 
-                Debugger.addDebug("An error occurred while saving player " + playerName + " data.");
-                Debugger.addDebug(e.getMessage());
-
+            Debugger.addDebug("An error occurred while saving player " + playerName + " data.");
+            Debugger.addDebug(e.getMessage());
 
             e.printStackTrace();
         }

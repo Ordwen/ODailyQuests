@@ -22,6 +22,7 @@ public abstract class QuestItemGetter extends ItemGetter implements IQuestItem {
         return switch (split[0]) {
             case "oraxen" -> this.getOraxenItem(split[1], fileName, questIndex, parameter);
             case "itemsadder" -> this.getItemsAdderItem(split[1], fileName, questIndex, parameter);
+            case "mmoitems" -> this.getMMOItemsItem(split[1], fileName, questIndex, parameter);
             case "customhead" -> this.getCustomHead(split[1], fileName, questIndex, parameter);
             case "custommodeldata" -> this.getCustomModelDataItem(split[1], fileName, questIndex, parameter);
             default -> null;
@@ -58,6 +59,25 @@ public abstract class QuestItemGetter extends ItemGetter implements IQuestItem {
     @Override
     public ItemStack getItemsAdderItem(String namespace, String fileName, int questIndex, String parameter) {
         final Pair<String, ItemStack> result = super.getItemsAdderItem(namespace);
+        if (!result.first().isEmpty()) {
+            configurationError(fileName, questIndex, parameter, result.first());
+            return null;
+        }
+
+        return result.second();
+    }
+
+    /**
+     * Get an item from MMOItems.
+     * @param namespace the namespace of the item
+     * @param fileName the name of the file where the item is
+     * @param questIndex the index of the quest in the file
+     * @param parameter the parameter involved
+     * @return the ItemStack or null if the item cannot be loaded
+     */
+    @Override
+    public ItemStack getMMOItemsItem(String namespace, String fileName, int questIndex, String parameter) {
+        final Pair<String, ItemStack> result = super.getMMOItemsItem(namespace);
         if (!result.first().isEmpty()) {
             configurationError(fileName, questIndex, parameter, result.first());
             return null;

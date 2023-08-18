@@ -7,6 +7,7 @@ public interface IInterfaceItem {
     ItemStack getItem(String material, String itemIndex, String parameter);
     ItemStack getOraxenItem(String namespace, String itemIndex, String parameter);
     ItemStack getItemsAdderItem(String namespace, String itemIndex, String parameter);
+    ItemStack getMMOItemsItem(String namespace, String itemIndex, String parameter);
     ItemStack getCustomHead(String texture, String questIndex, String parameter);
     ItemStack getCustomModelDataItem(String customModelData, String questIndex, String parameter);
 

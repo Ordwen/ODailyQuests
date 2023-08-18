@@ -2,10 +2,14 @@
 debug: false
 
 # never touch this line
-version: 2.1.0
+version: 2.2.4
 
 # plugin prefix for messaging
 prefix: "&7[O'DailyQuests&7]"
+
+# disable the logs when player quests are saved
+# NEVER ask for support with this option enabled
+disable_logs: false
 
 # storage mode for quests & progression
 # AVAILABLE MODES: YAML, MySQL,H2
