@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'com.ordwen'
-version = '2.2.4-SNAPSHOT-9'
+version = '2.2.4-SNAPSHOT-11'
 
 repositories {
     mavenCentral()

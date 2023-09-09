@@ -3,13 +3,14 @@ package com.ordwen.odailyquests.configuration.integrations;
 import com.ordwen.odailyquests.configuration.essentials.UseCustomFurnaceResults;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 
-public class ItemsAdderEnabled {
+public class OraxenEnabled {
 
     private final ConfigurationFiles configurationFiles;
 
-    public ItemsAdderEnabled(ConfigurationFiles configurationFiles) {
+    public OraxenEnabled(ConfigurationFiles configurationFiles) {
         this.configurationFiles = configurationFiles;
     }
+
 
     private static boolean isEnabled;
     private static boolean isLoaded;
@@ -22,15 +23,16 @@ public class ItemsAdderEnabled {
     }
 
     public static void setLoaded(boolean isLoaded) {
-        ItemsAdderEnabled.isLoaded = isLoaded;
+        OraxenEnabled.isLoaded = isLoaded;
     }
 
     /**
      * Check if WildStacker option is enabled in config.
      */
-    public void loadItemsAdderEnabled() {
-        final String path = "use_itemsadder";
+    public void loadOraxenEnabled() {
+        final String path = "use_oraxen";
         isEnabled = configurationFiles.getConfigFile().getBoolean(path);
         if (isEnabled()) UseCustomFurnaceResults.setEnabled(true);
     }
+
 }

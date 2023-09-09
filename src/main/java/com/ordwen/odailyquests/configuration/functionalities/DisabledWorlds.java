@@ -29,6 +29,23 @@ public class DisabledWorlds {
      * @return true if the world is disabled.
      */
     public static boolean isWorldDisabled(String world) {
-        return disabledWorlds.contains(world);
+        boolean isDisabled = false;
+        for (String disabledWorld : disabledWorlds) {
+            if (disabledWorld.startsWith("?")) {
+                final String worldLabel = disabledWorld.substring(1);
+                isDisabled = world.endsWith(worldLabel);
+            }
+            else if (disabledWorld.endsWith("?")) {
+                final String worldLabel = disabledWorld.substring(0, disabledWorld.length() - 1);
+                isDisabled = world.startsWith(worldLabel);
+            }
+            else {
+                isDisabled = world.equals(disabledWorld);
+            }
+
+            if (isDisabled) break;
+        }
+
+        return isDisabled;
     }
 }

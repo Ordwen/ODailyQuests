@@ -1,6 +1,5 @@
 package com.ordwen.odailyquests.tools;
 
-import com.magmaguy.elitemobs.quests.Quest;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
@@ -17,28 +16,28 @@ import java.util.concurrent.TimeUnit;
 
 public class TimerTask {
 
-    ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
+    final Runnable runnable = () -> {
+        PluginLogger.fine("It's a new day. The player quests are being reloaded.");
+        for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+
+            final String msg = QuestsMessages.NEW_DAY.toString();
+            if (msg != null) player.sendMessage(msg);
+
+            int totalAchievedQuests = QuestsManager.getActiveQuests().get(player.getName()).getTotalAchievedQuests();
+            Utils.loadNewPlayerQuests(player.getName(), QuestsManager.getActiveQuests(), Modes.getTimestampMode(), totalAchievedQuests);
+        }
+    };
 
     /**
      * Set a runnable to reload quests at midnight.
      * @param start date and time to start the task.
      */
     public TimerTask(LocalDateTime start) {
+        final LocalDateTime end = start.plusDays(1).truncatedTo(ChronoUnit.DAYS);
+        final Duration duration = Duration.between(start, end);
 
-        Runnable runnable = () -> {
-            for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-
-                final String msg = QuestsMessages.NEW_DAY.toString();
-                if (msg != null) player.sendMessage(msg);
-
-                int totalAchievedQuests = QuestsManager.getActiveQuests().get(player.getName()).getTotalAchievedQuests();
-                Utils.loadNewPlayerQuests(player.getName(), QuestsManager.getActiveQuests(), Modes.getTimestampMode(), totalAchievedQuests);
-            }
-        };
-
-        LocalDateTime end = start.plusDays(1).truncatedTo(ChronoUnit.DAYS);
-
-        Duration duration = Duration.between(start, end);
         scheduler.scheduleAtFixedRate(runnable, duration.toMillis(), 86400000, TimeUnit.MILLISECONDS);
     }
 

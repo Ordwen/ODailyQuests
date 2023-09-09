@@ -2,9 +2,8 @@ package com.ordwen.odailyquests.events.listeners.inventory;
 
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
 import com.ordwen.odailyquests.configuration.essentials.UseCustomFurnaceResults;
-import com.ordwen.odailyquests.configuration.integrations.ItemsAdderEnabled;
 import com.ordwen.odailyquests.events.customs.CustomFurnaceExtractEvent;
-import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractSpecifiedChecker;
+import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractClickableChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -14,16 +13,17 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.MerchantInventory;
+import org.bukkit.inventory.*;
 
-public class InventoryClickListener extends AbstractSpecifiedChecker implements Listener {
+public class InventoryClickListener extends AbstractClickableChecker implements Listener {
 
     @EventHandler
     public void onInventoryClickEvent(InventoryClickEvent event) {
 
         final ItemStack clickedItem = event.getCurrentItem();
+
         final InventoryAction action = event.getAction();
+        if (action == InventoryAction.NOTHING) return;
 
         final int slot = event.getRawSlot();
 
@@ -50,11 +50,30 @@ public class InventoryClickListener extends AbstractSpecifiedChecker implements 
         }
 
         // check if player is extracting from furnace
-        if (UseCustomFurnaceResults.isEnabled() || ItemsAdderEnabled.isEnabled()) {
-            if (event.getInventory().getType() == InventoryType.FURNACE && event.getSlotType() == InventoryType.SlotType.RESULT) {
-                //if (action == InventoryAction.HOTBAR_SWAP || action == InventoryAction.HOTBAR_MOVE_AND_READD) return;
+        if (UseCustomFurnaceResults.isEnabled()) {
 
-                final CustomFurnaceExtractEvent customFurnaceExtractEvent = new CustomFurnaceExtractEvent(player, clickedItem);
+            final InventoryType inventoryType = event.getInventory().getType();
+
+            if (inventoryType == InventoryType.FURNACE
+                    || inventoryType == InventoryType.BLAST_FURNACE
+                    || inventoryType == InventoryType.SMOKER) {
+
+                if (event.getSlotType() != InventoryType.SlotType.RESULT) return;
+
+                int amount;
+                switch (action) {
+                    case PICKUP_HALF -> amount = (int) Math.ceil(clickedItem.getAmount() / 2.0);
+                    case PICKUP_ONE -> amount = 1;
+                    case MOVE_TO_OTHER_INVENTORY -> {
+                        int max = clickedItem.getAmount();
+                        amount = Math.min(max, fits(clickedItem, player.getInventory()));
+                    }
+                    default -> amount = clickedItem.getAmount();
+                }
+
+                if (amount == 0) return;
+
+                final CustomFurnaceExtractEvent customFurnaceExtractEvent = new CustomFurnaceExtractEvent(player, clickedItem, amount);
                 Bukkit.getServer().getPluginManager().callEvent(customFurnaceExtractEvent);
 
                 return;
@@ -92,5 +111,26 @@ public class InventoryClickListener extends AbstractSpecifiedChecker implements 
             // complete quest for types that requires a click ( GET - LOCATION - PLACEHOLDER)
             setPlayerQuestProgression(player, clickedItem);
         }
+    }
+
+    /**
+     *
+     * @param expected
+     * @param inv
+     * @return
+     */
+    private int fits(ItemStack expected, Inventory inv) {
+        int result = 0;
+
+        for (ItemStack compared : inv.getStorageContents()) {
+            if (compared == null) {
+                result += expected.getMaxStackSize();
+            }
+            else if (compared.isSimilar(expected)) {
+                result += Math.max(expected.getMaxStackSize() - compared.getAmount(), 0);
+            }
+        }
+
+        return result;
     }
 }

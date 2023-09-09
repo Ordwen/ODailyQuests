@@ -42,6 +42,9 @@ public enum QuestsMessages {
     TOTAL_AMOUNT_RESET("total_amount_reset", "&eYour total number of completed quests has been reset by an admin."),
     TOTAL_AMOUNT_RESET_ADMIN("total_amount_reset_admin", "&e%target%'s total number of completed quests has been reset by an admin."),
 
+    WORLD_DISABLED("world_disabled", "&cYou can't complete quests in this world."),
+    NOT_REQUIRED_WORLD("not_required_world", "&cYou can't complete this quest in this world."),
+
     REWARD_COMMAND("reward_command", "&aYou receive some rewards commands."),
     REWARD_EXP_LEVELS("reward_exp_levels", "&aYou receive &e%rewardAmount% &bEXP &alevels."),
     REWARD_EXP_POINTS("reward_exp_points", "&aYou receive &e%rewardAmount% &bEXP &apoints."),
@@ -55,6 +58,7 @@ public enum QuestsMessages {
 
     PLACEHOLDER_API_NOT_ENABLED("placeholder_api_not_enabled", "&cThe PlaceholderAPI plugin is not enabled. Please inform an administrator."),
     PLACEHOLDER_NOT_NUMBER("placeholder_not_number", "&cThe placeholder %placeholder% is not a number. Please inform an administrator."),
+
     ;
 
     private final String path;

@@ -26,9 +26,7 @@ public class PickupItemListener extends AbstractItemChecker implements Listener 
                     final PersistentDataContainer pdc = item.getItemMeta().getPersistentDataContainer();
                     final String droppedKey = pdc.get(Antiglitch.DROPPED_BY, PersistentDataType.STRING);
 
-                    if (droppedKey != null && droppedKey.equals(player.getUniqueId().toString())) {
-                        return;
-                    }
+                    if (droppedKey != null) return;
                 }
             }
 

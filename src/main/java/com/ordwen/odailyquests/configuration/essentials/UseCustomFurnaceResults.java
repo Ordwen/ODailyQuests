@@ -16,6 +16,10 @@ public class UseCustomFurnaceResults {
         return isEnabled;
     }
 
+    public static void setEnabled(boolean isEnabled) {
+        UseCustomFurnaceResults.isEnabled = isEnabled;
+    }
+
     public void loadUseCustomFurnaceResults() {
         final String path = "use_custom_furnace_results";
         isEnabled = configurationFiles.getConfigFile().getBoolean(path);

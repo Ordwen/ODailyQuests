@@ -10,10 +10,12 @@ public class CustomFurnaceExtractEvent extends Event {
 
     private final Player player;
     private final ItemStack result;
+    private final int amount;
 
-    public CustomFurnaceExtractEvent(Player player, ItemStack result) {
+    public CustomFurnaceExtractEvent(Player player, ItemStack result, int amount) {
         this.player = player;
         this.result = result;
+        this.amount = amount;
     }
 
     private static final HandlerList HANDLERS = new HandlerList();
@@ -34,5 +36,9 @@ public class CustomFurnaceExtractEvent extends Event {
 
     public ItemStack getResult() {
         return result;
+    }
+
+    public int getAmount() {
+        return amount;
     }
 }

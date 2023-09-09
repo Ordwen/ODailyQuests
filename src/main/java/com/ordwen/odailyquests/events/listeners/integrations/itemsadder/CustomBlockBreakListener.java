@@ -23,11 +23,9 @@ public class CustomBlockBreakListener extends AbstractItemChecker implements Lis
         AtomicBoolean valid = new AtomicBoolean(true);
 
         if (Antiglitch.isStorePlacedBlocks()) {
-            block.getMetadata("odailyquests:placed").forEach(metadataValue -> {
-                if (metadataValue.asString().equals(player.getUniqueId().toString())) {
-                    valid.set(false);
-                }
-            });
+            if (!block.getMetadata("odailyquests:placed").isEmpty()) {
+                valid.set(false);
+            }
         }
 
         if (valid.get()) {

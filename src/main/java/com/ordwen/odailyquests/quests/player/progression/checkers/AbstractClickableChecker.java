@@ -4,7 +4,6 @@ import com.ordwen.odailyquests.api.events.QuestCompletedEvent;
 import com.ordwen.odailyquests.api.progression.ValidateItemQuest;
 import com.ordwen.odailyquests.configuration.essentials.Synchronization;
 import com.ordwen.odailyquests.configuration.functionalities.DisabledWorlds;
-import com.ordwen.odailyquests.configuration.functionalities.TakeItems;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.events.antiglitch.OpenedRecipes;
 import com.ordwen.odailyquests.externs.hooks.placeholders.PAPIHook;
@@ -21,12 +20,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.HashMap;
 
-public abstract class AbstractSpecifiedChecker extends AbstractProgressionIncreaser {
+public abstract class AbstractClickableChecker extends AbstractProgressionIncreaser {
 
     /**
      * Increase player quest progression.
@@ -35,6 +33,9 @@ public abstract class AbstractSpecifiedChecker extends AbstractProgressionIncrea
      */
     public void setPlayerQuestProgression(Player player, ItemStack clickedItem) {
         if (DisabledWorlds.isWorldDisabled(player.getWorld().getName())) {
+            final String msg = QuestsMessages.WORLD_DISABLED.getMessage(player);
+            if (msg != null) player.sendMessage(msg);
+
             return;
         }
 

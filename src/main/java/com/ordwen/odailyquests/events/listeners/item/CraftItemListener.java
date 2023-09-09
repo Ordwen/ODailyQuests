@@ -34,7 +34,7 @@ public class CraftItemListener extends AbstractItemChecker implements Listener {
             test = event.getCurrentItem().clone();
         }
 
-        ClickType click = event.getClick();
+        final ClickType click = event.getClick();
         int recipeAmount = test.getAmount();
 
         final ItemStack cursorItem = player.getItemOnCursor();

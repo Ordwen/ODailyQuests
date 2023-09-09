@@ -3,9 +3,11 @@ package com.ordwen.odailyquests.events;
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.UseCustomFurnaceResults;
 import com.ordwen.odailyquests.configuration.integrations.ItemsAdderEnabled;
+import com.ordwen.odailyquests.configuration.integrations.OraxenEnabled;
 import com.ordwen.odailyquests.events.listeners.customs.CustomFurnaceExtractListener;
 import com.ordwen.odailyquests.events.listeners.integrations.itemsadder.CustomBlockBreakListener;
 import com.ordwen.odailyquests.events.listeners.integrations.itemsadder.ItemsAdderLoadDataListener;
+import com.ordwen.odailyquests.events.listeners.integrations.oraxen.OraxenItemsLoadedListener;
 import com.ordwen.odailyquests.externs.hooks.mobs.EliteMobsHook;
 import com.ordwen.odailyquests.externs.hooks.mobs.MythicMobsHook;
 import com.ordwen.odailyquests.externs.hooks.stackers.WildStackerHook;
@@ -38,6 +40,7 @@ public class EventsManager {
         Bukkit.getPluginManager().registerEvents(new ShearEntityListener(), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new EntityDeathListener(), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new SpawnerSpawnListener(), oDailyQuests);
+        //Bukkit.getPluginManager().registerEvents(new ProjectileHitListener(), oDailyQuests);
 
         if (EliteMobsHook.isEliteMobsSetup()) {
             Bukkit.getPluginManager().registerEvents(new EliteMobDeathListener(), oDailyQuests);
@@ -78,7 +81,9 @@ public class EventsManager {
         Bukkit.getPluginManager().registerEvents(new InventoryCloseListener(), oDailyQuests);
 
         // custom events
-        if (ItemsAdderEnabled.isEnabled() || UseCustomFurnaceResults.isEnabled()) {
+        if (ItemsAdderEnabled.isEnabled()
+                || OraxenEnabled.isEnabled()
+                || UseCustomFurnaceResults.isEnabled()) {
             Bukkit.getPluginManager().registerEvents(new CustomFurnaceExtractListener(), oDailyQuests);
         }
 
@@ -86,6 +91,10 @@ public class EventsManager {
         if (ItemsAdderEnabled.isEnabled()) {
             Bukkit.getPluginManager().registerEvents(new ItemsAdderLoadDataListener(oDailyQuests), oDailyQuests);
             Bukkit.getPluginManager().registerEvents(new CustomBlockBreakListener(), oDailyQuests);
+        }
+
+        if (OraxenEnabled.isEnabled()) {
+            Bukkit.getPluginManager().registerEvents(new OraxenItemsLoadedListener(oDailyQuests), oDailyQuests);
         }
     }
 }

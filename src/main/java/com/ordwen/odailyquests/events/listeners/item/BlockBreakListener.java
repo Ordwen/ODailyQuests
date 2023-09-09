@@ -5,7 +5,9 @@ import com.ordwen.odailyquests.configuration.integrations.ItemsAdderEnabled;
 import com.ordwen.odailyquests.enums.QuestType;
 import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractItemChecker;
 import dev.lone.itemsadder.api.CustomBlock;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.Ageable;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -28,18 +30,33 @@ public class BlockBreakListener extends AbstractItemChecker implements Listener 
             if (customBlock != null) return;
         }
 
-        AtomicBoolean valid = new AtomicBoolean(true);
+        final AtomicBoolean valid = new AtomicBoolean(true);
 
         if (Antiglitch.isStorePlacedBlocks()) {
-            block.getMetadata("odailyquests:placed").forEach(metadataValue -> {
-                if (metadataValue.asString().equals(player.getUniqueId().toString())) {
+            if (block.getBlockData() instanceof Ageable ageable) {
+                if (ageable.getAge() != ageable.getMaximumAge()) {
                     valid.set(false);
                 }
-            });
+            }
+
+            else {
+                if (!block.getMetadata("odailyquests:placed").isEmpty()) {
+                    valid.set(false);
+                }
+            }
         }
 
+        Material material = switch (block.getType()) {
+            case POTATOES -> Material.POTATO;
+            case CARROTS -> Material.CARROT;
+            case BEETROOTS -> Material.BEETROOT;
+            case COCOA -> Material.COCOA_BEANS;
+            case SWEET_BERRY_BUSH -> Material.SWEET_BERRIES;
+            default -> block.getType();
+        };
+
         if (valid.get()) {
-            setPlayerQuestProgression(player, new ItemStack(block.getType()), 1, QuestType.BREAK, block.getBlockData().getAsString());
+            setPlayerQuestProgression(player, new ItemStack(material), 1, QuestType.BREAK, block.getBlockData().getAsString());
         }
     }
 }

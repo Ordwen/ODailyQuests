@@ -48,11 +48,9 @@ public class BlockDropItemListener extends AbstractItemChecker implements Listen
             // check if the block have been placed by the player
             if (dataMaterial.isBlock()) {
                 if (Antiglitch.isStorePlacedBlocks()) {
-                    event.getBlock().getMetadata("odailyquests:placed").forEach(metadataValue -> {
-                        if (metadataValue.asString().equals(event.getPlayer().getUniqueId().toString())) {
-                            valid.set(false);
-                        }
-                    });
+                    if (!event.getBlock().getMetadata("odailyquests:placed").isEmpty()) {
+                        valid.set(false);
+                    }
                 }
             }
 

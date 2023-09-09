@@ -173,9 +173,17 @@ store_broken_blocks: false
 # However, these items are still normally usable.
 store_dropped_items: false
 
+# ===========================================================
+# Custom Items Support
+# ===========================================================
+
 # Enable this if you are using IA items for quest menu or required items.
 # NEVER enable this if you are NOT using ItemsAdder. The quests will not load.
 use_itemsadder: false
+
+# Enable this if you are using Oraxen items for quest menu or required items.
+# NEVER enable this if you are NOT using Oraxen. The quests will not load.
+use_oraxen: false
 
 # Enable this if some plugins are modifying the furnace results.
 # You should enable it if the furnace results can have a custom model data (e.g. with Oraxen).

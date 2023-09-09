@@ -107,6 +107,10 @@ public class AutoUpdater {
                 AddDefault.addDefaultConfigItem("disable_logs", false, configFile, file);
             }
 
+            if (!configFile.contains("use_oraxen")) {
+                AddDefault.addDefaultConfigItem("use_oraxen", false, configFile, file);
+            }
+
             // PLAYER INTERFACE
 
             if (!playerInterfaceFile.contains("player_interface.disable_status")) {
