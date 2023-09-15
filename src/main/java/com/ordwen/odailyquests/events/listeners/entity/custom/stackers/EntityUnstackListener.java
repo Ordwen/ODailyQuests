@@ -22,9 +22,7 @@ public class EntityUnstackListener extends AbstractEntityChecker implements List
 
         if (!WildStackerEnabled.isEnabled()) return;
         if (event.getUnstackSource() == null) return;
-        if (isEntityFromSpawner) {
-            return;
-        }
+        if (isEntityFromSpawner) return;
 
         if (event.getUnstackSource() instanceof Player player) {
             setPlayerQuestProgression(player, event.getEntity().getType(), null, event.getAmount(), QuestType.KILL, null);
