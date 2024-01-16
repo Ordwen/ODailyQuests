@@ -25,7 +25,7 @@ public class CraftItemListener extends AbstractItemChecker implements Listener {
 
         if (event.getRecipe() instanceof ComplexRecipe complexRecipe) {
             switch (complexRecipe.getKey().getKey().toUpperCase()) {
-                case "REPAIR_ITEM", "ARMOR_DYE", "SHULKER_BOX_COLORING", "SHIELD_DECORATION", "BANNER_DUPLICATE", "MAP_CLONING" -> {
+                case "REPAIR_ITEM", "ARMOR_DYE", "SHULKER_BOX_COLORING", "SHIELD_DECORATION", "BANNER_DUPLICATE", "MAP_CLONING", "BOOK_CLONING" -> {
                     return;
                 }
             }
@@ -77,9 +77,9 @@ public class CraftItemListener extends AbstractItemChecker implements Listener {
 
     /**
      *
-     * @param stack
-     * @param inv
-     * @return
+     * @param stack the item to check.
+     * @param inv the inventory to check.
+     * @return the amount of items that can be added to the inventory.
      */
     private int fits(ItemStack stack, Inventory inv) {
         ItemStack[] contents = inv.getContents();

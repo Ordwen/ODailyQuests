@@ -24,7 +24,17 @@ public class ValidateItemQuest {
         int amount = 0;
 
         for (ItemStack item : quest.getRequiredItems()) {
-            amount += getAmount(player.getInventory(), item);
+            /* TEMPORARY FIX TO DUPE EXPLOIT */
+            int result = getAmount(player.getInventory(), item);
+            if (result == -1) {
+                final String msg = QuestsMessages.CANNOT_COMPLETE_QUEST_WITH_OFF_HAND.getMessage(player);
+                if (msg != null) player.sendMessage(msg);
+
+                return;
+            }
+
+            amount += result;
+            /* END OF TEMPORARY FIX */
         }
 
         if (amount >= quest.getAmountRequired()) {
@@ -32,9 +42,6 @@ public class ValidateItemQuest {
         }
 
         if (hasRequiredAmount) {
-            final QuestCompletedEvent event = new QuestCompletedEvent(player, progression, quest);
-            Bukkit.getPluginManager().callEvent(event);
-
             if (TakeItems.isTakeItemsEnabled()) {
                 int totalRemoved = 0;
                 for (ItemStack item : quest.getRequiredItems()) {
@@ -48,9 +55,22 @@ public class ValidateItemQuest {
                     toRemove.setAmount(removeAmount);
                     player.getInventory().removeItem(toRemove);
 
+                    /*
+                    final Map<Integer, ItemStack> map = player.getInventory().removeItem(toRemove);
+                    if (!map.isEmpty()) {
+                        final String msg = QuestsMessages.CANNOT_COMPLETE_QUEST_WITH_OFF_HAND.getMessage(player);
+                        if (msg != null) player.sendMessage(msg);
+
+                        return;
+                    }
+                     */
+
                     totalRemoved += current;
                 }
             }
+
+            final QuestCompletedEvent event = new QuestCompletedEvent(player, progression, quest);
+            Bukkit.getPluginManager().callEvent(event);
 
             player.closeInventory();
         } else {
@@ -75,10 +95,23 @@ public class ValidateItemQuest {
                 if (item.hasItemMeta() && item.getItemMeta().hasCustomModelData()) {
                     if (itemStack.hasItemMeta() && itemStack.getItemMeta().hasCustomModelData()) {
                         if (itemStack.getItemMeta().getCustomModelData() == item.getItemMeta().getCustomModelData()) {
+
+                            /* TEMPORARY FIX TO DUPE EXPLOIT */
+                            if (playerInventory.getItemInOffHand().equals(itemStack)) {
+                                return -1;
+                            }
+                            /* END OF TEMPORARY FIX */
+
                             amount += itemStack.getAmount();
                         }
                     }
                 } else {
+                    /* TEMPORARY FIX TO DUPE EXPLOIT */
+                    if (playerInventory.getItemInOffHand().equals(itemStack)) {
+                        return -1;
+                    }
+                    /* END OF TEMPORARY FIX */
+
                     amount += itemStack.getAmount();
                 }
             }

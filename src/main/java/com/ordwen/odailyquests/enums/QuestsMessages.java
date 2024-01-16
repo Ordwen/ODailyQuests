@@ -59,6 +59,7 @@ public enum QuestsMessages {
     PLACEHOLDER_API_NOT_ENABLED("placeholder_api_not_enabled", "&cThe PlaceholderAPI plugin is not enabled. Please inform an administrator."),
     PLACEHOLDER_NOT_NUMBER("placeholder_not_number", "&cThe placeholder %placeholder% is not a number. Please inform an administrator."),
 
+    CANNOT_COMPLETE_QUEST_WITH_OFF_HAND("cannot_complete_quest_with_off_hand", "&cAll required items must be in your inventory, not in your off hand."),
     ;
 
     private final String path;

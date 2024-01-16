@@ -22,6 +22,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.time.Duration;
 import java.util.HashMap;
 
 public abstract class AbstractClickableChecker extends AbstractProgressionIncreaser {
@@ -185,7 +186,7 @@ public abstract class AbstractClickableChecker extends AbstractProgressionIncrea
      */
     private void validatePlaceholderQuestType(Player player, Progression progression, PlaceholderQuest quest) {
         final String placeholder = quest.getPlaceholder();
-        final String value = quest.getExpectedValue();
+        final String expectedValue = quest.getExpectedValue();
         final ConditionType conditionType = quest.getConditionType();
 
         if (!PAPIHook.isPlaceholderAPIHooked()) {
@@ -198,8 +199,8 @@ public abstract class AbstractClickableChecker extends AbstractProgressionIncrea
 
         boolean valid = false;
         switch (conditionType) {
-            case EQUALS -> valid = placeholderValue.equals(value);
-            case NOT_EQUALS -> valid = !placeholderValue.equals(value);
+            case EQUALS -> valid = placeholderValue.equals(expectedValue);
+            case NOT_EQUALS -> valid = !placeholderValue.equals(expectedValue);
 
             case GREATER_THAN, GREATER_THAN_OR_EQUALS, LESS_THAN, LESS_THAN_OR_EQUALS -> {
                 float currentNumberValue = 0;
@@ -207,7 +208,7 @@ public abstract class AbstractClickableChecker extends AbstractProgressionIncrea
 
                 try {
                     currentNumberValue = Float.parseFloat(placeholderValue);
-                    expectedNumberValue = Float.parseFloat(value);
+                    expectedNumberValue = Float.parseFloat(expectedValue);
                 } catch (NumberFormatException exception) {
                     String msg = QuestsMessages.PLACEHOLDER_NOT_NUMBER.toString();
                     if (msg != null) {
@@ -221,6 +222,31 @@ public abstract class AbstractClickableChecker extends AbstractProgressionIncrea
                     case GREATER_THAN_OR_EQUALS -> valid = currentNumberValue >= expectedNumberValue;
                     case LESS_THAN -> valid = currentNumberValue < expectedNumberValue;
                     case LESS_THAN_OR_EQUALS -> valid = currentNumberValue <= expectedNumberValue;
+                }
+            }
+
+            case DURATION_GREATER_THAN, DURATION_GREATER_THAN_OR_EQUALS, DURATION_LESS_THAN, DURATION_LESS_THAN_OR_EQUALS -> {
+                final String[] placeholderValues = placeholderValue.split(":");
+
+                final Duration currentDuration = Duration
+                        .ofHours(Long.parseLong(placeholderValues[0]))
+                        .plusMinutes(Long.parseLong(placeholderValues[1]))
+                        .plusSeconds(Long.parseLong(placeholderValues[2]))
+                        .plusMillis(Long.parseLong(placeholderValues[3]));
+
+                final String[] expectedValues = expectedValue.split(":");
+
+                final Duration expectedDuration = Duration
+                        .ofHours(Long.parseLong(expectedValues[0]))
+                        .plusMinutes(Long.parseLong(expectedValues[1]))
+                        .plusSeconds(Long.parseLong(expectedValues[2]))
+                        .plusMillis(Long.parseLong(expectedValues[3]));
+
+                switch (conditionType) {
+                    case DURATION_GREATER_THAN -> valid = currentDuration.compareTo(expectedDuration) > 0;
+                    case DURATION_GREATER_THAN_OR_EQUALS -> valid = currentDuration.compareTo(expectedDuration) >= 0;
+                    case DURATION_LESS_THAN -> valid = currentDuration.compareTo(expectedDuration) < 0;
+                    case DURATION_LESS_THAN_OR_EQUALS -> valid = currentDuration.compareTo(expectedDuration) <= 0;
                 }
             }
         }

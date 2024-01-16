@@ -84,14 +84,25 @@ public class CategoriesRewards {
      */
     private Reward getRewardFromSection(ConfigurationSection section) {
         final RewardType rewardType = RewardType.valueOf(section.getString("reward_type"));
-        Reward reward;
-        if (rewardType == RewardType.COMMAND) {
-            reward = new Reward(rewardType, section.getStringList("commands"));
-        } else {
-            reward = new Reward(rewardType, section.getInt("amount"));
-        }
 
-        return reward;
+        return switch (rewardType) {
+            case NONE -> new Reward(RewardType.NONE, 0);
+            case COMMAND -> new Reward(RewardType.COMMAND, section.getStringList(".commands"));
+
+            case COINS_ENGINE -> {
+                final String currencyLabel = section.getString(".currency_label");
+                final String currencyDisplayName = section.getString(".currency_display_name");
+
+                if (currencyLabel == null || currencyDisplayName == null) {
+                    PluginLogger.error("Currency label or currency display name is missing in the configuration file.");
+                    yield new Reward(RewardType.NONE, 0);
+                }
+
+                yield new Reward(RewardType.COINS_ENGINE, currencyLabel, currencyDisplayName, section.getInt(".amount"));
+            }
+
+            default -> new Reward(rewardType, section.getInt(".amount"));
+        };
     }
 
     /**
