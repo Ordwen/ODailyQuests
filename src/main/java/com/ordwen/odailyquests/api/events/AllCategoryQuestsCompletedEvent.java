@@ -6,6 +6,11 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Called when a player completed all his quests from a category.
+ * If defined, this method sends the reward associated with the category to the player.
+ * @since 2.1.0
+ */
 public class AllCategoryQuestsCompletedEvent extends Event implements Cancellable {
 
     private final Player player;
@@ -16,6 +21,7 @@ public class AllCategoryQuestsCompletedEvent extends Event implements Cancellabl
     /**
      * Constructor for the AllQuestsFromCategoryCompleted.
      * @param player player who completed all his quests.
+     * @param category name of the category.
      */
     public AllCategoryQuestsCompletedEvent(Player player, String category) {
         this.player = player;

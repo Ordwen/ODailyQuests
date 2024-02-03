@@ -52,10 +52,7 @@ public class ReloadService {
                 else {
                     for (Player player : Bukkit.getServer().getOnlinePlayers()) {
                         if (!QuestsManager.getActiveQuests().containsKey(player.getName())) {
-                            yamlManager.getLoadProgressionYAML().loadPlayerQuests(player.getName(), QuestsManager.getActiveQuests(),
-                                    Modes.getQuestsMode(),
-                                    Modes.getTimestampMode(),
-                                    Temporality.getTemporalityMode());
+                            yamlManager.getLoadProgressionYAML().loadPlayerQuests(player.getName(), QuestsManager.getActiveQuests());
                         }
                     }
                 }
@@ -65,10 +62,7 @@ public class ReloadService {
                 else {
                     for (Player player : Bukkit.getServer().getOnlinePlayers()) {
                         if (!QuestsManager.getActiveQuests().containsKey(player.getName())) {
-                            sqlManager.getLoadProgressionSQL().loadProgression(player.getName(), QuestsManager.getActiveQuests(),
-                                    Modes.getQuestsMode(),
-                                    Modes.getTimestampMode(),
-                                    Temporality.getTemporalityMode());
+                            sqlManager.getLoadProgressionSQL().loadProgression(player.getName(), QuestsManager.getActiveQuests());
                         }
                     }
                 }

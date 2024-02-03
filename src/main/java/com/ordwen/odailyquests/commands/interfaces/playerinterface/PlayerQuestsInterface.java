@@ -6,6 +6,7 @@ import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.PlayerH
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.getters.InterfaceItemGetter;
 import com.ordwen.odailyquests.externs.hooks.placeholders.PAPIHook;
 import com.ordwen.odailyquests.files.PlayerInterfaceFile;
+import com.ordwen.odailyquests.quests.player.progression.Utils;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.enums.QuestType;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
@@ -274,6 +275,7 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
     public static Inventory getPlayerQuestsInterface(Player player) {
 
         final Map<String, PlayerQuests> activeQuests = QuestsManager.getActiveQuests();
+
         if (!activeQuests.containsKey(player.getName())) {
             PluginLogger.error("Impossible to find the player " + player.getName() + " in the active quests.");
             PluginLogger.error("It can happen if the player try to open the interface while the server/plugin is reloading.");
@@ -282,6 +284,11 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
         }
 
         final PlayerQuests playerQuests = activeQuests.get(player.getName());
+
+        if (Utils.isTimeToRenew(player, activeQuests)) {
+            return getPlayerQuestsInterface(player);
+        }
+
         final Map<AbstractQuest, Progression> questsMap = playerQuests.getPlayerQuests();
 
         final Inventory playerQuestsInventoryIndividual = Bukkit.createInventory(null, size, PAPIHook.getPlaceholders(player, interfaceName));

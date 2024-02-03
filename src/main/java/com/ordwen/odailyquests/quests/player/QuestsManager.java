@@ -4,7 +4,6 @@ import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
-import com.ordwen.odailyquests.configuration.essentials.Temporality;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
@@ -65,14 +64,8 @@ public class QuestsManager implements Listener {
             Debugger.addDebug("Player " + playerName + " is not in the array.");
 
             switch (Modes.getStorageMode()) {
-                case "YAML" -> yamlManager.getLoadProgressionYAML().loadPlayerQuests(playerName, activeQuests,
-                        Modes.getQuestsMode(),
-                        Modes.getTimestampMode(),
-                        Temporality.getTemporalityMode());
-                case "MySQL", "H2" -> sqlManager.getLoadProgressionSQL().loadProgression(playerName, activeQuests,
-                        Modes.getQuestsMode(),
-                        Modes.getTimestampMode(),
-                        Temporality.getTemporalityMode());
+                case "YAML" -> yamlManager.getLoadProgressionYAML().loadPlayerQuests(playerName, activeQuests);
+                case "MySQL", "H2" -> sqlManager.getLoadProgressionSQL().loadProgression(playerName, activeQuests);
                 default ->
                         PluginLogger.error("Impossible to load player quests : the selected storage mode is incorrect !");
             }

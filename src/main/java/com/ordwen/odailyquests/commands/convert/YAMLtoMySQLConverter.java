@@ -44,7 +44,7 @@ public class YAMLtoMySQLConverter {
                         boolean isAchieved = progressionFile.getConfigurationSection(playerName + ".quests." + string).getBoolean(".isAchieved");
 
                         Progression progression = new Progression(advancement, isAchieved);
-                        AbstractQuest quest = Utils.findQuest(playerName, Modes.getQuestsMode(), questIndex, Integer.parseInt(string));
+                        AbstractQuest quest = Utils.findQuest(playerName, questIndex, Integer.parseInt(string));
 
                         quests.put(quest, progression);
                     }

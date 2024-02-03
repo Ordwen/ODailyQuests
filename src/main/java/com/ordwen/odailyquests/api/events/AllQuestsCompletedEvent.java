@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Called when a player completes all his quests.
+ * If defined, this method sends the global reward to the player.
  * @since 2.1.0
  */
 public class AllQuestsCompletedEvent extends Event implements Cancellable {

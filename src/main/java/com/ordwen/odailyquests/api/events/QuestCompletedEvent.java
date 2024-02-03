@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Called when a quest is completed.
+ * This method sends the player the rewards of the quest, and increases their total number of completed quests.
  * @since 2.1.0
  */
 public class QuestCompletedEvent extends Event implements Cancellable {

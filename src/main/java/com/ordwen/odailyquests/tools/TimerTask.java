@@ -26,7 +26,7 @@ public class TimerTask {
             if (msg != null) player.sendMessage(msg);
 
             int totalAchievedQuests = QuestsManager.getActiveQuests().get(player.getName()).getTotalAchievedQuests();
-            Utils.loadNewPlayerQuests(player.getName(), QuestsManager.getActiveQuests(), Modes.getTimestampMode(), totalAchievedQuests);
+            Utils.loadNewPlayerQuests(player.getName(), QuestsManager.getActiveQuests(), totalAchievedQuests);
         }
     };
 

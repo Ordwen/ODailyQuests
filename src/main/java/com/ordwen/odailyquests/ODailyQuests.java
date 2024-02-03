@@ -1,7 +1,7 @@
 package com.ordwen.odailyquests;
 
 import com.ordwen.odailyquests.api.ODailyQuestsAPI;
-import com.ordwen.odailyquests.commands.CommandPreprocessListener;
+import com.ordwen.odailyquests.commands.RestartHandler;
 import com.ordwen.odailyquests.externs.IntegrationsManager;
 import com.ordwen.odailyquests.commands.AdminCommands;
 import com.ordwen.odailyquests.commands.PlayerCommands;
@@ -20,6 +20,7 @@ import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.player.progression.listeners.AllCategoryQuestsCompletedListener;
 import com.ordwen.odailyquests.quests.player.progression.listeners.AllQuestsCompletedListener;
 import com.ordwen.odailyquests.quests.player.progression.listeners.QuestCompletedListener;
+import com.ordwen.odailyquests.quests.player.progression.listeners.QuestProgressListener;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.h2.H2Manager;
 import com.ordwen.odailyquests.quests.player.progression.storage.yaml.YamlManager;
@@ -111,10 +112,11 @@ public final class ODailyQuests extends JavaPlugin {
         /* Register plugin events */
         getServer().getPluginManager().registerEvents(new InventoryClickListener(), this);
         getServer().getPluginManager().registerEvents(new QuestsManager(this, sqlManager != null), this);
+        getServer().getPluginManager().registerEvents(new QuestProgressListener(), this);
         getServer().getPluginManager().registerEvents(new QuestCompletedListener(), this);
         getServer().getPluginManager().registerEvents(new AllQuestsCompletedListener(), this);
         getServer().getPluginManager().registerEvents(new AllCategoryQuestsCompletedListener(), this);
-        getServer().getPluginManager().registerEvents(new CommandPreprocessListener(this), this);
+        getServer().getPluginManager().registerEvents(new RestartHandler(this), this);
 
         /* Avoid errors on reload */
         if (!Bukkit.getServer().getOnlinePlayers().isEmpty()) {

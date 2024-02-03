@@ -24,7 +24,7 @@ public class LoadProgressionYAML {
      * @param playerName   player.
      * @param activeQuests list of active players.
      */
-    public void loadPlayerQuests(String playerName, HashMap<String, PlayerQuests> activeQuests, int questsConfigMode, int timestampConfigMode, int temporalityMode) {
+    public void loadPlayerQuests(String playerName, HashMap<String, PlayerQuests> activeQuests) {
 
         Bukkit.getScheduler().runTaskAsynchronously(ODailyQuests.INSTANCE, () -> {
             final FileConfiguration progressionFile = ProgressionFile.getProgressionFileConfiguration();
@@ -45,8 +45,8 @@ public class LoadProgressionYAML {
                 totalAchievedQuests = progressionFile.getConfigurationSection(playerName).getInt(".totalAchievedQuests");
 
                 /* renew quests */
-                if (Utils.checkTimestamp(timestampConfigMode, temporalityMode, timestamp)) {
-                    Utils.loadNewPlayerQuests(playerName, activeQuests, timestampConfigMode, totalAchievedQuests);
+                if (Utils.checkTimestamp(timestamp)) {
+                    Utils.loadNewPlayerQuests(playerName, activeQuests, totalAchievedQuests);
                 }
                 /* load non-achieved quests */
                 else {
@@ -59,7 +59,7 @@ public class LoadProgressionYAML {
                             boolean isAchieved = progressionFile.getConfigurationSection(playerName + ".quests." + string).getBoolean(".isAchieved");
 
                             Progression progression = new Progression(advancement, isAchieved);
-                            AbstractQuest quest = Utils.findQuest(playerName, questsConfigMode, questIndex, Integer.parseInt(string));
+                            AbstractQuest quest = Utils.findQuest(playerName, questIndex, Integer.parseInt(string));
 
                             quests.put(quest, progression);
                             i++;
@@ -93,7 +93,7 @@ public class LoadProgressionYAML {
                     if (msg != null) Bukkit.getPlayer(playerName).sendMessage(msg);
                 }
             } else {
-                Utils.loadNewPlayerQuests(playerName, activeQuests, timestampConfigMode, 0);
+                Utils.loadNewPlayerQuests(playerName, activeQuests, 0);
             }
         });
     }

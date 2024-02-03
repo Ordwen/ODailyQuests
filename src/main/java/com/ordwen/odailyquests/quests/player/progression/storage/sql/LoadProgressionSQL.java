@@ -38,7 +38,7 @@ public class LoadProgressionSQL {
      *
      * @param playerName name of the player.
      */
-    public void loadProgression(String playerName, HashMap<String, PlayerQuests> activeQuests, int questsConfigMode, int timestampConfigMode, int temporalityMode) {
+    public void loadProgression(String playerName, HashMap<String, PlayerQuests> activeQuests) {
 
         Debugger.addDebug("Entering loadProgression method for player " + playerName + ".");
 
@@ -93,10 +93,10 @@ public class LoadProgressionSQL {
             }
 
             if (hasStoredData) {
-                if (Utils.checkTimestamp(timestampConfigMode, temporalityMode, timestamp)) {
-                    Utils.loadNewPlayerQuests(playerName, activeQuests, timestampConfigMode, totalAchievedQuests);
+                if (Utils.checkTimestamp(timestamp)) {
+                    Utils.loadNewPlayerQuests(playerName, activeQuests, totalAchievedQuests);
                 } else {
-                    loadPlayerQuests(playerName, questsConfigMode, quests);
+                    loadPlayerQuests(playerName, quests);
 
                     PlayerQuests playerQuests = new PlayerQuests(timestamp, quests);
                     playerQuests.setAchievedQuests(achievedQuests);
@@ -119,7 +119,7 @@ public class LoadProgressionSQL {
                     if (msg != null) Bukkit.getPlayer(playerName).sendMessage(msg);
                 }
             } else {
-                Utils.loadNewPlayerQuests(playerName, activeQuests, timestampConfigMode, 0);
+                Utils.loadNewPlayerQuests(playerName, activeQuests, 0);
             }
         }, 10);
     }
@@ -128,10 +128,9 @@ public class LoadProgressionSQL {
      * Load player quests.
      *
      * @param playerName       player.
-     * @param questsConfigMode configuration mode.
      * @param quests           list of player quests.
      */
-    private void loadPlayerQuests(String playerName, int questsConfigMode, LinkedHashMap<AbstractQuest, Progression> quests) {
+    private void loadPlayerQuests(String playerName, LinkedHashMap<AbstractQuest, Progression> quests) {
 
         Debugger.addDebug("Entering loadPlayerQuests method for player " + playerName + ".");
 
@@ -151,7 +150,7 @@ public class LoadProgressionSQL {
                 boolean isAchieved = resultSet.getBoolean("ISACHIEVED");
 
                 Progression progression = new Progression(advancement, isAchieved);
-                AbstractQuest quest = Utils.findQuest(playerName, questsConfigMode, questIndex, id);
+                AbstractQuest quest = Utils.findQuest(playerName, questIndex, id);
 
                 quests.put(quest, progression);
 

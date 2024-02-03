@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.api.progression;
+package com.ordwen.odailyquests.quests.player.progression.checkers;
 
 import com.ordwen.odailyquests.api.events.QuestCompletedEvent;
 import com.ordwen.odailyquests.configuration.functionalities.TakeItems;
@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-public class ValidateItemQuest {
+public class GetQuestChecker {
 
     /**
      * Validate GET quest type.
@@ -54,16 +54,6 @@ public class ValidateItemQuest {
 
                     toRemove.setAmount(removeAmount);
                     player.getInventory().removeItem(toRemove);
-
-                    /*
-                    final Map<Integer, ItemStack> map = player.getInventory().removeItem(toRemove);
-                    if (!map.isEmpty()) {
-                        final String msg = QuestsMessages.CANNOT_COMPLETE_QUEST_WITH_OFF_HAND.getMessage(player);
-                        if (msg != null) player.sendMessage(msg);
-
-                        return;
-                    }
-                     */
 
                     totalRemoved += current;
                 }

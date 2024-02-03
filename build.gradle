@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'com.ordwen'
-version = '2.2.4-SNAPSHOT-12'
+version = '2.2.4-SNAPSHOT-13'
 
 repositories {
     mavenCentral()
@@ -94,6 +94,9 @@ dependencies {
     compileOnly 'com.github.LoneDev6:API-ItemsAdder:3.5.0b'
     compileOnly 'net.Indyuce:MMOItems-API:6.9.2-SNAPSHOT'
     compileOnly 'io.lumine:MythicLib-dist:1.5.2-SNAPSHOT'
+
+    /* auto restart */
+    implementation 'com.github.N0RSKA:UltimateAutoRestartAPI:2023.12'
 
     /* Mojang auth API for heads */
     compileOnly 'com.mojang:authlib:1.5.21'

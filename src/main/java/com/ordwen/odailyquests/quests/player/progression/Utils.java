@@ -1,7 +1,9 @@
 package com.ordwen.odailyquests.quests.player.progression;
 
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
+import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
+import com.ordwen.odailyquests.configuration.essentials.Temporality;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
@@ -12,10 +14,7 @@ import org.bukkit.ChatColor;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class Utils {
@@ -23,20 +22,19 @@ public class Utils {
     /**
      * Check if it is time to redraw quests for a player.
      *
-     * @param timestampConfigMode quests config mode.
-     * @param timestamp           player timestamp.
+     * @param timestamp player timestamp.
      * @return true if it's time to redraw quests.
      */
-    public static boolean checkTimestamp(int timestampConfigMode, int temporalityMode, long timestamp) {
+    public static boolean checkTimestamp(long timestamp) {
 
         /* check if last quests renewed day before */
-        if (timestampConfigMode == 1) {
+        if (Modes.getTimestampMode() == 1) {
 
-            Calendar oldCal = Calendar.getInstance();
-            Calendar currentCal = Calendar.getInstance();
+            final Calendar oldCal = Calendar.getInstance();
+            final Calendar currentCal = Calendar.getInstance();
             oldCal.setTimeInMillis(timestamp);
 
-            switch (temporalityMode) {
+            switch (Temporality.getTemporalityMode()) {
                 case 1 -> {
                     currentCal.setTimeInMillis(System.currentTimeMillis());
                     if (oldCal.get(Calendar.YEAR) != currentCal.get(Calendar.YEAR)) return true;
@@ -56,8 +54,8 @@ public class Utils {
         }
 
         /* check if last quests renewed is older than selected temporality */
-        else if (timestampConfigMode == 2) {
-            switch (temporalityMode) {
+        else if (Modes.getTimestampMode() == 2) {
+            switch (Temporality.getTemporalityMode()) {
                 case 1 -> {
                     return System.currentTimeMillis() - timestamp >= 86400000L;
                 }
@@ -78,18 +76,17 @@ public class Utils {
     /**
      * Load quests for a player with no data.
      *
-     * @param playerName          player name.
-     * @param activeQuests        all active quests.
-     * @param timestampConfigMode timestamp mode.
+     * @param playerName   player name.
+     * @param activeQuests all active quests.
      */
-    public static void loadNewPlayerQuests(String playerName, HashMap<String, PlayerQuests> activeQuests, int timestampConfigMode, int totalAchievedQuests) {
+    public static void loadNewPlayerQuests(String playerName, Map<String, PlayerQuests> activeQuests, int totalAchievedQuests) {
 
         activeQuests.remove(playerName);
 
         LinkedHashMap<AbstractQuest, Progression> quests = QuestsManager.selectRandomQuests();
         PlayerQuests playerQuests;
 
-        if (timestampConfigMode == 1) {
+        if (Modes.getTimestampMode() == 1) {
             playerQuests = new PlayerQuests(Calendar.getInstance().getTimeInMillis(), quests);
         } else {
             playerQuests = new PlayerQuests(System.currentTimeMillis(), quests);
@@ -119,32 +116,46 @@ public class Utils {
     }
 
     /**
+     * Check if it's time to renew quests. If so, renew them.
+     *
+     * @param player    player.
+     * @param activeQuests all active quests.
+     * @return true if it's time to renew quests.
+     */
+    public static boolean isTimeToRenew(Player player, Map<String, PlayerQuests> activeQuests) {
+        if (Modes.getTimestampMode() == 1) return false;
+        final PlayerQuests playerQuests = activeQuests.get(player.getName());
+
+        if (checkTimestamp(playerQuests.getTimestamp())) {
+            loadNewPlayerQuests(player.getName(), activeQuests, playerQuests.getTotalAchievedQuests());
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Find quest with index in arrays.
      *
-     * @param playerName       player name.
-     * @param questsConfigMode quests mode.
-     * @param questIndex       index of quest in array.
-     * @param id               number of player quest.
+     * @param playerName player name.
+     * @param questIndex index of quest in array.
+     * @param id         number of player quest.
      * @return quest of index.
      */
-    public static AbstractQuest findQuest(String playerName, int questsConfigMode, int questIndex, int id) {
+    public static AbstractQuest findQuest(String playerName, int questIndex, int id) {
         AbstractQuest quest = null;
 
-        if (questsConfigMode == 1) {
+        if (Modes.getQuestsMode() == 1) {
             quest = getQuestAtIndex(CategoriesLoader.getGlobalQuests(), questIndex, playerName);
-        } else if (questsConfigMode == 2) {
+        } else if (Modes.getQuestsMode() == 2) {
 
             final int questsAmount = QuestsAmount.getQuestsAmount();
 
             if (id <= (questsAmount - QuestsAmount.getMediumQuestsAmount() - QuestsAmount.getHardQuestsAmount())) {
                 quest = getQuestAtIndex(CategoriesLoader.getEasyQuests(), questIndex, playerName);
-            }
-
-            else if (id <= (questsAmount - QuestsAmount.getHardQuestsAmount())) {
+            } else if (id <= (questsAmount - QuestsAmount.getHardQuestsAmount())) {
                 quest = getQuestAtIndex(CategoriesLoader.getMediumQuests(), questIndex, playerName);
-            }
-
-            else {
+            } else {
                 quest = getQuestAtIndex(CategoriesLoader.getHardQuests(), questIndex, playerName);
             }
 
@@ -153,7 +164,7 @@ public class Utils {
 
         if (quest == null) {
             PluginLogger.error("An error occurred while loading " + playerName + "'s quests.");
-            PluginLogger.error( "Quest number " + id + " of player is null.");
+            PluginLogger.error("Quest number " + id + " of player is null.");
             PluginLogger.error("Try to do the following command to reset the player's progress :");
             PluginLogger.error("/questsadmin reset " + playerName);
             PluginLogger.error("If the problem persists, contact the developer.");
@@ -164,9 +175,10 @@ public class Utils {
 
     /**
      * Try to get quest from index.
+     *
      * @param questsArray the array where find the quest.
-     * @param index the supposed index of the quest in the array.
-     * @param playerName the name of the player for whom the quest is intended.
+     * @param index       the supposed index of the quest in the array.
+     * @param playerName  the name of the player for whom the quest is intended.
      * @return the quest.
      */
     public static AbstractQuest getQuestAtIndex(ArrayList<AbstractQuest> questsArray, int index, String playerName) {

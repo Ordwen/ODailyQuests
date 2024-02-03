@@ -1,7 +1,7 @@
 package com.ordwen.odailyquests.quests.player.progression.checkers;
 
 import com.ordwen.odailyquests.api.events.QuestCompletedEvent;
-import com.ordwen.odailyquests.api.progression.ValidateItemQuest;
+import com.ordwen.odailyquests.api.events.QuestProgressEvent;
 import com.ordwen.odailyquests.configuration.essentials.Synchronization;
 import com.ordwen.odailyquests.configuration.functionalities.DisabledWorlds;
 import com.ordwen.odailyquests.enums.QuestsMessages;
@@ -10,7 +10,6 @@ import com.ordwen.odailyquests.externs.hooks.placeholders.PAPIHook;
 import com.ordwen.odailyquests.quests.ConditionType;
 import com.ordwen.odailyquests.enums.QuestType;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
-import com.ordwen.odailyquests.quests.player.progression.AbstractProgressionIncreaser;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.types.*;
 import org.bukkit.Bukkit;
@@ -25,7 +24,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.time.Duration;
 import java.util.HashMap;
 
-public abstract class AbstractClickableChecker extends AbstractProgressionIncreaser {
+public abstract class AbstractClickableChecker {
 
     /**
      * Increase player quest progression.
@@ -49,7 +48,7 @@ public abstract class AbstractClickableChecker extends AbstractProgressionIncrea
                     if (isAppropriateQuestMenuItem(clickedItem, quest.getMenuItem()) && quest.getQuestType() == QuestType.GET) {
                         final Progression progression = playerQuests.get(abstractQuest);
                         if (!progression.isAchieved()) {
-                            ValidateItemQuest.makeQuestProgress(player, progression, quest);
+                            GetQuestChecker.makeQuestProgress(player, progression, quest);
                         }
                         break;
                     }
@@ -140,7 +139,8 @@ public abstract class AbstractClickableChecker extends AbstractProgressionIncrea
                         }
 
                         if (valid) {
-                            increaseProgression(player, questProgression, quest, quantity);
+                            final QuestProgressEvent event = new QuestProgressEvent(player, questProgression, quest, quantity);
+                            Bukkit.getPluginManager().callEvent(event);
                             if (!Synchronization.isSynchronised()) break;
                         }
                     }
