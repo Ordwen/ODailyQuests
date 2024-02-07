@@ -1,6 +1,5 @@
 package com.ordwen.odailyquests.quests.player.progression.checkers;
 
-import com.ordwen.odailyquests.api.events.QuestProgressEvent;
 import com.ordwen.odailyquests.configuration.essentials.Synchronization;
 import com.ordwen.odailyquests.configuration.functionalities.DisabledWorlds;
 import com.ordwen.odailyquests.quests.types.GlobalQuest;
@@ -9,6 +8,7 @@ import com.ordwen.odailyquests.quests.types.ItemQuest;
 import com.ordwen.odailyquests.enums.QuestType;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
+import com.ordwen.odailyquests.utils.QuestProgressUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -25,7 +25,7 @@ public abstract class AbstractItemChecker {
      * @param amount    the amount to increase progression by.
      * @param questType the quest type to increase progression for.
      */
-    public void setPlayerQuestProgression(Player player, ItemStack itemStack, int amount, QuestType questType, String id) {
+    public void setPlayerQuestProgression(Player player, ItemStack itemStack, int amount, QuestType questType, Object requiredElements) {
 
         if (DisabledWorlds.isWorldDisabled(player.getWorld().getName())) {
             return;
@@ -68,8 +68,7 @@ public abstract class AbstractItemChecker {
                     }
 
                     if (isRequiredItem) {
-                        final QuestProgressEvent event = new QuestProgressEvent(player, progression, abstractQuest, amount);
-                        Bukkit.getPluginManager().callEvent(event);
+                        QuestProgressUtils.actionQuest(player, progression, abstractQuest, amount);
                         if (!Synchronization.isSynchronised()) break;
                     }
                 }

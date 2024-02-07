@@ -20,7 +20,6 @@ import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.player.progression.listeners.AllCategoryQuestsCompletedListener;
 import com.ordwen.odailyquests.quests.player.progression.listeners.AllQuestsCompletedListener;
 import com.ordwen.odailyquests.quests.player.progression.listeners.QuestCompletedListener;
-import com.ordwen.odailyquests.quests.player.progression.listeners.QuestProgressListener;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.h2.H2Manager;
 import com.ordwen.odailyquests.quests.player.progression.storage.yaml.YamlManager;
@@ -112,7 +111,6 @@ public final class ODailyQuests extends JavaPlugin {
         /* Register plugin events */
         getServer().getPluginManager().registerEvents(new InventoryClickListener(), this);
         getServer().getPluginManager().registerEvents(new QuestsManager(this, sqlManager != null), this);
-        getServer().getPluginManager().registerEvents(new QuestProgressListener(), this);
         getServer().getPluginManager().registerEvents(new QuestCompletedListener(), this);
         getServer().getPluginManager().registerEvents(new AllQuestsCompletedListener(), this);
         getServer().getPluginManager().registerEvents(new AllCategoryQuestsCompletedListener(), this);
