@@ -1,9 +1,10 @@
 plugins {
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
     id 'java'
 }
 
 group = 'com.ordwen'
-version = '2.2.4-SNAPSHOT-13'
+version = '2.2.4-SNAPSHOT-14-EMBEDDED'
 
 repositories {
     mavenCentral()
@@ -100,6 +101,10 @@ dependencies {
 
     /* Mojang auth API for heads */
     compileOnly 'com.mojang:authlib:1.5.21'
+
+    /* libraries */
+    implementation 'com.zaxxer:HikariCP:5.0.1'
+    implementation 'com.h2database:h2:2.1.214'
 }
 
 def targetJavaVersion = 16
@@ -124,5 +129,15 @@ processResources {
     filteringCharset 'UTF-8'
     filesMatching('plugin.yml') {
         expand props
+    }
+}
+
+shadowJar {
+    manifest {
+        attributes 'Main-Class': 'com.ordwen.odailyquests.ODailyQuests'
+    }
+
+    dependencies {
+        exclude(dependency('junit:junit:4.13.2'))
     }
 }
