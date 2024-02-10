@@ -6,7 +6,7 @@ import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.PlayerH
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.getters.InterfaceItemGetter;
 import com.ordwen.odailyquests.externs.hooks.placeholders.PAPIHook;
 import com.ordwen.odailyquests.files.PlayerInterfaceFile;
-import com.ordwen.odailyquests.quests.player.progression.Utils;
+import com.ordwen.odailyquests.quests.player.progression.QuestLoaderUtils;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.enums.QuestType;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
@@ -285,9 +285,7 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
 
         final PlayerQuests playerQuests = activeQuests.get(player.getName());
 
-        if (Utils.isTimeToRenew(player, activeQuests)) {
-            return getPlayerQuestsInterface(player);
-        }
+        if (QuestLoaderUtils.isTimeToRenew(player, activeQuests)) return getPlayerQuestsInterface(player);
 
         final Map<AbstractQuest, Progression> questsMap = playerQuests.getPlayerQuests();
 

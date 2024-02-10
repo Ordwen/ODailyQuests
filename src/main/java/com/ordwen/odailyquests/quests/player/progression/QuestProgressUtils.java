@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.utils;
+package com.ordwen.odailyquests.quests.player.progression;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.api.events.QuestCompletedEvent;
@@ -6,8 +6,6 @@ import com.ordwen.odailyquests.api.events.QuestProgressEvent;
 import com.ordwen.odailyquests.configuration.functionalities.progression.ProgressionMessage;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
-import com.ordwen.odailyquests.quests.player.progression.Progression;
-import com.ordwen.odailyquests.quests.player.progression.Utils;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -37,7 +35,7 @@ public class QuestProgressUtils {
    * @param amount
    */
   private static void runProgress(Player player, Progression progression, AbstractQuest quest, int amount) {
-    if (Utils.isTimeToRenew(player, QuestsManager.getActiveQuests())) return;
+    if (QuestLoaderUtils.isTimeToRenew(player, QuestsManager.getActiveQuests())) return;
 
     if (!quest.getRequiredWorlds().isEmpty() && !quest.getRequiredWorlds().contains(player.getWorld().getName())) {
       final String msg = QuestsMessages.NOT_REQUIRED_WORLD.getMessage(player);

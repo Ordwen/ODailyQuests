@@ -1,12 +1,11 @@
 package com.ordwen.odailyquests.commands.convert;
 
 import com.ordwen.odailyquests.ODailyQuests;
-import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.files.ProgressionFile;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
-import com.ordwen.odailyquests.quests.player.progression.Utils;
+import com.ordwen.odailyquests.quests.player.progression.QuestLoaderUtils;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.mysql.MySQLManager;
 import com.ordwen.odailyquests.tools.PluginLogger;
@@ -44,7 +43,7 @@ public class YAMLtoMySQLConverter {
                         boolean isAchieved = progressionFile.getConfigurationSection(playerName + ".quests." + string).getBoolean(".isAchieved");
 
                         Progression progression = new Progression(advancement, isAchieved);
-                        AbstractQuest quest = Utils.findQuest(playerName, questIndex, Integer.parseInt(string));
+                        AbstractQuest quest = QuestLoaderUtils.findQuest(playerName, questIndex, Integer.parseInt(string));
 
                         quests.put(quest, progression);
                     }

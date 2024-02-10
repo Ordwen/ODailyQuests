@@ -1,7 +1,7 @@
 package com.ordwen.odailyquests;
 
 import com.ordwen.odailyquests.api.ODailyQuestsAPI;
-import com.ordwen.odailyquests.commands.RestartHandler;
+import com.ordwen.odailyquests.events.restart.RestartHandler;
 import com.ordwen.odailyquests.externs.IntegrationsManager;
 import com.ordwen.odailyquests.commands.AdminCommands;
 import com.ordwen.odailyquests.commands.PlayerCommands;
@@ -62,7 +62,7 @@ public final class ODailyQuests extends JavaPlugin {
         /* Load Metrics */
         // https://bstats.org/plugin/bukkit/ODailyQuests/14277
         int pluginId = 14277;
-        Metrics metrics = new Metrics(this, pluginId);
+        final Metrics metrics = new Metrics(this, pluginId);
 
         /* Load files */
         this.configurationFiles = new ConfigurationFiles(this);
@@ -114,7 +114,9 @@ public final class ODailyQuests extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new QuestCompletedListener(), this);
         getServer().getPluginManager().registerEvents(new AllQuestsCompletedListener(), this);
         getServer().getPluginManager().registerEvents(new AllCategoryQuestsCompletedListener(), this);
-        getServer().getPluginManager().registerEvents(new RestartHandler(this), this);
+
+        /* Register server restart related events */
+        new RestartHandler(this).registerSubClasses();
 
         /* Avoid errors on reload */
         if (!Bukkit.getServer().getOnlinePlayers().isEmpty()) {

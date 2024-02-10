@@ -8,8 +8,7 @@ import com.ordwen.odailyquests.quests.types.ItemQuest;
 import com.ordwen.odailyquests.enums.QuestType;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
-import com.ordwen.odailyquests.utils.QuestProgressUtils;
-import org.bukkit.Bukkit;
+import com.ordwen.odailyquests.quests.player.progression.QuestProgressUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 

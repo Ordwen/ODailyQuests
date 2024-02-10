@@ -189,6 +189,39 @@ public class AdminCommands implements CommandExecutor {
                             if (msg != null) sender.sendMessage(msg);
                         }
                     }
+
+
+                    /* QUESTS RENEW DEBUG *****/
+                    /*
+                    case "settimestamp" -> {
+                     /*
+                        if (args.length == 3) {
+                            final Player target = Bukkit.getPlayerExact(args[1]);
+                            if (target != null) {
+                                long timestamp;
+                                try {
+                                    timestamp = Long.parseLong(args[2]);
+                                } catch (NumberFormatException exception) {
+                                    System.out.println(exception.getMessage());
+                                    //final String msg = QuestsMessages.INVALID_TIMESTAMP.toString();
+                                    //if (msg != null) sender.sendMessage(msg);
+                                    return true;
+                                }
+                                QuestsManager.getActiveQuests().get(args[1]).setTimestamp(timestamp);
+                                //final String msg = QuestsMessages.TIMESTAMP_SET.toString();
+                                //if (msg != null) sender.sendMessage(msg.replace("%target%", target.getName()));
+                            } else {
+                                final String msg = QuestsMessages.INVALID_PLAYER.toString();
+                                if (msg != null) sender.sendMessage(msg);
+                            }
+                        } else {
+                            final String msg = QuestsMessages.ADMIN_HELP.toString();
+                            if (msg != null) sender.sendMessage(msg);
+                        }
+                    }
+                    */
+                    /* END QUESTS RENEW DEBUG *****/
+
                     case "holo" -> {
                         if (!(sender instanceof Player)) {
                             final String msg = QuestsMessages.PLAYER_ONLY.toString();

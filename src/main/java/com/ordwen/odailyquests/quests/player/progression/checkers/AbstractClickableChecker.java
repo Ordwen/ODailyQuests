@@ -11,7 +11,7 @@ import com.ordwen.odailyquests.enums.QuestType;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.types.*;
-import com.ordwen.odailyquests.utils.QuestProgressUtils;
+import com.ordwen.odailyquests.quests.player.progression.QuestProgressUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;

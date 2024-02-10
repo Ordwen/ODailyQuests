@@ -17,7 +17,7 @@ import org.bukkit.entity.Player;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-public class Utils {
+public class QuestLoaderUtils {
 
     /**
      * Check if it is time to redraw quests for a player.

@@ -7,7 +7,7 @@ import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
-import com.ordwen.odailyquests.quests.player.progression.Utils;
+import com.ordwen.odailyquests.quests.player.progression.QuestLoaderUtils;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -93,8 +93,8 @@ public class LoadProgressionSQL {
             }
 
             if (hasStoredData) {
-                if (Utils.checkTimestamp(timestamp)) {
-                    Utils.loadNewPlayerQuests(playerName, activeQuests, totalAchievedQuests);
+                if (QuestLoaderUtils.checkTimestamp(timestamp)) {
+                    QuestLoaderUtils.loadNewPlayerQuests(playerName, activeQuests, totalAchievedQuests);
                 } else {
                     loadPlayerQuests(playerName, quests);
 
@@ -119,7 +119,7 @@ public class LoadProgressionSQL {
                     if (msg != null) Bukkit.getPlayer(playerName).sendMessage(msg);
                 }
             } else {
-                Utils.loadNewPlayerQuests(playerName, activeQuests, 0);
+                QuestLoaderUtils.loadNewPlayerQuests(playerName, activeQuests, 0);
             }
         }, 10);
     }
@@ -150,7 +150,7 @@ public class LoadProgressionSQL {
                 boolean isAchieved = resultSet.getBoolean("ISACHIEVED");
 
                 Progression progression = new Progression(advancement, isAchieved);
-                AbstractQuest quest = Utils.findQuest(playerName, questIndex, id);
+                AbstractQuest quest = QuestLoaderUtils.findQuest(playerName, questIndex, id);
 
                 quests.put(quest, progression);
 

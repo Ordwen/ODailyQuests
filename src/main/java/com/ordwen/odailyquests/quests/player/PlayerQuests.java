@@ -17,7 +17,7 @@ import java.util.*;
 public class PlayerQuests {
 
     /* Timestamp of last quests renew */
-    private final Long timestamp;
+    private Long timestamp;
 
     private int achievedQuests;
     private int totalAchievedQuests;
@@ -109,4 +109,7 @@ public class PlayerQuests {
         return this.playerQuests;
     }
 
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
 }
