@@ -117,8 +117,7 @@ public class QuestsLoader extends QuestItemGetter {
             final String presumedAchievedItem = questSection.getString("achieved_menu_item");
             achievedItem = getItemStackFromMaterial(presumedAchievedItem, fileName, questIndex, "achieved_menu_item");
             if (achievedItem == null) return null;
-        }
-        else {
+        } else {
             achievedItem = menuItem;
         }
 
@@ -162,10 +161,11 @@ public class QuestsLoader extends QuestItemGetter {
 
     /**
      * Load a quest that require a custom mob.
-     * @param base the base quest.
+     *
+     * @param base         the base quest.
      * @param questSection the current quest section.
-     * @param fileName the file name where the quest is.
-     * @param questIndex the quest index in the file.
+     * @param fileName     the file name where the quest is.
+     * @param questIndex   the quest index in the file.
      * @return an entity quest.
      */
     private AbstractQuest loadCustomMobQuest(GlobalQuest base, ConfigurationSection questSection, String fileName, int questIndex) {
@@ -206,18 +206,72 @@ public class QuestsLoader extends QuestItemGetter {
 
         /* all required items */
         final List<ItemStack> requiredItems = new ArrayList<>();
+        if (loadRequiredItems(questSection, fileName, questIndex, menuItem, requiredItems)) return null;
+
+        /* apply Persistent Data Container to the menu item to differentiate GET quests */
+        if (base.getQuestType() == QuestType.GET) {
+            ItemMeta meta = menuItem.getItemMeta();
+            PersistentDataContainer container = meta.getPersistentDataContainer();
+
+            container.set(new NamespacedKey(ODailyQuests.INSTANCE, "quest_type"), PersistentDataType.STRING, "get");
+            container.set(new NamespacedKey(ODailyQuests.INSTANCE, "quest_index"), PersistentDataType.INTEGER, questIndex);
+            container.set(new NamespacedKey(ODailyQuests.INSTANCE, "file_name"), PersistentDataType.STRING, fileName);
+
+            menuItem.setItemMeta(meta);
+        }
+
+        return new ItemQuest(base, requiredItems);
+    }
+
+    /**
+     * Load a quest that require a villager.
+     *
+     * @param base         the base quest.
+     * @param questSection the current quest section.
+     * @param fileName     the file name where the quest is.
+     * @param questIndex   the quest index in the file.
+     * @return a villager quest.
+     */
+    private AbstractQuest loadVillagerQuest(GlobalQuest base, ConfigurationSection questSection, String fileName, int questIndex) {
+
+        /* menu item */
+        ItemStack menuItem = base.getMenuItem();
+
+        /* all required items */
+        List<ItemStack> requiredItems = new ArrayList<>();
+        if (questSection.contains(".required_item")) {
+            if (loadRequiredItems(questSection, fileName, questIndex, menuItem, requiredItems)) return null;
+        } else requiredItems = null;
 
         /* variables for VILLAGER_TRADE quest */
         Villager.Profession profession = null;
         int villagerLevel = 0;
 
+        /* check if the item have to be obtained by a villager */
+        if (questSection.contains(".villager_profession")) {
+            profession = Villager.Profession.valueOf(questSection.getString(".villager_profession"));
+        }
+        if (questSection.contains(".villager_level")) {
+            villagerLevel = questSection.getInt(".villager_level");
+        }
+
+        return new VillagerQuest(base, requiredItems, profession, villagerLevel);
+    }
+
+    /**
+     * Load the required items of a quest.
+     *
+     * @param questSection  current quest section
+     * @param fileName      file name where the quest is
+     * @param questIndex    quest index in the file
+     * @param menuItem      menu item of the quest
+     * @param requiredItems list of required items
+     * @return true if an error occurred, false otherwise
+     */
+    private boolean loadRequiredItems(ConfigurationSection questSection, String fileName, int questIndex, ItemStack menuItem, List<ItemStack> requiredItems) {
         final List<String> requiredItemStrings = new ArrayList<>();
-        if (questSection.isList(".required_item")) {
-            requiredItemStrings.addAll(questSection.getStringList(".required_item"));
-        }
-        else {
-            requiredItemStrings.add(questSection.getString(".required_item"));
-        }
+        if (questSection.isList(".required_item")) requiredItemStrings.addAll(questSection.getStringList(".required_item"));
+        else requiredItemStrings.add(questSection.getString(".required_item"));
 
         for (String itemType : requiredItemStrings) {
 
@@ -226,17 +280,15 @@ public class QuestsLoader extends QuestItemGetter {
                 final ConfigurationSection section = questSection.getConfigurationSection(".custom_item");
                 if (section == null) {
                     configurationError(fileName, questIndex, null, "The custom item is not defined.");
-                    return null;
+                    return true;
                 }
                 final ItemStack item = loadCustomItem(section, fileName, questIndex);
-                if (item == null) return null;
+                if (item == null) return true;
 
                 requiredItems.add(item);
-            }
-
-            else {
+            } else {
                 final ItemStack requiredItem = getItemStackFromMaterial(itemType, fileName, questIndex, "required_item");
-                if (requiredItem == null) return null;
+                if (requiredItem == null) return true;
 
                 if (itemType.equals("POTION") || itemType.equals("SPLASH_POTION") || itemType.equals("LINGERING_POTION")) {
                     final PotionMeta potionMeta = loadPotionItem(questSection, fileName, questIndex, requiredItem);
@@ -255,36 +307,15 @@ public class QuestsLoader extends QuestItemGetter {
             }
         }
 
-        /* check if the item have to be obtained by a villager */
-        if (questSection.contains(".villager_profession")) {
-            profession = Villager.Profession.valueOf(questSection.getString(".villager_profession"));
-        }
-        if (questSection.contains(".villager_level")) {
-            villagerLevel = questSection.getInt(".villager_level");
-        }
-
-        /* apply Persistent Data Container to the menu item to differentiate GET quests */
-        if (base.getQuestType() == QuestType.GET) {
-            ItemMeta meta = menuItem.getItemMeta();
-            PersistentDataContainer container = meta.getPersistentDataContainer();
-
-            container.set(new NamespacedKey(ODailyQuests.INSTANCE, "quest_type"), PersistentDataType.STRING, "get");
-            container.set(new NamespacedKey(ODailyQuests.INSTANCE, "quest_index"), PersistentDataType.INTEGER, questIndex);
-            container.set(new NamespacedKey(ODailyQuests.INSTANCE, "file_name"), PersistentDataType.STRING, fileName);
-
-            menuItem.setItemMeta(meta);
-        }
-
-        if (base.getQuestType() == QuestType.VILLAGER_TRADE) return new VillagerQuest(base, requiredItems, profession, villagerLevel);
-        else return new ItemQuest(base, requiredItems);
+        return false;
     }
 
     /**
      * Load the potion attributes.
      *
-     * @param section quest section
-     * @param fileName file name where the quest is
-     * @param questIndex quest index in the file
+     * @param section      quest section
+     * @param fileName     file name where the quest is
+     * @param questIndex   quest index in the file
      * @param requiredItem current required item
      * @return potion meta
      */
@@ -301,8 +332,7 @@ public class QuestsLoader extends QuestItemGetter {
         if (potionSection.contains("type")) {
             try {
                 potionType = PotionType.valueOf(potionSection.getString("type"));
-            }
-            catch (IllegalArgumentException e) {
+            } catch (IllegalArgumentException e) {
                 configurationError(fileName, questIndex, "type", "Invalid potion type.");
                 return null;
             }
@@ -333,8 +363,8 @@ public class QuestsLoader extends QuestItemGetter {
     /**
      * Load a required item with custom name and lore.
      *
-     * @param section configuration section of the custom item
-     * @param fileName file name where the quest is
+     * @param section    configuration section of the custom item
+     * @param fileName   file name where the quest is
      * @param questIndex quest index in the file
      * @return the custom item
      */
@@ -358,11 +388,11 @@ public class QuestsLoader extends QuestItemGetter {
     /**
      * Load a location quest.
      *
-     * @param base the basic quest
+     * @param base         the basic quest
      * @param questSection current quest section
-     * @param fileName file name where the quest is
-     * @param questIndex quest index in the file
-     * @param menuItem menu item of the quest
+     * @param fileName     file name where the quest is
+     * @param questIndex   quest index in the file
+     * @param menuItem     menu item of the quest
      * @return the location quest
      */
     private LocationQuest loadLocationQuest(GlobalQuest base, ConfigurationSection questSection, String fileName, int questIndex, ItemStack menuItem) {
@@ -407,11 +437,11 @@ public class QuestsLoader extends QuestItemGetter {
     /**
      * Load a placeholder quest.
      *
-     * @param base the basic quest
+     * @param base         the basic quest
      * @param questSection current quest section
-     * @param fileName file name where the quest is
-     * @param questIndex quest index in the file
-     * @param menuItem menu item of the quest
+     * @param fileName     file name where the quest is
+     * @param questIndex   quest index in the file
+     * @param menuItem     menu item of the quest
      * @return the placeholder quest
      */
     private PlaceholderQuest loadPlaceholderQuest(GlobalQuest base, ConfigurationSection questSection, String fileName, int questIndex, ItemStack menuItem) {
@@ -487,9 +517,15 @@ public class QuestsLoader extends QuestItemGetter {
                     }
 
                     /* types that requires an item */
-                    case BREAK, PLACE, CRAFT, PICKUP, LAUNCH, CONSUME, GET, COOK, ENCHANT, VILLAGER_TRADE, FISH, FARMING -> {
+                    case BREAK, PLACE, CRAFT, PICKUP, LAUNCH, CONSUME, GET, COOK, ENCHANT, FISH, FARMING -> {
                         AbstractQuest itemQuest = loadItemQuest(base, questSection, fileName, questIndex);
                         if (itemQuest != null) quests.add(itemQuest);
+                    }
+
+                    /* type that requires a villager */
+                    case VILLAGER_TRADE -> {
+                        AbstractQuest villagerQuest = loadVillagerQuest(base, questSection, fileName, questIndex);
+                        if (villagerQuest != null) quests.add(villagerQuest);
                     }
 
                     /* type that requires a location */

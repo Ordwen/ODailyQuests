@@ -12,6 +12,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.material.Crops;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -24,24 +25,34 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class BlockDropItemListener extends AbstractItemChecker implements Listener {
 
     /* store items that can be farmed but are not counted as crops or ageables */
-    private final Set<Material> farmableItems = new HashSet<>(
+    private final Set<String> farmableItems = new HashSet<>(
             Arrays.asList(
-                    Material.SUGAR_CANE,
-                    Material.CACTUS,
-                    Material.PUMPKIN,
-                    Material.MELON,
-                    Material.MELON_SLICE
+                    "SUGAR_CANE",
+                    "CACTUS",
+                    "PUMPKIN",
+                    "MELON",
+                    "MELON_SLICE",
+                    "TORCHFLOWER",
+                    "KELP_PLANT"
             ));
 
     @EventHandler
     public void onBlockDropItem(BlockDropItemEvent event) {
+        
+        System.out.println("BLOCK DROP ITEM EVENT");
+
         if (event.isCancelled()) return;
 
         final BlockData data = event.getBlockState().getBlockData();
         final Material dataMaterial = data.getMaterial();
 
+        System.out.println("DATA MATERIAL: " + dataMaterial);
+        System.out.println("ageable: " + (data instanceof Ageable));
+
         // check if the dropped item figure in the non-crops items list
-        if (farmableItems.contains(data.getMaterial())) {
+        if (farmableItems.contains(data.getMaterial().toString())) {
+
+            System.out.println("FARMABLE ITEM");
 
             final AtomicBoolean valid = new AtomicBoolean(true);
 
@@ -49,6 +60,7 @@ public class BlockDropItemListener extends AbstractItemChecker implements Listen
             if (dataMaterial.isBlock()) {
                 if (Antiglitch.isStorePlacedBlocks()) {
                     if (!event.getBlock().getMetadata("odailyquests:placed").isEmpty()) {
+                        System.out.println("BLOCK PLACED BY PLAYER");
                         valid.set(false);
                     }
                 }
@@ -58,6 +70,11 @@ public class BlockDropItemListener extends AbstractItemChecker implements Listen
                 return;
             }
 
+            Material material = switch (dataMaterial.toString()) {
+                case "KELP_PLANT" -> Material.valueOf("KELP");
+                default -> dataMaterial;
+            };
+
             final List<Item> drops = event.getItems();
             if (drops.isEmpty()) return;
 
@@ -65,6 +82,7 @@ public class BlockDropItemListener extends AbstractItemChecker implements Listen
             int amount = 0;
             for (Item item : drops) {
                 final Material itemMaterial = item.getItemStack().getType();
+
                 if (itemMaterial == Material.MELON_SLICE) isSlicedMelon = true;
 
                 if (isSlicedMelon) {
@@ -73,44 +91,46 @@ public class BlockDropItemListener extends AbstractItemChecker implements Listen
                     }
                 }
 
-                else if (itemMaterial == dataMaterial) {
+                else if (itemMaterial == material) {
                     amount += item.getItemStack().getAmount();
                 }
             }
 
-            if (isSlicedMelon) {
-                setPlayerQuestProgression(event.getPlayer(), new ItemStack(Material.MELON_SLICE), amount, QuestType.FARMING, null);
-            }
-            else {
-                setPlayerQuestProgression(event.getPlayer(), new ItemStack(dataMaterial), amount, QuestType.FARMING, null);
-            }
+            if (isSlicedMelon) setPlayerQuestProgression(event.getPlayer(), new ItemStack(Material.MELON_SLICE), amount, QuestType.FARMING, null);
+            else setPlayerQuestProgression(event.getPlayer(), new ItemStack(material), amount, QuestType.FARMING, null);
         }
 
         // check if the dropped item is a crop
         else if (data instanceof Ageable ageable) {
 
+            System.out.println("AGEABLE");
+
             if (ageable.getAge() == ageable.getMaximumAge()) {
 
-                Material material = switch (data.getMaterial()) {
-                    case POTATOES -> Material.POTATO;
-                    case CARROTS -> Material.CARROT;
-                    case BEETROOTS -> Material.BEETROOT;
-                    case COCOA -> Material.COCOA_BEANS;
-                    case SWEET_BERRY_BUSH -> Material.SWEET_BERRIES;
+                Material material = switch (data.getMaterial().toString()) {
+                    case "POTATOES" -> Material.valueOf("POTATO");
+                    case "CARROTS" -> Material.valueOf("CARROT");
+                    case "BEETROOTS" -> Material.valueOf("BEETROOT");
+                    case "COCOA" -> Material.valueOf("COCOA_BEANS");
+                    case "SWEET_BERRY_BUSH" -> Material.valueOf("SWEET_BERRIES");
+                    case "PITCHER_CROP" -> Material.valueOf("PITCHER_PLANT");
                     default -> dataMaterial;
                 };
+
+                System.out.println("MATERIAL: " + material);
 
                 final List<Item> drops = event.getItems();
 
                 int amount = 0;
                 for (Item item : drops) {
 
+                    System.out.println(item.getItemStack().getType() + ", " + material);
                     if (item.getItemStack().getType() == material) {
                         amount += item.getItemStack().getAmount();
                     }
                 }
 
-                setPlayerQuestProgression(event.getPlayer(), new ItemStack(material), amount, QuestType.FARMING, null);
+                if (amount > 0) setPlayerQuestProgression(event.getPlayer(), new ItemStack(material), amount, QuestType.FARMING, null);
             }
         }
 

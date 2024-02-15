@@ -26,9 +26,8 @@ public abstract class AbstractEntityChecker {
      * @param dyeColor   the dye color of the sheep, if the entity is a sheep.
      */
     public void setPlayerQuestProgression(Player player, EntityType entityType, String entityName, int amount, QuestType questType, DyeColor dyeColor) {
-        final String worldName = player.getWorld().getName();
 
-        if (DisabledWorlds.isWorldDisabled(worldName)) {
+        if (DisabledWorlds.isWorldDisabled(player.getWorld().getName())) {
             return;
         }
 

@@ -20,6 +20,9 @@ public class BlockBreakListener extends AbstractItemChecker implements Listener 
 
     @EventHandler
     public void onBlockBreakEvent(BlockBreakEvent event) {
+
+        System.out.println("BLOCK BREAK EVENT");
+
         if (event.isCancelled()) return;
 
         final Player player = event.getPlayer();

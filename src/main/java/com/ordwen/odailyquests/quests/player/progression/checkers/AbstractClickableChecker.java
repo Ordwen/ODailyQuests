@@ -104,14 +104,16 @@ public abstract class AbstractClickableChecker {
     public void validateTradeQuestType(Player player, Villager villager, MerchantRecipe selectedRecipe, int quantity) {
         if (QuestsManager.getActiveQuests().containsKey(player.getName())) {
 
-            HashMap<AbstractQuest, Progression> playerQuests = QuestsManager.getActiveQuests().get(player.getName()).getPlayerQuests();
+            final HashMap<AbstractQuest, Progression> playerQuests = QuestsManager.getActiveQuests().get(player.getName()).getPlayerQuests();
+
 
             for (AbstractQuest abstractQuest : playerQuests.keySet()) {
+
                 if (abstractQuest instanceof VillagerQuest quest) {
+
                     boolean valid = false;
                     Progression questProgression = playerQuests.get(quest);
                     if (!questProgression.isAchieved() && quest.getQuestType() == QuestType.VILLAGER_TRADE) {
-
                         if (quest.getRequiredItems() == null) valid = true;
                         else {
                             for (ItemStack item : quest.getRequiredItems()) {
