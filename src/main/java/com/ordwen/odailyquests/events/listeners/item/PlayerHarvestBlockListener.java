@@ -5,6 +5,7 @@ import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractItemCh
 import org.bukkit.Material;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerHarvestBlockEvent;
@@ -27,18 +28,14 @@ public class PlayerHarvestBlockListener extends AbstractItemChecker implements L
 
         if (event.isCancelled()) return;
 
+        final Player player = event.getPlayer();
+
         final BlockData data = event.getHarvestedBlock().getBlockData();
         final Material dataMaterial = data.getMaterial();
         final List<ItemStack> drops = event.getItemsHarvested();
 
-        System.out.println("material: " + dataMaterial);
-        System.out.println("ageable: " + (data instanceof Ageable));
-        System.out.println("drops: " + drops);
-
         // check if the dropped item figure in the non-crops items list
         if (farmableItems.contains(data.getMaterial().toString())) {
-
-            System.out.println("FARMABLE ITEM");
 
             if (drops.isEmpty()) return;
 
@@ -47,18 +44,10 @@ public class PlayerHarvestBlockListener extends AbstractItemChecker implements L
                 default -> dataMaterial;
             };
 
+            makeProgress(player, material, drops, material);
+        }
 
-            int amount = 0;
-            for (ItemStack item : drops) {
-                if (item.getType() == material) {
-                    amount += item.getAmount();
-                }
-            }
-
-            System.out.println("amount: " + amount);
-            if (amount > 0) setPlayerQuestProgression(event.getPlayer(), new ItemStack(material), amount, QuestType.FARMING, null);
-
-        } else if (data instanceof Ageable ageable) {
+        else if (data instanceof Ageable ageable) {
 
             if (ageable.getAge() == ageable.getMaximumAge()) {
 
@@ -69,16 +58,26 @@ public class PlayerHarvestBlockListener extends AbstractItemChecker implements L
                     default -> dataMaterial;
                 };
 
-                int amount = 0;
-                for (ItemStack item : drops) {
-                    System.out.println(item.getType() + ", " + dataMaterial);
-                    if (item.getType() == dataMaterial) {
-                        amount += item.getAmount();
-                    }
-                }
-
-                if (amount > 0) setPlayerQuestProgression(event.getPlayer(), new ItemStack(material), amount, QuestType.FARMING, null);
+                makeProgress(player, dataMaterial, drops, material);
             }
         }
+    }
+
+    /**
+     * Calculate the amount of items harvested and update the player's quest progression
+     * @param player the player who harvested the block
+     * @param dataMaterial the material of the block
+     * @param drops the list of items harvested
+     * @param material the material of the item
+     */
+    private void makeProgress(Player player, Material dataMaterial, List<ItemStack> drops, Material material) {
+        int amount = 0;
+        for (ItemStack item : drops) {
+            if (item.getType() == dataMaterial) {
+                amount += item.getAmount();
+            }
+        }
+
+        if (amount > 0) setPlayerQuestProgression(player, new ItemStack(material), amount, QuestType.FARMING, null);
     }
 }

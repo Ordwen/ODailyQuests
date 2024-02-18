@@ -12,7 +12,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.material.Crops;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -38,21 +37,14 @@ public class BlockDropItemListener extends AbstractItemChecker implements Listen
 
     @EventHandler
     public void onBlockDropItem(BlockDropItemEvent event) {
-        
-        System.out.println("BLOCK DROP ITEM EVENT");
 
         if (event.isCancelled()) return;
 
         final BlockData data = event.getBlockState().getBlockData();
         final Material dataMaterial = data.getMaterial();
 
-        System.out.println("DATA MATERIAL: " + dataMaterial);
-        System.out.println("ageable: " + (data instanceof Ageable));
-
         // check if the dropped item figure in the non-crops items list
         if (farmableItems.contains(data.getMaterial().toString())) {
-
-            System.out.println("FARMABLE ITEM");
 
             final AtomicBoolean valid = new AtomicBoolean(true);
 
@@ -60,7 +52,6 @@ public class BlockDropItemListener extends AbstractItemChecker implements Listen
             if (dataMaterial.isBlock()) {
                 if (Antiglitch.isStorePlacedBlocks()) {
                     if (!event.getBlock().getMetadata("odailyquests:placed").isEmpty()) {
-                        System.out.println("BLOCK PLACED BY PLAYER");
                         valid.set(false);
                     }
                 }
@@ -103,8 +94,6 @@ public class BlockDropItemListener extends AbstractItemChecker implements Listen
         // check if the dropped item is a crop
         else if (data instanceof Ageable ageable) {
 
-            System.out.println("AGEABLE");
-
             if (ageable.getAge() == ageable.getMaximumAge()) {
 
                 Material material = switch (data.getMaterial().toString()) {
@@ -117,14 +106,11 @@ public class BlockDropItemListener extends AbstractItemChecker implements Listen
                     default -> dataMaterial;
                 };
 
-                System.out.println("MATERIAL: " + material);
-
                 final List<Item> drops = event.getItems();
 
                 int amount = 0;
                 for (Item item : drops) {
 
-                    System.out.println(item.getItemStack().getType() + ", " + material);
                     if (item.getItemStack().getType() == material) {
                         amount += item.getItemStack().getAmount();
                     }
