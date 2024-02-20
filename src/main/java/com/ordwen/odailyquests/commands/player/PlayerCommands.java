@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.commands;
+package com.ordwen.odailyquests.commands.player;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.commands.interfaces.InterfacesManager;

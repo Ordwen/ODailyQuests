@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.commands.convert;
+package com.ordwen.odailyquests.commands.admin.convert;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;

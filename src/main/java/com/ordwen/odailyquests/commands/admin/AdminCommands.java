@@ -1,20 +1,17 @@
-package com.ordwen.odailyquests.commands;
+package com.ordwen.odailyquests.commands.admin;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.api.events.QuestCompletedEvent;
 import com.ordwen.odailyquests.externs.hooks.holograms.HologramsManager;
 import com.ordwen.odailyquests.externs.hooks.holograms.HolographicDisplaysHook;
-import com.ordwen.odailyquests.commands.convert.ConverterManager;
-import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
+import com.ordwen.odailyquests.commands.admin.convert.ConverterManager;
 import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.enums.QuestsPermissions;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
-import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
-import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -24,32 +21,20 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 
 public class AdminCommands implements CommandExecutor {
 
-    private final ODailyQuests oDailyQuests;
     private final ReloadService reloadService;
 
     public AdminCommands(ODailyQuests oDailyQuests) {
-        this.oDailyQuests = oDailyQuests;
         this.reloadService = oDailyQuests.getReloadService();
     }
 
     @Override
     public boolean onCommand(CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+
         if (sender.hasPermission(QuestsPermissions.QUESTS_ADMIN.getPermission())) {
             if (args.length == 1) {
-                /*
-                if (args[0].equals("test")) {
-                    BukkitAudiences bukkitAudiences = BukkitAudiences.create(oDailyQuests);
-                    Audience player = bukkitAudiences.player((Player) sender);
-                    var mm = MiniMessage.miniMessage();
-
-                    Component parsed = mm.deserialize("Hello <rainbow>world</rainbow>, isn't <underlined>MiniMessage</underlined> fun?");
-                    player.sendMessage(parsed);
-                }
-                */
                 if (args[0].equals("reload")) {
                     reloadService.reload();
                     sender.sendMessage(ChatColor.GREEN + "Plugin successfully reloaded!");
@@ -59,90 +44,10 @@ public class AdminCommands implements CommandExecutor {
                 }
             } else if (args.length >= 2) {
                 switch (args[0]) {
-                    case "convert" -> {
-                        if (args.length == 3) {
-                            if (!new ConverterManager(oDailyQuests).convert(args[1], args[2])) {
-                                sender.sendMessage(ChatColor.RED + "Conversion failed! Please check the console for more information.");
-                            } else {
-                                sender.sendMessage(ChatColor.GREEN + "Conversion successful!");
-                                sender.sendMessage(ChatColor.GREEN + "Please select the new storage mode in config file and restart the server to apply changes.");
-                            }
-                        } else sender.sendMessage(ChatColor.RED + "Usage: /quests convert <old format> <new format>");
-                    }
-                    case "reset" -> {
-                        if (args.length >= 3 && args[1] != null && args[2] != null) {
-                            final Player target = Bukkit.getPlayerExact(args[2]);
-                            switch (args[1]) {
-                                case "quests" -> {
-                                    if (target != null) {
-                                        int totalAchievedQuests = QuestsManager.getActiveQuests().get(args[2]).getTotalAchievedQuests();
-
-                                        QuestsManager.getActiveQuests().remove(args[2]);
-                                        LinkedHashMap<AbstractQuest, Progression> quests = QuestsManager.selectRandomQuests();
-
-                                        PlayerQuests playerQuests = new PlayerQuests(System.currentTimeMillis(), quests);
-                                        playerQuests.setTotalAchievedQuests(totalAchievedQuests);
-
-                                        QuestsManager.getActiveQuests().put(args[2], playerQuests);
-                                        QuestsManager.getActiveQuests().get(args[2]).setAchievedQuests(0);
-
-                                        PluginLogger.fine(args[2] + " inserted into the array.");
-
-                                        String msg = QuestsMessages.QUESTS_RENEWED_ADMIN.toString();
-                                        if (msg != null) sender.sendMessage(msg.replace("%target%", target.getName()));
-
-                                        msg = QuestsMessages.QUESTS_RENEWED.getMessage(target);
-                                        if (msg != null) target.sendMessage(msg);
-                                    } else {
-                                        final String msg = QuestsMessages.INVALID_PLAYER.toString();
-                                        if (msg != null) sender.sendMessage(msg);
-                                    }
-                                }
-                                case "total" -> {
-                                    if (target != null) {
-                                        QuestsManager.getActiveQuests().get(args[2]).setTotalAchievedQuests(0);
-
-                                        String msg = QuestsMessages.TOTAL_AMOUNT_RESET_ADMIN.toString();
-                                        if (msg != null) sender.sendMessage(msg.replace("%target%", target.getName()));
-
-                                        msg = QuestsMessages.TOTAL_AMOUNT_RESET.getMessage(target);
-                                        if (msg != null) target.sendMessage(msg);
-                                    } else {
-                                        final String msg = QuestsMessages.INVALID_PLAYER.toString();
-                                        if (msg != null) sender.sendMessage(msg);
-                                    }
-                                }
-                                default -> {
-                                    final String msg = QuestsMessages.ADMIN_HELP.toString();
-                                    if (msg != null) sender.sendMessage(msg);
-                                }
-                            }
-                        } else {
-                            final String msg = QuestsMessages.ADMIN_HELP.toString();
-                            if (msg != null) sender.sendMessage(msg);
-                        }
-                    }
-                    case "show" -> {
-                        if (sender instanceof Player) {
-                            if (Bukkit.getPlayerExact(args[1]) != null) {
-                                ((Player) sender).openInventory(PlayerQuestsInterface.getPlayerQuestsInterface(Bukkit.getPlayer(args[1])));
-                            } else {
-                                final String msg = QuestsMessages.INVALID_PLAYER.toString();
-                                if (msg != null) sender.sendMessage(msg);
-                            }
-                        } else {
-                            final String msg = QuestsMessages.PLAYER_ONLY.toString();
-                            if (msg != null) sender.sendMessage(msg);
-                        }
-                    }
-                    case "open" -> {
-                        if (Bukkit.getPlayerExact(args[1]) != null) {
-                            Bukkit.getPlayerExact(args[1]).openInventory(PlayerQuestsInterface.getPlayerQuestsInterface(Bukkit.getPlayer(args[1])));
-                        } else {
-                            final String msg = QuestsMessages.INVALID_PLAYER.toString();
-                            if (msg != null) sender.sendMessage(msg);
-                        }
-                    }
+                    case "convert" -> new ConverterManager(sender, args).handle();
+                    case "reset" -> new ResetCommand(sender, args).handle();
+                    case "show" -> new ShowCommand(sender, args).handle();
+                    case "open" -> new OpenCommand(sender, args).handle();
                     case "complete" -> {
                         final Player target = Bukkit.getPlayerExact(args[1]);
                         if (target == null) {
@@ -157,7 +62,7 @@ public class AdminCommands implements CommandExecutor {
                             return true;
                         }
 
-                        int questIndex = -1;
+                        int questIndex;
                         try {
                             questIndex = Integer.parseInt(args[2]);
                         } catch (NumberFormatException exception) {
@@ -190,38 +95,6 @@ public class AdminCommands implements CommandExecutor {
                         }
                     }
 
-
-                    /* QUESTS RENEW DEBUG *****/
-                    /*
-                    case "settimestamp" -> {
-                     /*
-                        if (args.length == 3) {
-                            final Player target = Bukkit.getPlayerExact(args[1]);
-                            if (target != null) {
-                                long timestamp;
-                                try {
-                                    timestamp = Long.parseLong(args[2]);
-                                } catch (NumberFormatException exception) {
-                                    System.out.println(exception.getMessage());
-                                    //final String msg = QuestsMessages.INVALID_TIMESTAMP.toString();
-                                    //if (msg != null) sender.sendMessage(msg);
-                                    return true;
-                                }
-                                QuestsManager.getActiveQuests().get(args[1]).setTimestamp(timestamp);
-                                //final String msg = QuestsMessages.TIMESTAMP_SET.toString();
-                                //if (msg != null) sender.sendMessage(msg.replace("%target%", target.getName()));
-                            } else {
-                                final String msg = QuestsMessages.INVALID_PLAYER.toString();
-                                if (msg != null) sender.sendMessage(msg);
-                            }
-                        } else {
-                            final String msg = QuestsMessages.ADMIN_HELP.toString();
-                            if (msg != null) sender.sendMessage(msg);
-                        }
-                    }
-                    */
-                    /* END QUESTS RENEW DEBUG *****/
-
                     case "holo" -> {
                         if (!(sender instanceof Player)) {
                             final String msg = QuestsMessages.PLAYER_ONLY.toString();
@@ -242,7 +115,7 @@ public class AdminCommands implements CommandExecutor {
                                     }
                                     switch (args[2]) {
                                         case "global" -> {
-                                            if (CategoriesLoader.getGlobalQuests().size() != 0) {
+                                            if (!CategoriesLoader.getGlobalQuests().isEmpty()) {
                                                 HolographicDisplaysHook.createHologram(index,
                                                         CategoriesLoader.getGlobalQuests(),
                                                         ((Player) sender).getPlayer());
@@ -252,7 +125,7 @@ public class AdminCommands implements CommandExecutor {
                                             }
                                         }
                                         case "easy" -> {
-                                            if (CategoriesLoader.getEasyQuests().size() != 0) {
+                                            if (!CategoriesLoader.getEasyQuests().isEmpty()) {
                                                 HolographicDisplaysHook.createHologram(index,
                                                         CategoriesLoader.getEasyQuests(),
                                                         ((Player) sender).getPlayer());
@@ -262,7 +135,7 @@ public class AdminCommands implements CommandExecutor {
                                             }
                                         }
                                         case "medium" -> {
-                                            if (CategoriesLoader.getMediumQuests().size() != 0) {
+                                            if (!CategoriesLoader.getMediumQuests().isEmpty()) {
                                                 HolographicDisplaysHook.createHologram(index,
                                                         CategoriesLoader.getMediumQuests(),
                                                         ((Player) sender).getPlayer());
@@ -272,7 +145,7 @@ public class AdminCommands implements CommandExecutor {
                                             }
                                         }
                                         case "hard" -> {
-                                            if (CategoriesLoader.getHardQuests().size() != 0) {
+                                            if (!CategoriesLoader.getHardQuests().isEmpty()) {
                                                 HolographicDisplaysHook.createHologram(index,
                                                         CategoriesLoader.getHardQuests(),
                                                         ((Player) sender).getPlayer());

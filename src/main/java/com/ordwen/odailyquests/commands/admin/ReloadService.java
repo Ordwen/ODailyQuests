@@ -1,8 +1,7 @@
-package com.ordwen.odailyquests.commands;
+package com.ordwen.odailyquests.commands.admin;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
-import com.ordwen.odailyquests.configuration.essentials.Temporality;
 import com.ordwen.odailyquests.configuration.integrations.ItemsAdderEnabled;
 import com.ordwen.odailyquests.configuration.integrations.OraxenEnabled;
 import com.ordwen.odailyquests.externs.hooks.holograms.HologramsManager;

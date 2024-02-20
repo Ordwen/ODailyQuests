@@ -9,8 +9,8 @@ import org.bukkit.entity.Player;
 @SuppressWarnings("SpellCheckingInspection")
 public enum QuestsMessages {
 
-    PLAYER_HELP("player_help", "&a&nPlayer commands:\n&e/quests me &a: see your own quests\n&e/quests show <global/easy/medium/hard> &a: see the quests of a category"),
-    ADMIN_HELP("admin_help", "&c&nAdmin commands:\n&e/qadmin complete <player> <index> &a: complete a player quest\n&e/qadmin reset <quests/total> <player> &a: draw new quests for a player, or reset his total number of achieved quests.\n&e/qadmin show <player> &a: see quests of a player"),
+    PLAYER_HELP("player_help", "&a&nPlayer commands:\n&e/dq me &a: see your own quests\n&e/dq show <global/easy/medium/hard> &a: see the quests of a category"),
+    ADMIN_HELP("admin_help", "&c&nAdmin commands:\n&e/dqa complete <player> <index> &a: complete a player quest\n&e/dqa reset <quests/total> <player> &a: draw new quests for a player, or reset his total number of achieved quests.\n&e/dqa show <player> &a: see quests of a player"),
     NO_PERMISSION("no_permission", "&cYou don't have permission."),
     NO_PERMISSION_CATEGORY("no_permission_category", "&cYou don't have permission to see this category."),
     PLAYER_ONLY("player_only", "&cOnly player can execute this command."),
