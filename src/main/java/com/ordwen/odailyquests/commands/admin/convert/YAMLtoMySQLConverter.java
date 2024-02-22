@@ -58,7 +58,7 @@ public class YAMLtoMySQLConverter {
             });
         } catch (Exception e) {
             PluginLogger.error("An error occurred while converting YAML to MySQL.");
-            e.printStackTrace();
+            PluginLogger.error(e.getMessage());
             return false;
         }
 

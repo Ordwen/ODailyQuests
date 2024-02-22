@@ -142,7 +142,7 @@ public class SaveProgressionSQL {
             Debugger.addDebug("An error occurred while saving player " + playerName + " data.");
             Debugger.addDebug(e.getMessage());
 
-            e.printStackTrace();
+            PluginLogger.error(e.getMessage());
         }
     }
 }

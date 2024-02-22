@@ -61,7 +61,7 @@ public class ProgressionFile {
         } catch (InvalidConfigurationException | IOException e) {
             PluginLogger.error("An error occurred on the load of the progression file.");
             PluginLogger.error("Please inform the developer.");
-            e.printStackTrace();
+            PluginLogger.error(e.getMessage());
         }
     }
 }

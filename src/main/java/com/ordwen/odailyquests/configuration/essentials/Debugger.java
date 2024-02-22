@@ -48,7 +48,7 @@ public class Debugger {
             } catch (IOException e) {
                 PluginLogger.error("An error happened on the write of the debug file.");
                 PluginLogger.error("If the problem persists, contact the developer.");
-                e.printStackTrace();
+                PluginLogger.error(e.getMessage());
             }
         }
     }

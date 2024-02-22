@@ -4,6 +4,7 @@ import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.LoadProgressionSQL;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.SaveProgressionSQL;
+import com.ordwen.odailyquests.tools.PluginLogger;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -33,7 +34,7 @@ public class H2Manager extends SQLManager {
         try {
             testConnection();
         } catch (SQLException e) {
-            e.printStackTrace();
+            PluginLogger.error(e.getMessage());
         }
 
         setupTables();

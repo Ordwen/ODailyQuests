@@ -144,7 +144,7 @@ public class QuestsFiles {
         } catch (InvalidConfigurationException | IOException e) {
             PluginLogger.error("An error occured on the load of the global quests file.");
             PluginLogger.error("Please inform the developper.");
-            e.printStackTrace();
+            PluginLogger.error(e.getMessage());
         }
         PluginLogger.fine("Global quests file successfully loaded.");
 
@@ -154,7 +154,7 @@ public class QuestsFiles {
         } catch (InvalidConfigurationException | IOException e) {
             PluginLogger.error("An error occured on the load of the easy quests file.");
             PluginLogger.error("Please inform the developper.");
-            e.printStackTrace();
+            PluginLogger.error(e.getMessage());
         }
         PluginLogger.fine("Easy quests file successfully loaded.");
 
@@ -164,7 +164,7 @@ public class QuestsFiles {
         } catch (InvalidConfigurationException | IOException e) {
             PluginLogger.error("An error occured on the load of the medium quests file.");
             PluginLogger.error("Please inform the developper.");
-            e.printStackTrace();
+            PluginLogger.error(e.getMessage());
         }
         PluginLogger.fine("Medium quests file successfully loaded.");
 
@@ -174,7 +174,7 @@ public class QuestsFiles {
         } catch (InvalidConfigurationException | IOException e) {
             PluginLogger.error("An error occured on the load of the hard quests file.");
             PluginLogger.error("Please inform the developper.");
-            e.printStackTrace();
+            PluginLogger.error(e.getMessage());
         }
         PluginLogger.fine("Hard quests file successfully loaded.");
     }

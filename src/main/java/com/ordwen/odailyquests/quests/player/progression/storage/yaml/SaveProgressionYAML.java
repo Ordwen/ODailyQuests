@@ -59,7 +59,7 @@ public class SaveProgressionYAML {
         } catch (IOException e) {
             PluginLogger.error("An error happened on the save of the progression file.");
             PluginLogger.error("If the problem persists, contact the developer.");
-            e.printStackTrace();
+            PluginLogger.error(e.getMessage());
         }
     }
 }

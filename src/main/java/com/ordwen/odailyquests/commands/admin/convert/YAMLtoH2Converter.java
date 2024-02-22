@@ -58,7 +58,7 @@ public class YAMLtoH2Converter {
             });
         } catch (Exception e) {
             PluginLogger.error("An error occurred while converting YAML to H2.");
-            e.printStackTrace();
+            PluginLogger.error(e.getMessage());
             return false;
         }
 
