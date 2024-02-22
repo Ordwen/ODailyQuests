@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.commands;
+package com.ordwen.odailyquests.commands.admin;
 
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import org.bukkit.command.CommandSender;
@@ -21,7 +21,7 @@ public abstract class ACommandHandler {
     /**
      * Sends the admin help message to the sender.
      */
-    public void help() {
+    protected void help() {
         final String msg = QuestsMessages.ADMIN_HELP.toString();
         if (msg != null) sender.sendMessage(msg);
     }
@@ -29,8 +29,24 @@ public abstract class ACommandHandler {
     /**
      * Sends the invalid player message to the sender.
      */
-    public void invalidPlayer() {
+    protected void invalidPlayer() {
         final String msg = QuestsMessages.INVALID_PLAYER.toString();
+        if (msg != null) sender.sendMessage(msg);
+    }
+
+    /**
+     * Sends the invalid quest message to the sender.
+     */
+    protected void invalidQuest() {
+        final String msg = QuestsMessages.INVALID_QUEST_INDEX.toString();
+        if (msg != null) sender.sendMessage(msg);
+    }
+
+    /**
+     * Sends the player only message to the sender.
+     */
+    protected void playerOnly() {
+        final String msg = QuestsMessages.PLAYER_ONLY.toString();
         if (msg != null) sender.sendMessage(msg);
     }
 }

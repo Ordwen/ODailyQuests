@@ -1,7 +1,7 @@
 package com.ordwen.odailyquests.commands.admin.convert;
 
 import com.ordwen.odailyquests.ODailyQuests;
-import com.ordwen.odailyquests.commands.ACommandHandler;
+import com.ordwen.odailyquests.commands.admin.ACommandHandler;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;

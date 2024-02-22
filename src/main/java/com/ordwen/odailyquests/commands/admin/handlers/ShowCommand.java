@@ -1,6 +1,6 @@
-package com.ordwen.odailyquests.commands.admin;
+package com.ordwen.odailyquests.commands.admin.handlers;
 
-import com.ordwen.odailyquests.commands.ACommandHandler;
+import com.ordwen.odailyquests.commands.admin.ACommandHandler;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import org.bukkit.Bukkit;

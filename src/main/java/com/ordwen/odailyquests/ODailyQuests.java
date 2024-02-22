@@ -6,8 +6,8 @@ import com.ordwen.odailyquests.externs.IntegrationsManager;
 import com.ordwen.odailyquests.commands.admin.AdminCommands;
 import com.ordwen.odailyquests.commands.player.PlayerCommands;
 import com.ordwen.odailyquests.commands.admin.ReloadService;
-import com.ordwen.odailyquests.commands.completers.AdminCompleter;
-import com.ordwen.odailyquests.commands.completers.PlayerCompleter;
+import com.ordwen.odailyquests.commands.admin.AdminCompleter;
+import com.ordwen.odailyquests.commands.player.PlayerCompleter;
 import com.ordwen.odailyquests.commands.interfaces.InterfacesManager;
 import com.ordwen.odailyquests.commands.interfaces.InventoryClickListener;
 import com.ordwen.odailyquests.configuration.ConfigurationManager;
@@ -101,7 +101,7 @@ public final class ODailyQuests extends JavaPlugin {
         new EventsManager(this).registerListeners();
 
         /* Load commands */
-        getCommand("dquests").setExecutor(new PlayerCommands(this));
+        getCommand("dquests").setExecutor(new PlayerCommands());
         getCommand("dqadmin").setExecutor(new AdminCommands(this));
 
         /* Load Tab Completers */
