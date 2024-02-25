@@ -49,8 +49,11 @@ public class QuestProgressUtils {
     }
 
     if (progression.getProgression() >= quest.getAmountRequired()) {
-      final QuestCompletedEvent completedEvent = new QuestCompletedEvent(player, progression, quest);
-      ODailyQuests.INSTANCE.getServer().getPluginManager().callEvent(completedEvent);
+      Bukkit.getScheduler().runTaskLater(ODailyQuests.INSTANCE, () -> {
+        final QuestCompletedEvent completedEvent = new QuestCompletedEvent(player, progression, quest);
+        Bukkit.getPluginManager().callEvent(completedEvent);
+      }, 1L);
+
       return;
     }
 
