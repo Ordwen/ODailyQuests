@@ -67,6 +67,7 @@ public class EventsManager {
         Bukkit.getPluginManager().registerEvents(new BlockBreakListener(), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new BlockPlaceListener(), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new CraftItemListener(), oDailyQuests);
+        Bukkit.getPluginManager().registerEvents(new SmithItemListener(), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new EnchantItemListener(), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new FurnaceExtractListener(), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new PickupItemListener(), oDailyQuests);

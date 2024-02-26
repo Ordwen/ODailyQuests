@@ -7,36 +7,24 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.CraftItemEvent;
-import org.bukkit.inventory.ComplexRecipe;
+import org.bukkit.event.inventory.SmithItemEvent;
 import org.bukkit.inventory.ItemStack;
 
-public class CraftItemListener extends AbstractItemChecker implements Listener {
+public class SmithItemListener extends AbstractItemChecker implements Listener {
 
     @EventHandler
-    public void onCraftItemEvent(CraftItemEvent event) {
+    public void onSmithItemEvent(SmithItemEvent event) {
 
         if (event.isCancelled()) return;
         if (event.getCurrentItem() == null) return;
 
-        ItemStack test;
+        final ItemStack result = event.getCurrentItem();
+        int recipeAmount = result.getAmount();
+
         final Player player = (Player) event.getWhoClicked();
-
-        if (event.getRecipe() instanceof ComplexRecipe complexRecipe) {
-            switch (complexRecipe.getKey().getKey().toUpperCase()) {
-                case "REPAIR_ITEM", "ARMOR_DYE", "SHULKER_BOX_COLORING", "SHIELD_DECORATION", "BANNER_DUPLICATE", "MAP_CLONING", "BOOK_CLONING" -> {
-                    return;
-                }
-            }
-            test = new ItemStack(Material.valueOf(complexRecipe.getKey().getKey().toUpperCase()));
-        } else {
-            test = event.getCurrentItem().clone();
-        }
-
         final ClickType click = event.getClick();
-        int recipeAmount = test.getAmount();
 
-        if (movingItem(test, recipeAmount, player, click)) return;
+        if (movingItem(result, recipeAmount, player, click)) return;
 
         switch (click) {
             case NUMBER_KEY -> {
@@ -51,8 +39,8 @@ public class CraftItemListener extends AbstractItemChecker implements Listener {
             case SHIFT_RIGHT, SHIFT_LEFT -> {
                 if (recipeAmount == 0)
                     break;
-                int maxCraftable = getMaxCraftAmount(event.getInventory());
-                int capacity = fits(test, event.getView().getBottomInventory());
+                int maxCraftable = getMaxSmithAmount(event.getInventory());
+                int capacity = fits(result, event.getView().getBottomInventory());
                 if (capacity < maxCraftable)
                     maxCraftable = ((capacity + recipeAmount - 1) / recipeAmount) * recipeAmount;
                 recipeAmount = maxCraftable;
@@ -62,7 +50,7 @@ public class CraftItemListener extends AbstractItemChecker implements Listener {
         if (recipeAmount == 0)
             return;
 
-        test.setAmount(recipeAmount);
-        setPlayerQuestProgression(player, test, test.getAmount(), QuestType.CRAFT);
+        result.setAmount(recipeAmount);
+        setPlayerQuestProgression(player, result, result.getAmount(), QuestType.CRAFT);
     }
 }

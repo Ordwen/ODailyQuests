@@ -87,8 +87,8 @@ public class BlockDropItemListener extends AbstractItemChecker implements Listen
                 }
             }
 
-            if (isSlicedMelon) setPlayerQuestProgression(event.getPlayer(), new ItemStack(Material.MELON_SLICE), amount, QuestType.FARMING, null);
-            else setPlayerQuestProgression(event.getPlayer(), new ItemStack(material), amount, QuestType.FARMING, null);
+            if (isSlicedMelon) setPlayerQuestProgression(event.getPlayer(), new ItemStack(Material.MELON_SLICE), amount, QuestType.FARMING);
+            else setPlayerQuestProgression(event.getPlayer(), new ItemStack(material), amount, QuestType.FARMING);
         }
 
         // check if the dropped item is a crop
@@ -116,7 +116,7 @@ public class BlockDropItemListener extends AbstractItemChecker implements Listen
                     }
                 }
 
-                if (amount > 0) setPlayerQuestProgression(event.getPlayer(), new ItemStack(material), amount, QuestType.FARMING, null);
+                if (amount > 0) setPlayerQuestProgression(event.getPlayer(), new ItemStack(material), amount, QuestType.FARMING);
             }
         }
 

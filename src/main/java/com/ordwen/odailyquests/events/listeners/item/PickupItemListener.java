@@ -30,7 +30,7 @@ public class PickupItemListener extends AbstractItemChecker implements Listener 
                 }
             }
 
-            setPlayerQuestProgression(player, item, event.getItem().getItemStack().getAmount(), QuestType.PICKUP, event.getItem().getUniqueId().toString());
+            setPlayerQuestProgression(player, item, event.getItem().getItemStack().getAmount(), QuestType.PICKUP);
         }
     }
 }
