@@ -8,7 +8,7 @@ public abstract class ACommandHandler {
     protected final CommandSender sender;
     protected final String[] args;
 
-    public ACommandHandler(CommandSender sender, String[] args) {
+    protected ACommandHandler(CommandSender sender, String[] args) {
         this.sender = sender;
         this.args = args;
     }

@@ -9,7 +9,7 @@ public abstract class PCommandHandler {
     protected final String[] args;
 
 
-    public PCommandHandler(Player player, String[] args) {
+    protected PCommandHandler(Player player, String[] args) {
         this.player = player;
         this.args = args;
     }

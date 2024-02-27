@@ -45,29 +45,28 @@ public class ReloadService {
      * Load all quests from connected players, to avoid errors on reload.
      */
     public void loadConnectedPlayerQuests() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (!QuestsManager.getActiveQuests().containsKey(player.getName())) {
+                loadQuestsForPlayer(player);
+            }
+        }
+    }
+
+    /**
+     * Load quests for a specific player.
+     * @param player player to load quests for.
+     */
+    private void loadQuestsForPlayer(Player player) {
         switch (Modes.getStorageMode()) {
             case "YAML" -> {
                 if (yamlManager == null) restartNeeded();
-                else {
-                    for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-                        if (!QuestsManager.getActiveQuests().containsKey(player.getName())) {
-                            yamlManager.getLoadProgressionYAML().loadPlayerQuests(player.getName(), QuestsManager.getActiveQuests());
-                        }
-                    }
-                }
+                else yamlManager.getLoadProgressionYAML().loadPlayerQuests(player.getName(), QuestsManager.getActiveQuests());
             }
             case "MySQL", "H2" -> {
                 if (sqlManager == null) restartNeeded();
-                else {
-                    for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-                        if (!QuestsManager.getActiveQuests().containsKey(player.getName())) {
-                            sqlManager.getLoadProgressionSQL().loadProgression(player.getName(), QuestsManager.getActiveQuests());
-                        }
-                    }
-                }
+                else sqlManager.getLoadProgressionSQL().loadProgression(player.getName(), QuestsManager.getActiveQuests());
             }
-            default ->
-                    PluginLogger.error("Impossible to load player quests : the selected storage mode is incorrect !");
+            default -> PluginLogger.error("Impossible to load player quests : the selected storage mode is incorrect !");
         }
     }
 

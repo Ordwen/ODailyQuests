@@ -13,10 +13,12 @@ import java.util.List;
 
 public class AdminCompleter implements TabCompleter {
 
+    private final String CONVERT = "convert";
+
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
         if (args.length <= 1) {
-            List<String> allCompletions = new ArrayList<>(Arrays.asList("reload", "reset", "show", "complete", "help", "holo", "convert"));
+            List<String> allCompletions = new ArrayList<>(Arrays.asList("reload", "reset", "show", "complete", "help", "holo", CONVERT));
             List<String> completions = new ArrayList<>();
 
             StringUtil.copyPartialMatches(args[0], allCompletions, completions);
@@ -41,7 +43,7 @@ public class AdminCompleter implements TabCompleter {
                 Collections.sort(completions);
                 return completions;
             }
-            else if (args[0].equalsIgnoreCase("convert")) {
+            else if (args[0].equalsIgnoreCase(CONVERT)) {
                 List<String> allCompletions = new ArrayList<>(List.of("yaml"));
                 List<String> completions = new ArrayList<>();
 
@@ -58,7 +60,7 @@ public class AdminCompleter implements TabCompleter {
             Collections.sort(completions);
             return completions;
         }
-        else if (args.length == 3 && args[0].equalsIgnoreCase("convert")) {
+        else if (args.length == 3 && args[0].equalsIgnoreCase(CONVERT)) {
             List<String> allCompletions = new ArrayList<>(Arrays.asList("mysql", "h2"));
             List<String> completions = new ArrayList<>();
 
