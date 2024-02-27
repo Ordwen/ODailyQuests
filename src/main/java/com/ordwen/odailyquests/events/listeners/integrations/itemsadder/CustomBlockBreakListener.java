@@ -29,7 +29,7 @@ public class CustomBlockBreakListener extends AbstractItemChecker implements Lis
         }
 
         if (valid.get()) {
-            setPlayerQuestProgression(player, event.getCustomBlockItem(), 1, QuestType.BREAK, block.getBlockData().getAsString());
+            setPlayerQuestProgression(player, event.getCustomBlockItem(), 1, QuestType.BREAK);
         }
     }
 }

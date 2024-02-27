@@ -71,7 +71,7 @@ public class ProgressionMessage {
                     .replace("%required%", String.valueOf(required)));
 
             switch (progressionMessageType) {
-                case ACTIONBAR -> player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(toSend));
+                case ACTIONBAR -> player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(toSend));
                 case CHAT -> player.sendMessage(toSend);
                 case BOSSBAR -> {
                     if (currentBossBars.containsKey(player)) {

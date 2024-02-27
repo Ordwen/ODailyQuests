@@ -9,8 +9,13 @@ import com.ordwen.odailyquests.enums.QuestType;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.player.progression.QuestProgressUtils;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.CraftingInventory;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.SmithingInventory;
 
 import java.util.HashMap;
 
@@ -24,7 +29,7 @@ public abstract class AbstractItemChecker {
      * @param amount    the amount to increase progression by.
      * @param questType the quest type to increase progression for.
      */
-    public void setPlayerQuestProgression(Player player, ItemStack itemStack, int amount, QuestType questType, String id) {
+    public void setPlayerQuestProgression(Player player, ItemStack itemStack, int amount, QuestType questType) {
 
         if (DisabledWorlds.isWorldDisabled(player.getWorld().getName())) {
             return;
@@ -73,5 +78,85 @@ public abstract class AbstractItemChecker {
                 }
             }
         }
+    }
+
+    /**
+     * @param stack the item to check.
+     * @param inv   the inventory to check.
+     * @return the amount of items that can be added to the inventory.
+     */
+    protected int fits(ItemStack stack, Inventory inv) {
+        ItemStack[] contents = inv.getContents();
+        int result = 0;
+
+        for (ItemStack is : contents)
+            if (is == null)
+                result += stack.getMaxStackSize();
+            else if (is.isSimilar(stack))
+                result += Math.max(stack.getMaxStackSize() - is.getAmount(), 0);
+
+        return result;
+    }
+
+    /**
+     * Returns the maximum amount of items that can be crafted in the given inventory.
+     *
+     * @param inv the inventory to check.
+     * @return the maximum.
+     */
+    protected int getMaxCraftAmount(CraftingInventory inv) {
+        if (inv.getResult() == null)
+            return 0;
+
+        int resultCount = inv.getResult().getAmount();
+        int materialCount = Integer.MAX_VALUE;
+
+        for (ItemStack is : inv.getMatrix())
+            if (is != null && is.getAmount() < materialCount)
+                materialCount = is.getAmount();
+
+        return resultCount * materialCount;
+    }
+
+    /**
+     * Returns the maximum amount of items that can be smithed in the given inventory.
+     *
+     * @param inv the inventory to check.
+     * @return the maximum.
+     */
+    protected int getMaxSmithAmount(SmithingInventory inv) {
+        if (inv.getResult() == null)
+            return 0;
+
+        int resultCount = inv.getResult().getAmount();
+        int materialCount = Integer.MAX_VALUE;
+
+        for (ItemStack is : inv.getContents())
+            if (is != null && is.getAmount() < materialCount)
+                materialCount = is.getAmount();
+
+        return resultCount * materialCount;
+    }
+
+    /**
+     * Checks if the player is moving an item.
+     *
+     * @param result       the result item.
+     * @param recipeAmount the amount of items in the recipe.
+     * @param player       the player to check.
+     * @param click        the click type.
+     * @return true if the player is moving an item.
+     */
+    protected boolean movingItem(ItemStack result, int recipeAmount, Player player, ClickType click) {
+        final ItemStack cursorItem = player.getItemOnCursor();
+
+        if (cursorItem.getType() != Material.AIR) {
+            if (cursorItem.getType() == result.getType()) {
+                if (cursorItem.getAmount() + recipeAmount > cursorItem.getMaxStackSize()) {
+                    return click == ClickType.LEFT || click == ClickType.RIGHT;
+                }
+            } else return true;
+        }
+        return false;
     }
 }

@@ -57,7 +57,7 @@ public class BlockBreakListener extends AbstractItemChecker implements Listener 
         };
 
         if (valid.get()) {
-            setPlayerQuestProgression(player, new ItemStack(material), 1, QuestType.BREAK, block.getBlockData().getAsString());
+            setPlayerQuestProgression(player, new ItemStack(material), 1, QuestType.BREAK);
         }
     }
 }

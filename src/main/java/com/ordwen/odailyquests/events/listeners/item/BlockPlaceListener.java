@@ -40,7 +40,7 @@ public class BlockPlaceListener extends AbstractItemChecker implements Listener 
             }
         }
 
-        if (valid) setPlayerQuestProgression(player, new ItemStack(block.getType()), 1, QuestType.PLACE, block.toString());
+        if (valid) setPlayerQuestProgression(player, new ItemStack(block.getType()), 1, QuestType.PLACE);
 
         if (Antiglitch.isStorePlacedBlocks()) {
             block.setMetadata("odailyquests:placed", new FixedMetadataValue(ODailyQuests.INSTANCE, player.getUniqueId().toString()));

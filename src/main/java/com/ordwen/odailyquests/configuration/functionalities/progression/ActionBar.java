@@ -21,7 +21,7 @@ public class ActionBar {
      * Init variables
      */
     private static boolean isEnabled;
-    private static TextComponent text;
+    private static String text;
 
     /**
      * Load configuration section.
@@ -31,20 +31,25 @@ public class ActionBar {
         isEnabled = section.getBoolean("enabled");
 
         if (isEnabled) {
-            String msg = ColorConvert.convertColorCode(ChatColor.translateAlternateColorCodes('&', section.getString("text")));
-            text = new TextComponent(msg);
+            text = ColorConvert.convertColorCode(ChatColor.translateAlternateColorCodes('&', section.getString("text")));
         }
     }
 
     /**
      * Send actionbar.
-     * @param player to send.
+     *
+     * @param player    to send.
      * @param questName name of the achieved quest.
      */
     public static void sendActionbar(Player player, String questName) {
         if (isEnabled) {
-            TextComponent toSend = new TextComponent(text.getText().replace("%player%", player.getDisplayName()).replace("%questName%", questName));
-            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, toSend);
+
+            final String toSend = ColorConvert.convertColorCode(text
+                    .replace("%player%", player.getDisplayName())
+                    .replace("%questName%", questName)
+            );
+
+            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(toSend));
         }
     }
 }

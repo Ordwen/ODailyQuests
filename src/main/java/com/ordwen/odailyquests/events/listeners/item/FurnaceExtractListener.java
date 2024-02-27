@@ -13,7 +13,7 @@ public class FurnaceExtractListener extends AbstractItemChecker implements Liste
     @EventHandler
     public void onFurnaceExtractEvent(FurnaceExtractEvent event) {
         if (UseCustomFurnaceResults.isEnabled()) return;
-        setPlayerQuestProgression(event.getPlayer(), new ItemStack(event.getItemType()), event.getItemAmount(), QuestType.COOK, null);
+        setPlayerQuestProgression(event.getPlayer(), new ItemStack(event.getItemType()), event.getItemAmount(), QuestType.COOK);
     }
 }
 

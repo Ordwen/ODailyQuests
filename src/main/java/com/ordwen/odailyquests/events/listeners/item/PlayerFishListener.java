@@ -14,7 +14,7 @@ public class PlayerFishListener extends AbstractItemChecker implements Listener 
         if (event.isCancelled()) return;
 
         if (event.getState() == PlayerFishEvent.State.CAUGHT_FISH && event.getCaught() instanceof Item item) {
-            setPlayerQuestProgression(event.getPlayer(), item.getItemStack(), 1, QuestType.FISH, null);
+            setPlayerQuestProgression(event.getPlayer(), item.getItemStack(), 1, QuestType.FISH);
         }
     }
 }
