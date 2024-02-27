@@ -13,6 +13,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class CompleteCommand extends ACommandHandler {
 
@@ -56,11 +57,14 @@ public class CompleteCommand extends ACommandHandler {
             final HashMap<AbstractQuest, Progression> playerQuests = QuestsManager.getActiveQuests().get(args[1]).getPlayerQuests();
 
             int index = 0;
-            for (AbstractQuest quest : playerQuests.keySet()) {
+            for (Map.Entry<AbstractQuest, Progression> entry : playerQuests.entrySet()) {
                 if (index != questIndex - 1) {
                     index++;
                     continue;
                 }
+
+                final AbstractQuest quest = entry.getKey();
+                final Progression progression = entry.getValue();
 
                 if (playerQuests.get(quest).isAchieved()) {
                     final String msg = QuestsMessages.QUEST_ALREADY_ACHIEVED.toString();
@@ -68,10 +72,10 @@ public class CompleteCommand extends ACommandHandler {
                     return;
                 }
 
-                final Progression progression = playerQuests.get(quest);
                 final QuestCompletedEvent event = new QuestCompletedEvent(target, progression, quest);
                 ODailyQuests.INSTANCE.getServer().getPluginManager().callEvent(event);
-                break;
+
+                return;
             }
             return;
         }
