@@ -57,19 +57,21 @@ public class CompleteCommand extends ACommandHandler {
 
             int index = 0;
             for (AbstractQuest quest : playerQuests.keySet()) {
-                Progression progression = playerQuests.get(quest);
-                if (index == questIndex - 1) {
-                    if (playerQuests.get(quest).isAchieved()) {
-                        final String msg = QuestsMessages.QUEST_ALREADY_ACHIEVED.toString();
-                        if (msg != null) sender.sendMessage(msg);
-                        return;
-                    }
-
-                    final QuestCompletedEvent event = new QuestCompletedEvent(target, progression, quest);
-                    ODailyQuests.INSTANCE.getServer().getPluginManager().callEvent(event);
-                    break;
+                if (index != questIndex - 1) {
+                    index++;
+                    continue;
                 }
-                index++;
+
+                if (playerQuests.get(quest).isAchieved()) {
+                    final String msg = QuestsMessages.QUEST_ALREADY_ACHIEVED.toString();
+                    if (msg != null) sender.sendMessage(msg);
+                    return;
+                }
+
+                final Progression progression = playerQuests.get(quest);
+                final QuestCompletedEvent event = new QuestCompletedEvent(target, progression, quest);
+                ODailyQuests.INSTANCE.getServer().getPluginManager().callEvent(event);
+                break;
             }
             return;
         }
