@@ -42,6 +42,16 @@ public class CompleteCommand extends ACommandHandler {
             return;
         }
 
+        complete(questIndex, target);
+    }
+
+    /**
+     * Completes a quest for a player
+     *
+     * @param questIndex the index of the quest
+     * @param target     the player
+     */
+    private void complete(int questIndex, Player target) {
         if (questIndex >= 1 && questIndex <= QuestsAmount.getQuestsAmount()) {
             final HashMap<AbstractQuest, Progression> playerQuests = QuestsManager.getActiveQuests().get(args[1]).getPlayerQuests();
 
