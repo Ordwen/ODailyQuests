@@ -18,7 +18,7 @@ public class AdminCompleter implements TabCompleter {
         final String convert = "convert";
 
         if (args.length <= 1) {
-            List<String> allCompletions = new ArrayList<>(Arrays.asList("reload", "reset", "show", "complete", "help", "holo", convert));
+            List<String> allCompletions = new ArrayList<>(Arrays.asList("reload", "reset", "reroll", "show", "complete", "help", "holo", convert));
             List<String> completions = new ArrayList<>();
 
             StringUtil.copyPartialMatches(args[0], allCompletions, completions);

@@ -32,6 +32,7 @@ public class AdminCommands implements CommandExecutor {
                 switch (args[0]) {
                     case "convert" -> new ConverterManager(sender, args).handle();
                     case "reset" -> new ResetCommand(sender, args).handle();
+                    case "reroll" -> new ARerollCommand(sender, args).handle();
                     case "show" -> new ShowCommand(sender, args).handle();
                     case "open" -> new OpenCommand(sender, args).handle();
                     case "complete" -> new CompleteCommand(sender, args).handle();
