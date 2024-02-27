@@ -9,14 +9,14 @@ import org.bukkit.inventory.Inventory;
 
 public class ShowCommand extends PCommandHandler {
 
+    private static final String global = "global";
+    private static final String easy = "easy";
+    private static final String medium = "medium";
+    private static final String hard = "hard";
+
     public ShowCommand(Player player, String[] args) {
         super(player, args);
     }
-
-    private final String global = "global";
-    private final String easy = "easy";
-    private final String medium = "medium";
-    private final String hard = "hard";
 
     @Override
     public void handle() {
