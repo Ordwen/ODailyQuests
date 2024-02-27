@@ -7,6 +7,8 @@ public abstract class PlayerMessages {
 
     /**
      * Sends the player help message to the sender.
+     *
+     * @param sender the sender.
      */
     protected void help(CommandSender sender) {
         final String msg = QuestsMessages.PLAYER_HELP.toString();
@@ -15,6 +17,8 @@ public abstract class PlayerMessages {
 
     /**
      * Sends the no permission message to the sender.
+     *
+     * @param sender the sender.
      */
     protected void noPermission(CommandSender sender) {
         final String msg = QuestsMessages.NO_PERMISSION.toString();
@@ -23,6 +27,8 @@ public abstract class PlayerMessages {
 
     /**
      * Sends the no permission category message to the sender.
+     *
+     * @param sender the sender.
      */
     protected void noPermissionCategory(CommandSender sender) {
         final String msg = QuestsMessages.NO_PERMISSION_CATEGORY.toString();
@@ -31,9 +37,21 @@ public abstract class PlayerMessages {
 
     /**
      * Sends the categorized disabled message to the sender.
+     *
+     * @param sender the sender.
      */
     protected void categorizedDisabled(CommandSender sender) {
         final String msg = QuestsMessages.CATEGORIZED_DISABLED.toString();
+        if (msg != null) sender.sendMessage(msg);
+    }
+
+    /**
+     * Sends the categorized enabled message to the sender.
+     *
+     * @param sender the sender.
+     */
+    protected void categorizedEnabled(CommandSender sender) {
+        final String msg = QuestsMessages.CATEGORIZED_ENABLED.toString();
         if (msg != null) sender.sendMessage(msg);
     }
 
@@ -44,6 +62,16 @@ public abstract class PlayerMessages {
      */
     protected void playerOnly(CommandSender sender) {
         final String msg = QuestsMessages.PLAYER_ONLY.toString();
+        if (msg != null) sender.sendMessage(msg);
+    }
+
+    /**
+     * Sends a message to the sender indicating that the category is invalid.
+     *
+     * @param sender the sender.
+     */
+    protected void invalidCategory(CommandSender sender) {
+        final String msg = QuestsMessages.INVALID_CATEGORY.toString();
         if (msg != null) sender.sendMessage(msg);
     }
 }
