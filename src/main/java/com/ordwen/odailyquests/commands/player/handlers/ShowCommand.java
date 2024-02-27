@@ -30,45 +30,45 @@ public class ShowCommand extends PCommandHandler {
                         if (player.hasPermission(QuestsPermissions.QUESTS_SHOW_GLOBAL.getPermission())) {
                             final Inventory inventory = InterfacesManager.getInterfaceFirstPage("global", player);
                             player.openInventory(inventory);
-                        } else noPermissionCategory();
+                        } else noPermissionCategory(player);
                     }
 
                     case "easy" -> {
                         if (Modes.getQuestsMode() == 1) {
-                            categorizedDisabled();
+                            categorizedDisabled(player);
                             return;
                         }
 
                         if (player.hasPermission(QuestsPermissions.QUESTS_SHOW_EASY.getPermission())) {
                             final Inventory inventory = InterfacesManager.getInterfaceFirstPage("easy", player);
                             player.openInventory(inventory);
-                        } else noPermissionCategory();
+                        } else noPermissionCategory(player);
 
                     }
 
                     case "medium" -> {
                         if (Modes.getQuestsMode() == 1) {
-                            categorizedDisabled();
+                            categorizedDisabled(player);
                             return;
                         }
 
                         if (player.hasPermission(QuestsPermissions.QUESTS_SHOW_MEDIUM.getPermission())) {
                             final Inventory inventory = InterfacesManager.getInterfaceFirstPage("medium", player);
                             player.openInventory(inventory);
-                        } else noPermissionCategory();
+                        } else noPermissionCategory(player);
 
                     }
 
                     case "hard" -> {
                         if (Modes.getQuestsMode() == 1) {
-                            categorizedDisabled();
+                            categorizedDisabled(player);
                             return;
                         }
 
                         if (player.hasPermission(QuestsPermissions.QUESTS_SHOW_HARD.getPermission())) {
                             final Inventory inventory = InterfacesManager.getInterfaceFirstPage("hard", player);
                             player.openInventory(inventory);
-                        } else noPermissionCategory();
+                        } else noPermissionCategory(player);
 
                     }
 
@@ -77,7 +77,7 @@ public class ShowCommand extends PCommandHandler {
                         if (msg != null) player.sendMessage(msg);
                     }
                 }
-            } else help();
-        } else noPermission();
+            } else help(player);
+        } else noPermission(player);
     }
 }
