@@ -34,59 +34,50 @@ public class HoloCommand extends ACommandHandler {
      * Create a hologram.
      */
     private void create() {
-        if (args.length == 4 && args[3] != null) {
-            int index;
-            try {
-                index = Integer.parseInt(args[3]) - 1;
-            } catch (Exception e) {
-                invalidQuest();
-                return;
-            }
-
-            switch (args[2]) {
-                case "global" -> {
-                    if (CategoriesLoader.getGlobalQuests().isEmpty()) {
-                        enabled();
-                        return;
-                    }
-
-                    HolographicDisplaysHook.createHologram(index, CategoriesLoader.getGlobalQuests(), ((Player) sender).getPlayer());
-                }
-                case "easy" -> {
-                    if (!CategoriesLoader.getEasyQuests().isEmpty()) {
-                        disabled();
-                        return;
-                    }
-
-                    HolographicDisplaysHook.createHologram(index, CategoriesLoader.getEasyQuests(), ((Player) sender).getPlayer());
-                }
-
-                case "medium" -> {
-                    if (!CategoriesLoader.getMediumQuests().isEmpty()) {
-                        disabled();
-                        return;
-                    }
-
-                    HolographicDisplaysHook.createHologram(index, CategoriesLoader.getMediumQuests(), ((Player) sender).getPlayer());
-                }
-
-                case "hard" -> {
-                    if (CategoriesLoader.getHardQuests().isEmpty()) {
-                        disabled();
-                        return;
-                    }
-
-                    HolographicDisplaysHook.createHologram(index, CategoriesLoader.getHardQuests(), ((Player) sender).getPlayer());
-                }
-
-                default -> {
-                    invalidCategory();
-                    return;
-                }
-            }
+        if (args.length != 4 || args[3] == null) {
+            help();
+            return;
         }
 
-        help();
+        int index;
+        try {
+            index = Integer.parseInt(args[3]) - 1;
+        } catch (Exception e) {
+            invalidQuest();
+            return;
+        }
+
+        switch (args[2]) {
+            case "global" -> {
+                if (CategoriesLoader.getGlobalQuests().isEmpty()) {
+                    enabled();
+                    return;
+                }
+                HolographicDisplaysHook.createHologram(index, CategoriesLoader.getGlobalQuests(), ((Player) sender).getPlayer());
+            }
+            case "easy" -> {
+                if (!CategoriesLoader.getEasyQuests().isEmpty()) {
+                    disabled();
+                    return;
+                }
+                HolographicDisplaysHook.createHologram(index, CategoriesLoader.getEasyQuests(), ((Player) sender).getPlayer());
+            }
+            case "medium" -> {
+                if (!CategoriesLoader.getMediumQuests().isEmpty()) {
+                    disabled();
+                    return;
+                }
+                HolographicDisplaysHook.createHologram(index, CategoriesLoader.getMediumQuests(), ((Player) sender).getPlayer());
+            }
+            case "hard" -> {
+                if (CategoriesLoader.getHardQuests().isEmpty()) {
+                    disabled();
+                    return;
+                }
+                HolographicDisplaysHook.createHologram(index, CategoriesLoader.getHardQuests(), ((Player) sender).getPlayer());
+            }
+            default -> invalidCategory();
+        }
     }
 
     /**
