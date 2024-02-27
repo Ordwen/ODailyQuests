@@ -39,25 +39,27 @@ public class ConverterManager extends ACommandHandler {
      */
     public boolean convert(String oldFormat, String newFormat) {
 
-        switch (oldFormat) {
-            case "YAML", "yaml" -> {
-                switch (newFormat) {
-                    case "MySQL", "mysql" -> {
-                        return new YAMLtoMySQLConverter().convert(oDailyQuests);
-                    }
-                    case "H2", "h2" -> {
-                        return new YAMLtoH2Converter().convert(oDailyQuests);
-                    }
-                    default -> {
-                        PluginLogger.error("The new format is not supported.");
-                        return false;
-                    }
+        if (oldFormat.equalsIgnoreCase(newFormat)) {
+            PluginLogger.error("The old and new format are the same.");
+            return false;
+        }
+
+        if (oldFormat.equalsIgnoreCase("yaml")) {
+            switch (newFormat) {
+                case "MySQL", "mysql" -> {
+                    return new YAMLtoMySQLConverter().convert(oDailyQuests);
+                }
+                case "H2", "h2" -> {
+                    return new YAMLtoH2Converter().convert(oDailyQuests);
+                }
+                default -> {
+                    PluginLogger.error("The new format is not supported.");
+                    return false;
                 }
             }
-            default -> {
-                PluginLogger.error("The old format is not supported.");
-                return false;
-            }
         }
+
+        PluginLogger.error("The old format is not supported.");
+        return false;
     }
 }

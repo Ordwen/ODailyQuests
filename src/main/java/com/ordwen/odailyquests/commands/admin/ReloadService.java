@@ -2,8 +2,6 @@ package com.ordwen.odailyquests.commands.admin;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
-import com.ordwen.odailyquests.configuration.integrations.ItemsAdderEnabled;
-import com.ordwen.odailyquests.configuration.integrations.OraxenEnabled;
 import com.ordwen.odailyquests.externs.hooks.holograms.HologramsManager;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
@@ -117,20 +115,8 @@ public class ReloadService {
         oDailyQuests.getConfigurationManager().loadConfiguration();
 
         /* Load quests & interface */
-        if (ItemsAdderEnabled.isEnabled() && ItemsAdderEnabled.isLoaded()) {
-            categoriesLoader.loadCategories();
-            oDailyQuests.getInterfacesManager().initAllObjects();
-        }
-
-        else if (OraxenEnabled.isEnabled() && OraxenEnabled.isLoaded()) {
-            categoriesLoader.loadCategories();
-            oDailyQuests.getInterfacesManager().initAllObjects();
-        }
-
-        else if (!ItemsAdderEnabled.isEnabled() && !OraxenEnabled.isEnabled()) {
-            categoriesLoader.loadCategories();
-            oDailyQuests.getInterfacesManager().initAllObjects();
-        }
+        categoriesLoader.loadCategories();
+        oDailyQuests.getInterfacesManager().initAllObjects();
 
         saveConnectedPlayerQuests(true);
         Bukkit.getScheduler().runTaskLater(oDailyQuests, this::loadConnectedPlayerQuests, 20L);
