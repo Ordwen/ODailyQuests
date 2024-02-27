@@ -9,10 +9,10 @@ import org.bukkit.inventory.Inventory;
 
 public class ShowCommand extends PCommandHandler {
 
-    private static final String global = "global";
-    private static final String easy = "easy";
-    private static final String medium = "medium";
-    private static final String hard = "hard";
+    private static final String GLOBAL = "global";
+    private static final String EASY = "easy";
+    private static final String MEDIUM = "medium";
+    private static final String HARD = "hard";
 
     public ShowCommand(Player player, String[] args) {
         super(player, args);
@@ -30,7 +30,7 @@ public class ShowCommand extends PCommandHandler {
             return;
         }
 
-        if (args[1].equalsIgnoreCase(global)) {
+        if (args[1].equalsIgnoreCase(GLOBAL)) {
             openGlobal();
         } else openCategory(args[1]);
     }
@@ -46,10 +46,10 @@ public class ShowCommand extends PCommandHandler {
         }
 
         switch (category) {
-            case global -> openGlobal();
-            case easy -> openEasy();
-            case medium -> openMedium();
-            case hard -> openHard();
+            case GLOBAL -> openGlobal();
+            case EASY -> openEasy();
+            case MEDIUM -> openMedium();
+            case HARD -> openHard();
             default -> invalidCategory(player);
         }
     }
@@ -67,7 +67,7 @@ public class ShowCommand extends PCommandHandler {
             noPermissionCategory(player);
             return;
         }
-        final Inventory inventory = InterfacesManager.getInterfaceFirstPage(global, player);
+        final Inventory inventory = InterfacesManager.getInterfaceFirstPage(GLOBAL, player);
         player.openInventory(inventory);
     }
 
@@ -79,7 +79,7 @@ public class ShowCommand extends PCommandHandler {
             noPermissionCategory(player);
             return;
         }
-        final Inventory inventory = InterfacesManager.getInterfaceFirstPage(easy, player);
+        final Inventory inventory = InterfacesManager.getInterfaceFirstPage(EASY, player);
         player.openInventory(inventory);
     }
 
@@ -91,7 +91,7 @@ public class ShowCommand extends PCommandHandler {
             noPermissionCategory(player);
             return;
         }
-        final Inventory inventory = InterfacesManager.getInterfaceFirstPage(medium, player);
+        final Inventory inventory = InterfacesManager.getInterfaceFirstPage(MEDIUM, player);
         player.openInventory(inventory);
     }
 
@@ -103,7 +103,7 @@ public class ShowCommand extends PCommandHandler {
             noPermissionCategory(player);
             return;
         }
-        final Inventory inventory = InterfacesManager.getInterfaceFirstPage(hard, player);
+        final Inventory inventory = InterfacesManager.getInterfaceFirstPage(HARD, player);
         player.openInventory(inventory);
     }
 }
