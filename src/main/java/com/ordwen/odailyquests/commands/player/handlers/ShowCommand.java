@@ -25,7 +25,7 @@ public class ShowCommand extends PCommandHandler {
             return;
         }
 
-        if (args.length == 2) {
+        if (args.length != 2) {
             help(player);
             return;
         }
