@@ -16,10 +16,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Random;
+import java.util.*;
 
 public class QuestsManager implements Listener {
 
@@ -124,12 +121,8 @@ public class QuestsManager implements Listener {
             ArrayList<AbstractQuest> globalQuests = CategoriesLoader.getGlobalQuests();
 
             for (int i = 0; i < QuestsAmount.getQuestsAmount(); i++) {
-                AbstractQuest quest;
-                do {
-                    quest = getRandomQuest(globalQuests);
-                } while (quests.containsKey(quest));
-
-                Progression progression = new Progression(0, false);
+                final AbstractQuest quest = getRandomQuestForPlayer(quests.keySet(), globalQuests);
+                final Progression progression = new Progression(0, false);
                 quests.put(quest, progression);
             }
         } else if (Modes.getQuestsMode() == 2) {
@@ -139,32 +132,20 @@ public class QuestsManager implements Listener {
             final ArrayList<AbstractQuest> hardQuests = CategoriesLoader.getHardQuests();
 
             for (int i = 0; i < QuestsAmount.getEasyQuestsAmount(); i++) {
-                AbstractQuest quest;
-                do {
-                    quest = getRandomQuest(easyQuests);
-                } while (quests.containsKey(quest));
-
-                Progression progression = new Progression(0, false);
+                final AbstractQuest quest = getRandomQuestForPlayer(quests.keySet(), easyQuests);
+                final Progression progression = new Progression(0, false);
                 quests.put(quest, progression);
             }
 
             for (int i = 0; i < QuestsAmount.getMediumQuestsAmount(); i++) {
-                AbstractQuest quest;
-                do {
-                    quest = getRandomQuest(mediumQuests);
-                } while (quests.containsKey(quest));
-
-                Progression progression = new Progression(0, false);
+                final AbstractQuest quest = getRandomQuestForPlayer(quests.keySet(), mediumQuests);
+                final Progression progression = new Progression(0, false);
                 quests.put(quest, progression);
             }
 
             for (int i = 0; i < QuestsAmount.getHardQuestsAmount(); i++) {
-                AbstractQuest quest;
-                do {
-                    quest = getRandomQuest(hardQuests);
-                } while (quests.containsKey(quest));
-
-                Progression progression = new Progression(0, false);
+                final AbstractQuest quest = getRandomQuestForPlayer(quests.keySet(), hardQuests);
+                final Progression progression = new Progression(0, false);
                 quests.put(quest, progression);
             }
         } else
@@ -174,12 +155,26 @@ public class QuestsManager implements Listener {
     }
 
     /**
+     * Get a random quest that is not already in the player's quests.
+     * @param currentQuests the player's current quests
+     * @param availableQuests the available quests
+     * @return a quest
+     */
+    public static AbstractQuest getRandomQuestForPlayer(Set<AbstractQuest> currentQuests, List<AbstractQuest> availableQuests) {
+        AbstractQuest quest;
+        do {
+            quest = getRandomQuestInCategory(availableQuests);
+        } while (currentQuests.contains(quest));
+        return quest;
+    }
+
+    /**
      * Get random quest.
      *
      * @param quests array of quests
      * @return a quest.
      */
-    public static AbstractQuest getRandomQuest(ArrayList<AbstractQuest> quests) {
+    public static AbstractQuest getRandomQuestInCategory(List<AbstractQuest> quests) {
         int questNumber = new Random().nextInt(quests.size());
         return quests.get(questNumber);
     }

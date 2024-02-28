@@ -134,33 +134,36 @@ public class PlayerQuests {
      * @param index index of the quest to reroll.
      */
     public void rerollQuest(String playerName, int index) {
-        final List<AbstractQuest> oldQuests = new ArrayList<>(this.playerQuests.keySet());
-        final AbstractQuest quest = oldQuests.get(index);
 
-        final Category category = CategoriesLoader.getCategoryByName(quest.getCategoryName());
+        final List<AbstractQuest> oldQuests = new ArrayList<>(this.playerQuests.keySet());
+        final AbstractQuest questToRemove = oldQuests.get(index);
+
+        final Category category = CategoriesLoader.getCategoryByName(questToRemove.getCategoryName());
         if (category == null) {
             PluginLogger.error("An error occurred while rerolling a quest. The category is null.");
             PluginLogger.error("If the problem persists, please contact the developer.");
             return;
         }
 
-        final AbstractQuest newQuest = QuestsManager.getRandomQuest(category);
+        final Set<AbstractQuest> oldQuestsSet = this.playerQuests.keySet();
+        oldQuestsSet.remove(questToRemove);
+
+        final AbstractQuest newQuest = QuestsManager.getRandomQuestForPlayer(oldQuestsSet, category);
+
+        System.out.println("amount of quests before: " + oldQuests.size());
         final LinkedHashMap<AbstractQuest, Progression> newPlayerQuests = new LinkedHashMap<>();
-
-        /*
-         * A FORCE DE REROLL, LA QUETE REROLL FINIT PAR DISPARAITRE ET LA LIST PERD 1 EN TAILLE
-         */
-
-        for (Map.Entry<AbstractQuest, Progression> entry : this.playerQuests.entrySet()) {
-            System.out.println("quest: " + entry.getKey().getQuestName());
-            if (entry.getKey().equals(quest)) {
-                System.out.println("quest to reroll: " + entry.getKey().getQuestName());
-                newPlayerQuests.put(newQuest, new Progression(0, false));
+        for (AbstractQuest quest : oldQuests) {
+            if (quest.equals(questToRemove)) {
+                System.out.println("replacing quest " + questToRemove.getQuestName() + " with " + newQuest.getQuestName());
+                final Progression progression = new Progression(0, false);
+                newPlayerQuests.put(newQuest, progression);
             } else {
-                System.out.println("quest to keep: " + entry.getKey().getQuestName());
-                newPlayerQuests.put(entry.getKey(), entry.getValue());
+                System.out.println("keeping quest " + quest.getQuestName());
+                final Progression progression = this.playerQuests.get(quest);
+                newPlayerQuests.put(quest, progression);
             }
         }
+        System.out.println("amount of quests after: " + newPlayerQuests.size());
 
         QuestsManager.getActiveQuests().put(playerName, new PlayerQuests(timestamp, newPlayerQuests));
     }

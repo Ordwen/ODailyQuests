@@ -51,7 +51,7 @@ public class ARerollCommand extends ACommandHandler {
         if (activeQuests.containsKey(playerName)) {
             final PlayerQuests playerQuests = activeQuests.get(playerName);
             playerQuests.rerollQuest(target.getName(), index - 1);
-            sender.sendMessage("§aQuest number " + index + "rerolled for " + playerName + ".");
+            sender.sendMessage("§aQuest number " + index + " rerolled for " + playerName + ".");
             target.sendMessage("§aYour quest number " + index + " has been rerolled.");
         }
     }
