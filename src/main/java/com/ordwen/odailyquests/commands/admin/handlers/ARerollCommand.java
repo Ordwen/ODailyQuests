@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.commands.admin.handlers;
 
 import com.ordwen.odailyquests.commands.admin.ACommandHandler;
+import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import org.bukkit.Bukkit;
@@ -48,11 +49,42 @@ public class ARerollCommand extends ACommandHandler {
         final String playerName = target.getName();
         final HashMap<String, PlayerQuests> activeQuests = QuestsManager.getActiveQuests();
 
+        if (index < 1 || index > activeQuests.get(playerName).getPlayerQuests().size()) {
+            invalidQuest();
+            return;
+        }
+
         if (activeQuests.containsKey(playerName)) {
             final PlayerQuests playerQuests = activeQuests.get(playerName);
             playerQuests.rerollQuest(target.getName(), index - 1);
-            sender.sendMessage("§aQuest number " + index + " rerolled for " + playerName + ".");
-            target.sendMessage("§aYour quest number " + index + " has been rerolled.");
+            confirmationToSender(index, playerName);
+            confirmationToTarget(index, target);
         }
+    }
+
+    /**
+     * Sends the confirmation message to the sender.
+     *
+     * @param index  the index of the quest that was rerolled
+     * @param target the name of the player who had their quest rerolled
+     */
+    private void confirmationToSender(int index, String target) {
+        final String msg = QuestsMessages.QUEST_REROLLED_ADMIN.toString();
+        if (msg != null) {
+            sender.sendMessage(msg
+                    .replace("%index%", String.valueOf(index))
+                    .replace("%target%", target));
+        }
+    }
+
+    /**
+     * Sends the confirmation message to the target player.
+     *
+     * @param index  the index of the quest that was rerolled
+     * @param target the player who had their quest rerolled
+     */
+    private void confirmationToTarget(int index, Player target) {
+        final String msg = QuestsMessages.QUEST_REROLLED.toString();
+        if (msg != null) target.sendMessage(msg.replace("%index%", String.valueOf(index)));
     }
 }

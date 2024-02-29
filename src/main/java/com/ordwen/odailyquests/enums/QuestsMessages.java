@@ -12,6 +12,7 @@ public enum QuestsMessages {
     PLAYER_HELP("player_help", """
             &a&nPlayer commands:
             &e/dq me &a: see your own quests
+            &e/dq reroll <index> &a: reroll a quest (requires permission)
             &e/dq show <global/easy/medium/hard> &a: see the quests of a category
             """),
     ADMIN_HELP("admin_help", """
@@ -21,6 +22,7 @@ public enum QuestsMessages {
             &e/dqa reroll <player> <index> &a: draw a new quest for a player, at a specific index.
             &e/dqa show <player> &a: see quests of a player
             """),
+
     NO_PERMISSION("no_permission", "&cYou don't have permission."),
     NO_PERMISSION_CATEGORY("no_permission_category", "&cYou don't have permission to see this category."),
     PLAYER_ONLY("player_only", "&cOnly player can execute this command."),
@@ -43,6 +45,8 @@ public enum QuestsMessages {
     ALL_QUESTS_ACHIEVED_CONNECT("all_quests_achieved_connect", "&aYou have completed all your daily quests !"),
     QUESTS_RENEWED("quests_renewed", "&aYou have new daily quests to complete !"),
     QUESTS_RENEWED_ADMIN("quests_renewed_admin", "&eYou have reset the quests of %target%."),
+    QUEST_REROLLED("quest_rerolled", "&aYou have rerolled your quest number %index% !"),
+    QUEST_REROLLED_ADMIN("quest_rerolled_admin", "&eYou have rerolled the quest number %index% of %target%."),
     QUEST_ACHIEVED("quest_achieved", "&aYou finished the quest &e%questName%&a, well done !"),
     ALL_QUESTS_ACHIEVED("all_quests_achieved", "&aYou have finished all your daily quests, well done !"),
     EASY_QUESTS_ACHIEVED("easy_reward", "&aYou have completed all your easy quests!"),

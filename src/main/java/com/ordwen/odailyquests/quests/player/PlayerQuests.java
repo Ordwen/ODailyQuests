@@ -150,20 +150,16 @@ public class PlayerQuests {
 
         final AbstractQuest newQuest = QuestsManager.getRandomQuestForPlayer(oldQuestsSet, category);
 
-        System.out.println("amount of quests before: " + oldQuests.size());
         final LinkedHashMap<AbstractQuest, Progression> newPlayerQuests = new LinkedHashMap<>();
         for (AbstractQuest quest : oldQuests) {
             if (quest.equals(questToRemove)) {
-                System.out.println("replacing quest " + questToRemove.getQuestName() + " with " + newQuest.getQuestName());
                 final Progression progression = new Progression(0, false);
                 newPlayerQuests.put(newQuest, progression);
             } else {
-                System.out.println("keeping quest " + quest.getQuestName());
                 final Progression progression = this.playerQuests.get(quest);
                 newPlayerQuests.put(quest, progression);
             }
         }
-        System.out.println("amount of quests after: " + newPlayerQuests.size());
 
         QuestsManager.getActiveQuests().put(playerName, new PlayerQuests(timestamp, newPlayerQuests));
     }
