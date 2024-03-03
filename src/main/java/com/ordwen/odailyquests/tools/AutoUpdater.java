@@ -121,6 +121,6 @@ public class AutoUpdater {
         }
 
         // update the config version
-        configFile.set("version", currentVersion + "SNAPSHOT");
+        configFile.set("version", currentVersion);
     }
 }
