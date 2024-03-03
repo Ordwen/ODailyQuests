@@ -213,6 +213,9 @@ interfaces:
 # You must put here the name of the world (in theory the name of its directory).
 # If you don't want to disable worlds, just put a single line with no name (- "").
 # In addition, you can disable some worlds for each quest. Please refer to the Wiki.
+#
+# You can also use prefixes/suffixes to disable multiple worlds at once with the "?" character.
+# For example, "?_survival" will disable all worlds ending with "_survival".
 disabled_worlds:
   - "world_nether"
   - "world_the_end"

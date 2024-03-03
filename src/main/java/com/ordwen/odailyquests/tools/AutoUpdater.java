@@ -114,7 +114,7 @@ public class AutoUpdater {
             // PLAYER INTERFACE
 
             if (!playerInterfaceFile.contains("player_interface.disable_status")) {
-                AddDefault.addDefaultConfigItem("disable_status", false, playerInterfaceFile, playerInterface);
+                AddDefault.addDefaultConfigItem("player_interface.disable_status", false, playerInterfaceFile, playerInterface);
             }
 
             PluginLogger.fine("All files have been updated!");
