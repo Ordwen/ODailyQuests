@@ -122,5 +122,11 @@ public class AutoUpdater {
 
         // update the config version
         configFile.set("version", currentVersion);
+
+        try {
+            configFile.save(file);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
