@@ -18,15 +18,14 @@ public class AdminCompleter implements TabCompleter {
         final String convert = "convert";
 
         if (args.length <= 1) {
-            List<String> allCompletions = new ArrayList<>(Arrays.asList("reload", "reset", "show", "complete", "help", "holo", convert));
+            List<String> allCompletions = new ArrayList<>(Arrays.asList("reload", "reset", "reroll", "add", "show", "complete", "help", "holo", convert));
             List<String> completions = new ArrayList<>();
 
             StringUtil.copyPartialMatches(args[0], allCompletions, completions);
             Collections.sort(completions);
 
             return completions;
-        }
-        else if (args.length == 2 ) {
+        } else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("holo")) {
                 List<String> allCompletions = new ArrayList<>(Arrays.asList("create", "delete"));
                 List<String> completions = new ArrayList<>();
@@ -34,16 +33,21 @@ public class AdminCompleter implements TabCompleter {
                 StringUtil.copyPartialMatches(args[1], allCompletions, completions);
                 Collections.sort(completions);
                 return completions;
-            }
-            else if (args[0].equalsIgnoreCase("reset")) {
+            } else if (args[0].equalsIgnoreCase("reset")) {
                 List<String> allCompletions = new ArrayList<>(Arrays.asList("quests", "total"));
                 List<String> completions = new ArrayList<>();
 
                 StringUtil.copyPartialMatches(args[1], allCompletions, completions);
                 Collections.sort(completions);
                 return completions;
-            }
-            else if (args[0].equalsIgnoreCase(convert)) {
+            } else if (args[0].equalsIgnoreCase("add")) {
+                List<String> allCompletions = new ArrayList<>(List.of("total"));
+                List<String> completions = new ArrayList<>();
+
+                StringUtil.copyPartialMatches(args[1], allCompletions, completions);
+                Collections.sort(completions);
+                return completions;
+            } else if (args[0].equalsIgnoreCase(convert)) {
                 List<String> allCompletions = new ArrayList<>(List.of("yaml"));
                 List<String> completions = new ArrayList<>();
 
@@ -51,16 +55,14 @@ public class AdminCompleter implements TabCompleter {
                 Collections.sort(completions);
                 return completions;
             }
-        }
-        else if (args.length == 3 && args[0].equalsIgnoreCase("holo") && args[1].equalsIgnoreCase("create")) {
+        } else if (args.length == 3 && args[0].equalsIgnoreCase("holo") && args[1].equalsIgnoreCase("create")) {
             List<String> allCompletions = new ArrayList<>(Arrays.asList("global", "easy", "medium", "hard"));
             List<String> completions = new ArrayList<>();
 
             StringUtil.copyPartialMatches(args[2], allCompletions, completions);
             Collections.sort(completions);
             return completions;
-        }
-        else if (args.length == 3 && args[0].equalsIgnoreCase(convert)) {
+        } else if (args.length == 3 && args[0].equalsIgnoreCase(convert)) {
             List<String> allCompletions = new ArrayList<>(Arrays.asList("mysql", "h2"));
             List<String> completions = new ArrayList<>();
 

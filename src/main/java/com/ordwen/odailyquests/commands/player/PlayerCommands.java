@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.commands.player;
 
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
+import com.ordwen.odailyquests.commands.player.handlers.PRerollCommand;
 import com.ordwen.odailyquests.commands.player.handlers.ShowCommand;
 import com.ordwen.odailyquests.enums.QuestsPermissions;
 import org.bukkit.ChatColor;
@@ -28,6 +29,7 @@ public class PlayerCommands extends PlayerMessages implements CommandExecutor {
         if (args.length >= 1) {
             switch (args[0]) {
                 case "show" -> new ShowCommand(player, args).handle();
+                case "reroll" -> new PRerollCommand(player, args).handle();
                 case "me" -> openInventory(player);
                 default -> help(player);
             }
