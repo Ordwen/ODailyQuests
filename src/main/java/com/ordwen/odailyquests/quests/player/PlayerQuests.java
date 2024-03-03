@@ -97,6 +97,14 @@ public class PlayerQuests {
     }
 
     /**
+     * Add number of achieved quests.
+     * @param i number of achieved quests to add.
+     */
+    public void addTotalAchievedQuests(int i) {
+        this.totalAchievedQuests += i;
+    }
+
+    /**
      * Get number of achieved quests.
      */
     public int getAchievedQuests() {
@@ -133,7 +141,7 @@ public class PlayerQuests {
      *
      * @param index index of the quest to reroll.
      */
-    public void rerollQuest(String playerName, int index) {
+    public void rerollQuest(int index) {
 
         final List<AbstractQuest> oldQuests = new ArrayList<>(this.playerQuests.keySet());
         final AbstractQuest questToRemove = oldQuests.get(index);
@@ -161,6 +169,7 @@ public class PlayerQuests {
             }
         }
 
-        QuestsManager.getActiveQuests().put(playerName, new PlayerQuests(timestamp, newPlayerQuests));
+        this.playerQuests.clear();
+        this.playerQuests.putAll(newPlayerQuests);
     }
 }

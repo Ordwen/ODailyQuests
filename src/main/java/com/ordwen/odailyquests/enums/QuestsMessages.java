@@ -19,6 +19,7 @@ public enum QuestsMessages {
             &c&nAdmin commands:
             &e/dqa complete <player> <index> &a: complete a player quest
             &e/dqa reset <quests/total> <player> &a: draw new quests for a player, or reset his total number of achieved quests.
+            &e/dqa add total <player> <amount> &a: add a number of achieved quests to a player.
             &e/dqa reroll <player> <index> &a: draw a new quest for a player, at a specific index.
             &e/dqa show <player> &a: see quests of a player
             """),
@@ -30,6 +31,7 @@ public enum QuestsMessages {
     INVALID_PLAYER("invalid_player", "&cThis player doesn't exist, or is offline."),
     INVALID_QUEST_ID("invalid_quest_id", "&cYou must specify a valid quest ID."),
     INVALID_QUEST_INDEX("invalid_quest_index", "&cThe specified index is invalid."),
+    INVALID_AMOUNT("invalid_amount", "&cThe specified amount is invalid."),
 
     CATEGORIZED_ENABLED("categorized_enabled", "&cCategorized quests are enabled, the global menu is not available."),
     CATEGORIZED_DISABLED("categorized_disabled", "&cCategorized quests are disabled, only the global menu is available."),
@@ -47,6 +49,8 @@ public enum QuestsMessages {
     QUESTS_RENEWED_ADMIN("quests_renewed_admin", "&eYou have reset the quests of %target%."),
     QUEST_REROLLED("quest_rerolled", "&aYou have rerolled your quest number %index% !"),
     QUEST_REROLLED_ADMIN("quest_rerolled_admin", "&eYou have rerolled the quest number %index% of %target%."),
+    ADD_TOTAL_ADMIN("add_total_admin", "&eYou have added %amount% to %target%'s total number of completed quests."),
+    ADD_TOTAL_TARGET("add_total_target", "&eAn admin has added %amount% to your total number of completed quests."),
     QUEST_ACHIEVED("quest_achieved", "&aYou finished the quest &e%questName%&a, well done !"),
     ALL_QUESTS_ACHIEVED("all_quests_achieved", "&aYou have finished all your daily quests, well done !"),
     EASY_QUESTS_ACHIEVED("easy_reward", "&aYou have completed all your easy quests!"),

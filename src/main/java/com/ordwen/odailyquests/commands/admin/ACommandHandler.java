@@ -43,6 +43,14 @@ public abstract class ACommandHandler {
     }
 
     /**
+     * Sends the invalid amount message to the sender.
+     */
+    protected void invalidAmount() {
+        final String msg = QuestsMessages.INVALID_AMOUNT.toString();
+        if (msg != null) sender.sendMessage(msg);
+    }
+
+    /**
      * Sends the player only message to the sender.
      */
     protected void playerOnly() {
