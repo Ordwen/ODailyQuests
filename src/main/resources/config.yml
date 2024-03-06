@@ -1,4 +1,4 @@
-# if the plugin doesn't work as exepected, set debug to true and send the log file to the developer.
+# if the plugin doesn't work as expected, set debug to true and send the log file to the developer.
 debug: false
 
 # never touch this line
