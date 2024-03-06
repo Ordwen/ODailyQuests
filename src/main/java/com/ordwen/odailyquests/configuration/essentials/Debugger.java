@@ -19,7 +19,7 @@ public class Debugger {
     }
 
     public void loadDebugMode() {
-        debugMode = oDailyQuests.getConfigurationFiles().getConfigFile().getBoolean("debug_mode");
+        debugMode = oDailyQuests.getConfigurationFiles().getConfigFile().getBoolean("debug");
         if (debugMode) {
             loadDebugFile();
             PluginLogger.warn("Debug mode is enabled. This may cause performance issues.");
