@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.events.listeners.item;
 
 import com.ordwen.odailyquests.configuration.essentials.Antiglitch;
+import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.integrations.ItemsAdderEnabled;
 import com.ordwen.odailyquests.enums.QuestType;
 import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractItemChecker;
@@ -57,6 +58,10 @@ public class BlockBreakListener extends AbstractItemChecker implements Listener 
         };
 
         if (valid.get()) {
+
+            Debugger.addDebug("=========================================================================================");
+            Debugger.addDebug("BlockBreakListener: onBlockBreakEvent summoned by " + player.getName() + " for " + block.getType() + ".");
+
             setPlayerQuestProgression(player, new ItemStack(material), 1, QuestType.BREAK);
         }
     }

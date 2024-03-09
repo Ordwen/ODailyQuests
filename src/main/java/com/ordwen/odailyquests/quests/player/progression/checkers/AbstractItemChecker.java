@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.quests.player.progression.checkers;
 
+import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.essentials.Synchronization;
 import com.ordwen.odailyquests.configuration.functionalities.DisabledWorlds;
 import com.ordwen.odailyquests.quests.types.GlobalQuest;
@@ -31,6 +32,8 @@ public abstract class AbstractItemChecker {
      */
     public void setPlayerQuestProgression(Player player, ItemStack itemStack, int amount, QuestType questType) {
 
+        Debugger.addDebug("ItemChecker: setPlayerQuestProgression summoned by " + player.getName() + " for " + itemStack.getType() + " with amount " + amount + " and quest type " + questType + ".");
+
         if (DisabledWorlds.isWorldDisabled(player.getWorld().getName())) {
             return;
         }
@@ -39,16 +42,22 @@ public abstract class AbstractItemChecker {
 
             final HashMap<AbstractQuest, Progression> playerQuests = QuestsManager.getActiveQuests().get(player.getName()).getPlayerQuests();
 
+            Debugger.addDebug("ItemChecker: player " + player.getName() + "currently have " + playerQuests.size() + " quests in progress");
+
             for (AbstractQuest abstractQuest : playerQuests.keySet()) {
 
                 final Progression progression = playerQuests.get(abstractQuest);
                 if (!progression.isAchieved() && abstractQuest.getQuestType() == questType) {
+
+                    Debugger.addDebug("ItemChecker: player " + player.getName() + " is currently progressing on " + abstractQuest.getQuestType() + " quest " + abstractQuest.getQuestName());
 
                     boolean isRequiredItem = false;
 
                     if (abstractQuest instanceof GlobalQuest) {
                         isRequiredItem = true;
                     } else if (abstractQuest instanceof ItemQuest quest) {
+
+                        Debugger.addDebug("ItemChecker: quest " + abstractQuest.getQuestName() + " is an ItemQuest");
 
                         if (quest.getRequiredItems() == null) isRequiredItem = true;
                         else {
@@ -72,6 +81,9 @@ public abstract class AbstractItemChecker {
                     }
 
                     if (isRequiredItem) {
+
+                        Debugger.addDebug("ItemChecker: item " + itemStack.getType() + " is a required item for quest " + abstractQuest.getQuestName());
+
                         QuestProgressUtils.actionQuest(player, progression, abstractQuest, amount);
                         if (!Synchronization.isSynchronised()) break;
                     }

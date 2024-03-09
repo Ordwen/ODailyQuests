@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.events.listeners.entity;
 
+import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.integrations.WildStackerEnabled;
 import com.ordwen.odailyquests.events.antiglitch.EntitySource;
 import com.ordwen.odailyquests.enums.QuestType;
@@ -7,7 +8,6 @@ import com.ordwen.odailyquests.externs.hooks.mobs.MythicMobsHook;
 import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractEntityChecker;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.core.mobs.ActiveMob;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -30,6 +30,9 @@ public class EntityDeathListener extends AbstractEntityChecker implements Listen
         if (WildStackerEnabled.isEnabled()) return;
         if (entity.getKiller() == null) return;
         if (isEntityFromSpawner) return;
+
+        Debugger.addDebug("=========================================================================================");
+        Debugger.addDebug("EntityDeathListener: onEntityDeathEvent summoned by " + entity.getKiller().getName() + " for " + entity.getType() + ".");
 
         setPlayerQuestProgression(entity.getKiller(), event.getEntityType(), null, 1, QuestType.KILL, null);
     }

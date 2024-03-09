@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.events.listeners.item;
 
+import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.enums.QuestType;
 import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractItemChecker;
 import org.bukkit.Material;
@@ -78,6 +79,12 @@ public class PlayerHarvestBlockListener extends AbstractItemChecker implements L
             }
         }
 
-        if (amount > 0) setPlayerQuestProgression(player, new ItemStack(material), amount, QuestType.FARMING);
+        if (amount > 0) {
+
+            Debugger.addDebug("=========================================================================================");
+            Debugger.addDebug("PlayerHarvestBlockListener: makeProgress: " + player.getName() + " harvested " + amount + " " + material + ".");
+
+            setPlayerQuestProgression(player, new ItemStack(material), amount, QuestType.FARMING);
+        }
     }
 }

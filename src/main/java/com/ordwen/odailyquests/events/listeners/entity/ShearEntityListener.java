@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.events.listeners.entity;
 
+import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.enums.QuestType;
 import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractEntityChecker;
 import org.bukkit.entity.Entity;
@@ -13,6 +14,9 @@ public class ShearEntityListener extends AbstractEntityChecker implements Listen
     @EventHandler
     public void onShearEntityEvent(PlayerShearEntityEvent event) {
         if (event.isCancelled()) return;
+
+        Debugger.addDebug("=========================================================================================");
+        Debugger.addDebug("ShearEntityListener: onShearEntityEvent summoned by " + event.getPlayer().getName() + " for " + event.getEntity().getType() + ".");
 
         final Entity entity = event.getEntity();
         if (entity instanceof Sheep sheep) {

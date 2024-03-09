@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.quests.player.progression.checkers;
 
+import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.essentials.Synchronization;
 import com.ordwen.odailyquests.configuration.functionalities.DisabledWorlds;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
@@ -27,6 +28,8 @@ public abstract class AbstractEntityChecker {
      */
     public void setPlayerQuestProgression(Player player, EntityType entityType, String entityName, int amount, QuestType questType, DyeColor dyeColor) {
 
+        Debugger.addDebug("EntityChecker: setPlayerQuestProgression summoned by " + player.getName() + " for " + entityType + " with amount " + amount + " and quest type " + questType + ".");
+
         if (DisabledWorlds.isWorldDisabled(player.getWorld().getName())) {
             return;
         }
@@ -35,14 +38,20 @@ public abstract class AbstractEntityChecker {
 
             final HashMap<AbstractQuest, Progression> playerQuests = QuestsManager.getActiveQuests().get(player.getName()).getPlayerQuests();
 
+            Debugger.addDebug("EntityChecker: player " + player.getName() + "currently have " + playerQuests.size() + " quests in progress");
+
             for (AbstractQuest abstractQuest : playerQuests.keySet()) {
 
                 final Progression progression = playerQuests.get(abstractQuest);
                 if (!progression.isAchieved() && abstractQuest.getQuestType() == questType) {
 
+                    Debugger.addDebug("EntityChecker: player " + player.getName() + " is currently progressing on " + abstractQuest.getQuestType() + " quest " + abstractQuest.getQuestName());
+
                     boolean isRequiredEntity = false;
 
                     if (abstractQuest instanceof EntityQuest quest) {
+
+                        Debugger.addDebug("EntityChecker: quest " + abstractQuest.getQuestName() + " is an EntityQuest");
 
                         if (quest.getEntityTypes() == null) isRequiredEntity = true;
                         else {
@@ -66,6 +75,9 @@ public abstract class AbstractEntityChecker {
                     }
 
                     if (isRequiredEntity) {
+
+                        Debugger.addDebug("EntityChecker: player " + player.getName() + " is progressing on " + abstractQuest.getQuestName() + " with amount " + amount);
+
                         QuestProgressUtils.actionQuest(player, progression, abstractQuest, amount);
                         if (!Synchronization.isSynchronised()) break;
                     }

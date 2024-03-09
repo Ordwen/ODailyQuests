@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.events.listeners.entity;
 
+import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.enums.QuestType;
 import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractEntityChecker;
 import org.bukkit.entity.Entity;
@@ -26,6 +27,9 @@ public class ProjectileHitListener extends AbstractEntityChecker implements List
         // check if player is reflecting fireball
         if (event.getEntityType() == EntityType.FIREBALL) {
             if (entity instanceof Ghast) {
+                Debugger.addDebug("=========================================================================================");
+                Debugger.addDebug("ProjectileHitListener: onProjectileHit summoned by " + player.getName() + " for " + entity.getType() + ".");
+
                 setPlayerQuestProgression(player, EntityType.GHAST, null, 1, QuestType.KILL, null);
             }
         }

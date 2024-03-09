@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.events.listeners.global;
 
+import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.enums.QuestType;
 import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractGlobalChecker;
 import org.bukkit.Material;
@@ -16,6 +17,9 @@ public class PlayerInteractListener extends AbstractGlobalChecker implements Lis
         if (!(event.getAction() == Action.RIGHT_CLICK_BLOCK)) return;
         if (!(event.getClickedBlock().getType() == Material.PUMPKIN)) return;
         if (!(event.getPlayer().getInventory().getItemInMainHand().getType() == Material.SHEARS)) return;
+
+        Debugger.addDebug("=========================================================================================");
+        Debugger.addDebug("PlayerInteractListener: onPlayerInteract summoned by " + event.getPlayer().getName());
 
         setPlayerQuestProgression(event.getPlayer(), 1, QuestType.CARVE);
     }

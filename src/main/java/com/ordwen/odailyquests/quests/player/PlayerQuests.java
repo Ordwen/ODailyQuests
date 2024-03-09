@@ -2,6 +2,7 @@ package com.ordwen.odailyquests.quests.player;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.api.events.AllCategoryQuestsCompletedEvent;
+import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
 import com.ordwen.odailyquests.api.events.AllQuestsCompletedEvent;
@@ -50,6 +51,9 @@ public class PlayerQuests {
      * @param player player who achieved a quest.
      */
     public void increaseAchievedQuests(String category, Player player) {
+
+        Debugger.addDebug("PlayerQuests: increaseAchievedQuests summoned by " + player.getName() + " for category " + category + ".");
+
         this.achievedQuests++;
         this.totalAchievedQuests++;
 
@@ -73,6 +77,8 @@ public class PlayerQuests {
 
         /* check if the player have completed all quests */
         if (this.achievedQuests == QuestsAmount.getQuestsAmount()) {
+            Debugger.addDebug("PlayerQuests: AllQuestsCompletedEvent is called.");
+
             final AllQuestsCompletedEvent event = new AllQuestsCompletedEvent(player);
             ODailyQuests.INSTANCE.getServer().getPluginManager().callEvent(event);
         }

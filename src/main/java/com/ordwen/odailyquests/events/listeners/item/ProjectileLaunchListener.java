@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.events.listeners.item;
 
+import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.enums.QuestType;
 import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractItemChecker;
 import org.bukkit.Material;
@@ -16,6 +17,10 @@ public class ProjectileLaunchListener extends AbstractItemChecker implements Lis
         if (event.isCancelled()) return;
 
         if (event.getEntity().getShooter() instanceof Player player) {
+
+            Debugger.addDebug("=========================================================================================");
+            Debugger.addDebug("ProjectileLaunchListener: onProjectileLaunch summoned by " + player.getName() + " for " + event.getEntity().getType() + ".");
+
             switch (event.getEntity().getType()) {
                 case ENDER_PEARL -> setPlayerQuestProgression(player, new ItemStack(Material.ENDER_PEARL), 1, QuestType.LAUNCH);
                 case EGG -> setPlayerQuestProgression(player, new ItemStack(Material.EGG), 1, QuestType.LAUNCH);

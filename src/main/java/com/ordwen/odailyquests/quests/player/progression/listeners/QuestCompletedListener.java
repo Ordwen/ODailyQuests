@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.quests.player.progression.listeners;
 
+import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.externs.hooks.placeholders.PAPIHook;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.api.events.QuestCompletedEvent;
@@ -14,6 +15,8 @@ public class QuestCompletedListener implements Listener {
         final var player = event.getPlayer();
         final var progression = event.getProgression();
         final var quest = event.getAbstractQuest();
+
+        Debugger.addDebug("QuestCompletedListener: QuestCompletedEvent summoned by " + player.getName() + " for " + quest.getQuestName() + ".");
 
         progression.setAchieved();
         RewardManager.sendAllRewardItems(PAPIHook.getPlaceholders(player, quest.getQuestName()), player, quest.getReward());

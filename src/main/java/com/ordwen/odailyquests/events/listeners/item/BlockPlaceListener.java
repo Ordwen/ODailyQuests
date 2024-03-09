@@ -2,6 +2,7 @@ package com.ordwen.odailyquests.events.listeners.item;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.Antiglitch;
+import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.enums.QuestType;
 import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractItemChecker;
 import org.bukkit.block.Block;
@@ -40,7 +41,12 @@ public class BlockPlaceListener extends AbstractItemChecker implements Listener 
             }
         }
 
-        if (valid) setPlayerQuestProgression(player, new ItemStack(block.getType()), 1, QuestType.PLACE);
+        if (valid) {
+            Debugger.addDebug("=========================================================================================");
+            Debugger.addDebug("BlockPlaceListener: onBlockPlaceEvent summoned by " + player.getName() + " for " + block.getType() + ".");
+
+            setPlayerQuestProgression(player, new ItemStack(block.getType()), 1, QuestType.PLACE);
+        }
 
         if (Antiglitch.isStorePlacedBlocks()) {
             block.setMetadata("odailyquests:placed", new FixedMetadataValue(ODailyQuests.INSTANCE, player.getUniqueId().toString()));
