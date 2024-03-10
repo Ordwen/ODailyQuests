@@ -220,7 +220,9 @@ public class QuestsLoader extends QuestItemGetter {
             menuItem.setItemMeta(meta);
         }
 
-        return new ItemQuest(base, requiredItems);
+        final boolean ignoreNbt = questSection.getBoolean(".ignore_nbt");
+
+        return new ItemQuest(base, requiredItems, ignoreNbt);
     }
 
     /**

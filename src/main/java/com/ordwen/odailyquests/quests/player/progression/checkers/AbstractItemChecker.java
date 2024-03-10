@@ -63,6 +63,11 @@ public abstract class AbstractItemChecker {
                         else {
                             for (ItemStack item : quest.getRequiredItems()) {
 
+                                if (quest.isIgnoreNbt() && item.getType() == itemStack.getType()) {
+                                    isRequiredItem = true;
+                                    break;
+                                }
+
                                 if (item.hasItemMeta() && item.getItemMeta().hasCustomModelData()) {
                                     if (itemStack.hasItemMeta() && itemStack.getItemMeta().hasCustomModelData()) {
                                         if (itemStack.getType() == item.getType() && itemStack.getItemMeta().getCustomModelData() == item.getItemMeta().getCustomModelData()) {
@@ -102,10 +107,8 @@ public abstract class AbstractItemChecker {
         int result = 0;
 
         for (ItemStack is : contents)
-            if (is == null)
-                result += stack.getMaxStackSize();
-            else if (is.isSimilar(stack))
-                result += Math.max(stack.getMaxStackSize() - is.getAmount(), 0);
+            if (is == null) result += stack.getMaxStackSize();
+            else if (is.isSimilar(stack)) result += Math.max(stack.getMaxStackSize() - is.getAmount(), 0);
 
         return result;
     }
@@ -117,15 +120,13 @@ public abstract class AbstractItemChecker {
      * @return the maximum.
      */
     protected int getMaxCraftAmount(CraftingInventory inv) {
-        if (inv.getResult() == null)
-            return 0;
+        if (inv.getResult() == null) return 0;
 
         int resultCount = inv.getResult().getAmount();
         int materialCount = Integer.MAX_VALUE;
 
         for (ItemStack is : inv.getMatrix())
-            if (is != null && is.getAmount() < materialCount)
-                materialCount = is.getAmount();
+            if (is != null && is.getAmount() < materialCount) materialCount = is.getAmount();
 
         return resultCount * materialCount;
     }
@@ -137,15 +138,13 @@ public abstract class AbstractItemChecker {
      * @return the maximum.
      */
     protected int getMaxSmithAmount(SmithingInventory inv) {
-        if (inv.getResult() == null)
-            return 0;
+        if (inv.getResult() == null) return 0;
 
         int resultCount = inv.getResult().getAmount();
         int materialCount = Integer.MAX_VALUE;
 
         for (ItemStack is : inv.getContents())
-            if (is != null && is.getAmount() < materialCount)
-                materialCount = is.getAmount();
+            if (is != null && is.getAmount() < materialCount) materialCount = is.getAmount();
 
         return resultCount * materialCount;
     }

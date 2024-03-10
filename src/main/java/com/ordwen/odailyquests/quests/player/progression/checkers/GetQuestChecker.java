@@ -20,12 +20,13 @@ public class GetQuestChecker {
      * @param quest       quest to validate.
      */
     public static void makeQuestProgress(Player player, Progression progression, ItemQuest quest) {
+        final boolean ignoreNbt = quest.isIgnoreNbt();
         boolean hasRequiredAmount = false;
         int amount = 0;
 
         for (ItemStack item : quest.getRequiredItems()) {
             /* TEMPORARY FIX TO DUPE EXPLOIT */
-            int result = getAmount(player.getInventory(), item);
+            int result = getAmount(player.getInventory(), item, ignoreNbt);
             if (result == -1) {
                 final String msg = QuestsMessages.CANNOT_COMPLETE_QUEST_WITH_OFF_HAND.getMessage(player);
                 if (msg != null) player.sendMessage(msg);
@@ -49,11 +50,12 @@ public class GetQuestChecker {
 
                     final ItemStack toRemove = item.clone();
 
-                    int current = getAmount(player.getInventory(), item);
+                    int current = getAmount(player.getInventory(), item, ignoreNbt);
                     int removeAmount = Math.min(current, quest.getAmountRequired() - totalRemoved);
 
                     toRemove.setAmount(removeAmount);
-                    player.getInventory().removeItem(toRemove);
+                    if (!ignoreNbt) player.getInventory().removeItem(toRemove);
+                    else removeItem(player.getInventory(), toRemove, removeAmount);
 
                     totalRemoved += current;
                 }
@@ -70,16 +72,47 @@ public class GetQuestChecker {
     }
 
     /**
+     * Remove item from player inventory by checking its type and amount, but ignoring NBT.
+     *
+     * @param inventory    player inventory to remove item from.
+     * @param toRemove     item to remove.
+     * @param removeAmount amount to remove.
+     */
+    private static void removeItem(PlayerInventory inventory, ItemStack toRemove, int removeAmount) {
+        for (int i = 0; i < inventory.getSize(); i++) {
+            ItemStack item = inventory.getItem(i);
+            if (item == null) continue;
+
+            if (item.getType() == toRemove.getType()) {
+                if (item.getAmount() > removeAmount) {
+                    item.setAmount(item.getAmount() - removeAmount);
+                    break;
+                } else {
+                    removeAmount -= item.getAmount();
+                    inventory.setItem(i, null);
+                }
+            }
+        }
+    }
+
+    /**
      * Count amount of an item in player inventory.
      *
      * @param playerInventory player inventory to check.
      * @param item            material to check.
      * @return amount of material.
      */
-    private static int getAmount(PlayerInventory playerInventory, ItemStack item) {
+    private static int getAmount(PlayerInventory playerInventory, ItemStack item, boolean ignoreNbt) {
         int amount = 0;
         for (ItemStack itemStack : playerInventory.getContents()) {
-            if (itemStack != null && itemStack.isSimilar(item)) {
+            if (itemStack == null) continue;
+
+            if (ignoreNbt && item.getType() == itemStack.getType()) {
+                amount += itemStack.getAmount();
+                continue;
+            }
+
+            if (itemStack.isSimilar(item)) {
 
                 // check if item have CustomModelData
                 if (item.hasItemMeta() && item.getItemMeta().hasCustomModelData()) {
@@ -106,6 +139,7 @@ public class GetQuestChecker {
                 }
             }
         }
+
         return amount;
     }
 }
