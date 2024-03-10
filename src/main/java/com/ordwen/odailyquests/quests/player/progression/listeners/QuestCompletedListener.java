@@ -18,6 +18,9 @@ public class QuestCompletedListener implements Listener {
 
         Debugger.addDebug("QuestCompletedListener: QuestCompletedEvent summoned by " + player.getName() + " for " + quest.getQuestName() + ".");
 
+        /* prevention of excess progressions when mobs are killed with the sweeping edge enchantment */
+        if (progression.isAchieved()) return;
+
         progression.setAchieved();
         RewardManager.sendAllRewardItems(PAPIHook.getPlaceholders(player, quest.getQuestName()), player, quest.getReward());
         QuestsManager.getActiveQuests().get(player.getName()).increaseAchievedQuests(quest.getCategoryName(), player);
