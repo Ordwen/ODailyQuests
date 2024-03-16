@@ -2,6 +2,8 @@ package com.ordwen.odailyquests.commands.admin;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
+import com.ordwen.odailyquests.configuration.integrations.ItemsAdderEnabled;
+import com.ordwen.odailyquests.configuration.integrations.OraxenEnabled;
 import com.ordwen.odailyquests.externs.hooks.holograms.HologramsManager;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
@@ -52,19 +54,23 @@ public class ReloadService {
 
     /**
      * Load quests for a specific player.
+     *
      * @param player player to load quests for.
      */
     private void loadQuestsForPlayer(Player player) {
         switch (Modes.getStorageMode()) {
             case "YAML" -> {
                 if (yamlManager == null) restartNeeded();
-                else yamlManager.getLoadProgressionYAML().loadPlayerQuests(player.getName(), QuestsManager.getActiveQuests());
+                else
+                    yamlManager.getLoadProgressionYAML().loadPlayerQuests(player.getName(), QuestsManager.getActiveQuests());
             }
             case "MySQL", "H2" -> {
                 if (sqlManager == null) restartNeeded();
-                else sqlManager.getLoadProgressionSQL().loadProgression(player.getName(), QuestsManager.getActiveQuests());
+                else
+                    sqlManager.getLoadProgressionSQL().loadProgression(player.getName(), QuestsManager.getActiveQuests());
             }
-            default -> PluginLogger.error("Impossible to load player quests : the selected storage mode is incorrect !");
+            default ->
+                    PluginLogger.error("Impossible to load player quests : the selected storage mode is incorrect !");
         }
     }
 
@@ -94,7 +100,8 @@ public class ReloadService {
                     }
                 }
             }
-            default -> PluginLogger.error("Impossible to save player quests : the selected storage mode is incorrect !");
+            default ->
+                    PluginLogger.error("Impossible to save player quests : the selected storage mode is incorrect !");
         }
 
         for (String player : playersToRemove) {
@@ -115,8 +122,11 @@ public class ReloadService {
         oDailyQuests.getConfigurationManager().loadConfiguration();
 
         /* Load quests & interface */
-        categoriesLoader.loadCategories();
-        oDailyQuests.getInterfacesManager().initAllObjects();
+        if ((!ItemsAdderEnabled.isEnabled() || ItemsAdderEnabled.isLoaded())
+                && (!OraxenEnabled.isEnabled() || OraxenEnabled.isLoaded())) {
+            categoriesLoader.loadCategories();
+            oDailyQuests.getInterfacesManager().initAllObjects();
+        }
 
         saveConnectedPlayerQuests(true);
         Bukkit.getScheduler().runTaskLater(oDailyQuests, this::loadConnectedPlayerQuests, 20L);
