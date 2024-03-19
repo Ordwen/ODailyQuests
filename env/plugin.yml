@@ -1,8 +1,6 @@
-name: "ODailyQuests"
 version: '${version}'
 main: com.ordwen.odailyquests.ODailyQuests
 api-version: 1.16
-prefix: "O'DailyQuests"
 authors: [ Ordwen ]
 description: Add more objectives and dynamize your server !
 website: https://www.spigotmc.org/resources/odailyquests-daily-quests-plugin-1-16-1-18.100990/
@@ -10,24 +8,3 @@ softdepend: [Vault, TokenManager, Citizens, PlaceholderAPI, PlayerPoints, Mythic
 libraries:
   - com.zaxxer:HikariCP:5.0.1
   - com.h2database:h2:2.1.214
-commands:
-  dquests:
-    description: default player command
-    aliases:
-      - dailyquests
-      - dq
-      - quests
-  dqadmin:
-    description: admin command
-    aliases:
-      - dailyquestsadmin
-      - dquestsadmin
-      - dqa
-      - qadmin
-
-
-
-
-
-
-

@@ -1,0 +1,15 @@
+name: "OWeeklyQuests"
+prefix: "O'WeeklyQuests"
+commands:
+  wquests:
+    description: default player command
+    aliases:
+      - weeklyquests
+      - wq
+  wqadmin:
+    description: admin command
+    aliases:
+      - weeklyquestsadmin
+      - wquestsadmin
+      - wqa
+      - wqadmin

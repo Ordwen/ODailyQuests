@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'com.ordwen'
-version = '2.2.5'
+version = '2.2.6-MULTIPLE-TEST'
 
 repositories {
     mavenCentral()
@@ -116,6 +116,39 @@ tasks.withType(JavaCompile).configureEach {
     if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
         options.release = targetJavaVersion
     }
+}
+
+tasks.register('replacePluginYmlDaily', Copy) {
+    from 'env/plugin.yml.daily'
+    into 'src/main/resources'
+    rename { 'plugin.yml' }
+}
+
+tasks.register('replacePluginYmlWeekly', Copy) {
+    from 'env/plugin.yml.weekly'
+    into 'src/main/resources'
+    rename { 'plugin.yml' }
+}
+
+tasks.register('replacePluginYmlMonthly', Copy) {
+    from 'env/plugin.yml.monthly'
+    into 'src/main/resources'
+    rename { 'plugin.yml' }
+}
+
+tasks.register('buildODailyQuests', Jar) {
+    dependsOn('replacePluginYmlDaily')
+    dependsOn('jar')
+}
+
+tasks.register('buildOWeeklyQuests', Jar) {
+}
+
+tasks.register('buildOMonthlyQuests', Jar) {
+}
+
+tasks.register('buildAll', Jar) {
+    dependsOn('buildODailyQuests', 'buildOWeeklyQuests', 'buildOMonthlyQuests')
 }
 
 processResources {

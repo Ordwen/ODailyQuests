@@ -1,0 +1,15 @@
+name: "OMonthlyQuests"
+prefix: "O'MonthlyQuests"
+commands:
+  mquests:
+    description: default player command
+    aliases:
+      - monthlyquests
+      - mq
+  mqadmin:
+    description: admin command
+    aliases:
+      - monthlyquestsadmin
+      - mquestsadmin
+      - mqa
+      - mqadmin
