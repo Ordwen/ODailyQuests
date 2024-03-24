@@ -38,7 +38,19 @@ public class ProgressionMessage {
      */
     public void loadProgressionMessage() {
         isEnabled = configurationFiles.getConfigFile().getBoolean("progression_message.enabled");
+
+        if (!isEnabled) {
+            PluginLogger.info("Progression message is disabled.");
+            return;
+        }
+
         message = configurationFiles.getConfigFile().getString("progression_message.text");
+
+        if (message == null) {
+            PluginLogger.error("Progression message is null, disabling progression message.");
+            PluginLogger.error("Please set a valid message in the configuration file (progression_message.text).");
+            isEnabled = false;
+        }
 
         final String type = configurationFiles.getConfigFile().getString("progression_message.type");
         if (type == null) {
