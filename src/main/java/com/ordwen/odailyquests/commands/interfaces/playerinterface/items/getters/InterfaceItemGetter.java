@@ -84,15 +84,15 @@ public class InterfaceItemGetter extends ItemGetter implements IInterfaceItem {
     /**
      * Get a custom head.
      * @param texture the texture of the head
-     * @param questIndex the index of the quest in the file
+     * @param itemIndex the index of the item in the file
      * @param parameter the parameter involved
      * @return the ItemStack or null if the item cannot be loaded
      */
     @Override
-    public ItemStack getCustomHead(String texture, String questIndex, String parameter) {
+    public ItemStack getCustomHead(String texture, String itemIndex, String parameter) {
         final Pair<String, ItemStack> result = super.getCustomHead(texture);
         if (!result.first().isEmpty()) {
-            configurationError(questIndex, parameter, result.first());
+            configurationError(itemIndex, parameter, result.first());
             return null;
         }
 
@@ -102,22 +102,22 @@ public class InterfaceItemGetter extends ItemGetter implements IInterfaceItem {
     /**
      * Get an item with custom model data.
      * @param customModelData the custom model data of the item
-     * @param questIndex the index of the quest in the file
+     * @param itemIndex the index of the item in the file
      * @param parameter the parameter involved
      * @return the ItemStack or null if the item cannot be loaded
      */
     @Override
-    public ItemStack getCustomModelDataItem(String customModelData, String questIndex, String parameter) {
+    public ItemStack getCustomModelDataItem(String customModelData, String itemIndex, String parameter) {
 
         final String[] split = customModelData.split(":");
         if (split.length != 2) {
-            configurationError(questIndex, parameter, "You need to provide the item and the custom model data.");
+            configurationError(itemIndex, parameter, "You need to provide the item and the custom model data.");
             return null;
         }
 
         final Material material = Material.getMaterial(split[0].toUpperCase());
         if (material == null) {
-            configurationError(questIndex, parameter, "The material " + split[0] + " does not exist.");
+            configurationError(itemIndex, parameter, "The material " + split[0] + " does not exist.");
             return null;
         }
 
@@ -125,13 +125,13 @@ public class InterfaceItemGetter extends ItemGetter implements IInterfaceItem {
         try {
             cmd = Integer.parseInt(customModelData);
         } catch (Exception e) {
-            configurationError(questIndex, parameter, customModelData + " is not a number!");
+            configurationError(itemIndex, parameter, customModelData + " is not a number!");
             return null;
         }
 
         final Pair<String, ItemStack> result = super.getCustomModelDataItem(material, cmd);
         if (!result.first().isEmpty()) {
-            configurationError(questIndex, parameter, result.first());
+            configurationError(itemIndex, parameter, result.first());
             return null;
         }
 
