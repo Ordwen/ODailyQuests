@@ -95,7 +95,6 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
      * @param interfaceConfig configuration section of the interface.
      */
     private void initVariables(ConfigurationSection interfaceConfig) {
-
         /* clear all lists, in case of reload */
         slotsPlayerHead.clear();
         slotQuests.clear();
