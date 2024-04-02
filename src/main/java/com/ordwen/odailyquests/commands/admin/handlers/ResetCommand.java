@@ -5,6 +5,7 @@ import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
+import com.ordwen.odailyquests.quests.player.progression.QuestLoaderUtils;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
@@ -44,6 +45,7 @@ public class ResetCommand extends ACommandHandler {
      * @param target the player to reset
      */
     public void quests(Player target) {
+        /*
         final String playerName = target.getName();
         final HashMap<String, PlayerQuests> activeQuests = QuestsManager.getActiveQuests();
 
@@ -60,12 +62,15 @@ public class ResetCommand extends ACommandHandler {
         activeQuests.put(playerName, playerQuests);
 
         PluginLogger.fine(playerName + " inserted into the array.");
+         */
+
+        final String playerName = target.getName();
+        final HashMap<String, PlayerQuests> activeQuests = QuestsManager.getActiveQuests();
+        int totalAchievedQuests = activeQuests.get(playerName).getTotalAchievedQuests();
+        QuestLoaderUtils.loadNewPlayerQuests(playerName, QuestsManager.getActiveQuests(), totalAchievedQuests);
 
         String msg = QuestsMessages.QUESTS_RENEWED_ADMIN.toString();
         if (msg != null) sender.sendMessage(msg.replace("%target%", target.getName()));
-
-        msg = QuestsMessages.QUESTS_RENEWED.getMessage(target);
-        if (msg != null) target.sendMessage(msg);
     }
 
     /**

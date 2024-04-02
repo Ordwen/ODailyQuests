@@ -56,13 +56,13 @@ public class RewardManager {
             }
 
             case EXP_LEVELS -> {
-                player.giveExpLevels(reward.getRewardAmount());
+                player.giveExpLevels((int) reward.getRewardAmount());
                 msg = QuestsMessages.REWARD_EXP_LEVELS.getMessage(player);
                 if (msg != null) player.sendMessage(msg.replace("%rewardAmount%", String.valueOf(reward.getRewardAmount())));
             }
 
             case EXP_POINTS -> {
-                player.giveExp(reward.getRewardAmount());
+                player.giveExp((int) reward.getRewardAmount());
                 msg = QuestsMessages.REWARD_EXP_POINTS.getMessage(player);
                 if (msg != null) player.sendMessage(msg.replace("%rewardAmount%", String.valueOf(reward.getRewardAmount())));
             }
@@ -72,6 +72,7 @@ public class RewardManager {
                     VaultHook.getEconomy().depositPlayer(player, reward.getRewardAmount());
 
                     msg = QuestsMessages.REWARD_MONEY.getMessage(player);
+                    System.out.println(reward.getRewardAmount());
                     if (msg != null) player.sendMessage(msg.replace("%rewardAmount%", String.valueOf(reward.getRewardAmount())));
                 }
 
@@ -84,14 +85,14 @@ public class RewardManager {
 
             case POINTS -> {
                 if (TokenManagerHook.getTokenManagerAPI() != null) {
-                    TokenManagerHook.getTokenManagerAPI().addTokens(player, reward.getRewardAmount());
+                    TokenManagerHook.getTokenManagerAPI().addTokens(player, (int) reward.getRewardAmount());
 
                     msg = QuestsMessages.REWARD_POINTS.getMessage(player);
                     if (msg != null) player.sendMessage(msg.replace("%rewardAmount%", String.valueOf(reward.getRewardAmount())));
                 }
 
                 else if (PlayerPointsHook.isPlayerPointsSetup()) {
-                    PlayerPointsHook.getPlayerPointsAPI().give(player.getUniqueId(), reward.getRewardAmount());
+                    PlayerPointsHook.getPlayerPointsAPI().give(player.getUniqueId(), (int) reward.getRewardAmount());
 
                     msg = QuestsMessages.REWARD_POINTS.getMessage(player);
                     if (msg != null)  player.sendMessage(msg.replace("%rewardAmount%", String.valueOf(reward.getRewardAmount())));

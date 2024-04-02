@@ -3,13 +3,15 @@ package com.ordwen.odailyquests.configuration.functionalities.rewards;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.rewards.Reward;
+import com.ordwen.odailyquests.rewards.RewardLoader;
 import com.ordwen.odailyquests.rewards.RewardManager;
 import com.ordwen.odailyquests.rewards.RewardType;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 
-public class GlobalReward {
+public class GlobalReward extends RewardLoader {
 
     private final ConfigurationFiles configurationFiles;
 
@@ -25,6 +27,18 @@ public class GlobalReward {
      */
     public void initGlobalReward() {
         final ConfigurationSection globalRewardSection = configurationFiles.getConfigFile().getConfigurationSection("global_reward");
+        if (globalRewardSection == null) {
+            isEnabled = false;
+            PluginLogger.error("Global reward section is missing in the configuration file.");
+            return;
+        }
+
+        if (!globalRewardSection.contains("enabled")) {
+            isEnabled = false;
+            PluginLogger.error("Global reward section is missing in the configuration file.");
+            return;
+        }
+
         isEnabled = globalRewardSection.getBoolean("enabled");
 
         if (isEnabled) {
@@ -36,24 +50,7 @@ public class GlobalReward {
                 globalReward = new Reward(rewardType, globalRewardSection.getInt(".amount"));
             }
 
-            globalReward = switch (rewardType) {
-                case NONE -> new Reward(RewardType.NONE, 0);
-                case COMMAND -> new Reward(RewardType.COMMAND, globalRewardSection.getStringList(".commands"));
-
-                case COINS_ENGINE -> {
-                    final String currencyLabel = globalRewardSection.getString(".currency_label");
-                    final String currencyDisplayName = globalRewardSection.getString(".currency_display_name");
-
-                    if (currencyLabel == null || currencyDisplayName == null) {
-                        PluginLogger.error("Currency label or currency display name is missing in the configuration file.");
-                        yield new Reward(RewardType.NONE, 0);
-                    }
-
-                    yield new Reward(RewardType.COINS_ENGINE, currencyLabel, currencyDisplayName, globalRewardSection.getInt(".amount"));
-                }
-
-                default -> new Reward(rewardType, globalRewardSection.getInt(".amount"));
-            };
+            globalReward = new RewardLoader().getRewardFromSection(globalRewardSection, "config.yml", -1);
 
             PluginLogger.fine("Global reward successfully loaded.");
         } else PluginLogger.fine("Global reward is disabled.");
@@ -65,8 +62,15 @@ public class GlobalReward {
      */
     public static void sendGlobalReward(String playerName) {
         if (isEnabled) {
+            final Player player = Bukkit.getPlayer(playerName);
+            if (player == null) {
+                PluginLogger.warn("Impossible to send global reward to " + playerName + " because he is offline.");
+                return;
+            }
+
             final String msg = QuestsMessages.ALL_QUESTS_ACHIEVED.getMessage(playerName);
-            if (msg != null) Bukkit.getPlayer(playerName).sendMessage(msg);
+            if (msg != null) player.sendMessage(msg);
+
             RewardManager.sendQuestReward(Bukkit.getPlayer(playerName), globalReward);
         }
     }

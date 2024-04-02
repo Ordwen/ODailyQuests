@@ -3,8 +3,8 @@ package com.ordwen.odailyquests.configuration.functionalities.rewards;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.rewards.Reward;
+import com.ordwen.odailyquests.rewards.RewardLoader;
 import com.ordwen.odailyquests.rewards.RewardManager;
-import com.ordwen.odailyquests.rewards.RewardType;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -20,6 +20,7 @@ public class CategoriesRewards {
     private static Reward hardReward;
 
     private final ConfigurationFiles configurationFiles;
+    private final RewardLoader rewardLoader = new RewardLoader();
 
     public CategoriesRewards(ConfigurationFiles configurationFiles) {
         this.configurationFiles = configurationFiles;
@@ -51,7 +52,7 @@ public class CategoriesRewards {
                 return;
             }
 
-            easyReward = getRewardFromSection(easyRewardSection);
+            easyReward = rewardLoader.getRewardFromSection(easyRewardSection, "config.yml", -1);
         }
 
         if (isMediumRewardEnabled) {
@@ -62,7 +63,7 @@ public class CategoriesRewards {
                 return;
             }
 
-            mediumReward = getRewardFromSection(mediumRewardSection);
+            mediumReward = rewardLoader.getRewardFromSection(mediumRewardSection, "config.yml", -1);
         }
 
         if (isHardRewardEnabled) {
@@ -73,36 +74,8 @@ public class CategoriesRewards {
                 return;
             }
 
-            hardReward = getRewardFromSection(hardRewardSection);
+            hardReward = rewardLoader.getRewardFromSection(hardRewardSection, "config.yml", -1);
         }
-    }
-
-    /**
-     * Load a reward from a configuration section.
-     * @param section configuration section.
-     * @return reward.
-     */
-    private Reward getRewardFromSection(ConfigurationSection section) {
-        final RewardType rewardType = RewardType.valueOf(section.getString("reward_type"));
-
-        return switch (rewardType) {
-            case NONE -> new Reward(RewardType.NONE, 0);
-            case COMMAND -> new Reward(RewardType.COMMAND, section.getStringList(".commands"));
-
-            case COINS_ENGINE -> {
-                final String currencyLabel = section.getString(".currency_label");
-                final String currencyDisplayName = section.getString(".currency_display_name");
-
-                if (currencyLabel == null || currencyDisplayName == null) {
-                    PluginLogger.error("Currency label or currency display name is missing in the configuration file.");
-                    yield new Reward(RewardType.NONE, 0);
-                }
-
-                yield new Reward(RewardType.COINS_ENGINE, currencyLabel, currencyDisplayName, section.getInt(".amount"));
-            }
-
-            default -> new Reward(rewardType, section.getInt(".amount"));
-        };
     }
 
     /**

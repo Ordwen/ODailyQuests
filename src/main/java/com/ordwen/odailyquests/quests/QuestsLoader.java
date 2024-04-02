@@ -5,6 +5,7 @@ import com.ordwen.odailyquests.enums.QuestType;
 import com.ordwen.odailyquests.quests.getters.QuestItemGetter;
 import com.ordwen.odailyquests.quests.types.*;
 import com.ordwen.odailyquests.rewards.Reward;
+import com.ordwen.odailyquests.rewards.RewardLoader;
 import com.ordwen.odailyquests.rewards.RewardType;
 import com.ordwen.odailyquests.tools.ColorConvert;
 import org.bukkit.*;
@@ -26,6 +27,8 @@ import java.util.List;
 
 public class QuestsLoader extends QuestItemGetter {
 
+    private final RewardLoader rewardLoader = new RewardLoader();
+
     /**
      * Load the reward of a quest.
      *
@@ -38,32 +41,7 @@ public class QuestsLoader extends QuestItemGetter {
         if (!questSection.isConfigurationSection(".reward")) return new Reward(RewardType.NONE, 0);
         final ConfigurationSection rewardSection = questSection.getConfigurationSection(".reward");
 
-        RewardType rewardType;
-        try {
-            rewardType = RewardType.valueOf(rewardSection.getString(".reward_type"));
-        } catch (Exception e) {
-            configurationError(fileName, questIndex, "reward_type", rewardSection.getString(".reward_type") + " is not a valid reward type.");
-            rewardType = RewardType.NONE;
-        }
-
-        return switch (rewardType) {
-            case NONE -> new Reward(RewardType.NONE, 0);
-            case COMMAND -> new Reward(RewardType.COMMAND, rewardSection.getStringList(".commands"));
-
-            case COINS_ENGINE -> {
-                final String currencyLabel = rewardSection.getString(".currency_label");
-                final String currencyDisplayName = rewardSection.getString(".currency_display_name");
-
-                if (currencyLabel == null || currencyDisplayName == null) {
-                    configurationError(fileName, questIndex, "currency_label", "currency_label or currency_display_name is null.");
-                    yield new Reward(RewardType.NONE, 0);
-                }
-
-                yield new Reward(RewardType.COINS_ENGINE, currencyLabel, currencyDisplayName, rewardSection.getInt(".amount"));
-            }
-
-            default -> new Reward(rewardType, rewardSection.getInt(".amount"));
-        };
+        return rewardLoader.getRewardFromSection(rewardSection, fileName, questIndex);
     }
 
     /**
@@ -122,7 +100,7 @@ public class QuestsLoader extends QuestItemGetter {
         }
 
         /* reward */
-        Reward reward = createReward(questSection, fileName, questIndex);
+        final Reward reward = createReward(questSection, fileName, questIndex);
 
         return new GlobalQuest(questIndex, questName, fileName, questDesc, questType, menuItem, achievedItem, requiredAmount, reward, requiredWorlds, usePlaceholders);
     }
@@ -272,7 +250,8 @@ public class QuestsLoader extends QuestItemGetter {
      */
     private boolean loadRequiredItems(ConfigurationSection questSection, String fileName, int questIndex, ItemStack menuItem, List<ItemStack> requiredItems) {
         final List<String> requiredItemStrings = new ArrayList<>();
-        if (questSection.isList(".required_item")) requiredItemStrings.addAll(questSection.getStringList(".required_item"));
+        if (questSection.isList(".required_item"))
+            requiredItemStrings.addAll(questSection.getStringList(".required_item"));
         else requiredItemStrings.add(questSection.getString(".required_item"));
 
         for (String itemType : requiredItemStrings) {
