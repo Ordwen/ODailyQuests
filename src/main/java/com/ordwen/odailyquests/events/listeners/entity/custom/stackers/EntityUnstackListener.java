@@ -4,13 +4,13 @@ import com.bgsoftware.wildstacker.api.events.EntityUnstackEvent;
 import com.ordwen.odailyquests.configuration.integrations.WildStackerEnabled;
 
 import com.ordwen.odailyquests.events.antiglitch.EntitySource;
-import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractEntityChecker;
+import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-public class EntityUnstackListener extends AbstractEntityChecker implements Listener {
+public class EntityUnstackListener extends PlayerProgressor implements Listener {
 
     @EventHandler
     public void onWildStackerEntityUnstackEvent(EntityUnstackEvent event) {
@@ -25,7 +25,7 @@ public class EntityUnstackListener extends AbstractEntityChecker implements List
         if (isEntityFromSpawner) return;
 
         if (event.getUnstackSource() instanceof Player player) {
-            setPlayerQuestProgression(player, event.getEntity().getType(), null, event.getAmount(), "KILL, null);
+            setPlayerQuestProgression(event, player, event.getAmount(), "KILL");
         }
     }
 }

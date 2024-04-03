@@ -14,7 +14,6 @@ public abstract class EntityQuest extends AbstractQuest {
 
     protected final List<EntityType> requiredEntities;
     protected DyeColor dyeColor;
-    protected List<String> entityNames;
 
     public EntityQuest(BasicQuest base) {
         super(base);
@@ -22,18 +21,22 @@ public abstract class EntityQuest extends AbstractQuest {
     }
 
     @Override
-    public void loadParameters(ConfigurationSection section, String file, int index) {
+    public boolean loadParameters(ConfigurationSection section, String file, int index) {
+        if (!section.contains(".required_entity")) return true;
+
         if (section.isString(".required_entity")) {
             final EntityType entityType = getEntityType(file, index, section.getString(".required_entity"));
             if (entityType != null) requiredEntities.add(entityType);
+            else return false;
         } else {
             for (String presumedEntity : section.getStringList(".required_entity")) {
                 final EntityType entityType = getEntityType(file, index, presumedEntity);
                 if (entityType != null) requiredEntities.add(entityType);
+                else return false;
             }
         }
 
-        dyeColor = getDyeColor(section, file, index);
+        return true;
     }
 
     /**
@@ -54,23 +57,13 @@ public abstract class EntityQuest extends AbstractQuest {
     }
 
     /**
-     * Get the required dye color.
+     * Check if the entity is required by the quest.
      *
-     * @param section the configuration section
-     * @param file    the file name
-     * @param index   the quest index
-     * @return the dye color, or null if the dye color is invalid/missing
+     * @param entityType the entity type
+     * @return true if the entity is required, false otherwise
      */
-    private DyeColor getDyeColor(ConfigurationSection section, String file, int index) {
-        final String expected = section.getString(".sheep_color");
-        if (expected == null) return null;
-
-        try {
-            return DyeColor.valueOf(expected.toUpperCase());
-        } catch (Exception e) {
-            PluginLogger.configurationError(file, index, "sheep_color", "Invalid dye type detected.");
-            return null;
-        }
+    public boolean isRequiredEntity(EntityType entityType) {
+        return requiredEntities == null || requiredEntities.isEmpty() || requiredEntities.contains(entityType);
     }
 
     /**
@@ -89,14 +82,5 @@ public abstract class EntityQuest extends AbstractQuest {
      */
     public DyeColor getDyeColor() {
         return this.dyeColor;
-    }
-
-    /**
-     * Get required entity name
-     *
-     * @return entity name
-     */
-    public List<String> getEntityNames() {
-        return this.entityNames;
     }
 }

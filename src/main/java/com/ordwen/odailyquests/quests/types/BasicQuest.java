@@ -2,6 +2,8 @@ package com.ordwen.odailyquests.quests.types;
 
 import com.ordwen.odailyquests.rewards.Reward;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
@@ -13,7 +15,17 @@ public class BasicQuest extends AbstractQuest {
     }
 
     @Override
-    public void loadParameters(ConfigurationSection section, String file, int index) {
+    public String getType() {
+        return "BASIC";
+    }
 
+    @Override
+    public boolean canProgress(Event event) {
+        return false;
+    }
+
+    @Override
+    public boolean loadParameters(ConfigurationSection section, String file, int index) {
+        return true;
     }
 }

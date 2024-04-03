@@ -24,7 +24,9 @@ import com.ordwen.odailyquests.quests.player.progression.listeners.QuestComplete
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.h2.H2Manager;
 import com.ordwen.odailyquests.quests.player.progression.storage.yaml.YamlManager;
-import com.ordwen.odailyquests.quests.types.KillQuest;
+import com.ordwen.odailyquests.quests.types.tmp.*;
+import com.ordwen.odailyquests.quests.types.tmp.custom.mobs.EliteMobsQuest;
+import com.ordwen.odailyquests.quests.types.tmp.custom.mobs.MythicMobsQuest;
 import com.ordwen.odailyquests.tools.*;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.mysql.MySQLManager;
@@ -119,9 +121,13 @@ public final class ODailyQuests extends JavaPlugin {
 
         /* Register quest types */
         final QuestTypeRegistry questTypeRegistry = API.getQuestTypeRegistry();
-
         questTypeRegistry.registerQuestType("KILL", KillQuest.class);
-        getServer().getPluginManager().registerEvents(new KillQuest(null), this);
+        questTypeRegistry.registerQuestType("BREED", BreedQuest.class);
+        questTypeRegistry.registerQuestType("SHEAR", ShearQuest.class);
+        questTypeRegistry.registerQuestType("TAME", TameQuest.class);
+        questTypeRegistry.registerQuestType("FIREBALL_REFLECT", FireballReflectQuest.class);
+        questTypeRegistry.registerQuestType("ELITE_MOBS", EliteMobsQuest.class);
+        questTypeRegistry.registerQuestType("MYTHIC_MOBS", MythicMobsQuest.class);
 
         /* Register server restart related events */
         new RestartHandler(this).registerSubClasses();

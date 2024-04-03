@@ -3,12 +3,12 @@ package com.ordwen.odailyquests.quests.player.progression.checkers;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.essentials.Synchronization;
 import com.ordwen.odailyquests.configuration.functionalities.DisabledWorlds;
+import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
 import com.ordwen.odailyquests.quests.types.BasicQuest;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.types.shared.ItemQuest;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
-import com.ordwen.odailyquests.quests.player.progression.QuestProgressUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -88,7 +88,7 @@ public abstract class AbstractItemChecker {
 
                         Debugger.addDebug("ItemChecker: item " + itemStack.getType() + " is a required item for quest " + abstractQuest.getQuestName());
 
-                        QuestProgressUtils.actionQuest(player, progression, abstractQuest, amount);
+                        PlayerProgressor.actionQuest(player, progression, abstractQuest, amount);
                         if (!Synchronization.isSynchronised()) break;
                     }
                 }

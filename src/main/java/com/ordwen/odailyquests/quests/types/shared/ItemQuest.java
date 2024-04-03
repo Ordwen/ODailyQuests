@@ -2,42 +2,59 @@ package com.ordwen.odailyquests.quests.types.shared;
 
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.types.BasicQuest;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ItemQuest extends AbstractQuest {
 
-    final List<ItemStack> requiredItems;
-    final boolean ignoreNbt;
+    private final List<ItemStack> requiredItems;
+    private final boolean ignoreNbt = false;
 
     /**
      * Quest constructor.
      *
-     * @param basicQuest   parent quest.
-     * @param requiredItems list of required items.
+     * @param base parent quest.
      */
-    public ItemQuest(BasicQuest basicQuest, List<ItemStack> requiredItems, boolean ignoreNbt) {
-        super(basicQuest);
-        this.requiredItems = requiredItems;
-        this.ignoreNbt = ignoreNbt;
+    public ItemQuest(BasicQuest base) {
+        super(base);
+        this.requiredItems = new ArrayList<>();
     }
 
-    /**
-     * Get the item required by the quest.
-     *
-     * @return quest item-required.
-     */
-    public List<ItemStack> getRequiredItems() {
-        return this.requiredItems;
+    public boolean isRequiredItem(ItemStack provided) {
+        if (requiredItems == null) return true;
+
+        for (ItemStack item : requiredItems) {
+
+            if (ignoreNbt && item.getType() == provided.getType()) {
+                return true;
+            }
+
+            if (item.hasItemMeta() && item.getItemMeta().hasCustomModelData()) {
+                if (item.hasItemMeta() && item.getItemMeta().hasCustomModelData()) {
+                    if (item.getType() == provided.getType() && item.getItemMeta().getCustomModelData() == provided.getItemMeta().getCustomModelData()) {
+                        return true;
+                    }
+                }
+            }
+
+            if (item.isSimilar(provided)) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    /**
-     * Check if the quest should ignore NBT.
-     *
-     * @return true if the quest should ignore NBT, false otherwise.
-     */
-    public boolean isIgnoreNbt() {
-        return this.ignoreNbt;
+
+    @Override
+    public boolean loadParameters(ConfigurationSection section, String file, int index) {
+        if (!section.contains(".required_item")) return true;
+
+        // TO DO loadItemQuest QuestsLoader
+
+        return true;
     }
 }

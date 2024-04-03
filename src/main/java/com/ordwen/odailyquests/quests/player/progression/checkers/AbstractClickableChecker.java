@@ -8,9 +8,9 @@ import com.ordwen.odailyquests.events.antiglitch.OpenedRecipes;
 import com.ordwen.odailyquests.externs.hooks.placeholders.PAPIHook;
 import com.ordwen.odailyquests.quests.ConditionType;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
+import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.types.*;
-import com.ordwen.odailyquests.quests.player.progression.QuestProgressUtils;
 import com.ordwen.odailyquests.quests.types.shared.ItemQuest;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -141,7 +141,7 @@ public abstract class AbstractClickableChecker {
                         }
 
                         if (valid) {
-                            QuestProgressUtils.actionQuest(player, questProgression, quest, quantity);
+                            PlayerProgressor.actionQuest(player, questProgression, quest, quantity);
                             if (!Synchronization.isSynchronised()) break;
                         }
                     }

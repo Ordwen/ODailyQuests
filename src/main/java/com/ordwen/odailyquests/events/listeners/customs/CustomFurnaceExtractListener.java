@@ -12,6 +12,6 @@ public class CustomFurnaceExtractListener extends AbstractItemChecker implements
     @EventHandler
     public void onCustomFurnaceExtractEvent(CustomFurnaceExtractEvent event) {
         final ItemStack result = event.getResult();
-        setPlayerQuestProgression(event.getPlayer(), result, event.getAmount(), "COOK);
+        setPlayerQuestProgression(event.getPlayer(), result, event.getAmount(), "COOK");
     }
 }

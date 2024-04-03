@@ -2,11 +2,11 @@ package com.ordwen.odailyquests.quests.player.progression.checkers;
 
 import com.ordwen.odailyquests.configuration.essentials.Synchronization;
 import com.ordwen.odailyquests.configuration.functionalities.DisabledWorlds;
+import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.tools.PluginLogger;
-import com.ordwen.odailyquests.quests.player.progression.QuestProgressUtils;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -36,7 +36,7 @@ public abstract class AbstractGlobalChecker {
 
             final Progression progression = playerQuests.get(abstractQuest);
             if (!progression.isAchieved() && abstractQuest.getQuestType().equals(questType)) {
-                QuestProgressUtils.actionQuest(player, progression, abstractQuest, amount);
+                PlayerProgressor.actionQuest(player, progression, abstractQuest, amount);
                 if (!Synchronization.isSynchronised()) break;
             }
         }

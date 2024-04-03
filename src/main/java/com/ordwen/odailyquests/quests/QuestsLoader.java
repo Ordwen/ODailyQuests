@@ -1,11 +1,9 @@
 package com.ordwen.odailyquests.quests;
 
 import com.ordwen.odailyquests.ODailyQuests;
-import com.ordwen.odailyquests.api.quests.IQuest;
 import com.ordwen.odailyquests.api.quests.QuestTypeRegistry;
 import com.ordwen.odailyquests.quests.getters.QuestItemGetter;
 import com.ordwen.odailyquests.quests.types.*;
-import com.ordwen.odailyquests.quests.types.shared.EntityQuest;
 import com.ordwen.odailyquests.quests.types.shared.ItemQuest;
 import com.ordwen.odailyquests.rewards.Reward;
 import com.ordwen.odailyquests.rewards.RewardLoader;
@@ -110,36 +108,6 @@ public class QuestsLoader extends QuestItemGetter {
     }
 
     /**
-     * Load a quest that require a custom mob.
-     *
-     * @param base         the base quest.
-     * @param questSection the current quest section.
-     * @param fileName     the file name where the quest is.
-     * @param questIndex   the quest index in the file.
-     * @return an entity quest.
-     */
-    private AbstractQuest loadCustomMobQuest(BasicQuest base, ConfigurationSection questSection, String fileName, int questIndex) {
-
-        final List<String> entityNames = new ArrayList<>();
-        if (questSection.isString(".entity_name")) {
-            entityNames.add(questSection.getString(".entity_name"));
-        } else {
-            entityNames.addAll(questSection.getStringList(".entity_name"));
-        }
-
-        for (String entityName : entityNames) {
-            entityNames.set(entityNames.indexOf(entityName), ColorConvert.convertColorCode(entityName));
-        }
-
-        if (entityNames.isEmpty()) {
-            PluginLogger.configurationError(fileName, questIndex, null, "There is no entity name defined for quest type CUSTOM_MOBS.");
-            return null;
-        }
-
-        return new EntityQuest(base, entityNames);
-    }
-
-    /**
      * Load a quest that require items.
      *
      * @param base         the base quest.
@@ -157,6 +125,13 @@ public class QuestsLoader extends QuestItemGetter {
         /* all required items */
         final List<ItemStack> requiredItems = new ArrayList<>();
         if (loadRequiredItems(questSection, fileName, questIndex, menuItem, requiredItems)) return null;
+
+
+        //
+        //
+        // APPLIQUER PDC DANS loadParameters DE GetQuest (pareil pour loc, etc)
+        //
+        //
 
         /* apply Persistent Data Container to the menu item to differentiate GET quests */
         if (base.getQuestType().equals("GET")) {
@@ -454,12 +429,19 @@ public class QuestsLoader extends QuestItemGetter {
 
                 switch (questType) {
 
+                    //
+                    //
+                    // FAIT : KILL, BREED, TAME, SHEAR, CUSTOM_MOBS
+                    // A FAIRE : le reste
+                    //
+                    //
+
                     /* type that does not require a specific entity/item */
                     case "MILKING", "EXP_POINTS", "EXP_LEVELS", "CARVE", "PLAYER_DEATH", "FIREBALL_REFLECT" ->
                             quests.add(base);
 
                     /* types that requires an entity */
-                    case "KILL", "BREED", "TAME", "SHEAR" -> {
+                    case "KILL", "BREED", "TAME", "SHEAR", "CUSTOM_MOBS" -> {
                         Class<? extends AbstractQuest> questClass = questTypeRegistry.get(questType);
 
                         AbstractQuest questInstance = null;
@@ -470,15 +452,10 @@ public class QuestsLoader extends QuestItemGetter {
                             PluginLogger.error(e.getMessage());
                         }
                         if (questInstance != null) {
-                            questInstance.loadParameters(questSection, fileName, questIndex);
-                            quests.add(questInstance);
+                            if (questInstance.loadParameters(questSection, fileName, questIndex)) {
+                                quests.add(questInstance);
+                            }
                         }
-                    }
-
-                    /* types that requires a custom mob */
-                    case "CUSTOM_MOBS" -> {
-                        AbstractQuest customMobsQuest = loadCustomMobQuest(base, questSection, fileName, questIndex);
-                        if (customMobsQuest != null) quests.add(customMobsQuest);
                     }
 
                     /* types that requires an item */
