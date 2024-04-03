@@ -2,7 +2,7 @@ package com.ordwen.odailyquests.events.listeners.global;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
-import com.ordwen.odailyquests.enums.QuestType;
+
 import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractGlobalChecker;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,7 +18,7 @@ public class PlayerRespawnListener extends AbstractGlobalChecker implements List
 
             Debugger.addDebug("=========================================================================================");
             Debugger.addDebug("PlayerRespawnListener: onPlayerRespawn summoned by " + player.getName());
-            setPlayerQuestProgression(player, 1, QuestType.PLAYER_DEATH);
+            setPlayerQuestProgression(player, 1, "PLAYER_DEATH");
         }
     }
 }

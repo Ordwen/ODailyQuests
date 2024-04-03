@@ -14,12 +14,12 @@ public class VillagerQuest extends AbstractQuest {
     /**
      * Quest constructor for quest type TRADE (global).
      *
-     * @param globalQuest        parent quest.
+     * @param basicQuest        parent quest.
      * @param villagerProfession required villager profession.
      * @param villagerLevel      required villager level.
      */
-    public VillagerQuest(GlobalQuest globalQuest, Villager.Profession villagerProfession, int villagerLevel) {
-        super(globalQuest);
+    public VillagerQuest(BasicQuest basicQuest, Villager.Profession villagerProfession, int villagerLevel) {
+        super(basicQuest);
         this.villagerProfession = villagerProfession;
         this.villagerLevel = villagerLevel;
 
@@ -29,13 +29,13 @@ public class VillagerQuest extends AbstractQuest {
     /**
      * Quest constructor for quest type TRADE (item specified).
      *
-     * @param globalQuest        parent quest.
+     * @param basicQuest        parent quest.
      * @param requiredItems       required item.
      * @param villagerProfession required villager profession.
      * @param villagerLevel      required villager level.
      */
-    public VillagerQuest(GlobalQuest globalQuest, List<ItemStack> requiredItems, Villager.Profession villagerProfession, int villagerLevel) {
-        super(globalQuest);
+    public VillagerQuest(BasicQuest basicQuest, List<ItemStack> requiredItems, Villager.Profession villagerProfession, int villagerLevel) {
+        super(basicQuest);
         this.requiredItems = requiredItems;
         this.villagerProfession = villagerProfession;
         this.villagerLevel = villagerLevel;

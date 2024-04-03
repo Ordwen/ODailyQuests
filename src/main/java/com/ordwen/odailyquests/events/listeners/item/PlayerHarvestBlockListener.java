@@ -1,6 +1,6 @@
 package com.ordwen.odailyquests.events.listeners.item;
 
-import com.ordwen.odailyquests.enums.QuestType;
+
 import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractItemChecker;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,7 +21,7 @@ public class PlayerHarvestBlockListener extends AbstractItemChecker implements L
         final List<ItemStack> drops = event.getItemsHarvested();
 
         for (ItemStack item : drops) {
-            setPlayerQuestProgression(player, new ItemStack(item.getType()), item.getAmount(), QuestType.FARMING);
+            setPlayerQuestProgression(player, new ItemStack(item.getType()), item.getAmount(), "FARMING");
         }
     }
 }

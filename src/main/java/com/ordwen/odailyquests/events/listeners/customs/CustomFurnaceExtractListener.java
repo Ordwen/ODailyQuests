@@ -1,6 +1,6 @@
 package com.ordwen.odailyquests.events.listeners.customs;
 
-import com.ordwen.odailyquests.enums.QuestType;
+
 import com.ordwen.odailyquests.events.customs.CustomFurnaceExtractEvent;
 import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractItemChecker;
 import org.bukkit.event.EventHandler;
@@ -12,6 +12,6 @@ public class CustomFurnaceExtractListener extends AbstractItemChecker implements
     @EventHandler
     public void onCustomFurnaceExtractEvent(CustomFurnaceExtractEvent event) {
         final ItemStack result = event.getResult();
-        setPlayerQuestProgression(event.getPlayer(), result, event.getAmount(), QuestType.COOK);
+        setPlayerQuestProgression(event.getPlayer(), result, event.getAmount(), "COOK);
     }
 }

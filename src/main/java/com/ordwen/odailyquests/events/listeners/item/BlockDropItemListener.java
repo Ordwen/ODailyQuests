@@ -1,7 +1,7 @@
 package com.ordwen.odailyquests.events.listeners.item;
 
 import com.ordwen.odailyquests.configuration.essentials.Antiglitch;
-import com.ordwen.odailyquests.enums.QuestType;
+
 import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractItemChecker;
 import org.bukkit.Material;
 import org.bukkit.block.data.Ageable;
@@ -79,7 +79,7 @@ public class BlockDropItemListener extends AbstractItemChecker implements Listen
             final ItemStack droppedItem = item.getItemStack();
             final Material droppedMaterial = droppedItem.getType();
 
-            setPlayerQuestProgression(player, new ItemStack(droppedMaterial), droppedItem.getAmount(), QuestType.FARMING);
+            setPlayerQuestProgression(player, new ItemStack(droppedMaterial), droppedItem.getAmount(), "FARMING");
         }
     }
 }

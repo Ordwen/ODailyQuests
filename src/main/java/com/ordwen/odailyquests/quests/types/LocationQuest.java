@@ -10,11 +10,11 @@ public class LocationQuest extends AbstractQuest {
     /**
      * Quest constructor.
      *
-     * @param globalQuest      parent quest.
+     * @param basicQuest      parent quest.
      * @param requiredLocation required location.
      */
-    public LocationQuest(GlobalQuest globalQuest, Location requiredLocation, int radius) {
-        super(globalQuest);
+    public LocationQuest(BasicQuest basicQuest, Location requiredLocation, int radius) {
+        super(basicQuest);
         this.requiredLocation = requiredLocation;
         this.radius = radius;
     }

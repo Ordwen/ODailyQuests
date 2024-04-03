@@ -1,6 +1,6 @@
 package com.ordwen.odailyquests.events.listeners.entity.custom.mobs;
 
-import com.ordwen.odailyquests.enums.QuestType;
+
 import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractEntityChecker;
 import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
 import org.bukkit.entity.Player;
@@ -12,7 +12,7 @@ public class MythicMobDeathListener extends AbstractEntityChecker implements Lis
     @EventHandler
     public void onMythicMobsDeathEvent(MythicMobDeathEvent event) {
         if (event.getKiller() != null && event.getKiller() instanceof Player player) {
-            setPlayerQuestProgression(player, null, event.getMobType().getInternalName(), 1, QuestType.CUSTOM_MOBS, null);
+            setPlayerQuestProgression(player, null, event.getMobType().getInternalName(), 1, "CUSTOM_MOBS", null);
         }
     }
 }

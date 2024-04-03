@@ -1,7 +1,7 @@
 package com.ordwen.odailyquests.events.listeners.item;
 
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
-import com.ordwen.odailyquests.enums.QuestType;
+
 import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractItemChecker;
 import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
@@ -18,7 +18,7 @@ public class PlayerFishListener extends AbstractItemChecker implements Listener 
             Debugger.addDebug("=========================================================================================");
             Debugger.addDebug("PlayerFishListener: onPlayerFishEvent summoned by " + event.getPlayer().getName() + " for " + item.getItemStack().getType() + ".");
 
-            setPlayerQuestProgression(event.getPlayer(), item.getItemStack(), 1, QuestType.FISH);
+            setPlayerQuestProgression(event.getPlayer(), item.getItemStack(), 1, "FISH");
         }
     }
 }

@@ -2,7 +2,7 @@ package com.ordwen.odailyquests.events.listeners.item;
 
 import com.ordwen.odailyquests.configuration.essentials.Antiglitch;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
-import com.ordwen.odailyquests.enums.QuestType;
+
 import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractItemChecker;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -34,7 +34,7 @@ public class PickupItemListener extends AbstractItemChecker implements Listener 
             Debugger.addDebug("=========================================================================================");
             Debugger.addDebug("PickupItemListener: onPickupItemEvent summoned by " + player.getName() + " for " + item.getType() + ".");
 
-            setPlayerQuestProgression(player, item, event.getItem().getItemStack().getAmount(), QuestType.PICKUP);
+            setPlayerQuestProgression(player, item, event.getItem().getItemStack().getAmount(), "PICKUP");
         }
     }
 }

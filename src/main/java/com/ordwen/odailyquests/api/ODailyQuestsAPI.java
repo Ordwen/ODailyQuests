@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.api;
 
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.api.quests.QuestTypeRegistry;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 
@@ -10,6 +11,7 @@ import com.ordwen.odailyquests.quests.player.QuestsManager;
 public class ODailyQuestsAPI {
 
     private final ODailyQuests oDailyQuests;
+    private final QuestTypeRegistry questTypeRegistry = new QuestTypeRegistry();
 
     /**
      * Constructor for the ODailyQuestsAPI.
@@ -17,6 +19,14 @@ public class ODailyQuestsAPI {
      */
     public ODailyQuestsAPI(ODailyQuests oDailyQuests) {
         this.oDailyQuests = oDailyQuests;
+    }
+
+    /**
+     * Get the QuestTypeRegistry object.
+     * @return QuestTypeRegistry object
+     */
+    public QuestTypeRegistry getQuestTypeRegistry() {
+        return questTypeRegistry;
     }
 
     /**

@@ -1,7 +1,7 @@
 package com.ordwen.odailyquests.events.listeners.entity;
 
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
-import com.ordwen.odailyquests.enums.QuestType;
+
 import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractEntityChecker;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -30,7 +30,7 @@ public class ProjectileHitListener extends AbstractEntityChecker implements List
                 Debugger.addDebug("=========================================================================================");
                 Debugger.addDebug("ProjectileHitListener: onProjectileHit summoned by " + player.getName() + " for " + entity.getType() + ".");
 
-                setPlayerQuestProgression(player, EntityType.GHAST, null, 1, QuestType.KILL, null);
+                setPlayerQuestProgression(player, EntityType.GHAST, null, 1, "KILL", null);
             }
         }
     }

@@ -3,10 +3,9 @@ package com.ordwen.odailyquests.quests.player.progression.checkers;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.essentials.Synchronization;
 import com.ordwen.odailyquests.configuration.functionalities.DisabledWorlds;
-import com.ordwen.odailyquests.quests.types.GlobalQuest;
+import com.ordwen.odailyquests.quests.types.BasicQuest;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
-import com.ordwen.odailyquests.quests.types.ItemQuest;
-import com.ordwen.odailyquests.enums.QuestType;
+import com.ordwen.odailyquests.quests.types.shared.ItemQuest;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.player.progression.QuestProgressUtils;
@@ -30,7 +29,7 @@ public abstract class AbstractItemChecker {
      * @param amount    the amount to increase progression by.
      * @param questType the quest type to increase progression for.
      */
-    public void setPlayerQuestProgression(Player player, ItemStack itemStack, int amount, QuestType questType) {
+    public void setPlayerQuestProgression(Player player, ItemStack itemStack, int amount, String questType) {
 
         Debugger.addDebug("ItemChecker: setPlayerQuestProgression summoned by " + player.getName() + " for " + itemStack.getType() + " with amount " + amount + " and quest type " + questType + ".");
 
@@ -47,13 +46,13 @@ public abstract class AbstractItemChecker {
             for (AbstractQuest abstractQuest : playerQuests.keySet()) {
 
                 final Progression progression = playerQuests.get(abstractQuest);
-                if (!progression.isAchieved() && abstractQuest.getQuestType() == questType) {
+                if (!progression.isAchieved() && abstractQuest.getQuestType().equals(questType)) {
 
                     Debugger.addDebug("ItemChecker: player " + player.getName() + " is currently progressing on " + abstractQuest.getQuestType() + " quest " + abstractQuest.getQuestName());
 
                     boolean isRequiredItem = false;
 
-                    if (abstractQuest instanceof GlobalQuest) {
+                    if (abstractQuest instanceof BasicQuest) {
                         isRequiredItem = true;
                     } else if (abstractQuest instanceof ItemQuest quest) {
 

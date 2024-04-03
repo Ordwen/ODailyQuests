@@ -2,7 +2,7 @@ package com.ordwen.odailyquests.events.listeners.item;
 
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.essentials.UseCustomFurnaceResults;
-import com.ordwen.odailyquests.enums.QuestType;
+
 import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractItemChecker;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,7 +18,7 @@ public class FurnaceExtractListener extends AbstractItemChecker implements Liste
         Debugger.addDebug("=========================================================================================");
         Debugger.addDebug("FurnaceExtractListener: onFurnaceExtractEvent summoned by " + event.getPlayer().getName() + " for " + event.getItemType() + ".");
 
-        setPlayerQuestProgression(event.getPlayer(), new ItemStack(event.getItemType()), event.getItemAmount(), QuestType.COOK);
+        setPlayerQuestProgression(event.getPlayer(), new ItemStack(event.getItemType()), event.getItemAmount(), "COOK");
     }
 }
 

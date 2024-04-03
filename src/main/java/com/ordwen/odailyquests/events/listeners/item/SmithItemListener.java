@@ -1,7 +1,7 @@
 package com.ordwen.odailyquests.events.listeners.item;
 
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
-import com.ordwen.odailyquests.enums.QuestType;
+
 import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractItemChecker;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -55,6 +55,6 @@ public class SmithItemListener extends AbstractItemChecker implements Listener {
 
         Debugger.addDebug("=========================================================================================");
         Debugger.addDebug("SmithItemListener: onSmithItemEvent summoned by " + player.getName() + " for " + result.getType() + ".");
-        setPlayerQuestProgression(player, result, result.getAmount(), QuestType.CRAFT);
+        setPlayerQuestProgression(player, result, result.getAmount(), "CRAFT");
     }
 }

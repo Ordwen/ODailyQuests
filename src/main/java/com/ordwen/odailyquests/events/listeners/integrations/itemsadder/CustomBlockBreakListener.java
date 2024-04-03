@@ -1,7 +1,7 @@
 package com.ordwen.odailyquests.events.listeners.integrations.itemsadder;
 
 import com.ordwen.odailyquests.configuration.essentials.Antiglitch;
-import com.ordwen.odailyquests.enums.QuestType;
+
 import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractItemChecker;
 import dev.lone.itemsadder.api.Events.CustomBlockBreakEvent;
 import org.bukkit.block.Block;
@@ -29,7 +29,7 @@ public class CustomBlockBreakListener extends AbstractItemChecker implements Lis
         }
 
         if (valid.get()) {
-            setPlayerQuestProgression(player, event.getCustomBlockItem(), 1, QuestType.BREAK);
+            setPlayerQuestProgression(player, event.getCustomBlockItem(), 1, "BREAK");
         }
     }
 }

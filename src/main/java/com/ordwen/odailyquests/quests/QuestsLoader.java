@@ -1,9 +1,12 @@
 package com.ordwen.odailyquests.quests;
 
 import com.ordwen.odailyquests.ODailyQuests;
-import com.ordwen.odailyquests.enums.QuestType;
+import com.ordwen.odailyquests.api.quests.IQuest;
+import com.ordwen.odailyquests.api.quests.QuestTypeRegistry;
 import com.ordwen.odailyquests.quests.getters.QuestItemGetter;
 import com.ordwen.odailyquests.quests.types.*;
+import com.ordwen.odailyquests.quests.types.shared.EntityQuest;
+import com.ordwen.odailyquests.quests.types.shared.ItemQuest;
 import com.ordwen.odailyquests.rewards.Reward;
 import com.ordwen.odailyquests.rewards.RewardLoader;
 import com.ordwen.odailyquests.rewards.RewardType;
@@ -11,7 +14,6 @@ import com.ordwen.odailyquests.tools.ColorConvert;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -22,12 +24,14 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class QuestsLoader extends QuestItemGetter {
 
     private final RewardLoader rewardLoader = new RewardLoader();
+    private final QuestTypeRegistry questTypeRegistry = ODailyQuests.INSTANCE.getAPI().getQuestTypeRegistry();
 
     /**
      * Load the reward of a quest.
@@ -52,7 +56,7 @@ public class QuestsLoader extends QuestItemGetter {
      * @param questIndex   the quest index in the file.
      * @return the global quest.
      */
-    private GlobalQuest createBasicQuest(ConfigurationSection questSection, String fileName, int questIndex) {
+    private BasicQuest createBasicQuest(ConfigurationSection questSection, String fileName, int questIndex) {
 
         /* quest name */
         String questName = ColorConvert.convertColorCode(questSection.getString(".name"));
@@ -65,25 +69,25 @@ public class QuestsLoader extends QuestItemGetter {
         boolean usePlaceholders = questSection.getBoolean(".use_placeholders");
 
         /* quest type */
-        QuestType questType;
-        final String supposedType = questSection.getString(".quest_type");
-        try {
-            questType = QuestType.valueOf(supposedType);
-        } catch (Exception e) {
-            configurationError(fileName, questIndex, "quest_type", supposedType + " is not a valid quest type.");
+        final String questType = questSection.getString(".quest_type");
+        if (!questTypeRegistry.containsKey(questType)) {
+            PluginLogger.configurationError(fileName, questIndex, "quest_type", questType + " is not a valid quest type.");
             return null;
         }
 
         /* required amount */
-        int requiredAmount = questType == QuestType.LOCATION || questType == QuestType.PLACEHOLDER ? 1 : questSection.getInt(".required_amount");
-        if (requiredAmount == -1) return null;
+        int requiredAmount = questSection.contains(".required_amount") ? 1 : questSection.getInt(".required_amount");
+        if (requiredAmount < 1) {
+            PluginLogger.configurationError(fileName, questIndex, "required_amount", "The required amount must be greater than 0.");
+            return null;
+        }
 
         /* required worlds */
         final List<String> requiredWorlds = questSection.getStringList(".required_worlds");
 
         String presumedItem = questSection.getString(".menu_item");
         if (presumedItem == null) {
-            configurationError(fileName, questIndex, "menu_item", "The menu item is not defined.");
+            PluginLogger.configurationError(fileName, questIndex, "menu_item", "The menu item is not defined.");
             return null;
         }
 
@@ -102,39 +106,7 @@ public class QuestsLoader extends QuestItemGetter {
         /* reward */
         final Reward reward = createReward(questSection, fileName, questIndex);
 
-        return new GlobalQuest(questIndex, questName, fileName, questDesc, questType, menuItem, achievedItem, requiredAmount, reward, requiredWorlds, usePlaceholders);
-    }
-
-    /**
-     * Load a quest that require entities.
-     *
-     * @param base         the base quest.
-     * @param questSection the current quest section.
-     * @param fileName     the file name where the quest is.
-     * @param questIndex   the quest index in the file.
-     * @return an entity quest.
-     */
-    private AbstractQuest loadEntityQuest(GlobalQuest base, ConfigurationSection questSection, String fileName, int questIndex) {
-        if (!questSection.contains(".required_entity")) return base;
-
-        /* all required entities */
-        final List<EntityType> entityTypes = new ArrayList<>();
-
-        /* color of sheep for quests that require a ship (obviously) */
-        String presumedDyeColor = questSection.getString(".sheep_color");
-        DyeColor dyeColor = getDyeColor(presumedDyeColor, fileName, questIndex);
-
-        if (questSection.isString(".required_entity")) {
-            EntityType entityType = getEntityType(fileName, questIndex, questSection.getString(".required_entity"));
-            entityTypes.add(entityType);
-        } else {
-            for (String presumedEntity : questSection.getStringList(".required_entity")) {
-                EntityType entityType = getEntityType(fileName, questIndex, presumedEntity);
-                entityTypes.add(entityType);
-            }
-        }
-
-        return new EntityQuest(base, entityTypes, dyeColor);
+        return new BasicQuest(questIndex, questName, fileName, questDesc, questType, menuItem, achievedItem, requiredAmount, reward, requiredWorlds, usePlaceholders);
     }
 
     /**
@@ -146,7 +118,7 @@ public class QuestsLoader extends QuestItemGetter {
      * @param questIndex   the quest index in the file.
      * @return an entity quest.
      */
-    private AbstractQuest loadCustomMobQuest(GlobalQuest base, ConfigurationSection questSection, String fileName, int questIndex) {
+    private AbstractQuest loadCustomMobQuest(BasicQuest base, ConfigurationSection questSection, String fileName, int questIndex) {
 
         final List<String> entityNames = new ArrayList<>();
         if (questSection.isString(".entity_name")) {
@@ -160,7 +132,7 @@ public class QuestsLoader extends QuestItemGetter {
         }
 
         if (entityNames.isEmpty()) {
-            configurationError(fileName, questIndex, null, "There is no entity name defined for quest type CUSTOM_MOBS.");
+            PluginLogger.configurationError(fileName, questIndex, null, "There is no entity name defined for quest type CUSTOM_MOBS.");
             return null;
         }
 
@@ -176,18 +148,18 @@ public class QuestsLoader extends QuestItemGetter {
      * @param questIndex   the quest index in the file.
      * @return an item quest.
      */
-    private AbstractQuest loadItemQuest(GlobalQuest base, ConfigurationSection questSection, String fileName, int questIndex) {
+    private AbstractQuest loadItemQuest(BasicQuest base, ConfigurationSection questSection, String fileName, int questIndex) {
         if (!questSection.contains(".required_item")) return base;
 
         /* menu item */
-        ItemStack menuItem = base.getMenuItem();
+        final ItemStack menuItem = base.getMenuItem();
 
         /* all required items */
         final List<ItemStack> requiredItems = new ArrayList<>();
         if (loadRequiredItems(questSection, fileName, questIndex, menuItem, requiredItems)) return null;
 
         /* apply Persistent Data Container to the menu item to differentiate GET quests */
-        if (base.getQuestType() == QuestType.GET) {
+        if (base.getQuestType().equals("GET")) {
             ItemMeta meta = menuItem.getItemMeta();
             PersistentDataContainer container = meta.getPersistentDataContainer();
 
@@ -212,10 +184,10 @@ public class QuestsLoader extends QuestItemGetter {
      * @param questIndex   the quest index in the file.
      * @return a villager quest.
      */
-    private AbstractQuest loadVillagerQuest(GlobalQuest base, ConfigurationSection questSection, String fileName, int questIndex) {
+    private AbstractQuest loadVillagerQuest(BasicQuest base, ConfigurationSection questSection, String fileName, int questIndex) {
 
         /* menu item */
-        ItemStack menuItem = base.getMenuItem();
+        final ItemStack menuItem = base.getMenuItem();
 
         /* all required items */
         List<ItemStack> requiredItems = new ArrayList<>();
@@ -260,7 +232,7 @@ public class QuestsLoader extends QuestItemGetter {
             if (itemType.equals("CUSTOM_ITEM")) {
                 final ConfigurationSection section = questSection.getConfigurationSection(".custom_item");
                 if (section == null) {
-                    configurationError(fileName, questIndex, null, "The custom item is not defined.");
+                    PluginLogger.configurationError(fileName, questIndex, null, "The custom item is not defined.");
                     return true;
                 }
                 final ItemStack item = loadCustomItem(section, fileName, questIndex);
@@ -314,11 +286,11 @@ public class QuestsLoader extends QuestItemGetter {
             try {
                 potionType = PotionType.valueOf(potionSection.getString("type"));
             } catch (IllegalArgumentException e) {
-                configurationError(fileName, questIndex, "type", "Invalid potion type.");
+                PluginLogger.configurationError(fileName, questIndex, "type", "Invalid potion type.");
                 return null;
             }
         } else {
-            configurationError(fileName, questIndex, "type", "Potion type is not defined.");
+            PluginLogger.configurationError(fileName, questIndex, "type", "Potion type is not defined.");
             return null;
         }
 
@@ -326,7 +298,7 @@ public class QuestsLoader extends QuestItemGetter {
         if (potionSection.contains("extended")) extended = potionSection.getBoolean("extended");
 
         if (upgraded && extended) {
-            configurationError(fileName, questIndex, null, "Potion cannot be both upgraded and extended.");
+            PluginLogger.configurationError(fileName, questIndex, null, "Potion cannot be both upgraded and extended.");
             return null;
         }
 
@@ -376,7 +348,7 @@ public class QuestsLoader extends QuestItemGetter {
      * @param menuItem     menu item of the quest
      * @return the location quest
      */
-    private LocationQuest loadLocationQuest(GlobalQuest base, ConfigurationSection questSection, String fileName, int questIndex, ItemStack menuItem) {
+    private LocationQuest loadLocationQuest(BasicQuest base, ConfigurationSection questSection, String fileName, int questIndex, ItemStack menuItem) {
         final ConfigurationSection section = questSection.getConfigurationSection("location");
 
         /* reach type */
@@ -384,7 +356,7 @@ public class QuestsLoader extends QuestItemGetter {
         int radius = 1;
 
         if (section == null) {
-            configurationError(fileName, questIndex, null, "You need to specify a location.");
+            PluginLogger.configurationError(fileName, questIndex, null, "You need to specify a location.");
             location = new Location(Bukkit.getWorlds().get(0), 0, 0, 0);
         } else {
             final String wd = section.getString(".world");
@@ -395,7 +367,7 @@ public class QuestsLoader extends QuestItemGetter {
             radius = section.getInt(".radius");
             final World world = Bukkit.getWorld(wd);
             if (world == null) {
-                configurationError(fileName, questIndex, null, "The world specified in the location is not loaded.");
+                PluginLogger.configurationError(fileName, questIndex, null, "The world specified in the location is not loaded.");
                 location = new Location(Bukkit.getWorlds().get(0), 0, 0, 0);
             } else {
                 location = new Location(world, x, y, z);
@@ -425,7 +397,7 @@ public class QuestsLoader extends QuestItemGetter {
      * @param menuItem     menu item of the quest
      * @return the placeholder quest
      */
-    private PlaceholderQuest loadPlaceholderQuest(GlobalQuest base, ConfigurationSection questSection, String fileName, int questIndex, ItemStack menuItem) {
+    private PlaceholderQuest loadPlaceholderQuest(BasicQuest base, ConfigurationSection questSection, String fileName, int questIndex, ItemStack menuItem) {
         final ConfigurationSection section = questSection.getConfigurationSection(".placeholder");
 
         /* variables for PLACEHOLDER quests */
@@ -435,7 +407,7 @@ public class QuestsLoader extends QuestItemGetter {
         String errorMessage = null;
 
         if (section == null) {
-            configurationError(fileName, questIndex, null, "You need to specify a placeholder.");
+            PluginLogger.configurationError(fileName, questIndex, null, "You need to specify a placeholder.");
         } else {
             placeholder = section.getString(".value");
             conditionType = ConditionType.valueOf(section.getString(".operator"));
@@ -463,7 +435,7 @@ public class QuestsLoader extends QuestItemGetter {
      * @param quests   list for quests.
      * @param fileName file name for PluginLogger.
      */
-    public void loadQuests(FileConfiguration file, ArrayList<AbstractQuest> quests, String fileName) {
+    public void loadQuests(FileConfiguration file, List<AbstractQuest> quests, String fileName) {
 
         /* load quests */
         if (file.getConfigurationSection("quests") != null) {
@@ -474,49 +446,61 @@ public class QuestsLoader extends QuestItemGetter {
                 final ConfigurationSection questSection = file.getConfigurationSection("quests." + fileQuest);
                 if (questSection == null) continue;
 
-                final GlobalQuest base = createBasicQuest(questSection, fileName, questIndex);
+                final BasicQuest base = createBasicQuest(questSection, fileName, questIndex);
                 if (base == null) continue;
 
-                QuestType questType = base.getQuestType();
+                String questType = base.getQuestType();
                 ItemStack menuItem = base.getMenuItem();
 
                 switch (questType) {
 
                     /* type that does not require a specific entity/item */
-                    case MILKING, EXP_POINTS, EXP_LEVELS, CARVE, PLAYER_DEATH, FIREBALL_REFLECT -> quests.add(base);
+                    case "MILKING", "EXP_POINTS", "EXP_LEVELS", "CARVE", "PLAYER_DEATH", "FIREBALL_REFLECT" ->
+                            quests.add(base);
 
                     /* types that requires an entity */
-                    case KILL, BREED, TAME, SHEAR -> {
-                        AbstractQuest entityQuest = loadEntityQuest(base, questSection, fileName, questIndex);
-                        if (entityQuest != null) quests.add(entityQuest);
+                    case "KILL", "BREED", "TAME", "SHEAR" -> {
+                        Class<? extends AbstractQuest> questClass = questTypeRegistry.get(questType);
+
+                        AbstractQuest questInstance = null;
+                        try {
+                            questInstance = questClass.getDeclaredConstructor(BasicQuest.class).newInstance(base);
+                        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                            PluginLogger.error("Error while creating a new instance of " + questType + " quest.");
+                            PluginLogger.error(e.getMessage());
+                        }
+                        if (questInstance != null) {
+                            questInstance.loadParameters(questSection, fileName, questIndex);
+                            quests.add(questInstance);
+                        }
                     }
 
                     /* types that requires a custom mob */
-                    case CUSTOM_MOBS -> {
+                    case "CUSTOM_MOBS" -> {
                         AbstractQuest customMobsQuest = loadCustomMobQuest(base, questSection, fileName, questIndex);
                         if (customMobsQuest != null) quests.add(customMobsQuest);
                     }
 
                     /* types that requires an item */
-                    case BREAK, PLACE, CRAFT, PICKUP, LAUNCH, CONSUME, GET, COOK, ENCHANT, FISH, FARMING -> {
+                    case "BREAK", "PLACE", "CRAFT", "PICKUP", "LAUNCH", "CONSUME", "GET", "COOK", "ENCHANT", "FISH", "FARMING" -> {
                         AbstractQuest itemQuest = loadItemQuest(base, questSection, fileName, questIndex);
                         if (itemQuest != null) quests.add(itemQuest);
                     }
 
                     /* type that requires a villager */
-                    case VILLAGER_TRADE -> {
+                    case "VILLAGER_TRADE" -> {
                         AbstractQuest villagerQuest = loadVillagerQuest(base, questSection, fileName, questIndex);
                         if (villagerQuest != null) quests.add(villagerQuest);
                     }
 
                     /* type that requires a location */
-                    case LOCATION -> {
+                    case "LOCATION" -> {
                         AbstractQuest locationQuest = loadLocationQuest(base, questSection, fileName, questIndex, menuItem);
                         quests.add(locationQuest);
                     }
 
                     /* type that requires a placeholder */
-                    case PLACEHOLDER -> {
+                    case "PLACEHOLDER" -> {
                         AbstractQuest placeholderQuest = loadPlaceholderQuest(base, questSection, fileName, questIndex, menuItem);
                         quests.add(placeholderQuest);
                     }
@@ -542,54 +526,18 @@ public class QuestsLoader extends QuestItemGetter {
         if (material.contains(":")) {
             requiredItem = super.getItem(material, fileName, questIndex, parameter);
             if (requiredItem == null) {
-                configurationError(fileName, questIndex, parameter, "Invalid material type detected.");
+                PluginLogger.configurationError(fileName, questIndex, parameter, "Invalid material type detected.");
                 return null;
             }
         } else {
             try {
                 requiredItem = new ItemStack(Material.valueOf(material));
             } catch (Exception e) {
-                configurationError(fileName, questIndex, parameter, "Invalid material type detected.");
+                PluginLogger.configurationError(fileName, questIndex, parameter, "Invalid material type detected.");
                 return null;
             }
         }
 
         return requiredItem;
-    }
-
-    /**
-     * @param fileName   the file name
-     * @param questIndex the quest index
-     * @param value      the value
-     * @return the entity type
-     */
-    private EntityType getEntityType(String fileName, int questIndex, String value) {
-        EntityType entityType;
-        try {
-            entityType = EntityType.valueOf(value);
-        } catch (Exception e) {
-            configurationError(fileName, questIndex, "required_entity", "Invalid entity type detected.");
-            return null;
-        }
-        return entityType;
-    }
-
-    /**
-     * @param dye        the dye to get
-     * @param fileName   the file name
-     * @param questIndex the quest index
-     * @return the dye color
-     */
-    private DyeColor getDyeColor(String dye, String fileName, int questIndex) {
-        if (dye == null) return null;
-
-        DyeColor dyeColor;
-        try {
-            dyeColor = DyeColor.valueOf(dye.toUpperCase());
-        } catch (Exception e) {
-            configurationError(fileName, questIndex, "sheep_color", "Invalid dye type detected.");
-            return null;
-        }
-        return dyeColor;
     }
 }

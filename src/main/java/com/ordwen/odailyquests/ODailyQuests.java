@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests;
 
 import com.ordwen.odailyquests.api.ODailyQuestsAPI;
+import com.ordwen.odailyquests.api.quests.QuestTypeRegistry;
 import com.ordwen.odailyquests.events.restart.RestartHandler;
 import com.ordwen.odailyquests.externs.IntegrationsManager;
 import com.ordwen.odailyquests.commands.admin.AdminCommands;
@@ -23,6 +24,7 @@ import com.ordwen.odailyquests.quests.player.progression.listeners.QuestComplete
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.h2.H2Manager;
 import com.ordwen.odailyquests.quests.player.progression.storage.yaml.YamlManager;
+import com.ordwen.odailyquests.quests.types.KillQuest;
 import com.ordwen.odailyquests.tools.*;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.mysql.MySQLManager;
@@ -70,7 +72,7 @@ public final class ODailyQuests extends JavaPlugin {
         this.filesManager.loadAllFiles();
 
         /* Check for updates */
-        new AutoUpdater(this).checkForUpdate(); // LAST USE : 2.1.0 -> 2.1.1
+        new AutoUpdater(this).checkForUpdate();
         checkForSpigotUpdate();
 
         /* Load SQL Support */
@@ -114,6 +116,12 @@ public final class ODailyQuests extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new QuestCompletedListener(), this);
         getServer().getPluginManager().registerEvents(new AllQuestsCompletedListener(), this);
         getServer().getPluginManager().registerEvents(new AllCategoryQuestsCompletedListener(), this);
+
+        /* Register quest types */
+        final QuestTypeRegistry questTypeRegistry = API.getQuestTypeRegistry();
+
+        questTypeRegistry.registerQuestType("KILL", KillQuest.class);
+        getServer().getPluginManager().registerEvents(new KillQuest(null), this);
 
         /* Register server restart related events */
         new RestartHandler(this).registerSubClasses();

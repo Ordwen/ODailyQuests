@@ -1,18 +1,20 @@
 package com.ordwen.odailyquests.quests.types;
 
-import com.ordwen.odailyquests.enums.QuestType;
+
+import com.ordwen.odailyquests.api.quests.IQuest;
+import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
 import com.ordwen.odailyquests.rewards.Reward;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public abstract class AbstractQuest {
+public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
 
     final int questIndex;
     final String questName;
     final String categoryName;
     final List<String> questDesc;
-    final QuestType questType;
+    final String questType;
     final ItemStack menuItem;
     final ItemStack achievedItem;
     final int amountRequired;
@@ -29,7 +31,7 @@ public abstract class AbstractQuest {
      * @param amountRequired required amount of the item.
      * @param reward         reward of the quest.
      */
-    public AbstractQuest(int questIndex, String questName, String categoryName, List<String> questDesc, QuestType questType, ItemStack menuItem, ItemStack achievedItem, int amountRequired, Reward reward, List<String> requiredWorlds, boolean isUsingPlaceholders) {
+    public AbstractQuest(int questIndex, String questName, String categoryName, List<String> questDesc, String questType, ItemStack menuItem, ItemStack achievedItem, int amountRequired, Reward reward, List<String> requiredWorlds, boolean isUsingPlaceholders) {
         this.questIndex = questIndex;
         this.questName = questName;
         this.categoryName = categoryName;
@@ -46,20 +48,20 @@ public abstract class AbstractQuest {
     /**
      * Quest constructor.
      *
-     * @param globalQuest quest base.
+     * @param basicQuest quest base.
      */
-    public AbstractQuest(GlobalQuest globalQuest) {
-        this.questIndex = globalQuest.questIndex;
-        this.questName = globalQuest.questName;
-        this.categoryName = globalQuest.categoryName;
-        this.questDesc = globalQuest.questDesc;
-        this.questType = globalQuest.questType;
-        this.menuItem = globalQuest.menuItem;
-        this.achievedItem = globalQuest.achievedItem;
-        this.amountRequired = globalQuest.amountRequired;
-        this.reward = globalQuest.reward;
-        this.requiredWorlds = globalQuest.requiredWorlds;
-        this.isUsingPlaceholders = globalQuest.isUsingPlaceholders;
+    public AbstractQuest(BasicQuest basicQuest) {
+        this.questIndex = basicQuest.questIndex;
+        this.questName = basicQuest.questName;
+        this.categoryName = basicQuest.categoryName;
+        this.questDesc = basicQuest.questDesc;
+        this.questType = basicQuest.questType;
+        this.menuItem = basicQuest.menuItem;
+        this.achievedItem = basicQuest.achievedItem;
+        this.amountRequired = basicQuest.amountRequired;
+        this.reward = basicQuest.reward;
+        this.requiredWorlds = basicQuest.requiredWorlds;
+        this.isUsingPlaceholders = basicQuest.isUsingPlaceholders;
     }
 
     /**
@@ -76,7 +78,7 @@ public abstract class AbstractQuest {
      *
      * @return the type of the quest.
      */
-    public QuestType getQuestType() {
+    public String getQuestType() {
         return this.questType;
     }
 

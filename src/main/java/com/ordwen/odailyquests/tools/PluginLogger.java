@@ -21,4 +21,26 @@ public class PluginLogger {
     public static void fine(String msg) {
         logger.fine(msg);
     }
+
+    /**
+     * Display an error message in the console when a quest cannot be loaded because of a configuration error.
+     *
+     * @param fileName   the name of the file where the error occurred
+     * @param questIndex the index of the quest in the file
+     * @param parameter  the parameter that caused the error
+     * @param reason     the reason of the error
+     */
+    public static void configurationError(String fileName, int questIndex, String parameter, String reason) {
+        PluginLogger.error("-----------------------------------");
+        PluginLogger.error("Invalid quest configuration detected.");
+        PluginLogger.error("File : " + fileName);
+        PluginLogger.error("Quest number : " + (questIndex + 1));
+        PluginLogger.error("Reason : " + reason);
+
+        if (parameter != null) {
+            PluginLogger.error("Parameter : " + parameter);
+        }
+
+        PluginLogger.error("-----------------------------------");
+    }
 }

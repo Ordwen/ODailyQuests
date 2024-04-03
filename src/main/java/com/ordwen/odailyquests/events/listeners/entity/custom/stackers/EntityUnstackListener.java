@@ -2,7 +2,7 @@ package com.ordwen.odailyquests.events.listeners.entity.custom.stackers;
 
 import com.bgsoftware.wildstacker.api.events.EntityUnstackEvent;
 import com.ordwen.odailyquests.configuration.integrations.WildStackerEnabled;
-import com.ordwen.odailyquests.enums.QuestType;
+
 import com.ordwen.odailyquests.events.antiglitch.EntitySource;
 import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractEntityChecker;
 import org.bukkit.entity.Entity;
@@ -25,7 +25,7 @@ public class EntityUnstackListener extends AbstractEntityChecker implements List
         if (isEntityFromSpawner) return;
 
         if (event.getUnstackSource() instanceof Player player) {
-            setPlayerQuestProgression(player, event.getEntity().getType(), null, event.getAmount(), QuestType.KILL, null);
+            setPlayerQuestProgression(player, event.getEntity().getType(), null, event.getAmount(), "KILL, null);
         }
     }
 }

@@ -4,8 +4,7 @@ import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.essentials.Synchronization;
 import com.ordwen.odailyquests.configuration.functionalities.DisabledWorlds;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
-import com.ordwen.odailyquests.quests.types.EntityQuest;
-import com.ordwen.odailyquests.enums.QuestType;
+import com.ordwen.odailyquests.quests.types.shared.EntityQuest;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.player.progression.QuestProgressUtils;
@@ -26,7 +25,7 @@ public abstract class AbstractEntityChecker {
      * @param entityType the entity type to increase progression for.
      * @param dyeColor   the dye color of the sheep, if the entity is a sheep.
      */
-    public void setPlayerQuestProgression(Player player, EntityType entityType, String entityName, int amount, QuestType questType, DyeColor dyeColor) {
+    public void setPlayerQuestProgression(Player player, EntityType entityType, String entityName, int amount, String questType, DyeColor dyeColor) {
 
         Debugger.addDebug("EntityChecker: setPlayerQuestProgression summoned by " + player.getName() + " for " + entityType + " with amount " + amount + " and quest type " + questType + ".");
 
@@ -43,7 +42,7 @@ public abstract class AbstractEntityChecker {
             for (AbstractQuest abstractQuest : playerQuests.keySet()) {
 
                 final Progression progression = playerQuests.get(abstractQuest);
-                if (!progression.isAchieved() && abstractQuest.getQuestType() == questType) {
+                if (!progression.isAchieved() && abstractQuest.getQuestType().equals(questType)) {
 
                     Debugger.addDebug("EntityChecker: player " + player.getName() + " is currently progressing on " + abstractQuest.getQuestType() + " quest " + abstractQuest.getQuestName());
 
@@ -53,9 +52,9 @@ public abstract class AbstractEntityChecker {
 
                         Debugger.addDebug("EntityChecker: quest " + abstractQuest.getQuestName() + " is an EntityQuest");
 
-                        if (quest.getEntityTypes() == null) isRequiredEntity = true;
+                        if (quest.getRequiredEntities() == null) isRequiredEntity = true;
                         else {
-                            for (EntityType type : quest.getEntityTypes()) {
+                            for (EntityType type : quest.getRequiredEntities()) {
                                 isRequiredEntity = (type == entityType);
                                 if (isRequiredEntity) break;
                             }

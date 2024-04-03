@@ -9,7 +9,7 @@ public class PlaceholderQuest extends AbstractQuest {
     private final String expectedValue;
     private final String errorMessage;
 
-    public PlaceholderQuest(GlobalQuest base, String placeholder, ConditionType conditionType, String expectedValue, String errorMessage) {
+    public PlaceholderQuest(BasicQuest base, String placeholder, ConditionType conditionType, String expectedValue, String errorMessage) {
         super(base);
 
         this.placeholder = placeholder;

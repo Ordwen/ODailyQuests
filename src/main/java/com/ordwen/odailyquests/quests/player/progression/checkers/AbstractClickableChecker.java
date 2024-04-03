@@ -7,11 +7,11 @@ import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.events.antiglitch.OpenedRecipes;
 import com.ordwen.odailyquests.externs.hooks.placeholders.PAPIHook;
 import com.ordwen.odailyquests.quests.ConditionType;
-import com.ordwen.odailyquests.enums.QuestType;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.types.*;
 import com.ordwen.odailyquests.quests.player.progression.QuestProgressUtils;
+import com.ordwen.odailyquests.quests.types.shared.ItemQuest;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -45,7 +45,7 @@ public abstract class AbstractClickableChecker {
             for (AbstractQuest abstractQuest : playerQuests.keySet()) {
 
                 if (abstractQuest instanceof ItemQuest quest) {
-                    if (isAppropriateQuestMenuItem(clickedItem, quest.getMenuItem()) && quest.getQuestType() == QuestType.GET) {
+                    if (isAppropriateQuestMenuItem(clickedItem, quest.getMenuItem()) && quest.getQuestType().equals("GET")) {
                         final Progression progression = playerQuests.get(abstractQuest);
                         if (!progression.isAchieved()) {
                             GetQuestChecker.makeQuestProgress(player, progression, quest);
@@ -55,7 +55,7 @@ public abstract class AbstractClickableChecker {
                 }
 
                 else if (abstractQuest instanceof LocationQuest quest) {
-                    if (isAppropriateQuestMenuItem(clickedItem, quest.getMenuItem()) && quest.getQuestType() == QuestType.LOCATION) {
+                    if (isAppropriateQuestMenuItem(clickedItem, quest.getMenuItem()) && quest.getQuestType().equals("LOCATION")) {
 
                         final Progression progression = playerQuests.get(quest);
                         if (!progression.isAchieved()) {
@@ -65,7 +65,7 @@ public abstract class AbstractClickableChecker {
                 }
 
                 else if (abstractQuest instanceof PlaceholderQuest quest) {
-                    if (isAppropriateQuestMenuItem(clickedItem, quest.getMenuItem()) && quest.getQuestType() == QuestType.PLACEHOLDER) {
+                    if (isAppropriateQuestMenuItem(clickedItem, quest.getMenuItem()) && quest.getQuestType().equals("PLACEHOLDER")) {
 
                         final Progression progression = playerQuests.get(quest);
                         if (!progression.isAchieved()) {
@@ -113,7 +113,7 @@ public abstract class AbstractClickableChecker {
 
                     boolean valid = false;
                     Progression questProgression = playerQuests.get(quest);
-                    if (!questProgression.isAchieved() && quest.getQuestType() == QuestType.VILLAGER_TRADE) {
+                    if (!questProgression.isAchieved() && quest.getQuestType().equals("VILLAGER_TRADE")) {
                         if (quest.getRequiredItems() == null) valid = true;
                         else {
                             for (ItemStack item : quest.getRequiredItems()) {

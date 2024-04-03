@@ -1,7 +1,7 @@
 package com.ordwen.odailyquests.events.listeners.global;
 
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
-import com.ordwen.odailyquests.enums.QuestType;
+
 import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractGlobalChecker;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -18,7 +18,7 @@ public class BucketFillListener extends AbstractGlobalChecker implements Listene
             Debugger.addDebug("=========================================================================================");
             Debugger.addDebug("BucketFillListener: onPlayerBucketFill summoned by " + event.getPlayer().getName());
 
-            setPlayerQuestProgression(event.getPlayer(), 1, QuestType.MILKING);
+            setPlayerQuestProgression(event.getPlayer(), 1, "MILKING");
         }
     }
 }

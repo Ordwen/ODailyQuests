@@ -1,5 +1,7 @@
-package com.ordwen.odailyquests.quests.types;
+package com.ordwen.odailyquests.quests.types.shared;
 
+import com.ordwen.odailyquests.quests.types.AbstractQuest;
+import com.ordwen.odailyquests.quests.types.BasicQuest;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
@@ -12,11 +14,11 @@ public class ItemQuest extends AbstractQuest {
     /**
      * Quest constructor.
      *
-     * @param globalQuest   parent quest.
+     * @param basicQuest   parent quest.
      * @param requiredItems list of required items.
      */
-    public ItemQuest(GlobalQuest globalQuest, List<ItemStack> requiredItems, boolean ignoreNbt) {
-        super(globalQuest);
+    public ItemQuest(BasicQuest basicQuest, List<ItemStack> requiredItems, boolean ignoreNbt) {
+        super(basicQuest);
         this.requiredItems = requiredItems;
         this.ignoreNbt = ignoreNbt;
     }

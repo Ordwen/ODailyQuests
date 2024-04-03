@@ -7,11 +7,10 @@ import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.getters
 import com.ordwen.odailyquests.externs.hooks.placeholders.PAPIHook;
 import com.ordwen.odailyquests.files.PlayerInterfaceFile;
 import com.ordwen.odailyquests.quests.player.progression.QuestLoaderUtils;
-import com.ordwen.odailyquests.quests.types.AbstractQuest;
-import com.ordwen.odailyquests.enums.QuestType;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
+import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.tools.ColorConvert;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import com.ordwen.odailyquests.tools.TimeRemain;
@@ -368,7 +367,7 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
 
             else {
 
-                if (quest.getQuestType() == QuestType.GET) {
+                if (quest.getQuestType().equals("GET")) {
                     if (!completeGetType.isEmpty()) lore.add(ColorConvert.convertColorCode(PAPIHook.getPlaceholders(player, completeGetType)
                             .replace("%progress%", String.valueOf(questsMap.get(quest).getProgression()))
                             .replace("%required%", String.valueOf(quest.getAmountRequired()))
