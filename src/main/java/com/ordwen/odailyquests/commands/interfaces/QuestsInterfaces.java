@@ -2,6 +2,7 @@ package com.ordwen.odailyquests.commands.interfaces;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.Buttons;
+import com.ordwen.odailyquests.externs.hooks.placeholders.PAPIHook;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
@@ -159,7 +160,11 @@ public class QuestsInterfaces {
                     if (lore == null) continue;
                     lore.replaceAll(s -> s.replace("%progress%", String.valueOf(0)));
                     lore.replaceAll(s -> s.replace("%required%", String.valueOf(itemMeta.getPersistentDataContainer().get(requiredKey, PersistentDataType.INTEGER))));
-                    lore.replaceAll(s -> s.replace("%(?!\\\\s)(.+?)(?!\\\\s)%", "~"));
+                    lore.replaceAll(s -> s.replace("%drawIn%", "~"));
+                    lore.replaceAll(s -> PAPIHook.getPlaceholders(player, s));
+
+                    itemMeta.setLore(lore);
+                    item.setItemMeta(itemMeta);
                 }
             }
         }
