@@ -106,6 +106,7 @@ public class PlayerQuests {
 
     /**
      * Add number of achieved quests.
+     *
      * @param i number of achieved quests to add.
      */
     public void addTotalAchievedQuests(int i) {
@@ -155,12 +156,10 @@ public class PlayerQuests {
         final AbstractQuest questToRemove = oldQuests.get(index);
         final Progression progressionToRemove = this.playerQuests.get(questToRemove);
 
-        if (progressionToRemove.isAchieved()) {
-            if (!RerollNotAchieved.isRerollIfNotAchieved()) {
-                final String msg = QuestsMessages.CANNOT_REROLL_IF_ACHIEVED.toString();
-                if (msg != null) player.sendMessage(msg);
-                return;
-            }
+        if (progressionToRemove.isAchieved() && !RerollNotAchieved.isRerollIfNotAchieved()) {
+            final String msg = QuestsMessages.CANNOT_REROLL_IF_ACHIEVED.toString();
+            if (msg != null) player.sendMessage(msg);
+            return;
         }
 
         final Category category = CategoriesLoader.getCategoryByName(questToRemove.getCategoryName());
