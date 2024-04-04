@@ -150,23 +150,23 @@ public class PlayerQuests {
      *
      * @param index index of the quest to reroll.
      */
-    public void rerollQuest(int index, Player player) {
+    public boolean rerollQuest(int index, Player player) {
 
         final List<AbstractQuest> oldQuests = new ArrayList<>(this.playerQuests.keySet());
         final AbstractQuest questToRemove = oldQuests.get(index);
         final Progression progressionToRemove = this.playerQuests.get(questToRemove);
 
-        if (progressionToRemove.isAchieved() && !RerollNotAchieved.isRerollIfNotAchieved()) {
+        if (progressionToRemove.isAchieved() && RerollNotAchieved.isRerollIfNotAchieved()) {
             final String msg = QuestsMessages.CANNOT_REROLL_IF_ACHIEVED.toString();
             if (msg != null) player.sendMessage(msg);
-            return;
+            return false;
         }
 
         final Category category = CategoriesLoader.getCategoryByName(questToRemove.getCategoryName());
         if (category == null) {
             PluginLogger.error("An error occurred while rerolling a quest. The category is null.");
             PluginLogger.error("If the problem persists, please contact the developer.");
-            return;
+            return false;
         }
 
         final Set<AbstractQuest> oldQuestsSet = this.playerQuests.keySet();
@@ -187,5 +187,7 @@ public class PlayerQuests {
 
         this.playerQuests.clear();
         this.playerQuests.putAll(newPlayerQuests);
+
+        return true;
     }
 }

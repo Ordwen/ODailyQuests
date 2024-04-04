@@ -53,8 +53,9 @@ public class PRerollCommand extends PCommandHandler {
 
         if (activeQuests.containsKey(playerName)) {
             final PlayerQuests playerQuests = activeQuests.get(playerName);
-            playerQuests.rerollQuest(index - 1, player);
-            rerollConfirm(index, player);
+            if (playerQuests.rerollQuest(index - 1, player)) {
+                rerollConfirm(index, player);
+            }
         }
     }
 

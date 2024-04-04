@@ -56,9 +56,10 @@ public class ARerollCommand extends ACommandHandler {
 
         if (activeQuests.containsKey(playerName)) {
             final PlayerQuests playerQuests = activeQuests.get(playerName);
-            playerQuests.rerollQuest(index - 1, target);
-            confirmationToSender(index, playerName);
-            confirmationToTarget(index, target);
+            if (playerQuests.rerollQuest(index - 1, target)) {
+                confirmationToSender(index, playerName);
+                confirmationToTarget(index, target);
+            }
         }
     }
 
