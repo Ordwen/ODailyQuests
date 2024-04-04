@@ -86,6 +86,11 @@ public class PlayerQuests {
         }
     }
 
+    public void decreaseAchievedQuests() {
+        this.achievedQuests--;
+        this.totalAchievedQuests--;
+    }
+
     /**
      * Set number of achieved quests.
      *
@@ -187,6 +192,10 @@ public class PlayerQuests {
 
         this.playerQuests.clear();
         this.playerQuests.putAll(newPlayerQuests);
+
+        if (progressionToRemove.isAchieved()) {
+            this.decreaseAchievedQuests();
+        }
 
         return true;
     }
