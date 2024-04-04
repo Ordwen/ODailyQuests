@@ -37,13 +37,12 @@ public class AutoUpdater {
             throw new RuntimeException(e);
         }
 
+        final String currentVersion = plugin.getDescription().getVersion();
         final String configVersion = configFile.getString("version");
         if (configVersion == null) {
             PluginLogger.error("The 'version' field is missing from the config file. The auto updater cannot work without it.");
             return;
         }
-
-        final String currentVersion = plugin.getDescription().getVersion();
 
         if (!configVersion.equals(currentVersion)) {
             PluginLogger.warn("It looks like you were using an older version of the plugin. Let's update your files!");
@@ -115,6 +114,16 @@ public class AutoUpdater {
 
             if (!playerInterfaceFile.contains("player_interface.disable_status")) {
                 AddDefault.addDefaultConfigItem("player_interface.disable_status", false, playerInterfaceFile, playerInterface);
+            }
+
+            // --------------
+            // 2.2.5 -> 2.2.6
+            // --------------
+
+            // CONFIG
+
+            if (!configFile.contains("reroll_only_if_not_achieved")) {
+                AddDefault.addDefaultConfigItem("reroll_only_if_not_achieved", false, configFile, file);
             }
 
             PluginLogger.fine("All files have been updated!");

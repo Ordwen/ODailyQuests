@@ -64,7 +64,8 @@ public class ConfigurationManager {
         new OraxenEnabled(configurationFiles).loadOraxenEnabled();
 
         // utils
-        Synchronization.isSynchronised = configurationFiles.getConfigFile().getBoolean("synchronised_progression");
+        new Synchronization(configurationFiles).load();
+        new RerollNotAchieved(configurationFiles).load();
 
         // anti-glitch
         if (!configFile.contains("store_placed_blocks")) AddDefault.addDefaultConfigItem("store_placed_blocks", "true", configFile, file);
