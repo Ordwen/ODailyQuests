@@ -6,6 +6,8 @@ import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
 import com.ordwen.odailyquests.api.events.AllQuestsCompletedEvent;
+import com.ordwen.odailyquests.configuration.essentials.RerollNotAchieved;
+import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.categories.Category;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
@@ -147,10 +149,19 @@ public class PlayerQuests {
      *
      * @param index index of the quest to reroll.
      */
-    public void rerollQuest(int index) {
+    public void rerollQuest(int index, Player player) {
 
         final List<AbstractQuest> oldQuests = new ArrayList<>(this.playerQuests.keySet());
         final AbstractQuest questToRemove = oldQuests.get(index);
+        final Progression progressionToRemove = this.playerQuests.get(questToRemove);
+
+        if (progressionToRemove.isAchieved()) {
+            if (!RerollNotAchieved.isRerollIfNotAchieved()) {
+                final String msg = QuestsMessages.CANNOT_REROLL_IF_ACHIEVED.toString();
+                if (msg != null) player.sendMessage(msg);
+                return;
+            }
+        }
 
         final Category category = CategoriesLoader.getCategoryByName(questToRemove.getCategoryName());
         if (category == null) {

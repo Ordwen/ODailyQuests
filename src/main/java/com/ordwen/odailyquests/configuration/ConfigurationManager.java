@@ -65,6 +65,7 @@ public class ConfigurationManager {
 
         // utils
         Synchronization.isSynchronised = configurationFiles.getConfigFile().getBoolean("synchronised_progression");
+        RerollNotAchieved.rerollIfNotAchieved = configurationFiles.getConfigFile().getBoolean("reroll_not_achieved");
 
         // anti-glitch
         if (!configFile.contains("store_placed_blocks")) AddDefault.addDefaultConfigItem("store_placed_blocks", "true", configFile, file);
