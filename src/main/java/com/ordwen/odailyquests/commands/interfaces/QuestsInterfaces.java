@@ -124,7 +124,6 @@ public class QuestsInterfaces {
                             itemMeta.getPersistentDataContainer().set(usePlaceholdersKey, PersistentDataType.BYTE, (byte) 1);
                             itemMeta.getPersistentDataContainer().set(requiredKey, PersistentDataType.INTEGER, quest.getAmountRequired());
                         }
-                        //else itemMeta.getPersistentDataContainer().set(usePlaceholdersKey, PersistentDataType.BYTE, (byte) 0);
 
                         itemStack.setItemMeta(itemMeta);
                     }
