@@ -1,5 +1,6 @@
-package com.ordwen.odailyquests.quests.types;
+package com.ordwen.odailyquests.quests.types.shared;
 
+import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.rewards.Reward;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.Event;

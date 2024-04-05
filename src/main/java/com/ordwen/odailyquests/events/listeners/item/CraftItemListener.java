@@ -2,17 +2,22 @@ package com.ordwen.odailyquests.events.listeners.item;
 
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 
-import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractItemChecker;
+import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.CraftItemEvent;
-import org.bukkit.inventory.ComplexRecipe;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.*;
 
-public class CraftItemListener extends AbstractItemChecker implements Listener {
+import java.util.Set;
+
+public class CraftItemListener extends PlayerProgressor implements Listener {
+
+    private static final Set<String> COMPLEX_RECIPES = Set.of(
+            "REPAIR_ITEM", "ARMOR_DYE", "SHULKER_BOX_COLORING", "SHIELD_DECORATION", "BANNER_DUPLICATE", "MAP_CLONING", "BOOK_CLONING"
+    );
 
     @EventHandler
     public void onCraftItemEvent(CraftItemEvent event) {
@@ -24,11 +29,7 @@ public class CraftItemListener extends AbstractItemChecker implements Listener {
         final Player player = (Player) event.getWhoClicked();
 
         if (event.getRecipe() instanceof ComplexRecipe complexRecipe) {
-            switch (complexRecipe.getKey().getKey().toUpperCase()) {
-                case "REPAIR_ITEM", "ARMOR_DYE", "SHULKER_BOX_COLORING", "SHIELD_DECORATION", "BANNER_DUPLICATE", "MAP_CLONING", "BOOK_CLONING" -> {
-                    return;
-                }
-            }
+            if (COMPLEX_RECIPES.contains(complexRecipe.getKey().getKey())) return;
             test = new ItemStack(Material.valueOf(complexRecipe.getKey().getKey().toUpperCase()));
         } else {
             test = event.getCurrentItem().clone();
@@ -68,6 +69,24 @@ public class CraftItemListener extends AbstractItemChecker implements Listener {
         Debugger.addDebug("=========================================================================================");
         Debugger.addDebug("CraftItemListener: onCraftItemEvent summoned by " + player.getName() + " for " + test.getType() + " x" + test.getAmount() + ".");
 
-        setPlayerQuestProgression(player, test, test.getAmount(), "CRAFT");
+        setPlayerQuestProgression(event, player, test.getAmount(), "CRAFT");
+    }
+
+    /**
+     * Returns the maximum amount of items that can be crafted in the given inventory.
+     *
+     * @param inv the inventory to check.
+     * @return the maximum.
+     */
+    private int getMaxCraftAmount(CraftingInventory inv) {
+        if (inv.getResult() == null) return 0;
+
+        int resultCount = inv.getResult().getAmount();
+        int materialCount = Integer.MAX_VALUE;
+
+        for (ItemStack is : inv.getMatrix())
+            if (is != null && is.getAmount() < materialCount) materialCount = is.getAmount();
+
+        return resultCount * materialCount;
     }
 }

@@ -2,7 +2,7 @@ package com.ordwen.odailyquests.events.listeners.integrations.itemsadder;
 
 import com.ordwen.odailyquests.configuration.essentials.Antiglitch;
 
-import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractItemChecker;
+import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
 import dev.lone.itemsadder.api.Events.CustomBlockBreakEvent;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -11,7 +11,7 @@ import org.bukkit.event.Listener;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class CustomBlockBreakListener extends AbstractItemChecker implements Listener {
+public class CustomBlockBreakListener extends PlayerProgressor implements Listener {
 
     @EventHandler
     public void onCustomBlockBreakEvent(CustomBlockBreakEvent event) {
@@ -29,7 +29,7 @@ public class CustomBlockBreakListener extends AbstractItemChecker implements Lis
         }
 
         if (valid.get()) {
-            setPlayerQuestProgression(player, event.getCustomBlockItem(), 1, "BREAK");
+            setPlayerQuestProgression(event, player, 1, "BREAK");
         }
     }
 }

@@ -1,7 +1,8 @@
 package com.ordwen.odailyquests.quests.types.tmp.item;
 
-import com.ordwen.odailyquests.quests.types.BasicQuest;
+import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
 import com.ordwen.odailyquests.quests.types.shared.ItemQuest;
+import dev.lone.itemsadder.api.Events.CustomBlockBreakEvent;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.Event;
@@ -34,6 +35,10 @@ public class BreakQuest extends ItemQuest {
             };
 
             return super.isRequiredItem(new ItemStack(material));
+        }
+
+        if (provided instanceof CustomBlockBreakEvent event) {
+            return super.isRequiredItem(event.getCustomBlockItem());
         }
 
         return false;

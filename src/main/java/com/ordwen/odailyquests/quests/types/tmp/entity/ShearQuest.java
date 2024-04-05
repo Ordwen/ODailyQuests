@@ -1,11 +1,10 @@
 package com.ordwen.odailyquests.quests.types.tmp.entity;
 
-import com.ordwen.odailyquests.quests.types.BasicQuest;
+import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
 import com.ordwen.odailyquests.quests.types.shared.EntityQuest;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.DyeColor;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
 import org.bukkit.entity.Sheep;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerShearEntityEvent;

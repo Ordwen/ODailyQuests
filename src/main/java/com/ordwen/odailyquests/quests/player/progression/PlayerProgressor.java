@@ -11,8 +11,12 @@ import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 
@@ -102,5 +106,43 @@ public class PlayerProgressor {
         }
 
         ProgressionMessage.sendProgressionMessage(player, quest.getQuestName(), progression.getProgression(), quest.getAmountRequired());
+    }
+
+    /**
+     * @param stack the item to check.
+     * @param inv   the inventory to check.
+     * @return the amount of items that can be added to the inventory.
+     */
+    public int fits(ItemStack stack, Inventory inv) {
+        ItemStack[] contents = inv.getContents();
+        int result = 0;
+
+        for (ItemStack is : contents)
+            if (is == null) result += stack.getMaxStackSize();
+            else if (is.isSimilar(stack)) result += Math.max(stack.getMaxStackSize() - is.getAmount(), 0);
+
+        return result;
+    }
+
+    /**
+     * Checks if the player is moving an item.
+     *
+     * @param result       the result item.
+     * @param recipeAmount the amount of items in the recipe.
+     * @param player       the player to check.
+     * @param click        the click type.
+     * @return true if the player is moving an item.
+     */
+    public boolean movingItem(ItemStack result, int recipeAmount, Player player, ClickType click) {
+        final ItemStack cursorItem = player.getItemOnCursor();
+
+        if (cursorItem.getType() != Material.AIR) {
+            if (cursorItem.getType() == result.getType()) {
+                if (cursorItem.getAmount() + recipeAmount > cursorItem.getMaxStackSize()) {
+                    return click == ClickType.LEFT || click == ClickType.RIGHT;
+                }
+            } else return true;
+        }
+        return false;
     }
 }

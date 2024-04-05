@@ -1,7 +1,6 @@
 package com.ordwen.odailyquests.quests.types.shared;
 
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
-import com.ordwen.odailyquests.quests.types.BasicQuest;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.DyeColor;
 import org.bukkit.configuration.ConfigurationSection;

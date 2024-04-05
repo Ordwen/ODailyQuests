@@ -31,6 +31,11 @@ import com.ordwen.odailyquests.quests.types.tmp.entity.BreedQuest;
 import com.ordwen.odailyquests.quests.types.tmp.entity.KillQuest;
 import com.ordwen.odailyquests.quests.types.tmp.entity.ShearQuest;
 import com.ordwen.odailyquests.quests.types.tmp.entity.TameQuest;
+import com.ordwen.odailyquests.quests.types.tmp.inventory.GetQuest;
+import com.ordwen.odailyquests.quests.types.tmp.inventory.LocationQuest;
+import com.ordwen.odailyquests.quests.types.tmp.inventory.PlaceholderQuest;
+import com.ordwen.odailyquests.quests.types.tmp.item.VillagerQuest;
+import com.ordwen.odailyquests.quests.types.tmp.item.*;
 import com.ordwen.odailyquests.tools.*;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.mysql.MySQLManager;
@@ -102,6 +107,36 @@ public final class ODailyQuests extends JavaPlugin {
         /* Load debugger */
         new Debugger(this).loadDebugMode();
 
+        /* Register quest types */
+        final QuestTypeRegistry questTypeRegistry = API.getQuestTypeRegistry();
+
+        /* entity quests */
+        questTypeRegistry.registerQuestType("KILL", KillQuest.class);
+        questTypeRegistry.registerQuestType("BREED", BreedQuest.class);
+        questTypeRegistry.registerQuestType("SHEAR", ShearQuest.class);
+        questTypeRegistry.registerQuestType("TAME", TameQuest.class);
+        questTypeRegistry.registerQuestType("FIREBALL_REFLECT", FireballReflectQuest.class);
+        questTypeRegistry.registerQuestType("ELITE_MOBS", EliteMobsQuest.class);
+        questTypeRegistry.registerQuestType("MYTHIC_MOBS", MythicMobsQuest.class);
+
+        /* item quests */
+        questTypeRegistry.registerQuestType("BREAK", BreakQuest.class);
+        questTypeRegistry.registerQuestType("PLACE", PlaceQuest.class);
+        questTypeRegistry.registerQuestType("CRAFT", CraftQuest.class);
+        questTypeRegistry.registerQuestType("PICKUP", PickupQuest.class);
+        questTypeRegistry.registerQuestType("LAUNCH", LaunchQuest.class);
+        questTypeRegistry.registerQuestType("CONSUME", ConsumeQuest.class);
+        questTypeRegistry.registerQuestType("COOK", CookQuest.class);
+        questTypeRegistry.registerQuestType("ENCHANT", EnchantQuest.class);
+        questTypeRegistry.registerQuestType("FISH", FishQuest.class);
+        questTypeRegistry.registerQuestType("FARMING", FarmingQuest.class);
+
+        /* inventory quests */
+        questTypeRegistry.registerQuestType("GET", GetQuest.class);
+        questTypeRegistry.registerQuestType("LOCATION", LocationQuest.class);
+        questTypeRegistry.registerQuestType("VILLAGER_TRADE", VillagerQuest.class);
+        questTypeRegistry.registerQuestType("PLACEHOLDER", PlaceholderQuest.class);
+
         /* Load all elements */
         reloadService.reload();
 
@@ -122,16 +157,6 @@ public final class ODailyQuests extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new QuestCompletedListener(), this);
         getServer().getPluginManager().registerEvents(new AllQuestsCompletedListener(), this);
         getServer().getPluginManager().registerEvents(new AllCategoryQuestsCompletedListener(), this);
-
-        /* Register quest types */
-        final QuestTypeRegistry questTypeRegistry = API.getQuestTypeRegistry();
-        questTypeRegistry.registerQuestType("KILL", KillQuest.class);
-        questTypeRegistry.registerQuestType("BREED", BreedQuest.class);
-        questTypeRegistry.registerQuestType("SHEAR", ShearQuest.class);
-        questTypeRegistry.registerQuestType("TAME", TameQuest.class);
-        questTypeRegistry.registerQuestType("FIREBALL_REFLECT", FireballReflectQuest.class);
-        questTypeRegistry.registerQuestType("ELITE_MOBS", EliteMobsQuest.class);
-        questTypeRegistry.registerQuestType("MYTHIC_MOBS", MythicMobsQuest.class);
 
         /* Register server restart related events */
         new RestartHandler(this).registerSubClasses();

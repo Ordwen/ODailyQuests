@@ -2,13 +2,13 @@ package com.ordwen.odailyquests.events.listeners.item;
 
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 
-import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractItemChecker;
+import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
 import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
 
-public class PlayerFishListener extends AbstractItemChecker implements Listener {
+public class PlayerFishListener extends PlayerProgressor implements Listener {
 
     @EventHandler
     public void onPlayerFishEvent(PlayerFishEvent event) {
@@ -18,7 +18,7 @@ public class PlayerFishListener extends AbstractItemChecker implements Listener 
             Debugger.addDebug("=========================================================================================");
             Debugger.addDebug("PlayerFishListener: onPlayerFishEvent summoned by " + event.getPlayer().getName() + " for " + item.getItemStack().getType() + ".");
 
-            setPlayerQuestProgression(event.getPlayer(), item.getItemStack(), 1, "FISH");
+            setPlayerQuestProgression(event, event.getPlayer(), 1, "FISH");
         }
     }
 }

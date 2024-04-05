@@ -1,12 +1,20 @@
 package com.ordwen.odailyquests.quests.getters;
 
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.getters.ItemGetter;
+import com.ordwen.odailyquests.tools.ColorConvert;
 import com.ordwen.odailyquests.tools.Pair;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionData;
+import org.bukkit.potion.PotionType;
 
-public abstract class QuestItemGetter extends ItemGetter implements IQuestItem {
+import java.util.List;
+
+public class QuestItemGetter extends ItemGetter implements IQuestItem {
 
     /**
      * Get an item from a string.
@@ -149,5 +157,128 @@ public abstract class QuestItemGetter extends ItemGetter implements IQuestItem {
         }
 
         return result.second();
+    }
+
+    /**
+     * Load a required item with custom name and lore.
+     *
+     * @param provided quest configuration section
+     * @param file     file name
+     * @param index    quest index
+     * @return the custom item
+     */
+    public ItemStack loadCustomItem(ConfigurationSection provided, String file, int index) {
+        final ConfigurationSection section = provided.getConfigurationSection(".custom_item");
+        if (section == null) {
+            PluginLogger.configurationError(file, index, null, "The custom item is not defined.");
+            return null;
+        }
+
+        final String type = section.getString(".type");
+        if (type == null) {
+            PluginLogger.configurationError(file, index, "type", "The type of the custom item is not defined.");
+            return null;
+        }
+
+        final ItemStack requiredItem = getItemStackFromMaterial(type, file, index, "type (CUSTOM_ITEM)");
+        if (requiredItem == null) return null;
+
+        final ItemMeta meta = requiredItem.getItemMeta();
+        if (meta == null) {
+            PluginLogger.configurationError(file, index, null, "The custom item cannot have a custom name or lore.");
+            return null;
+        }
+
+        meta.setDisplayName(ColorConvert.convertColorCode(section.getString(".name")));
+
+        final List<String> lore = section.getStringList(".lore");
+        for (String str : lore) {
+            lore.set(lore.indexOf(str), ColorConvert.convertColorCode(str));
+        }
+        meta.setLore(lore);
+        requiredItem.setItemMeta(meta);
+
+        return requiredItem;
+    }
+
+    /**
+     * Get an item stack from a material.
+     *
+     * @param material   the material to get
+     * @param fileName   the file name
+     * @param questIndex the quest index
+     * @return the item stack
+     */
+    public ItemStack getItemStackFromMaterial(String material, String fileName, int questIndex, String parameter) {
+        final ItemStack requiredItem;
+
+        if (material.contains(":")) {
+            requiredItem = getItem(material, fileName, questIndex, parameter);
+            if (requiredItem == null) {
+                PluginLogger.configurationError(fileName, questIndex, parameter, "Invalid material type detected.");
+                return null;
+            }
+        } else {
+            try {
+                requiredItem = new ItemStack(Material.valueOf(material));
+            } catch (Exception e) {
+                PluginLogger.configurationError(fileName, questIndex, parameter, "Invalid material type detected.");
+                return null;
+            }
+        }
+
+        return requiredItem;
+    }
+
+    /**
+     * Load the potion attributes.
+     *
+     * @param section      quest section
+     * @param fileName     file name where the quest is
+     * @param questIndex   quest index in the file
+     * @param requiredItem current required item
+     * @return potion meta
+     */
+    public PotionMeta loadPotionItem(ConfigurationSection section, String fileName, int questIndex, ItemStack requiredItem) {
+        PotionMeta potionMeta = null;
+
+        PotionType potionType;
+        boolean upgraded = false;
+        boolean extended = false;
+
+        final ConfigurationSection potionSection = section.getConfigurationSection(".potion");
+        if (potionSection == null) return null;
+
+        if (potionSection.contains("type")) {
+            try {
+                potionType = PotionType.valueOf(potionSection.getString("type"));
+            } catch (IllegalArgumentException e) {
+                PluginLogger.configurationError(fileName, questIndex, "type", "Invalid potion type.");
+                return null;
+            }
+        } else {
+            PluginLogger.configurationError(fileName, questIndex, "type", "Potion type is not defined.");
+            return null;
+        }
+
+        if (potionSection.contains("upgraded")) upgraded = potionSection.getBoolean("upgraded");
+        if (potionSection.contains("extended")) extended = potionSection.getBoolean("extended");
+
+        if (upgraded && extended) {
+            PluginLogger.configurationError(fileName, questIndex, null, "Potion cannot be both upgraded and extended.");
+            return null;
+        }
+
+        if (requiredItem.getType() == Material.POTION
+                || requiredItem.getType() == Material.SPLASH_POTION
+                || requiredItem.getType() == Material.LINGERING_POTION) {
+
+            potionMeta = (PotionMeta) requiredItem.getItemMeta();
+            if (potionMeta == null) return null;
+
+            potionMeta.setBasePotionData(new PotionData(potionType, extended, upgraded));
+        }
+
+        return potionMeta;
     }
 }

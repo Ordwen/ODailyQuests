@@ -1,8 +1,7 @@
 package com.ordwen.odailyquests.quests.types.tmp.custom.mobs;
 
 import com.magmaguy.elitemobs.api.EliteMobDeathEvent;
-import com.ordwen.odailyquests.quests.types.BasicQuest;
-import org.bukkit.entity.Player;
+import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
 import org.bukkit.event.Event;
 
 public class EliteMobsQuest extends CustomMobQuest {

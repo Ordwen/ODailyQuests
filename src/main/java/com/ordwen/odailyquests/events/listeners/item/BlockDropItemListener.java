@@ -2,7 +2,7 @@ package com.ordwen.odailyquests.events.listeners.item;
 
 import com.ordwen.odailyquests.configuration.essentials.Antiglitch;
 
-import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractItemChecker;
+import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
 import org.bukkit.Material;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
@@ -18,7 +18,9 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.List;
 
-public class BlockDropItemListener extends AbstractItemChecker implements Listener {
+public class BlockDropItemListener extends PlayerProgressor implements Listener {
+
+    public static ItemStack current;
 
     @EventHandler
     public void onBlockDropItem(BlockDropItemEvent event) {
@@ -35,7 +37,7 @@ public class BlockDropItemListener extends AbstractItemChecker implements Listen
         // check if the dropped item is a crop
         if (data instanceof Ageable ageable) {
             if (ageable.getAge() == ageable.getMaximumAge()) {
-                handleDrops(player, drops);
+                handleDrops(event, player, drops);
                 return;
             }
         }
@@ -49,7 +51,7 @@ public class BlockDropItemListener extends AbstractItemChecker implements Listen
             }
         }
 
-        handleDrops(player, drops);
+        handleDrops(event, player, drops);
 
         // check if the dropped item is a block that can be posed
         if (dataMaterial.isBlock()) {
@@ -71,15 +73,16 @@ public class BlockDropItemListener extends AbstractItemChecker implements Listen
     /**
      * Handle the dropped items and update the player progression.
      *
+     * @param event  the event that triggered the listener
      * @param player involved player in the event
      * @param drops  list of dropped items
      */
-    private void handleDrops(Player player, List<Item> drops) {
+    private void handleDrops(BlockDropItemEvent event, Player player, List<Item> drops) {
         for (Item item : drops) {
             final ItemStack droppedItem = item.getItemStack();
             final Material droppedMaterial = droppedItem.getType();
-
-            setPlayerQuestProgression(player, new ItemStack(droppedMaterial), droppedItem.getAmount(), "FARMING");
+            current = new ItemStack(droppedMaterial);
+            setPlayerQuestProgression(event, player, droppedItem.getAmount(), "FARMING");
         }
     }
 }

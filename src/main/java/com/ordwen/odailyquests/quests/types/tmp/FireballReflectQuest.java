@@ -1,7 +1,7 @@
 package com.ordwen.odailyquests.quests.types.tmp;
 
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
-import com.ordwen.odailyquests.quests.types.BasicQuest;
+import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.Event;
 

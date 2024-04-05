@@ -3,8 +3,6 @@ package com.ordwen.odailyquests.events.listeners.entity;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 
 import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Sheep;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerShearEntityEvent;
@@ -18,7 +16,6 @@ public class ShearEntityListener extends PlayerProgressor implements Listener {
         Debugger.addDebug("=========================================================================================");
         Debugger.addDebug("ShearEntityListener: onShearEntityEvent summoned by " + event.getPlayer().getName() + " for " + event.getEntity().getType() + ".");
 
-        final Entity entity = event.getEntity();
         setPlayerQuestProgression(event, event.getPlayer(), 1, "SHEAR");
     }
 }

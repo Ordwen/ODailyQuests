@@ -3,6 +3,7 @@ package com.ordwen.odailyquests.quests.types;
 
 import com.ordwen.odailyquests.api.quests.IQuest;
 import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
+import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
 import com.ordwen.odailyquests.rewards.Reward;
 import org.bukkit.inventory.ItemStack;
 
@@ -51,17 +52,17 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
      * @param basicQuest quest base.
      */
     public AbstractQuest(BasicQuest basicQuest) {
-        this.questIndex = basicQuest.questIndex;
-        this.questName = basicQuest.questName;
-        this.categoryName = basicQuest.categoryName;
-        this.questDesc = basicQuest.questDesc;
-        this.questType = basicQuest.questType;
-        this.menuItem = basicQuest.menuItem;
-        this.achievedItem = basicQuest.achievedItem;
-        this.amountRequired = basicQuest.amountRequired;
-        this.reward = basicQuest.reward;
-        this.requiredWorlds = basicQuest.requiredWorlds;
-        this.isUsingPlaceholders = basicQuest.isUsingPlaceholders;
+        this.questIndex = basicQuest.getQuestIndex();
+        this.questName = basicQuest.getQuestName();
+        this.categoryName = basicQuest.getCategoryName();
+        this.questDesc = basicQuest.getQuestDesc();
+        this.questType = basicQuest.getQuestType();
+        this.menuItem = basicQuest.getMenuItem();
+        this.achievedItem = basicQuest.getAchievedItem();
+        this.amountRequired = basicQuest.getAmountRequired();
+        this.reward = basicQuest.getReward();
+        this.requiredWorlds = basicQuest.getRequiredWorlds();
+        this.isUsingPlaceholders = basicQuest.isUsingPlaceholders();
     }
 
     /**

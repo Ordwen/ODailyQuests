@@ -1,8 +1,7 @@
 package com.ordwen.odailyquests.quests.types.tmp.custom.mobs;
 
-import com.ordwen.odailyquests.quests.types.BasicQuest;
+import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
 import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
 public class MythicMobsQuest extends CustomMobQuest {

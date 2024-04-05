@@ -1,6 +1,6 @@
 package com.ordwen.odailyquests.quests.types.tmp.entity;
 
-import com.ordwen.odailyquests.quests.types.BasicQuest;
+import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
 import com.ordwen.odailyquests.quests.types.shared.EntityQuest;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityBreedEvent;

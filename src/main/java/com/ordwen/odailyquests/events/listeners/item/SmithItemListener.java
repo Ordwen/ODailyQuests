@@ -2,7 +2,7 @@ package com.ordwen.odailyquests.events.listeners.item;
 
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 
-import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractItemChecker;
+import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -10,8 +10,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.SmithItemEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.SmithingInventory;
 
-public class SmithItemListener extends AbstractItemChecker implements Listener {
+public class SmithItemListener extends PlayerProgressor implements Listener {
 
     @EventHandler
     public void onSmithItemEvent(SmithItemEvent event) {
@@ -55,6 +56,24 @@ public class SmithItemListener extends AbstractItemChecker implements Listener {
 
         Debugger.addDebug("=========================================================================================");
         Debugger.addDebug("SmithItemListener: onSmithItemEvent summoned by " + player.getName() + " for " + result.getType() + ".");
-        setPlayerQuestProgression(player, result, result.getAmount(), "CRAFT");
+        setPlayerQuestProgression(event, player, result.getAmount(), "CRAFT");
+    }
+
+    /**
+     * Returns the maximum amount of items that can be smithed in the given inventory.
+     *
+     * @param inv the inventory to check.
+     * @return the maximum.
+     */
+    private int getMaxSmithAmount(SmithingInventory inv) {
+        if (inv.getResult() == null) return 0;
+
+        int resultCount = inv.getResult().getAmount();
+        int materialCount = Integer.MAX_VALUE;
+
+        for (ItemStack is : inv.getContents())
+            if (is != null && is.getAmount() < materialCount) materialCount = is.getAmount();
+
+        return resultCount * materialCount;
     }
 }
