@@ -27,6 +27,10 @@ import com.ordwen.odailyquests.quests.player.progression.storage.yaml.YamlManage
 import com.ordwen.odailyquests.quests.types.tmp.*;
 import com.ordwen.odailyquests.quests.types.tmp.custom.mobs.EliteMobsQuest;
 import com.ordwen.odailyquests.quests.types.tmp.custom.mobs.MythicMobsQuest;
+import com.ordwen.odailyquests.quests.types.tmp.entity.BreedQuest;
+import com.ordwen.odailyquests.quests.types.tmp.entity.KillQuest;
+import com.ordwen.odailyquests.quests.types.tmp.entity.ShearQuest;
+import com.ordwen.odailyquests.quests.types.tmp.entity.TameQuest;
 import com.ordwen.odailyquests.tools.*;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.mysql.MySQLManager;

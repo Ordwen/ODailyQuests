@@ -1,25 +1,24 @@
-package com.ordwen.odailyquests.quests.types.tmp;
+package com.ordwen.odailyquests.quests.types.tmp.entity;
 
 import com.ordwen.odailyquests.quests.types.BasicQuest;
 import com.ordwen.odailyquests.quests.types.shared.EntityQuest;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
-import org.bukkit.event.entity.EntityTameEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 
-public class TameQuest extends EntityQuest {
+public class KillQuest extends EntityQuest {
 
-    public TameQuest(BasicQuest base) {
+    public KillQuest(BasicQuest base) {
         super(base);
     }
 
     @Override
     public String getType() {
-        return "TAME";
+        return "KILL";
     }
 
     @Override
     public boolean canProgress(Event provided) {
-        if (provided instanceof EntityTameEvent event) {
+        if (provided instanceof EntityDeathEvent event) {
             return super.isRequiredEntity(event.getEntity().getType());
         }
 

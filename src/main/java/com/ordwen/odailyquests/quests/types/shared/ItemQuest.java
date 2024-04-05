@@ -9,7 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemQuest extends AbstractQuest {
+public abstract class ItemQuest extends AbstractQuest {
 
     private final List<ItemStack> requiredItems;
     private final boolean ignoreNbt = false;

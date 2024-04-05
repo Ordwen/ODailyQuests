@@ -1,7 +1,6 @@
 package com.ordwen.odailyquests.api.quests;
 
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 
 public interface IQuest {
