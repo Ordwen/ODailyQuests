@@ -41,25 +41,6 @@ public class ResetCommand extends ACommandHandler {
      * @param target the player to reset
      */
     public void quests(Player target) {
-        /*
-        final String playerName = target.getName();
-        final HashMap<String, PlayerQuests> activeQuests = QuestsManager.getActiveQuests();
-
-        int totalAchievedQuests = activeQuests.get(playerName).getTotalAchievedQuests();
-
-        activeQuests.remove(playerName);
-
-        final LinkedHashMap<AbstractQuest, Progression> quests = QuestsManager.selectRandomQuests();
-        final PlayerQuests playerQuests = new PlayerQuests(System.currentTimeMillis(), quests);
-
-        playerQuests.setTotalAchievedQuests(totalAchievedQuests);
-        playerQuests.setAchievedQuests(0);
-
-        activeQuests.put(playerName, playerQuests);
-
-        PluginLogger.fine(playerName + " inserted into the array.");
-         */
-
         final String playerName = target.getName();
         final HashMap<String, PlayerQuests> activeQuests = QuestsManager.getActiveQuests();
         int totalAchievedQuests = activeQuests.get(playerName).getTotalAchievedQuests();

@@ -17,7 +17,7 @@ public class PRerollCommand extends PCommandHandler {
 
     @Override
     public void handle() {
-        if (!player.hasPermission(QuestsPermissions.QUESTS_SHOW_PLAYER.getPermission())) {
+        if (!player.hasPermission(QuestsPermissions.QUEST_REROLL.getPermission())) {
             noPermission(player);
             return;
         }
@@ -53,8 +53,9 @@ public class PRerollCommand extends PCommandHandler {
 
         if (activeQuests.containsKey(playerName)) {
             final PlayerQuests playerQuests = activeQuests.get(playerName);
-            playerQuests.rerollQuest(index - 1);
-            rerollConfirm(index, player);
+            if (playerQuests.rerollQuest(index - 1, player)) {
+                rerollConfirm(index, player);
+            }
         }
     }
 

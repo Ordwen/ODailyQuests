@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.commands.admin;
 
+import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -15,61 +16,51 @@ public class AdminCompleter implements TabCompleter {
 
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
-        final String convert = "convert";
 
         if (args.length <= 1) {
-            List<String> allCompletions = new ArrayList<>(Arrays.asList("reload", "reset", "reroll", "add", "show", "complete", "help", "holo", convert));
-            List<String> completions = new ArrayList<>();
+            final List<String> allCompletions = new ArrayList<>(Arrays.asList("reload", "reset", "reroll", "add", "show", "complete", "help", "holo", "convert"));
+            final List<String> completions = new ArrayList<>();
 
             StringUtil.copyPartialMatches(args[0], allCompletions, completions);
             Collections.sort(completions);
-
             return completions;
         } else if (args.length == 2) {
-            if (args[0].equalsIgnoreCase("holo")) {
-                List<String> allCompletions = new ArrayList<>(Arrays.asList("create", "delete"));
-                List<String> completions = new ArrayList<>();
+            final List<String> allCompletions;
+            final List<String> completions = new ArrayList<>();
 
-                StringUtil.copyPartialMatches(args[1], allCompletions, completions);
-                Collections.sort(completions);
-                return completions;
-            } else if (args[0].equalsIgnoreCase("reset")) {
-                List<String> allCompletions = new ArrayList<>(Arrays.asList("quests", "total"));
-                List<String> completions = new ArrayList<>();
-
-                StringUtil.copyPartialMatches(args[1], allCompletions, completions);
-                Collections.sort(completions);
-                return completions;
-            } else if (args[0].equalsIgnoreCase("add")) {
-                List<String> allCompletions = new ArrayList<>(List.of("total"));
-                List<String> completions = new ArrayList<>();
-
-                StringUtil.copyPartialMatches(args[1], allCompletions, completions);
-                Collections.sort(completions);
-                return completions;
-            } else if (args[0].equalsIgnoreCase(convert)) {
-                List<String> allCompletions = new ArrayList<>(List.of("yaml"));
-                List<String> completions = new ArrayList<>();
-
-                StringUtil.copyPartialMatches(args[1], allCompletions, completions);
-                Collections.sort(completions);
-                return completions;
+            switch (args[0]) {
+                case "holo" -> allCompletions = new ArrayList<>(List.of("create", "delete"));
+                case "reset" -> allCompletions = new ArrayList<>(List.of("quests", "total"));
+                case "add" -> allCompletions = new ArrayList<>(List.of("total"));
+                case "convert" -> allCompletions = new ArrayList<>(List.of("mysql", "h2"));
+                default -> {
+                    return null;
+                }
             }
-        } else if (args.length == 3 && args[0].equalsIgnoreCase("holo") && args[1].equalsIgnoreCase("create")) {
-            List<String> allCompletions = new ArrayList<>(Arrays.asList("global", "easy", "medium", "hard"));
-            List<String> completions = new ArrayList<>();
 
-            StringUtil.copyPartialMatches(args[2], allCompletions, completions);
+            StringUtil.copyPartialMatches(args[1], allCompletions, completions);
             Collections.sort(completions);
             return completions;
-        } else if (args.length == 3 && args[0].equalsIgnoreCase(convert)) {
-            List<String> allCompletions = new ArrayList<>(Arrays.asList("mysql", "h2"));
-            List<String> completions = new ArrayList<>();
+        } else if (args.length == 3) {
+            final List<String> allCompletions = new ArrayList<>();
+            final List<String> completions = new ArrayList<>();
+
+            if (args[0].equalsIgnoreCase("holo") && args[1].equalsIgnoreCase("create")) {
+                allCompletions.addAll(List.of("global", "easy", "medium", "hard"));
+            } else if (args[0].equalsIgnoreCase("convert")) {
+                allCompletions.addAll(List.of("mysql", "h2"));
+            } else if (args[0].equalsIgnoreCase("reroll") || args[0].equalsIgnoreCase("complete")) {
+                for (int i = 1; i <= QuestsAmount.getQuestsAmount(); i++) {
+                    allCompletions.add(String.valueOf(i));
+                }
+            }
 
             StringUtil.copyPartialMatches(args[2], allCompletions, completions);
             Collections.sort(completions);
             return completions;
         }
+
         return null;
     }
 }
+

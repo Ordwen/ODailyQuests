@@ -2,6 +2,7 @@ package com.ordwen.odailyquests.commands.interfaces;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.Buttons;
+import com.ordwen.odailyquests.externs.hooks.placeholders.PAPIHook;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
@@ -39,6 +40,7 @@ public class QuestsInterfaces {
     private final Map<String, Pair<String, List<Inventory>>> categorizedInterfaces = new HashMap<>();
 
     private final NamespacedKey usePlaceholdersKey = new NamespacedKey(ODailyQuests.INSTANCE, "odq_interface_use_placeholders");
+    private final NamespacedKey requiredKey = new NamespacedKey(ODailyQuests.INSTANCE, "odq_interface_required");
 
     /**
      * Load the global quests interface.
@@ -91,7 +93,7 @@ public class QuestsInterfaces {
         boolean allQuestsLoaded = false;
         int currentQuestIndex = 0;
 
-        List<Inventory> questsInventories = new ArrayList<>();
+        final List<Inventory> questsInventories = new ArrayList<>();
 
         for (int i = 0; i < neededInventories; i++) {
             Inventory inv = Bukkit.createInventory(null, 54, inventoryName + " - " + (i + 1));
@@ -110,18 +112,21 @@ public class QuestsInterfaces {
             /* add quests items on slots */
             while (i < invSize && !allQuestsLoaded) {
                 if (currentQuestIndex < quests.size()) {
-                    AbstractQuest quest = quests.get(currentQuestIndex);
+                    final AbstractQuest quest = quests.get(currentQuestIndex);
 
-                    ItemStack itemStack = quest.getMenuItem();
-                    ItemMeta itemMeta = itemStack.getItemMeta();
+                    final ItemStack itemStack = quest.getMenuItem();
+                    final ItemMeta itemMeta = itemStack.getItemMeta();
+                    if (itemMeta != null) {
+                        itemMeta.setDisplayName(quest.getQuestName());
+                        itemMeta.setLore(quest.getQuestDesc());
 
-                    itemMeta.setDisplayName(quest.getQuestName());
-                    itemMeta.setLore(quest.getQuestDesc());
+                        if (quest.isUsingPlaceholders()) {
+                            itemMeta.getPersistentDataContainer().set(usePlaceholdersKey, PersistentDataType.BYTE, (byte) 1);
+                            itemMeta.getPersistentDataContainer().set(requiredKey, PersistentDataType.INTEGER, quest.getAmountRequired());
+                        }
 
-                    if (quest.isUsingPlaceholders()) itemMeta.getPersistentDataContainer().set(usePlaceholdersKey, PersistentDataType.BYTE, (byte) 1);
-                    else itemMeta.getPersistentDataContainer().set(usePlaceholdersKey, PersistentDataType.BYTE, (byte) 0);
-
-                    itemStack.setItemMeta(itemMeta);
+                        itemStack.setItemMeta(itemMeta);
+                    }
 
                     inv.setItem(i, itemStack);
                     i++;
@@ -143,7 +148,26 @@ public class QuestsInterfaces {
     }
 
     public Inventory getInterfacePage(String category, int page, Player player) {
-        return categorizedInterfaces.get(category).second().get(page);
+        final Inventory inventory = categorizedInterfaces.get(category).second().get(page);
+
+        for (int i = 0; i < inventory.getSize(); i++) {
+            final ItemStack item = inventory.getItem(i);
+            if (item != null && item.getItemMeta() != null) {
+                final ItemMeta itemMeta = item.getItemMeta();
+                if (itemMeta.getPersistentDataContainer().has(usePlaceholdersKey, PersistentDataType.BYTE)) {
+                    final List<String> lore = itemMeta.getLore();
+                    if (lore == null) continue;
+                    lore.replaceAll(s -> s.replace("%progress%", String.valueOf(0)));
+                    lore.replaceAll(s -> s.replace("%required%", String.valueOf(itemMeta.getPersistentDataContainer().get(requiredKey, PersistentDataType.INTEGER))));
+                    lore.replaceAll(s -> s.replace("%drawIn%", "~"));
+                    lore.replaceAll(s -> PAPIHook.getPlaceholders(player, s));
+
+                    itemMeta.setLore(lore);
+                    item.setItemMeta(itemMeta);
+                }
+            }
+        }
+        return inventory;
     }
 
     /**

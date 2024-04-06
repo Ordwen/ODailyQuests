@@ -78,6 +78,7 @@ public enum QuestsMessages {
     PLACEHOLDER_NOT_NUMBER("placeholder_not_number", "&cThe placeholder %placeholder% is not a number. Please inform an administrator."),
 
     CANNOT_COMPLETE_QUEST_WITH_OFF_HAND("cannot_complete_quest_with_off_hand", "&cAll required items must be in your inventory, not in your off hand."),
+    CANNOT_REROLL_IF_ACHIEVED("cannot_reroll_if_achieved", "&cYou can't reroll a quest that you have already achieved!"),
     ;
 
     private final String path;
