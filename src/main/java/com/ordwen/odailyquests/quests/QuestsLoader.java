@@ -65,7 +65,7 @@ public class QuestsLoader extends QuestItemGetter {
         }
 
         /* required amount */
-        int requiredAmount = questSection.contains(".required_amount") ? 1 : questSection.getInt(".required_amount");
+        int requiredAmount = !questSection.contains(".required_amount") ? 1 : questSection.getInt(".required_amount");
         if (requiredAmount < 1) requiredAmount = 1;
 
         /* required worlds */
@@ -105,29 +105,28 @@ public class QuestsLoader extends QuestItemGetter {
      */
     public void loadQuests(FileConfiguration file, List<AbstractQuest> quests, String fileName) {
 
-        /* load quests */
-        if (file.getConfigurationSection("quests") != null) {
-
-            int questIndex = 0;
-            for (String fileQuest : file.getConfigurationSection("quests").getKeys(false)) {
-
-                final ConfigurationSection questSection = file.getConfigurationSection("quests." + fileQuest);
-                if (questSection == null) continue;
-
-                final BasicQuest base = createBasicQuest(questSection, fileName, questIndex);
-                if (base == null) continue;
-
-                final String questType = base.getQuestType();
-
-                registerQuest(quests, fileName, questType, base, questSection, questIndex);
-
-                questIndex++;
-            }
-
-            PluginLogger.info(fileName + " array successfully loaded (" + quests.size() + ").");
-        } else {
+        final ConfigurationSection allQuestsSection = file.getConfigurationSection("quests");
+        if (allQuestsSection == null) {
             PluginLogger.error("Impossible to load " + fileName + " : there is no quests in " + fileName + " file !");
+            return;
         }
+
+        int questIndex = 0;
+        for (String fileQuest : allQuestsSection.getKeys(false)) {
+
+            final ConfigurationSection questSection = allQuestsSection.getConfigurationSection(fileQuest);
+            if (questSection == null) continue;
+
+            final BasicQuest base = createBasicQuest(questSection, fileName, questIndex);
+            if (base == null) continue;
+
+            final String questType = base.getQuestType();
+            registerQuest(quests, fileName, questType, base, questSection, questIndex);
+
+            questIndex++;
+        }
+
+        PluginLogger.info(fileName + " array successfully loaded (" + quests.size() + ").");
     }
 
     /**
