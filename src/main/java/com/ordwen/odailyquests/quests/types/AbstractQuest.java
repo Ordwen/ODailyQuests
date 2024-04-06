@@ -51,7 +51,7 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
      *
      * @param basicQuest quest base.
      */
-    public AbstractQuest(BasicQuest basicQuest) {
+    protected AbstractQuest(BasicQuest basicQuest) {
         this.questIndex = basicQuest.getQuestIndex();
         this.questName = basicQuest.getQuestName();
         this.categoryName = basicQuest.getCategoryName();

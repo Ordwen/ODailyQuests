@@ -9,6 +9,7 @@ import io.th0rgal.oraxen.api.OraxenItems;
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.Type;
 import net.Indyuce.mmoitems.api.item.mmoitem.MMOItem;
+import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 
 public abstract class ExternalItemGetter implements IExternalItemGetter {
@@ -60,6 +61,10 @@ public abstract class ExternalItemGetter implements IExternalItemGetter {
      */
     @Override
     public Pair<String, ItemStack> getMMOItemsItem(String namespace) {
+        if (Bukkit.getServer().getPluginManager().getPlugin("MMOItems") == null) {
+            return new Pair<>("MMOItems is not enabled.", null);
+        }
+
         if (!namespace.contains(":")) {
             return new Pair<>("You need to provide the category and the id of the item.", null);
         }

@@ -127,10 +127,8 @@ public class QuestsLoader extends QuestItemGetter {
                     PluginLogger.error("Error while creating a new instance of " + questType + " quest.");
                     PluginLogger.error(e.getMessage());
                 }
-                if (questInstance != null) {
-                    if (questInstance.loadParameters(questSection, fileName, questIndex)) {
+                if (questInstance != null && questInstance.loadParameters(questSection, fileName, questIndex)) {
                         quests.add(questInstance);
-                    }
                 }
 
                 questIndex++;

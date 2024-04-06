@@ -38,11 +38,10 @@ public abstract class ItemQuest extends AbstractQuest {
             }
 
             if (item.hasItemMeta() && item.getItemMeta().hasCustomModelData()) {
-                if (item.hasItemMeta() && item.getItemMeta().hasCustomModelData()) {
-                    if (item.getType() == provided.getType() && item.getItemMeta().getCustomModelData() == provided.getItemMeta().getCustomModelData()) {
-                        return true;
-                    }
+                if (provided.hasItemMeta() && provided.getItemMeta().hasCustomModelData()) {
+                    return item.getType() == provided.getType() && item.getItemMeta().getCustomModelData() == provided.getItemMeta().getCustomModelData();
                 }
+                return false;
             }
 
             if (item.isSimilar(provided)) {

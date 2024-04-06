@@ -1,9 +1,7 @@
 package com.ordwen.odailyquests.events.listeners.global;
 
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
-
 import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
-import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractGlobalChecker;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
@@ -20,8 +18,8 @@ public class PlayerInteractListener extends PlayerProgressor implements Listener
         final Block block = event.getClickedBlock();
         if (block == null) return;
 
-        if (!(block.getType() == Material.PUMPKIN)) return;
-        if (!(event.getPlayer().getInventory().getItemInMainHand().getType() == Material.SHEARS)) return;
+        if (block.getType() != Material.PUMPKIN) return;
+        if (event.getPlayer().getInventory().getItemInMainHand().getType() != Material.SHEARS) return;
 
         Debugger.addDebug("=========================================================================================");
         Debugger.addDebug("PlayerInteractListener: onPlayerInteract summoned by " + event.getPlayer().getName());

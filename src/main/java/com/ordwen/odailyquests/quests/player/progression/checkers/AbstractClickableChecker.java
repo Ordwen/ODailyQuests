@@ -55,9 +55,7 @@ public abstract class AbstractClickableChecker {
                         }
                         break;
                     }
-                }
-
-                else if (abstractQuest instanceof LocationQuest quest) {
+                } else if (abstractQuest instanceof LocationQuest quest) {
                     if (isAppropriateQuestMenuItem(clickedItem, quest.getMenuItem()) && quest.getQuestType().equals("LOCATION")) {
 
                         final Progression progression = playerQuests.get(quest);
@@ -65,15 +63,12 @@ public abstract class AbstractClickableChecker {
                             validateLocationQuestType(player, progression, quest);
                         }
                     }
-                }
-
-                else if (abstractQuest instanceof PlaceholderQuest quest) {
-                    if (isAppropriateQuestMenuItem(clickedItem, quest.getMenuItem()) && quest.getQuestType().equals("PLACEHOLDER")) {
-
-                        final Progression progression = playerQuests.get(quest);
-                        if (!progression.isAchieved()) {
-                            validatePlaceholderQuestType(player, progression, quest);
-                        }
+                } else if (abstractQuest instanceof PlaceholderQuest quest
+                        && isAppropriateQuestMenuItem(clickedItem, quest.getMenuItem())
+                        && quest.getQuestType().equals("PLACEHOLDER")) {
+                    final Progression progression = playerQuests.get(quest);
+                    if (!progression.isAchieved()) {
+                        validatePlaceholderQuestType(player, progression, quest);
                     }
                 }
             }
@@ -82,8 +77,9 @@ public abstract class AbstractClickableChecker {
 
     /**
      * Check if the clicked item is corresponding to a quest menu item, by checking the persistent data container.
+     *
      * @param clickedItem clicked item to check.
-     * @param menuItem quest menu item to compare.
+     * @param menuItem    quest menu item to compare.
      * @return true if the clicked item is a GET quest menu item.
      */
     private boolean isAppropriateQuestMenuItem(ItemStack clickedItem, ItemStack menuItem) {
@@ -184,9 +180,9 @@ public abstract class AbstractClickableChecker {
     /**
      * Validate PLACEHOLDER quest type.
      *
-     * @param player player who is checking the placeholder.
+     * @param player      player who is checking the placeholder.
      * @param progression progression of the quest.
-     * @param quest quest to validate.
+     * @param quest       quest to validate.
      */
     private void validatePlaceholderQuestType(Player player, Progression progression, PlaceholderQuest quest) {
         final String placeholder = quest.getPlaceholder();
@@ -229,7 +225,8 @@ public abstract class AbstractClickableChecker {
                 }
             }
 
-            case DURATION_GREATER_THAN, DURATION_GREATER_THAN_OR_EQUALS, DURATION_LESS_THAN, DURATION_LESS_THAN_OR_EQUALS -> {
+            case DURATION_GREATER_THAN, DURATION_GREATER_THAN_OR_EQUALS, DURATION_LESS_THAN,
+                 DURATION_LESS_THAN_OR_EQUALS -> {
                 final String[] placeholderValues = placeholderValue.split(":");
 
                 final Duration currentDuration = Duration
