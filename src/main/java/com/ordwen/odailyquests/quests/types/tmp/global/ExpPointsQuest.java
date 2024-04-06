@@ -1,24 +1,25 @@
-package com.ordwen.odailyquests.quests.types.tmp;
+package com.ordwen.odailyquests.quests.types.tmp.global;
 
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.Event;
+import org.bukkit.event.player.PlayerExpChangeEvent;
 
-public class FireballReflectQuest extends AbstractQuest {
+public class ExpPointsQuest extends AbstractQuest {
 
-    public FireballReflectQuest(BasicQuest base) {
+    public ExpPointsQuest(BasicQuest base) {
         super(base);
     }
 
     @Override
     public String getType() {
-        return "FIREBALL_REFLECT";
+        return "EXP_POINTS";
     }
 
     @Override
-    public boolean canProgress(Event event) {
-        return true;
+    public boolean canProgress(Event provided) {
+        return provided instanceof PlayerExpChangeEvent;
     }
 
     @Override

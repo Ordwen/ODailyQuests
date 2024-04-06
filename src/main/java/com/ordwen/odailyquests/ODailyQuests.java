@@ -24,13 +24,13 @@ import com.ordwen.odailyquests.quests.player.progression.listeners.QuestComplete
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.h2.H2Manager;
 import com.ordwen.odailyquests.quests.player.progression.storage.yaml.YamlManager;
-import com.ordwen.odailyquests.quests.types.tmp.*;
 import com.ordwen.odailyquests.quests.types.tmp.custom.mobs.EliteMobsQuest;
 import com.ordwen.odailyquests.quests.types.tmp.custom.mobs.MythicMobsQuest;
 import com.ordwen.odailyquests.quests.types.tmp.entity.BreedQuest;
 import com.ordwen.odailyquests.quests.types.tmp.entity.KillQuest;
 import com.ordwen.odailyquests.quests.types.tmp.entity.ShearQuest;
 import com.ordwen.odailyquests.quests.types.tmp.entity.TameQuest;
+import com.ordwen.odailyquests.quests.types.tmp.global.*;
 import com.ordwen.odailyquests.quests.types.tmp.inventory.GetQuest;
 import com.ordwen.odailyquests.quests.types.tmp.inventory.LocationQuest;
 import com.ordwen.odailyquests.quests.types.tmp.inventory.PlaceholderQuest;
@@ -136,6 +136,14 @@ public final class ODailyQuests extends JavaPlugin {
         questTypeRegistry.registerQuestType("LOCATION", LocationQuest.class);
         questTypeRegistry.registerQuestType("VILLAGER_TRADE", VillagerQuest.class);
         questTypeRegistry.registerQuestType("PLACEHOLDER", PlaceholderQuest.class);
+        questTypeRegistry.registerQuestType("CARVE", CarveQuest.class);
+
+        /* global quests */
+        questTypeRegistry.registerQuestType("MILKING", MilkingQuest.class);
+        questTypeRegistry.registerQuestType("EXP_POINTS", ExpPointsQuest.class);
+        questTypeRegistry.registerQuestType("EXP_LEVELS", ExpLevelQuest.class);
+        questTypeRegistry.registerQuestType("PLAYER_DEATH", PlayerDeathQuest.class);
+        questTypeRegistry.registerQuestType("FIREBALL_REFLECT", FireballReflectQuest.class);
 
         /* Load all elements */
         reloadService.reload();

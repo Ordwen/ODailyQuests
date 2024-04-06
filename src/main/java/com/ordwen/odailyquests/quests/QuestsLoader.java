@@ -116,39 +116,20 @@ public class QuestsLoader extends QuestItemGetter {
                 final BasicQuest base = createBasicQuest(questSection, fileName, questIndex);
                 if (base == null) continue;
 
-                String questType = base.getQuestType();
-                ItemStack menuItem = base.getMenuItem();
+                final String questType = base.getQuestType();
 
-                switch (questType) {
+                final Class<? extends AbstractQuest> questClass = questTypeRegistry.get(questType);
 
-                    /* type that does not require a specific entity/item */
-                    case "MILKING", "EXP_POINTS", "EXP_LEVELS", "CARVE", "PLAYER_DEATH", "FIREBALL_REFLECT" ->
-                            quests.add(base);
-
-
-                    //
-                    //
-                    // gérer quêtes inventaires : get, placeholder, location, villager_trade
-                    // > update canProgress pour ces quêtes
-                    //
-                    //
-
-                    /* types that requires an entity */
-                    case "KILL", "BREED", "TAME", "SHEAR", "CUSTOM_MOBS", "BREAK", "GET", "PLACE", "CRAFT", "PICKUP", "LAUNCH", "CONSUME", "COOK", "ENCHANT", "FISH", "FARMING", "LOCATION","PLACEHOLDER", "VILLAGER_TRADE" -> {
-                        final Class<? extends AbstractQuest> questClass = questTypeRegistry.get(questType);
-
-                        AbstractQuest questInstance = null;
-                        try {
-                            questInstance = questClass.getDeclaredConstructor(BasicQuest.class).newInstance(base);
-                        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                            PluginLogger.error("Error while creating a new instance of " + questType + " quest.");
-                            PluginLogger.error(e.getMessage());
-                        }
-                        if (questInstance != null) {
-                            if (questInstance.loadParameters(questSection, fileName, questIndex)) {
-                                quests.add(questInstance);
-                            }
-                        }
+                AbstractQuest questInstance = null;
+                try {
+                    questInstance = questClass.getDeclaredConstructor(BasicQuest.class).newInstance(base);
+                } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                    PluginLogger.error("Error while creating a new instance of " + questType + " quest.");
+                    PluginLogger.error(e.getMessage());
+                }
+                if (questInstance != null) {
+                    if (questInstance.loadParameters(questSection, fileName, questIndex)) {
+                        quests.add(questInstance);
                     }
                 }
 

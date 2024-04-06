@@ -37,6 +37,8 @@ public class ShearQuest extends EntityQuest {
                 if (dyeColor == null) return true;
                 return sheep.getColor() == dyeColor;
             }
+
+            return true;
         }
 
         return false;

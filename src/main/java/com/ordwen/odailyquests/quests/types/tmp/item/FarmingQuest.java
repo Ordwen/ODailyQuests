@@ -1,7 +1,5 @@
 package com.ordwen.odailyquests.quests.types.tmp.item;
 
-import com.ordwen.odailyquests.events.listeners.item.BlockDropItemListener;
-import com.ordwen.odailyquests.events.listeners.item.PlayerHarvestBlockListener;
 import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
 import com.ordwen.odailyquests.quests.types.shared.ItemQuest;
 import org.bukkit.event.Event;
