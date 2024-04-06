@@ -80,7 +80,7 @@ public class QuestsLoader extends QuestItemGetter {
         final ItemStack menuItem = getItemStackFromMaterial(presumedItem, fileName, questIndex, "menu_item");
         if (menuItem == null) return null;
 
-        ItemStack achievedItem;
+        final ItemStack achievedItem;
         if (questSection.isString("achieved_menu_item")) {
             final String presumedAchievedItem = questSection.getString("achieved_menu_item");
             achievedItem = getItemStackFromMaterial(presumedAchievedItem, fileName, questIndex, "achieved_menu_item");
@@ -92,7 +92,8 @@ public class QuestsLoader extends QuestItemGetter {
         /* reward */
         final Reward reward = createReward(questSection, fileName, questIndex);
 
-        return new BasicQuest(questIndex, questName, fileName, questDesc, questType, menuItem, achievedItem, requiredAmount, reward, requiredWorlds, usePlaceholders);
+        return new BasicQuest(questIndex, questName, fileName, questDesc, questType, menuItem,
+                achievedItem, requiredAmount, reward, requiredWorlds, usePlaceholders);
     }
 
     /**
@@ -124,8 +125,9 @@ public class QuestsLoader extends QuestItemGetter {
             }
 
             PluginLogger.info(fileName + " array successfully loaded (" + quests.size() + ").");
-        } else
+        } else {
             PluginLogger.error("Impossible to load " + fileName + " : there is no quests in " + fileName + " file !");
+        }
     }
 
     /**

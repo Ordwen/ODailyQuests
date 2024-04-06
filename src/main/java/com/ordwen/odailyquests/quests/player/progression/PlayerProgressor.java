@@ -19,6 +19,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class PlayerProgressor {
 
@@ -49,11 +50,12 @@ public class PlayerProgressor {
      */
     private static void checkForProgress(Event event, Player player, int amount, String questType) {
         final HashMap<AbstractQuest, Progression> playerQuests = QuestsManager.getActiveQuests().get(player.getName()).getPlayerQuests();
-        for (AbstractQuest abstractQuest : playerQuests.keySet()) {
-            if (abstractQuest.getQuestType().equals(questType)) {
-                final Progression progression = playerQuests.get(abstractQuest);
-                if (!progression.isAchieved() && abstractQuest.canProgress(event)) {
-                    actionQuest(player, progression, abstractQuest, amount);
+        for (Map.Entry<AbstractQuest, Progression> entry : playerQuests.entrySet()) {
+            final AbstractQuest quest = entry.getKey();
+            if (quest.getQuestType().equals(questType)) {
+                final Progression progression = entry.getValue();
+                if (!progression.isAchieved() && quest.canProgress(event)) {
+                    actionQuest(player, progression, quest, amount);
                     if (!Synchronization.isSynchronised()) break;
                 }
             }
