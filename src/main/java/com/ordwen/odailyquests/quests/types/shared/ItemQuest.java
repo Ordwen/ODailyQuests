@@ -14,7 +14,8 @@ import java.util.Set;
 public abstract class ItemQuest extends AbstractQuest {
 
     private static final Set<Material> POTIONS_TYPES = Set.of(Material.POTION, Material.SPLASH_POTION, Material.LINGERING_POTION);
-
+    private static final String TYPE_PATH = ".required_item";
+    
     private final List<ItemStack> requiredItems;
     private boolean ignoreNbt = false;
 
@@ -53,14 +54,14 @@ public abstract class ItemQuest extends AbstractQuest {
 
     @Override
     public boolean loadParameters(ConfigurationSection section, String file, int index) {
-        if (!section.contains(".required_item")) return true;
+        if (!section.contains(TYPE_PATH)) return true;
         ignoreNbt = section.getBoolean(".ignore_nbt");
 
         final QuestItemGetter itemGetter = new QuestItemGetter();
 
         final List<String> requiredItemStrings = new ArrayList<>();
-        if (section.isList(".required_item")) requiredItemStrings.addAll(section.getStringList(".required_item"));
-        else requiredItemStrings.add(section.getString(".required_item"));
+        if (section.isList(TYPE_PATH)) requiredItemStrings.addAll(section.getStringList(TYPE_PATH));
+        else requiredItemStrings.add(section.getString(TYPE_PATH));
 
         return loadRequiredItems(section, file, index, requiredItemStrings, itemGetter);
     }
@@ -92,17 +93,25 @@ public abstract class ItemQuest extends AbstractQuest {
                 if (potionMeta == null) return false;
 
                 requiredItem.setItemMeta(potionMeta);
-
-                final ItemStack menuItem = getMenuItem();
-                if (POTIONS_TYPES.contains(menuItem.getType())) {
-                    menuItem.setItemMeta(potionMeta);
-                }
+                updateMenuItem(potionMeta);
             }
 
             requiredItems.add(requiredItem);
         }
 
         return true;
+    }
+
+    /**
+     * Update the menu item.
+     *
+     * @param potionMeta the potion meta.
+     */
+    private void updateMenuItem(PotionMeta potionMeta) {
+        final ItemStack menuItem = getMenuItem();
+        if (POTIONS_TYPES.contains(menuItem.getType())) {
+            menuItem.setItemMeta(potionMeta);
+        }
     }
 
     /**

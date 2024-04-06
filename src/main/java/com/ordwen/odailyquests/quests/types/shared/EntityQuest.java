@@ -11,6 +11,8 @@ import java.util.List;
 
 public abstract class EntityQuest extends AbstractQuest {
 
+    private static final String TYPE_PATH = ".required_entity";
+
     protected final List<EntityType> requiredEntities;
     protected DyeColor dyeColor;
 
@@ -21,14 +23,14 @@ public abstract class EntityQuest extends AbstractQuest {
 
     @Override
     public boolean loadParameters(ConfigurationSection section, String file, int index) {
-        if (!section.contains(".required_entity")) return true;
+        if (!section.contains(TYPE_PATH)) return true;
 
-        if (section.isString(".required_entity")) {
-            final EntityType entityType = getEntityType(file, index, section.getString(".required_entity"));
+        if (section.isString(TYPE_PATH)) {
+            final EntityType entityType = getEntityType(file, index, section.getString(TYPE_PATH));
             if (entityType != null) requiredEntities.add(entityType);
             else return false;
         } else {
-            for (String presumedEntity : section.getStringList(".required_entity")) {
+            for (String presumedEntity : section.getStringList(TYPE_PATH)) {
                 final EntityType entityType = getEntityType(file, index, presumedEntity);
                 if (entityType != null) requiredEntities.add(entityType);
                 else return false;

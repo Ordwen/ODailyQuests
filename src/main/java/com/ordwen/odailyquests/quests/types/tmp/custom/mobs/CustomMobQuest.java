@@ -11,6 +11,8 @@ import java.util.List;
 
 public abstract class CustomMobQuest extends AbstractQuest {
 
+    private static final String NAME_PATH = ".entity_name";
+
     protected List<String> entityNames;
 
     protected CustomMobQuest(BasicQuest base) {
@@ -20,10 +22,10 @@ public abstract class CustomMobQuest extends AbstractQuest {
 
     @Override
     public boolean loadParameters(ConfigurationSection section, String file, int index) {
-        if (section.isString(".entity_name")) {
-            entityNames.add(section.getString(".entity_name"));
+        if (section.isString(NAME_PATH)) {
+            entityNames.add(section.getString(NAME_PATH));
         } else {
-            entityNames.addAll(section.getStringList(".entity_name"));
+            entityNames.addAll(section.getStringList(NAME_PATH));
         }
 
         for (String entityName : entityNames) {

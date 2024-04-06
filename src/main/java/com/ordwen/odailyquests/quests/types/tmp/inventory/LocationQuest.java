@@ -17,6 +17,8 @@ import org.bukkit.persistence.PersistentDataType;
 
 public class LocationQuest extends AbstractQuest {
 
+    private static final String LOCATION_PATH = ".location";
+
     Location requiredLocation;
     int radius;
 
@@ -36,9 +38,9 @@ public class LocationQuest extends AbstractQuest {
 
     @Override
     public boolean loadParameters(ConfigurationSection section, String file, int index) {
-        final ConfigurationSection locationSection = section.getConfigurationSection("location");
+        final ConfigurationSection locationSection = section.getConfigurationSection(LOCATION_PATH);
         if (locationSection == null) {
-            PluginLogger.configurationError(file, index, "location", "You need to specify a location.");
+            PluginLogger.configurationError(file, index, LOCATION_PATH, "You need to specify a location.");
             return false;
         }
 
@@ -73,7 +75,7 @@ public class LocationQuest extends AbstractQuest {
         if (meta == null) return false;
 
         final PersistentDataContainer container = meta.getPersistentDataContainer();
-        container.set(new NamespacedKey(ODailyQuests.INSTANCE, "quest_type"), PersistentDataType.STRING, "location");
+        container.set(new NamespacedKey(ODailyQuests.INSTANCE, "quest_type"), PersistentDataType.STRING, LOCATION_PATH);
         container.set(new NamespacedKey(ODailyQuests.INSTANCE, "quest_index"), PersistentDataType.INTEGER, index);
         container.set(new NamespacedKey(ODailyQuests.INSTANCE, "file_name"), PersistentDataType.STRING, file);
 
