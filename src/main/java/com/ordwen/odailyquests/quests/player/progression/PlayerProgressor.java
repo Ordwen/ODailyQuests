@@ -30,21 +30,31 @@ public class PlayerProgressor {
      * @param questType the quest type to set the progression for
      */
     public void setPlayerQuestProgression(Event event, Player player, int amount, String questType) {
-
         if (DisabledWorlds.isWorldDisabled(player.getWorld().getName())) {
             return;
         }
 
         if (QuestsManager.getActiveQuests().containsKey(player.getName())) {
-            final HashMap<AbstractQuest, Progression> playerQuests = QuestsManager.getActiveQuests().get(player.getName()).getPlayerQuests();
-            for (AbstractQuest abstractQuest : playerQuests.keySet()) {
-                if (abstractQuest.getQuestType().equals(questType)) {
-                    final Progression progression = playerQuests.get(abstractQuest);
-                    if (!progression.isAchieved()) {
-                        if (!abstractQuest.canProgress(event)) return;
-                        actionQuest(player, progression, abstractQuest, amount);
-                        if (!Synchronization.isSynchronised()) break;
-                    }
+            checkForProgress(event, player, amount, questType);
+        }
+    }
+
+    /**
+     * Check for progress for a specific quest type
+     *
+     * @param event     the event that triggered the progression
+     * @param player    the player to check for progress
+     * @param amount    the amount of progression
+     * @param questType the quest type to check for
+     */
+    private static void checkForProgress(Event event, Player player, int amount, String questType) {
+        final HashMap<AbstractQuest, Progression> playerQuests = QuestsManager.getActiveQuests().get(player.getName()).getPlayerQuests();
+        for (AbstractQuest abstractQuest : playerQuests.keySet()) {
+            if (abstractQuest.getQuestType().equals(questType)) {
+                final Progression progression = playerQuests.get(abstractQuest);
+                if (!progression.isAchieved() && abstractQuest.canProgress(event)) {
+                    actionQuest(player, progression, abstractQuest, amount);
+                    if (!Synchronization.isSynchronised()) break;
                 }
             }
         }
