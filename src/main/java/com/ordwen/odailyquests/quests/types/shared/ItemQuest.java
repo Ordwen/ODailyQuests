@@ -67,24 +67,25 @@ public abstract class ItemQuest extends AbstractQuest {
                 final ItemStack item = itemGetter.loadCustomItem(section, file, index);
                 if (item == null) return false;
                 requiredItems.add(item);
-            } else {
-                final ItemStack requiredItem = itemGetter.getItemStackFromMaterial(type, file, index, "required_item");
-                if (requiredItem == null) return false;
-
-                if (POTIONS_TYPES.contains(requiredItem.getType())) {
-                    final PotionMeta potionMeta = itemGetter.loadPotionItem(section, file, index, requiredItem);
-                    if (potionMeta == null) return false;
-
-                    requiredItem.setItemMeta(potionMeta);
-
-                    final ItemStack menuItem = getMenuItem();
-                    if (POTIONS_TYPES.contains(menuItem.getType())) {
-                        menuItem.setItemMeta(potionMeta);
-                    }
-                }
-
-                requiredItems.add(requiredItem);
+                continue;
             }
+
+            final ItemStack requiredItem = itemGetter.getItemStackFromMaterial(type, file, index, "required_item");
+            if (requiredItem == null) return false;
+
+            if (POTIONS_TYPES.contains(requiredItem.getType())) {
+                final PotionMeta potionMeta = itemGetter.loadPotionItem(section, file, index, requiredItem);
+                if (potionMeta == null) return false;
+
+                requiredItem.setItemMeta(potionMeta);
+
+                final ItemStack menuItem = getMenuItem();
+                if (POTIONS_TYPES.contains(menuItem.getType())) {
+                    menuItem.setItemMeta(potionMeta);
+                }
+            }
+
+            requiredItems.add(requiredItem);
         }
 
         return true;
