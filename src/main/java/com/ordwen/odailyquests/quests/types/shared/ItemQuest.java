@@ -23,7 +23,7 @@ public abstract class ItemQuest extends AbstractQuest {
      *
      * @param base parent quest.
      */
-    public ItemQuest(BasicQuest base) {
+    protected ItemQuest(BasicQuest base) {
         super(base);
         this.requiredItems = new ArrayList<>();
     }

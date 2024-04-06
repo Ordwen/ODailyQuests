@@ -5,13 +5,9 @@ import com.ordwen.odailyquests.quests.types.shared.ItemQuest;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.Event;
-import org.bukkit.inventory.ItemStack;
-
-import java.util.List;
 
 public class VillagerQuest extends ItemQuest {
 
-    List<ItemStack> requiredItems;
     Villager.Profession profession;
     int level;
 
@@ -60,14 +56,5 @@ public class VillagerQuest extends ItemQuest {
      */
     public int getVillagerLevel() {
         return this.level;
-    }
-
-    /**
-     * Get the item required by the quest.
-     *
-     * @return quest item-required.
-     */
-    public List<ItemStack> getRequiredItems() {
-        return this.requiredItems;
     }
 }

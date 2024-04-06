@@ -14,7 +14,7 @@ public abstract class EntityQuest extends AbstractQuest {
     protected final List<EntityType> requiredEntities;
     protected DyeColor dyeColor;
 
-    public EntityQuest(BasicQuest base) {
+    protected EntityQuest(BasicQuest base) {
         super(base);
         this.requiredEntities = new ArrayList<>();
     }
@@ -63,23 +63,5 @@ public abstract class EntityQuest extends AbstractQuest {
      */
     public boolean isRequiredEntity(EntityType entityType) {
         return requiredEntities == null || requiredEntities.isEmpty() || requiredEntities.contains(entityType);
-    }
-
-    /**
-     * Get the entity required by the quest.
-     *
-     * @return quest item-required.
-     */
-    public List<EntityType> getRequiredEntities() {
-        return this.requiredEntities;
-    }
-
-    /**
-     * Get sheep color.
-     *
-     * @return sheep color.
-     */
-    public DyeColor getDyeColor() {
-        return this.dyeColor;
     }
 }

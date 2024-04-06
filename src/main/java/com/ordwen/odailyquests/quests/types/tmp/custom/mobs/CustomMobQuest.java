@@ -13,7 +13,7 @@ public abstract class CustomMobQuest extends AbstractQuest {
 
     protected List<String> entityNames;
 
-    public CustomMobQuest(BasicQuest base) {
+    protected CustomMobQuest(BasicQuest base) {
         super(base);
         this.entityNames = new ArrayList<>();
     }
@@ -40,14 +40,5 @@ public abstract class CustomMobQuest extends AbstractQuest {
 
     public boolean isRequiredEntity(String entityName) {
         return entityNames.contains(entityName);
-    }
-
-    /**
-     * Get required entity name
-     *
-     * @return entity name
-     */
-    public List<String> getEntityNames() {
-        return this.entityNames;
     }
 }
