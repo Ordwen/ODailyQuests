@@ -62,6 +62,20 @@ public abstract class ItemQuest extends AbstractQuest {
         if (section.isList(".required_item")) requiredItemStrings.addAll(section.getStringList(".required_item"));
         else requiredItemStrings.add(section.getString(".required_item"));
 
+        return loadRequiredItems(section, file, index, requiredItemStrings, itemGetter);
+    }
+
+    /**
+     * Load the required items.
+     *
+     * @param section             the current quest section.
+     * @param file                the file name where the quest is.
+     * @param index               the quest index in the file.
+     * @param requiredItemStrings the required item strings.
+     * @param itemGetter          the item getter.
+     * @return true if the required items are loaded, false otherwise.
+     */
+    private boolean loadRequiredItems(ConfigurationSection section, String file, int index, List<String> requiredItemStrings, QuestItemGetter itemGetter) {
         for (String type : requiredItemStrings) {
             if (type.equalsIgnoreCase("CUSTOM_ITEM")) {
                 final ItemStack item = itemGetter.loadCustomItem(section, file, index);
