@@ -118,18 +118,7 @@ public class QuestsLoader extends QuestItemGetter {
 
                 final String questType = base.getQuestType();
 
-                final Class<? extends AbstractQuest> questClass = questTypeRegistry.get(questType);
-
-                AbstractQuest questInstance = null;
-                try {
-                    questInstance = questClass.getDeclaredConstructor(BasicQuest.class).newInstance(base);
-                } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                    PluginLogger.error("Error while creating a new instance of " + questType + " quest.");
-                    PluginLogger.error(e.getMessage());
-                }
-                if (questInstance != null && questInstance.loadParameters(questSection, fileName, questIndex)) {
-                        quests.add(questInstance);
-                }
+                registerQuest(quests, fileName, questType, base, questSection, questIndex);
 
                 questIndex++;
             }
@@ -137,5 +126,31 @@ public class QuestsLoader extends QuestItemGetter {
             PluginLogger.info(fileName + " array successfully loaded (" + quests.size() + ").");
         } else
             PluginLogger.error("Impossible to load " + fileName + " : there is no quests in " + fileName + " file !");
+    }
+
+    /**
+     * Register a quest.
+     *
+     * @param quests       list for quests.
+     * @param fileName     file name for PluginLogger.
+     * @param questType    type of the quest.
+     * @param base         parent quest.
+     * @param questSection current quest section.
+     * @param questIndex   quest index in the file.
+     */
+    private void registerQuest(List<AbstractQuest> quests, String fileName, String questType, BasicQuest base, ConfigurationSection questSection, int questIndex) {
+        final Class<? extends AbstractQuest> questClass = questTypeRegistry.get(questType);
+
+        AbstractQuest questInstance = null;
+        try {
+            questInstance = questClass.getDeclaredConstructor(BasicQuest.class).newInstance(base);
+        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
+                 InvocationTargetException e) {
+            PluginLogger.error("Error while creating a new instance of " + questType + " quest.");
+            PluginLogger.error(e.getMessage());
+        }
+        if (questInstance != null && questInstance.loadParameters(questSection, fileName, questIndex)) {
+            quests.add(questInstance);
+        }
     }
 }
