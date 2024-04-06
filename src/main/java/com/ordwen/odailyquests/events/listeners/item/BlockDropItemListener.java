@@ -3,6 +3,7 @@ package com.ordwen.odailyquests.events.listeners.item;
 import com.ordwen.odailyquests.configuration.essentials.Antiglitch;
 
 import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
+import com.ordwen.odailyquests.quests.types.tmp.item.FarmingQuest;
 import org.bukkit.Material;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
@@ -19,8 +20,6 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.List;
 
 public class BlockDropItemListener extends PlayerProgressor implements Listener {
-
-    public static ItemStack current;
 
     @EventHandler
     public void onBlockDropItem(BlockDropItemEvent event) {
@@ -81,7 +80,7 @@ public class BlockDropItemListener extends PlayerProgressor implements Listener 
         for (Item item : drops) {
             final ItemStack droppedItem = item.getItemStack();
             final Material droppedMaterial = droppedItem.getType();
-            current = new ItemStack(droppedMaterial);
+            FarmingQuest.setCurrent(new ItemStack(droppedMaterial));
             setPlayerQuestProgression(event, player, droppedItem.getAmount(), "FARMING");
         }
     }
