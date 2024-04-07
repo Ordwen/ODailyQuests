@@ -2,7 +2,7 @@ package com.ordwen.odailyquests.events.listeners.item;
 
 
 import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
-import com.ordwen.odailyquests.quests.types.tmp.item.FarmingQuest;
+import com.ordwen.odailyquests.quests.types.item.FarmingQuest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

@@ -3,7 +3,7 @@ package com.ordwen.odailyquests.events.listeners.item;
 import com.ordwen.odailyquests.configuration.essentials.Antiglitch;
 
 import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
-import com.ordwen.odailyquests.quests.types.tmp.item.FarmingQuest;
+import com.ordwen.odailyquests.quests.types.item.FarmingQuest;
 import org.bukkit.Material;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
