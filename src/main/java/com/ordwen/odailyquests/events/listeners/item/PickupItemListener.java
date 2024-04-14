@@ -2,8 +2,8 @@ package com.ordwen.odailyquests.events.listeners.item;
 
 import com.ordwen.odailyquests.configuration.essentials.Antiglitch;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
-import com.ordwen.odailyquests.enums.QuestType;
-import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractItemChecker;
+
+import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -12,7 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-public class PickupItemListener extends AbstractItemChecker implements Listener {
+public class PickupItemListener extends PlayerProgressor implements Listener {
 
     @EventHandler
     public void onPickupItemEvent(EntityPickupItemEvent event) {
@@ -34,7 +34,7 @@ public class PickupItemListener extends AbstractItemChecker implements Listener 
             Debugger.addDebug("=========================================================================================");
             Debugger.addDebug("PickupItemListener: onPickupItemEvent summoned by " + player.getName() + " for " + item.getType() + ".");
 
-            setPlayerQuestProgression(player, item, event.getItem().getItemStack().getAmount(), QuestType.PICKUP);
+            setPlayerQuestProgression(event, player, event.getItem().getItemStack().getAmount(), "PICKUP");
         }
     }
 }

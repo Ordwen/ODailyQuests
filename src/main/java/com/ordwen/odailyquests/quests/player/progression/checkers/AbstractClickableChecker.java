@@ -7,11 +7,14 @@ import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.events.antiglitch.OpenedRecipes;
 import com.ordwen.odailyquests.externs.hooks.placeholders.PAPIHook;
 import com.ordwen.odailyquests.quests.ConditionType;
-import com.ordwen.odailyquests.enums.QuestType;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
+import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.types.*;
-import com.ordwen.odailyquests.quests.player.progression.QuestProgressUtils;
+import com.ordwen.odailyquests.quests.types.shared.ItemQuest;
+import com.ordwen.odailyquests.quests.types.inventory.LocationQuest;
+import com.ordwen.odailyquests.quests.types.inventory.PlaceholderQuest;
+import com.ordwen.odailyquests.quests.types.item.VillagerQuest;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -45,32 +48,27 @@ public abstract class AbstractClickableChecker {
             for (AbstractQuest abstractQuest : playerQuests.keySet()) {
 
                 if (abstractQuest instanceof ItemQuest quest) {
-                    if (isAppropriateQuestMenuItem(clickedItem, quest.getMenuItem()) && quest.getQuestType() == QuestType.GET) {
+                    if (isAppropriateQuestMenuItem(clickedItem, quest.getMenuItem()) && quest.getQuestType().equals("GET")) {
                         final Progression progression = playerQuests.get(abstractQuest);
                         if (!progression.isAchieved()) {
                             GetQuestChecker.makeQuestProgress(player, progression, quest);
                         }
                         break;
                     }
-                }
-
-                else if (abstractQuest instanceof LocationQuest quest) {
-                    if (isAppropriateQuestMenuItem(clickedItem, quest.getMenuItem()) && quest.getQuestType() == QuestType.LOCATION) {
+                } else if (abstractQuest instanceof LocationQuest quest) {
+                    if (isAppropriateQuestMenuItem(clickedItem, quest.getMenuItem()) && quest.getQuestType().equals("LOCATION")) {
 
                         final Progression progression = playerQuests.get(quest);
                         if (!progression.isAchieved()) {
                             validateLocationQuestType(player, progression, quest);
                         }
                     }
-                }
-
-                else if (abstractQuest instanceof PlaceholderQuest quest) {
-                    if (isAppropriateQuestMenuItem(clickedItem, quest.getMenuItem()) && quest.getQuestType() == QuestType.PLACEHOLDER) {
-
-                        final Progression progression = playerQuests.get(quest);
-                        if (!progression.isAchieved()) {
-                            validatePlaceholderQuestType(player, progression, quest);
-                        }
+                } else if (abstractQuest instanceof PlaceholderQuest quest
+                        && isAppropriateQuestMenuItem(clickedItem, quest.getMenuItem())
+                        && quest.getQuestType().equals("PLACEHOLDER")) {
+                    final Progression progression = playerQuests.get(quest);
+                    if (!progression.isAchieved()) {
+                        validatePlaceholderQuestType(player, progression, quest);
                     }
                 }
             }
@@ -79,8 +77,9 @@ public abstract class AbstractClickableChecker {
 
     /**
      * Check if the clicked item is corresponding to a quest menu item, by checking the persistent data container.
+     *
      * @param clickedItem clicked item to check.
-     * @param menuItem quest menu item to compare.
+     * @param menuItem    quest menu item to compare.
      * @return true if the clicked item is a GET quest menu item.
      */
     private boolean isAppropriateQuestMenuItem(ItemStack clickedItem, ItemStack menuItem) {
@@ -113,7 +112,7 @@ public abstract class AbstractClickableChecker {
 
                     boolean valid = false;
                     Progression questProgression = playerQuests.get(quest);
-                    if (!questProgression.isAchieved() && quest.getQuestType() == QuestType.VILLAGER_TRADE) {
+                    if (!questProgression.isAchieved() && quest.getQuestType().equals("VILLAGER_TRADE")) {
                         if (quest.getRequiredItems() == null) valid = true;
                         else {
                             for (ItemStack item : quest.getRequiredItems()) {
@@ -141,7 +140,7 @@ public abstract class AbstractClickableChecker {
                         }
 
                         if (valid) {
-                            QuestProgressUtils.actionQuest(player, questProgression, quest, quantity);
+                            PlayerProgressor.actionQuest(player, questProgression, quest, quantity);
                             if (!Synchronization.isSynchronised()) break;
                         }
                     }
@@ -181,9 +180,9 @@ public abstract class AbstractClickableChecker {
     /**
      * Validate PLACEHOLDER quest type.
      *
-     * @param player player who is checking the placeholder.
+     * @param player      player who is checking the placeholder.
      * @param progression progression of the quest.
-     * @param quest quest to validate.
+     * @param quest       quest to validate.
      */
     private void validatePlaceholderQuestType(Player player, Progression progression, PlaceholderQuest quest) {
         final String placeholder = quest.getPlaceholder();
@@ -226,7 +225,8 @@ public abstract class AbstractClickableChecker {
                 }
             }
 
-            case DURATION_GREATER_THAN, DURATION_GREATER_THAN_OR_EQUALS, DURATION_LESS_THAN, DURATION_LESS_THAN_OR_EQUALS -> {
+            case DURATION_GREATER_THAN, DURATION_GREATER_THAN_OR_EQUALS, DURATION_LESS_THAN,
+                 DURATION_LESS_THAN_OR_EQUALS -> {
                 final String[] placeholderValues = placeholderValue.split(":");
 
                 final Duration currentDuration = Duration

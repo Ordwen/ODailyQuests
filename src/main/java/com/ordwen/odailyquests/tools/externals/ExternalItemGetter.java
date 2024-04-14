@@ -1,12 +1,15 @@
 package com.ordwen.odailyquests.tools.externals;
 
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.Buttons;
+import com.ordwen.odailyquests.configuration.integrations.ItemsAdderEnabled;
+import com.ordwen.odailyquests.configuration.integrations.OraxenEnabled;
 import com.ordwen.odailyquests.tools.Pair;
 import dev.lone.itemsadder.api.CustomStack;
 import io.th0rgal.oraxen.api.OraxenItems;
 import net.Indyuce.mmoitems.MMOItems;
 import net.Indyuce.mmoitems.api.Type;
 import net.Indyuce.mmoitems.api.item.mmoitem.MMOItem;
+import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 
 public abstract class ExternalItemGetter implements IExternalItemGetter {
@@ -18,6 +21,9 @@ public abstract class ExternalItemGetter implements IExternalItemGetter {
      */
     @Override
     public Pair<String, ItemStack> getOraxenItem(String namespace) {
+        if (!OraxenEnabled.isEnabled()) {
+            return new Pair<>("Oraxen is not enabled.", null);
+        }
 
         if (!OraxenItems.exists(namespace)) {
             return new Pair<>("The item " + namespace + " does not exist in Oraxen.", null);
@@ -33,6 +39,9 @@ public abstract class ExternalItemGetter implements IExternalItemGetter {
      */
     @Override
     public Pair<String, ItemStack> getItemsAdderItem(String namespace) {
+        if (!ItemsAdderEnabled.isEnabled()) {
+            return new Pair<>("ItemsAdder is not enabled.", null);
+        }
 
         if (!namespace.contains(":")) {
             return new Pair<>("You need to provide the namespace and the id of the item.", null);
@@ -52,6 +61,10 @@ public abstract class ExternalItemGetter implements IExternalItemGetter {
      */
     @Override
     public Pair<String, ItemStack> getMMOItemsItem(String namespace) {
+        if (Bukkit.getServer().getPluginManager().getPlugin("MMOItems") == null) {
+            return new Pair<>("MMOItems is not enabled.", null);
+        }
+
         if (!namespace.contains(":")) {
             return new Pair<>("You need to provide the category and the id of the item.", null);
         }

@@ -57,6 +57,8 @@ public class AdminCompleter implements TabCompleter {
 
             StringUtil.copyPartialMatches(args[2], allCompletions, completions);
             Collections.sort(completions);
+
+            if (allCompletions.isEmpty()) return null;
             return completions;
         }
 

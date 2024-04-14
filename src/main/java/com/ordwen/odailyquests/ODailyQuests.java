@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests;
 
 import com.ordwen.odailyquests.api.ODailyQuestsAPI;
+import com.ordwen.odailyquests.api.quests.QuestTypeRegistry;
 import com.ordwen.odailyquests.events.restart.RestartHandler;
 import com.ordwen.odailyquests.externs.IntegrationsManager;
 import com.ordwen.odailyquests.commands.admin.AdminCommands;
@@ -23,6 +24,18 @@ import com.ordwen.odailyquests.quests.player.progression.listeners.QuestComplete
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.h2.H2Manager;
 import com.ordwen.odailyquests.quests.player.progression.storage.yaml.YamlManager;
+import com.ordwen.odailyquests.quests.types.custom.mobs.EliteMobsQuest;
+import com.ordwen.odailyquests.quests.types.custom.mobs.MythicMobsQuest;
+import com.ordwen.odailyquests.quests.types.entity.BreedQuest;
+import com.ordwen.odailyquests.quests.types.entity.KillQuest;
+import com.ordwen.odailyquests.quests.types.entity.ShearQuest;
+import com.ordwen.odailyquests.quests.types.entity.TameQuest;
+import com.ordwen.odailyquests.quests.types.global.*;
+import com.ordwen.odailyquests.quests.types.inventory.GetQuest;
+import com.ordwen.odailyquests.quests.types.inventory.LocationQuest;
+import com.ordwen.odailyquests.quests.types.inventory.PlaceholderQuest;
+import com.ordwen.odailyquests.quests.types.item.VillagerQuest;
+import com.ordwen.odailyquests.quests.types.item.*;
 import com.ordwen.odailyquests.tools.*;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.mysql.MySQLManager;
@@ -70,7 +83,7 @@ public final class ODailyQuests extends JavaPlugin {
         this.filesManager.loadAllFiles();
 
         /* Check for updates */
-        new AutoUpdater(this).checkForUpdate(); // LAST USE : 2.1.0 -> 2.1.1
+        new AutoUpdater(this).checkForUpdate();
         checkForSpigotUpdate();
 
         /* Load SQL Support */
@@ -93,6 +106,44 @@ public final class ODailyQuests extends JavaPlugin {
 
         /* Load debugger */
         new Debugger(this).loadDebugMode();
+
+        /* Register quest types */
+        final QuestTypeRegistry questTypeRegistry = API.getQuestTypeRegistry();
+
+        /* entity quests */
+        questTypeRegistry.registerQuestType("KILL", KillQuest.class);
+        questTypeRegistry.registerQuestType("BREED", BreedQuest.class);
+        questTypeRegistry.registerQuestType("SHEAR", ShearQuest.class);
+        questTypeRegistry.registerQuestType("TAME", TameQuest.class);
+        questTypeRegistry.registerQuestType("FIREBALL_REFLECT", FireballReflectQuest.class);
+        questTypeRegistry.registerQuestType("ELITE_MOBS", EliteMobsQuest.class);
+        questTypeRegistry.registerQuestType("MYTHIC_MOBS", MythicMobsQuest.class);
+
+        /* item quests */
+        questTypeRegistry.registerQuestType("BREAK", BreakQuest.class);
+        questTypeRegistry.registerQuestType("PLACE", PlaceQuest.class);
+        questTypeRegistry.registerQuestType("CRAFT", CraftQuest.class);
+        questTypeRegistry.registerQuestType("PICKUP", PickupQuest.class);
+        questTypeRegistry.registerQuestType("LAUNCH", LaunchQuest.class);
+        questTypeRegistry.registerQuestType("CONSUME", ConsumeQuest.class);
+        questTypeRegistry.registerQuestType("COOK", CookQuest.class);
+        questTypeRegistry.registerQuestType("ENCHANT", EnchantQuest.class);
+        questTypeRegistry.registerQuestType("FISH", FishQuest.class);
+        questTypeRegistry.registerQuestType("FARMING", FarmingQuest.class);
+
+        /* inventory quests */
+        questTypeRegistry.registerQuestType("GET", GetQuest.class);
+        questTypeRegistry.registerQuestType("LOCATION", LocationQuest.class);
+        questTypeRegistry.registerQuestType("VILLAGER_TRADE", VillagerQuest.class);
+        questTypeRegistry.registerQuestType("PLACEHOLDER", PlaceholderQuest.class);
+        questTypeRegistry.registerQuestType("CARVE", CarveQuest.class);
+
+        /* global quests */
+        questTypeRegistry.registerQuestType("MILKING", MilkingQuest.class);
+        questTypeRegistry.registerQuestType("EXP_POINTS", ExpPointsQuest.class);
+        questTypeRegistry.registerQuestType("EXP_LEVELS", ExpLevelQuest.class);
+        questTypeRegistry.registerQuestType("PLAYER_DEATH", PlayerDeathQuest.class);
+        questTypeRegistry.registerQuestType("FIREBALL_REFLECT", FireballReflectQuest.class);
 
         /* Load all elements */
         reloadService.reload();

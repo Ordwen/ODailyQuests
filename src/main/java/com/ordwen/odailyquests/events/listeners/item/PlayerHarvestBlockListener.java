@@ -1,7 +1,8 @@
 package com.ordwen.odailyquests.events.listeners.item;
 
-import com.ordwen.odailyquests.enums.QuestType;
-import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractItemChecker;
+
+import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
+import com.ordwen.odailyquests.quests.types.item.FarmingQuest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -10,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public class PlayerHarvestBlockListener extends AbstractItemChecker implements Listener {
+public class PlayerHarvestBlockListener extends PlayerProgressor implements Listener {
 
     @EventHandler
     public void onPlayerHarvestBlock(PlayerHarvestBlockEvent event) {
@@ -21,7 +22,8 @@ public class PlayerHarvestBlockListener extends AbstractItemChecker implements L
         final List<ItemStack> drops = event.getItemsHarvested();
 
         for (ItemStack item : drops) {
-            setPlayerQuestProgression(player, new ItemStack(item.getType()), item.getAmount(), QuestType.FARMING);
+            FarmingQuest.setCurrent(new ItemStack(item.getType()));
+            setPlayerQuestProgression(event, player, item.getAmount(), "FARMING");
         }
     }
 }
