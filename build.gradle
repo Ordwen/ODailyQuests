@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'com.ordwen'
-version = '2.3.0-SNAPSHOT-REFACT'
+version = '2.3.0-SNAPSHOT-1'
 
 repositories {
     mavenCentral()
@@ -97,6 +97,9 @@ dependencies {
 
     /* auto restart */
     implementation 'com.github.N0RSKA:UltimateAutoRestartAPI:2023.12'
+
+    /* protection */
+    implementation 'com.github.TownyAdvanced:Towny:0.100.2.2'
 
     /* Mojang auth API for heads */
     compileOnly 'com.mojang:authlib:1.5.21'

@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.quests.types.item;
 
+import com.ordwen.odailyquests.externs.hooks.Protection;
 import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
 import com.ordwen.odailyquests.quests.types.shared.ItemQuest;
 import dev.lone.itemsadder.api.Events.CustomBlockBreakEvent;
@@ -24,6 +25,7 @@ public class BreakQuest extends ItemQuest {
     public boolean canProgress(Event provided) {
         if (provided instanceof BlockBreakEvent event) {
             final Block block = event.getBlock();
+            if (!Protection.canBuild(event.getPlayer(), block)) return false;
 
             Material material = switch (block.getType()) {
                 case POTATOES -> Material.POTATO;
