@@ -1,0 +1,16 @@
+name: "ODailyQuests"
+prefix: "O'DailyQuests"
+commands:
+  dquests:
+    description: default player command
+    aliases:
+      - dailyquests
+      - dq
+      - quests
+  dqadmin:
+    description: admin command
+    aliases:
+      - dailyquestsadmin
+      - dquestsadmin
+      - dqa
+      - qadmin
