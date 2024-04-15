@@ -104,7 +104,7 @@ dependencies {
 
     /* protection */
     implementation 'com.github.TownyAdvanced:Towny:0.100.2.2'
-    compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.9'
+    compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.1.0'
 
     /* Mojang auth API for heads */
     compileOnly 'com.mojang:authlib:1.5.21'
