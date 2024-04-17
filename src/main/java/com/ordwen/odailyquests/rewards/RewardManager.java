@@ -72,7 +72,6 @@ public class RewardManager {
                     VaultHook.getEconomy().depositPlayer(player, reward.getRewardAmount());
 
                     msg = QuestsMessages.REWARD_MONEY.getMessage(player);
-                    System.out.println(reward.getRewardAmount());
                     if (msg != null) player.sendMessage(msg.replace("%rewardAmount%", String.valueOf(reward.getRewardAmount())));
                 }
 
