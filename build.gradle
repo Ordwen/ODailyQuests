@@ -51,6 +51,9 @@ repositories {
         name = "phoenix"
         url = "https://nexus.phoenixdevt.fr/repository/maven-public/"
     }
+    maven {
+        url = "https://maven.enginehub.org/repo/"
+    }
     flatDir {
         dirs 'libs'
     }
@@ -99,6 +102,7 @@ dependencies {
     implementation 'com.github.N0RSKA:UltimateAutoRestartAPI:2023.12'
 
     /* protection */
+    compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.5'
     implementation 'com.github.TownyAdvanced:Towny:0.100.2.2'
 
     /* Mojang auth API for heads */

@@ -67,6 +67,7 @@ public class ShowCommand extends PCommandHandler {
             noPermissionCategory(player);
             return;
         }
+
         final Inventory inventory = InterfacesManager.getInterfaceFirstPage(GLOBAL, player);
         player.openInventory(inventory);
     }
