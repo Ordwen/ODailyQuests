@@ -5,6 +5,7 @@ import com.ordwen.odailyquests.enums.ProgressionMessageType;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.tools.ColorConvert;
 import com.ordwen.odailyquests.tools.PluginLogger;
+import com.ordwen.odailyquests.tools.ProgressBar;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -80,7 +81,9 @@ public class ProgressionMessage {
                     .replace("%player%", player.getDisplayName())
                     .replace("%questName%", questName)
                     .replace("%progress%", String.valueOf(progression))
-                    .replace("%required%", String.valueOf(required)));
+                    .replace("%required%", String.valueOf(required))
+                    .replace("%progressBar%", ProgressBar.getProgressBar(progression, required))
+            );
 
             switch (progressionMessageType) {
                 case ACTIONBAR -> player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(toSend));

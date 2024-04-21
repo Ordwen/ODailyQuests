@@ -8,6 +8,7 @@ import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.tools.Pair;
 import com.ordwen.odailyquests.tools.PluginLogger;
+import com.ordwen.odailyquests.tools.ProgressBar;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -157,8 +158,12 @@ public class QuestsInterfaces {
                 if (itemMeta.getPersistentDataContainer().has(usePlaceholdersKey, PersistentDataType.BYTE)) {
                     final List<String> lore = itemMeta.getLore();
                     if (lore == null) continue;
+
+                    final int required = itemMeta.getPersistentDataContainer().get(requiredKey, PersistentDataType.INTEGER);
+
                     lore.replaceAll(s -> s.replace("%progress%", String.valueOf(0)));
-                    lore.replaceAll(s -> s.replace("%required%", String.valueOf(itemMeta.getPersistentDataContainer().get(requiredKey, PersistentDataType.INTEGER))));
+                    lore.replaceAll(s -> s.replace("%progressBar%", ProgressBar.getProgressBar(0, required)));
+                    lore.replaceAll(s -> s.replace("%required%", String.valueOf(required)));
                     lore.replaceAll(s -> s.replace("%drawIn%", "~"));
                     lore.replaceAll(s -> PAPIHook.getPlaceholders(player, s));
 

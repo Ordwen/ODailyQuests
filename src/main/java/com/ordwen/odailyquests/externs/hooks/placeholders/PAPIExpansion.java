@@ -2,11 +2,12 @@ package com.ordwen.odailyquests.externs.hooks.placeholders;
 
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
-import com.ordwen.odailyquests.quests.player.progression.QuestLoaderUtils;
-import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
+import com.ordwen.odailyquests.quests.player.progression.QuestLoaderUtils;
+import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.tools.ColorConvert;
+import com.ordwen.odailyquests.tools.ProgressBar;
 import com.ordwen.odailyquests.tools.TimeRemain;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
@@ -63,6 +64,9 @@ public class PAPIExpansion extends PlaceholderExpansion {
         if (params.startsWith("interface")) {
             return getInterfaceMessage(params, player, playerQuests);
         }
+        if (params.startsWith("progressbar")) {
+            return getProgressBar(params, playerQuests);
+        }
         if (params.startsWith("progress")) {
             return String.valueOf(getPlayerQuestProgression(params, playerQuests));
         }
@@ -98,17 +102,16 @@ public class PAPIExpansion extends PlaceholderExpansion {
 
     /**
      * Get interface placeholders.
-     * @param params the placeholder.
-     * @param player the player.
+     *
+     * @param params       the placeholder.
+     * @param player       the player.
      * @param playerQuests the player quests.
      * @return the result.
      */
     private String getInterfaceMessage(String params, OfflinePlayer player, PlayerQuests playerQuests) {
         if (params.equals("interface_complete_get_type")) {
             return ColorConvert.convertColorCode(PlaceholderAPI.setPlaceholders(player, PlayerQuestsInterface.getCompleteGetType()));
-        }
-
-        else if (params.startsWith("interface_status_")) {
+        } else if (params.startsWith("interface_status_")) {
             final String supposedIndex = params.substring("interface_status_".length());
             int index;
 
@@ -126,7 +129,8 @@ public class PAPIExpansion extends PlaceholderExpansion {
 
     /**
      * Check if the quest is completed.
-     * @param params the placeholder.
+     *
+     * @param params       the placeholder.
      * @param playerQuests the player quests.
      * @return the result.
      */
@@ -151,7 +155,8 @@ public class PAPIExpansion extends PlaceholderExpansion {
 
     /**
      * Get the corresponding text for the quest status.
-     * @param index the quest index.
+     *
+     * @param index        the quest index.
      * @param playerQuests the player quests.
      * @return the achieved message or the progress message.
      */
@@ -162,7 +167,8 @@ public class PAPIExpansion extends PlaceholderExpansion {
             if (i == index) {
                 return (playerQuests.getPlayerQuests().get(quest).isAchieved() ? PlayerQuestsInterface.getAchieved() : PlayerQuestsInterface.getProgression())
                         .replace("%progress%", String.valueOf(playerQuests.getPlayerQuests().get(quest).getProgression()))
-                        .replace("%required%", String.valueOf(quest.getAmountRequired()));
+                        .replace("%required%", String.valueOf(quest.getAmountRequired()))
+                        .replace("%progressBar%", ProgressBar.getProgressBar(playerQuests.getPlayerQuests().get(quest).getProgression(), quest.getAmountRequired()));
             }
             i++;
         }
@@ -172,7 +178,8 @@ public class PAPIExpansion extends PlaceholderExpansion {
 
     /**
      * Get the name of the current player quest.
-     * @param params the placeholder.
+     *
+     * @param params       the placeholder.
      * @param playerQuests the player quests.
      * @return the name of the quest.
      */
@@ -197,7 +204,8 @@ public class PAPIExpansion extends PlaceholderExpansion {
 
     /**
      * Get the required amount of a quest.
-     * @param params the placeholder.
+     *
+     * @param params       the placeholder.
      * @param playerQuests the player quests.
      * @return the required amount.
      */
@@ -222,7 +230,8 @@ public class PAPIExpansion extends PlaceholderExpansion {
 
     /**
      * Get the line of a specified quest description
-     * @param params the placeholder
+     *
+     * @param params       the placeholder
      * @param playerQuests the player quests
      * @return the line of the description
      */
@@ -256,7 +265,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
     /**
      * Get player quest progression.
      *
-     * @param params the placeholder
+     * @param params       the placeholder
      * @param playerQuests the player quests
      * @return current progression
      */
@@ -276,6 +285,35 @@ public class PAPIExpansion extends PlaceholderExpansion {
             i++;
         }
         return -1;
+    }
+
+    /**
+     * Get the progress bar of a quest.
+     *
+     * @param params       the placeholder
+     * @param playerQuests the player quests
+     * @return the progress bar
+     */
+    private String getProgressBar(String params, PlayerQuests playerQuests) {
+        System.out.println("params: " + params);
+        int index;
+        try {
+            index = Integer.parseInt(params.substring(params.indexOf("_") + 1)) - 1;
+        } catch (Exception e) {
+            return ChatColor.RED + "Invalid index.";
+        }
+
+        int i = 0;
+        for (AbstractQuest quest : playerQuests.getPlayerQuests().keySet()) {
+            if (i == index) {
+                String str = ProgressBar.getProgressBar(playerQuests.getPlayerQuests().get(quest).getProgression(), quest.getAmountRequired());
+                System.out.println(str);
+                return str;
+            }
+            i++;
+        }
+
+        return ChatColor.RED + "Invalid index.";
     }
 
     /**
