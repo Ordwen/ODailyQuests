@@ -295,7 +295,6 @@ public class PAPIExpansion extends PlaceholderExpansion {
      * @return the progress bar
      */
     private String getProgressBar(String params, PlayerQuests playerQuests) {
-        System.out.println("params: " + params);
         int index;
         try {
             index = Integer.parseInt(params.substring(params.indexOf("_") + 1)) - 1;
@@ -306,9 +305,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
         int i = 0;
         for (AbstractQuest quest : playerQuests.getPlayerQuests().keySet()) {
             if (i == index) {
-                String str = ProgressBar.getProgressBar(playerQuests.getPlayerQuests().get(quest).getProgression(), quest.getAmountRequired());
-                System.out.println(str);
-                return str;
+                return ProgressBar.getProgressBar(playerQuests.getPlayerQuests().get(quest).getProgression(), quest.getAmountRequired());
             }
             i++;
         }
