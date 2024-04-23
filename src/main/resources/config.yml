@@ -2,7 +2,7 @@
 debug: false
 
 # never touch this line
-version: 2.2.6
+version: 2.3.0
 
 # plugin prefix for messaging
 prefix: "&7[O'DailyQuests&7]"
@@ -80,6 +80,17 @@ temporality_initials:
   minutes: "m"
   few_seconds: "Few seconds"
 
+# Here you can customize the progress bar.
+# symbol: the symbol that will be used to fill the progress bar.
+# amount_of_symbols: the number of symbols that will be used.
+# completed_color: the color of the symbols for the progress made.
+# remaining_color: the color of the symbols for the progress to be achieved.
+progress_bar:
+  symbol: "|"
+  amount_of_symbols: 20
+  completed_color: "&a"
+  remaining_color: "&7"
+
 # Global Reward
 # Will be given when the player has completed all his daily quests.
 # The syntax is the same as for quest rewards.
@@ -137,12 +148,12 @@ actionbar:
   text: "&eYou have completed the quest %questName%&e!"
 
 # Set a message that will be displayed to the player when he progresses in a quest.
-# Available placeholders : %player% , %questName% , %progress% , %required%
+# Available placeholders : %player% , %questName% , %progressBar% , %progress% , %required%
 # Available types : ACTIONBAR, BOSSBAR, CHAT
 # /!\ The CHAT type is not recommended, it can cause chat spam.
 progression_message:
   enabled: true
-  text: "&aYou have completed &b%progress%&a/&b%required% &a(&e%questName%&a)!"
+  text: "%progressBar% &7(&b%progress%&a/&b%required% &7- &e%questName%&7)"
   type: ACTIONBAR
 
 # Disables the progression of quests where you have to kill an entity if it comes from a Spawner.

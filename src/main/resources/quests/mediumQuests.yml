@@ -18,6 +18,7 @@
 # https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
 # ==============================================================
 # AVAILABLE PLUGIN PLACEHOLDERS FOR QUESTS DESCRIPTIONS :
+# %progressBar% is replaced by the progress bar defined in the configuration.
 # %progress% is replaced by the progression of the quest.
 # %required% is replaced by the required amount to complete the quest.
 # ==============================================================

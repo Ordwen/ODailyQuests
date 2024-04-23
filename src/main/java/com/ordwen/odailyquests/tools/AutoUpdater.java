@@ -117,13 +117,21 @@ public class AutoUpdater {
             }
 
             // --------------
-            // 2.2.5 -> 2.2.6
+            // 2.2.5 -> 2.3.0
             // --------------
 
             // CONFIG
 
             if (!configFile.contains("reroll_only_if_not_achieved")) {
                 AddDefault.addDefaultConfigItem("reroll_only_if_not_achieved", false, configFile, file);
+            }
+
+            /* progress bar */
+            if (!configFile.contains("progress_bar")) {
+                AddDefault.addDefaultConfigItem("progress_bar.symbol", "|", configFile, file);
+                AddDefault.addDefaultConfigItem("progress_bar.completed_color", "&a", configFile, file);
+                AddDefault.addDefaultConfigItem("progress_bar.remaining_color", "&7", configFile, file);
+                AddDefault.addDefaultConfigItem("progress_bar.amount_of_symbols", 20, configFile, file);
             }
 
             PluginLogger.fine("All files have been updated!");

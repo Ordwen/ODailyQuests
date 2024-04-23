@@ -16,7 +16,7 @@ public class AddDefault {
      * @param file              file to save the configuration
      */
     public static void addDefaultConfigItem(String path, Object value, FileConfiguration fileConfiguration, File file) {
-        PluginLogger.warn("The parameter \"" + path + "\" was missing in one of your configuration files. It has been added automatically on your file.");
+        PluginLogger.warn("The parameter \"" + path + "\" was missing in one of your configuration files. It has been added automatically.");
         PluginLogger.warn("For more information about this addition, please visit the Wiki: https://ordwenplugins.gitbook.io/odailyquests/configuration/configuration-file#default-configuration-file");
 
         fileConfiguration.addDefault(path, value);
