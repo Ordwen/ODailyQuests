@@ -22,7 +22,7 @@ public class ProgressBar {
     /**
      * Load the progress bar configuration.
      */
-    public void load() {
+    public void loadProgressBar() {
         final ConfigurationSection section = configurationFiles.getConfigFile().getConfigurationSection("progress_bar");
         if (section == null) {
             PluginLogger.warn("Progress bar section is missing in the configuration file.");
