@@ -97,6 +97,7 @@ dependencies {
     compileOnly 'com.github.LoneDev6:API-ItemsAdder:3.5.0b'
     compileOnly 'net.Indyuce:MMOItems-API:6.9.2-SNAPSHOT'
     compileOnly 'io.lumine:MythicLib-dist:1.5.2-SNAPSHOT'
+    compileOnly name: 'PyroFishingPro-4.9.1'
 
     /* auto restart */
     implementation 'com.github.N0RSKA:UltimateAutoRestartAPI:2023.12'

@@ -30,7 +30,7 @@ public abstract class ItemQuest extends AbstractQuest {
     }
 
     public boolean isRequiredItem(ItemStack provided) {
-        if (requiredItems == null) return true;
+        if (requiredItems == null || requiredItems.isEmpty()) return true;
 
         for (ItemStack item : requiredItems) {
 

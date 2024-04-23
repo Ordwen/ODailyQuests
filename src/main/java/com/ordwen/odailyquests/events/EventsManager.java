@@ -8,6 +8,7 @@ import com.ordwen.odailyquests.events.listeners.customs.CustomFurnaceExtractList
 import com.ordwen.odailyquests.events.listeners.integrations.itemsadder.CustomBlockBreakListener;
 import com.ordwen.odailyquests.events.listeners.integrations.itemsadder.ItemsAdderLoadDataListener;
 import com.ordwen.odailyquests.events.listeners.integrations.oraxen.OraxenItemsLoadedListener;
+import com.ordwen.odailyquests.events.listeners.item.custom.PyroFishCatchListener;
 import com.ordwen.odailyquests.externs.hooks.mobs.EliteMobsHook;
 import com.ordwen.odailyquests.externs.hooks.mobs.MythicMobsHook;
 import com.ordwen.odailyquests.externs.hooks.stackers.WildStackerHook;
@@ -78,6 +79,8 @@ public class EventsManager {
         Bukkit.getPluginManager().registerEvents(new BlockDropItemListener(), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new PlayerHarvestBlockListener(), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new PlayerDropItemListener(), oDailyQuests);
+
+        Bukkit.getPluginManager().registerEvents(new PyroFishCatchListener(), oDailyQuests);
 
         // inventory events
         Bukkit.getPluginManager().registerEvents(new InventoryCloseListener(), oDailyQuests);

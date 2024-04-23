@@ -21,7 +21,9 @@ public class FishQuest extends ItemQuest {
     public boolean canProgress(Event provided) {
         if (provided instanceof PlayerFishEvent event) {
             final Item item = (Item) event.getCaught();
+            System.out.println("caught item: " + item);
             if (item == null) return false;
+            System.out.println("caught itemstack: " + item.getItemStack());
             return super.isRequiredItem(item.getItemStack());
         }
 

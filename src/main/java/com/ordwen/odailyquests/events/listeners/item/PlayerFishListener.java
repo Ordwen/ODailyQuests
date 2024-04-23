@@ -12,7 +12,15 @@ public class PlayerFishListener extends PlayerProgressor implements Listener {
 
     @EventHandler
     public void onPlayerFishEvent(PlayerFishEvent event) {
+        System.out.println("PlayerFishListener: onPlayerFishEvent");
         if (event.isCancelled()) return;
+
+        System.out.println("=============================================================");
+        System.out.println("not cancelled");
+        System.out.println("state: " + event.getState());
+        System.out.println("instanceof: " + (event.getCaught() instanceof Item));
+        if (event.getCaught() != null) System.out.println("type: " + event.getCaught().getType());
+        System.out.println("=============================================================");
 
         if (event.getState() == PlayerFishEvent.State.CAUGHT_FISH && event.getCaught() instanceof Item item) {
             Debugger.addDebug("=========================================================================================");
