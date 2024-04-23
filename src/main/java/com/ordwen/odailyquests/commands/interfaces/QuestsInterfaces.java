@@ -8,7 +8,7 @@ import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.tools.Pair;
 import com.ordwen.odailyquests.tools.PluginLogger;
-import com.ordwen.odailyquests.tools.ProgressBar;
+import com.ordwen.odailyquests.configuration.functionalities.progression.ProgressBar;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;

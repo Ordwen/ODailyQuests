@@ -13,7 +13,7 @@ import com.ordwen.odailyquests.quests.player.progression.QuestLoaderUtils;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.tools.ColorConvert;
 import com.ordwen.odailyquests.tools.PluginLogger;
-import com.ordwen.odailyquests.tools.ProgressBar;
+import com.ordwen.odailyquests.configuration.functionalities.progression.ProgressBar;
 import com.ordwen.odailyquests.tools.TimeRemain;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

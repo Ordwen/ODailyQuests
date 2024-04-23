@@ -2,7 +2,7 @@
 debug: false
 
 # never touch this line
-version: 2.2.6
+version: 2.3.0
 
 # plugin prefix for messaging
 prefix: "&7[O'DailyQuests&7]"
@@ -79,6 +79,17 @@ temporality_initials:
   hours: "h"
   minutes: "m"
   few_seconds: "Few seconds"
+
+# Here you can customize the progress bar.
+# symbol: the symbol that will be used to fill the progress bar.
+# amount_of_symbols: the number of symbols that will be used.
+# completed_color: the color of the symbols for the progress made.
+# remaining_color: the color of the symbols for the progress to be achieved.
+progress_bar:
+  symbol: "|"
+  amount_of_symbols: 20
+  completed_color: "&a"
+  remaining_color: "&7"
 
 # Global Reward
 # Will be given when the player has completed all his daily quests.

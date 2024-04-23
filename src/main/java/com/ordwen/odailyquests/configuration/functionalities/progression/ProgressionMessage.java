@@ -5,7 +5,6 @@ import com.ordwen.odailyquests.enums.ProgressionMessageType;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.tools.ColorConvert;
 import com.ordwen.odailyquests.tools.PluginLogger;
-import com.ordwen.odailyquests.tools.ProgressBar;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
