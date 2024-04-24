@@ -31,11 +31,14 @@ public class PlayerProgressor {
      * @param questType the quest type to set the progression for
      */
     public void setPlayerQuestProgression(Event event, Player player, int amount, String questType) {
+        Debugger.addDebug("PlayerProgressor: setPlayerQuestProgression summoned by " + player.getName() + " for " + questType + ".");
         if (DisabledWorlds.isWorldDisabled(player.getWorld().getName())) {
+            Debugger.addDebug("PlayerProgressor: World is disabled.");
             return;
         }
 
         if (QuestsManager.getActiveQuests().containsKey(player.getName())) {
+            Debugger.addDebug("PlayerProgressor: Active quests contain player.");
             checkForProgress(event, player, amount, questType);
         }
     }
@@ -53,8 +56,10 @@ public class PlayerProgressor {
         for (Map.Entry<AbstractQuest, Progression> entry : playerQuests.entrySet()) {
             final AbstractQuest quest = entry.getKey();
             if (quest.getQuestType().equals(questType)) {
+                Debugger.addDebug("PlayerProgressor: Quest type matches with quest " + quest.getQuestName() + ".");
                 final Progression progression = entry.getValue();
                 if (!progression.isAchieved() && quest.canProgress(event)) {
+                    Debugger.addDebug("PlayerProgressor: Progression is not achieved and quest can progress.");
                     actionQuest(player, progression, quest, amount);
                     if (!Synchronization.isSynchronised()) break;
                 }

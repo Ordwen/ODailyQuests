@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.quests.types.shared;
 
+import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.quests.getters.QuestItemGetter;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import org.bukkit.Material;
@@ -30,22 +31,28 @@ public abstract class ItemQuest extends AbstractQuest {
     }
 
     public boolean isRequiredItem(ItemStack provided) {
-        if (requiredItems == null) return true;
+        if (requiredItems == null || requiredItems.isEmpty()) {
+            Debugger.addDebug("ItemQuest: Required items is empty.");
+            return true;
+        }
 
         for (ItemStack item : requiredItems) {
 
             if (ignoreNbt && item.getType() == provided.getType()) {
+                Debugger.addDebug("ItemQuest: Ignoring NBT data, item types match.");
                 return true;
             }
 
             if (item.hasItemMeta() && item.getItemMeta().hasCustomModelData()) {
                 if (provided.hasItemMeta() && provided.getItemMeta().hasCustomModelData()) {
+                    Debugger.addDebug("ItemQuest: Checking custom model data.");
                     return item.getType() == provided.getType() && item.getItemMeta().getCustomModelData() == provided.getItemMeta().getCustomModelData();
                 }
                 return false;
             }
 
             if (item.isSimilar(provided)) {
+                Debugger.addDebug("ItemQuest: Item is similar to required item.");
                 return true;
             }
         }
