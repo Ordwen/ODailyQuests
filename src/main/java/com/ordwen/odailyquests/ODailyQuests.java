@@ -24,6 +24,8 @@ import com.ordwen.odailyquests.quests.player.progression.listeners.QuestComplete
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.h2.H2Manager;
 import com.ordwen.odailyquests.quests.player.progression.storage.yaml.YamlManager;
+import com.ordwen.odailyquests.quests.types.AbstractQuest;
+import com.ordwen.odailyquests.quests.types.custom.items.PyroFishQuest;
 import com.ordwen.odailyquests.quests.types.custom.mobs.EliteMobsQuest;
 import com.ordwen.odailyquests.quests.types.custom.mobs.MythicMobsQuest;
 import com.ordwen.odailyquests.quests.types.entity.BreedQuest;
@@ -145,6 +147,9 @@ public final class ODailyQuests extends JavaPlugin {
         questTypeRegistry.registerQuestType("PLAYER_DEATH", PlayerDeathQuest.class);
         questTypeRegistry.registerQuestType("FIREBALL_REFLECT", FireballReflectQuest.class);
 
+        /* other plugins */
+        questTypeRegistry.registerQuestType("PYRO_FISH", PyroFishQuest.class);
+
         /* Load all elements */
         reloadService.reload();
 
@@ -184,6 +189,17 @@ public final class ODailyQuests extends JavaPlugin {
         }
 
         PluginLogger.info("Plugin is started!");
+        ODailyQuests.INSTANCE.registerQuestType("KILL", KillQuest.class);
+    }
+
+    /**
+     * Register a new quest type.
+     *
+     * @param name       name of the quest type
+     * @param questClass class of the quest type
+     */
+    public void registerQuestType(String name, Class<? extends AbstractQuest> questClass) {
+        API.getQuestTypeRegistry().registerQuestType(name, questClass);
     }
 
     @Override
@@ -217,6 +233,7 @@ public final class ODailyQuests extends JavaPlugin {
 
     /**
      * Check if the server is stopping.
+     *
      * @return true if the server is stopping.
      */
     public boolean isServerStopping() {
@@ -225,6 +242,7 @@ public final class ODailyQuests extends JavaPlugin {
 
     /**
      * Set if the server is stopping.
+     *
      * @param isServerStopping true if the server is stopping.
      */
     public void setServerStopping(boolean isServerStopping) {
@@ -233,6 +251,7 @@ public final class ODailyQuests extends JavaPlugin {
 
     /**
      * Get ConfigurationManager instance.
+     *
      * @return ConfigurationManager instance.
      */
     public ConfigurationFiles getConfigurationFiles() {
@@ -241,6 +260,7 @@ public final class ODailyQuests extends JavaPlugin {
 
     /**
      * Get MySQLManager instance.
+     *
      * @return MySQLManager instance.
      */
     public SQLManager getSQLManager() {
@@ -249,6 +269,7 @@ public final class ODailyQuests extends JavaPlugin {
 
     /**
      * Get ReloadService instance.
+     *
      * @return ReloadService instance.
      */
     public ReloadService getReloadService() {
@@ -257,6 +278,7 @@ public final class ODailyQuests extends JavaPlugin {
 
     /**
      * Get FilesManager instance.
+     *
      * @return FilesManager instance.
      */
     public FilesManager getFilesManager() {
@@ -265,6 +287,7 @@ public final class ODailyQuests extends JavaPlugin {
 
     /**
      * Get InterfacesManager instance.
+     *
      * @return InterfacesManager instance.
      */
     public InterfacesManager getInterfacesManager() {
@@ -273,6 +296,7 @@ public final class ODailyQuests extends JavaPlugin {
 
     /**
      * Get ConfigurationManager instance.
+     *
      * @return ConfigurationManager instance.
      */
     public ConfigurationManager getConfigurationManager() {
@@ -281,6 +305,7 @@ public final class ODailyQuests extends JavaPlugin {
 
     /**
      * Get YamlManager instance.
+     *
      * @return YamlManager instance.
      */
     public YamlManager getYamlManager() {
@@ -289,6 +314,7 @@ public final class ODailyQuests extends JavaPlugin {
 
     /**
      * Get QuestsLoader instance.
+     *
      * @return QuestsLoader instance.
      */
     public CategoriesLoader getCategoriesLoader() {
@@ -297,6 +323,7 @@ public final class ODailyQuests extends JavaPlugin {
 
     /**
      * Get ODailyQuestsAPI instance.
+     *
      * @return ODailyQuestsAPI instance.
      */
     public ODailyQuestsAPI getAPI() {
