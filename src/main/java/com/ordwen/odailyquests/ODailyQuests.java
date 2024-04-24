@@ -24,6 +24,7 @@ import com.ordwen.odailyquests.quests.player.progression.listeners.QuestComplete
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.h2.H2Manager;
 import com.ordwen.odailyquests.quests.player.progression.storage.yaml.YamlManager;
+import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.types.custom.mobs.EliteMobsQuest;
 import com.ordwen.odailyquests.quests.types.custom.mobs.MythicMobsQuest;
 import com.ordwen.odailyquests.quests.types.entity.BreedQuest;
@@ -44,6 +45,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 public final class ODailyQuests extends JavaPlugin {
 
@@ -66,11 +68,15 @@ public final class ODailyQuests extends JavaPlugin {
     boolean isServerStopping = false;
 
     @Override
-    public void onEnable() {
+    public void onLoad() {
         INSTANCE = this;
-        API = new ODailyQuestsAPI(this);
+        API = new ODailyQuestsAPI();
+    }
 
+    @Override
+    public void onEnable() {
         PluginLogger.info("Plugin is starting...");
+        ODailyQuestsAPI.disableRegistration();
 
         /* Load Metrics */
         // https://bstats.org/plugin/bukkit/ODailyQuests/14277
@@ -144,6 +150,12 @@ public final class ODailyQuests extends JavaPlugin {
         questTypeRegistry.registerQuestType("EXP_LEVELS", ExpLevelQuest.class);
         questTypeRegistry.registerQuestType("PLAYER_DEATH", PlayerDeathQuest.class);
         questTypeRegistry.registerQuestType("FIREBALL_REFLECT", FireballReflectQuest.class);
+
+        /* register addons types */
+        final Map<String, Class<? extends AbstractQuest>> externalTypes = ODailyQuestsAPI.getExternalTypes();
+        for (Map.Entry<String, Class<? extends AbstractQuest>> entry : externalTypes.entrySet()) {
+            questTypeRegistry.registerQuestType(entry.getKey(), entry.getValue());
+        }
 
         /* Load all elements */
         reloadService.reload();
