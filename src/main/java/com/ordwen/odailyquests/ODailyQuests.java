@@ -46,6 +46,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 public final class ODailyQuests extends JavaPlugin {
 
@@ -68,11 +69,15 @@ public final class ODailyQuests extends JavaPlugin {
     boolean isServerStopping = false;
 
     @Override
-    public void onEnable() {
+    public void onLoad() {
         INSTANCE = this;
-        API = new ODailyQuestsAPI(this);
+        API = new ODailyQuestsAPI();
+    }
 
+    @Override
+    public void onEnable() {
         PluginLogger.info("Plugin is starting...");
+        ODailyQuestsAPI.disableRegistration();
 
         /* Load Metrics */
         // https://bstats.org/plugin/bukkit/ODailyQuests/14277
@@ -150,6 +155,12 @@ public final class ODailyQuests extends JavaPlugin {
         /* other plugins */
         questTypeRegistry.registerQuestType("PYRO_FISH", PyroFishQuest.class);
 
+        /* register addons types */
+        final Map<String, Class<? extends AbstractQuest>> externalTypes = ODailyQuestsAPI.getExternalTypes();
+        for (Map.Entry<String, Class<? extends AbstractQuest>> entry : externalTypes.entrySet()) {
+            questTypeRegistry.registerQuestType(entry.getKey(), entry.getValue());
+        }
+
         /* Load all elements */
         reloadService.reload();
 
@@ -189,7 +200,6 @@ public final class ODailyQuests extends JavaPlugin {
         }
 
         PluginLogger.info("Plugin is started!");
-        ODailyQuests.INSTANCE.registerQuestType("KILL", KillQuest.class);
     }
 
     /**
