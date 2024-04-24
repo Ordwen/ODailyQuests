@@ -4,6 +4,7 @@ import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import me.arsmagica.API.PyroFishCatchEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.Event;
 
@@ -32,6 +33,11 @@ public class PyroFishQuest extends AbstractQuest {
 
     @Override
     public boolean loadParameters(ConfigurationSection section, String file, int index) {
+        if (!Bukkit.getPluginManager().isPluginEnabled("PyroFishingPro")) {
+            PluginLogger.configurationError(file, index, null, "You must have PyroFishingPro installed to use this quest.");
+            return false;
+        }
+
         if (!section.contains("pyro_fish_tier")) {
             PluginLogger.configurationError(file, index, "pyro_fish_tier", "You must specify the tier of the Pyro Fish.");
             return false;
