@@ -31,12 +31,16 @@ public abstract class ItemQuest extends AbstractQuest {
     }
 
     public boolean isRequiredItem(ItemStack provided) {
+        Debugger.addDebug("ItemQuest: Checking if item is required.");
+        Debugger.addDebug("ItemQuest: Given item: " + provided);
+
         if (requiredItems == null || requiredItems.isEmpty()) {
             Debugger.addDebug("ItemQuest: Required items is empty.");
             return true;
         }
 
         for (ItemStack item : requiredItems) {
+            Debugger.addDebug("Comparing given item with required item: " + item);
 
             if (ignoreNbt && item.getType() == provided.getType()) {
                 Debugger.addDebug("ItemQuest: Ignoring NBT data, item types match.");
@@ -48,6 +52,7 @@ public abstract class ItemQuest extends AbstractQuest {
                     Debugger.addDebug("ItemQuest: Checking custom model data.");
                     return item.getType() == provided.getType() && item.getItemMeta().getCustomModelData() == provided.getItemMeta().getCustomModelData();
                 }
+                Debugger.addDebug("ItemQuest: Item has custom model data, provided item does not.");
                 return false;
             }
 
@@ -56,6 +61,7 @@ public abstract class ItemQuest extends AbstractQuest {
                 return true;
             }
         }
+        Debugger.addDebug("ItemQuest: Item is not similar to any required item.");
         return false;
     }
 

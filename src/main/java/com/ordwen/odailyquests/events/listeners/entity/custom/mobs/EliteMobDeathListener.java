@@ -13,7 +13,7 @@ public class EliteMobDeathListener extends PlayerProgressor implements Listener 
     public void onEliteMobsDeathEvent(EliteMobDeathEvent event) {
         final Player player = event.getEntityDeathEvent().getEntity().getKiller();
         if (player != null) {
-            setPlayerQuestProgression(event, player, 1, "CUSTOM_MOBS");
+            setPlayerQuestProgression(event, player, 1, "ELITE_MOBS");
         }
     }
 }

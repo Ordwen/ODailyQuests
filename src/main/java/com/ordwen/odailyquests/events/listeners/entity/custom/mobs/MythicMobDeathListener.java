@@ -12,7 +12,7 @@ public class MythicMobDeathListener extends PlayerProgressor implements Listener
     @EventHandler
     public void onMythicMobsDeathEvent(MythicMobDeathEvent event) {
         if (event.getKiller() != null && event.getKiller() instanceof Player player) {
-            setPlayerQuestProgression(event, player, 1, "CUSTOM_MOBS");
+            setPlayerQuestProgression(event, player, 1, "MYTHIC_MOBS");
         }
     }
 }
