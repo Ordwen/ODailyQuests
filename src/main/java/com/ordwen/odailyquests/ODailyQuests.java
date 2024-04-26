@@ -159,6 +159,7 @@ public final class ODailyQuests extends JavaPlugin {
         final Map<String, Class<? extends AbstractQuest>> externalTypes = ODailyQuestsAPI.getExternalTypes();
         for (Map.Entry<String, Class<? extends AbstractQuest>> entry : externalTypes.entrySet()) {
             questTypeRegistry.registerQuestType(entry.getKey(), entry.getValue());
+            PluginLogger.info("Registered external quest type: " + entry.getKey());
         }
 
         /* Load all elements */
