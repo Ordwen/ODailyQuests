@@ -25,7 +25,7 @@ public class WildStackerEnabled {
         final String path = "use_wildstacker";
         setEnabled(configurationFiles.getConfigFile().getBoolean(path));
 
-        if (Bukkit.getPluginManager().getPlugin("WildStacker") == null) {
+        if (isEnabled && Bukkit.getPluginManager().getPlugin("WildStacker") == null) {
             PluginLogger.error("WildStacker is enabled in the config but the plugin is not installed.");
             PluginLogger.error("Disabling WildStacker integration, otherwise KILL quests will not work properly.");
             setEnabled(false);

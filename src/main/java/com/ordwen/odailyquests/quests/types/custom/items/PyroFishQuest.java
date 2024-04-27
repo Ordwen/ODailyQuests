@@ -15,7 +15,7 @@ public class PyroFishQuest extends AbstractQuest {
 
     private final Set<String> expectedFish = new HashSet<>();
 
-    protected PyroFishQuest(BasicQuest basicQuest) {
+    public PyroFishQuest(BasicQuest basicQuest) {
         super(basicQuest);
     }
 
@@ -29,7 +29,7 @@ public class PyroFishQuest extends AbstractQuest {
         if (provided instanceof PyroFishCatchEvent event) {
             if (expectedFish.isEmpty()) return true;
 
-            final String tier = event.getTier();
+            final String tier = event.getTier().toLowerCase();
             final int id = event.getFishNumber();
 
             final String concat = tier + ":" + id;
@@ -50,11 +50,11 @@ public class PyroFishQuest extends AbstractQuest {
 
         if (section.isList("required")) {
             for (String fish : section.getStringList("required")) {
-                if (checkFormat(fish, file, index)) expectedFish.add(fish);
+                if (checkFormat(fish, file, index)) expectedFish.add(fish.toLowerCase());
             }
         } else if (section.isString("required")) {
             final String fish = section.getString("required");
-            if (checkFormat(fish, file, index)) expectedFish.add(fish);
+            if (checkFormat(fish, file, index)) expectedFish.add(fish.toLowerCase());
         }
 
         return true;
