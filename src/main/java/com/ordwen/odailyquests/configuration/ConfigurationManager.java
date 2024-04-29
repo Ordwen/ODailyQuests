@@ -9,10 +9,7 @@ import com.ordwen.odailyquests.configuration.functionalities.progression.Progres
 import com.ordwen.odailyquests.configuration.functionalities.progression.Title;
 import com.ordwen.odailyquests.configuration.functionalities.rewards.CategoriesRewards;
 import com.ordwen.odailyquests.configuration.functionalities.rewards.GlobalReward;
-import com.ordwen.odailyquests.configuration.integrations.ItemsAdderEnabled;
-import com.ordwen.odailyquests.configuration.integrations.NPCNames;
-import com.ordwen.odailyquests.configuration.integrations.OraxenEnabled;
-import com.ordwen.odailyquests.configuration.integrations.WildStackerEnabled;
+import com.ordwen.odailyquests.configuration.integrations.*;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.tools.AddDefault;
 import com.ordwen.odailyquests.tools.TimeRemain;
@@ -64,6 +61,7 @@ public class ConfigurationManager {
         new WildStackerEnabled(configurationFiles).loadWildStackerEnabled();
         new ItemsAdderEnabled(configurationFiles).loadItemsAdderEnabled();
         new OraxenEnabled(configurationFiles).loadOraxenEnabled();
+        new SharedMobs(configurationFiles).load();
 
         // utils
         new Synchronization(configurationFiles).load();

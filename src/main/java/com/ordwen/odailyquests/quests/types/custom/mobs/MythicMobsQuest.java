@@ -30,6 +30,7 @@ public class MythicMobsQuest extends CustomMobQuest {
     public boolean loadParameters(ConfigurationSection section, String file, int index) {
         if (!Bukkit.getServer().getPluginManager().isPluginEnabled("MythicMobs")) {
             PluginLogger.configurationError(file, index, null, "MythicMobs is not enabled on the server.");
+            return false;
         }
 
         return super.loadParameters(section, file, index);

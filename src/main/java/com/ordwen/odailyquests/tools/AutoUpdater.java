@@ -126,6 +126,10 @@ public class AutoUpdater {
                 AddDefault.addDefaultConfigItem("reroll_only_if_not_achieved", false, configFile, file);
             }
 
+            if (!configFile.contains("shared_mobs")) {
+                AddDefault.addDefaultConfigItem("shared_mobs", false, configFile, file);
+            }
+
             /* progress bar */
             if (!configFile.contains("progress_bar")) {
                 AddDefault.addDefaultConfigItem("progress_bar.symbol", "|", configFile, file);

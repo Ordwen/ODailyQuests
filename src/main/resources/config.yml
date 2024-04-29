@@ -234,6 +234,10 @@ disabled_worlds:
   - "world_nether"
   - "world_the_end"
 
+# ===========================================================
+# INTEGRATIONS - Functionalities related to other plugins
+# ===========================================================
+
 # Citizens Implementation
 # Here you can select NPCs names for each category.
 # The player have to interact with the NPC to open an interface.
@@ -246,3 +250,9 @@ npcs:
 
 # If you use WildStacker on your server to group mobs, set this parameter to "true".
 use_wildstacker: false
+
+# If you are using MythicMobs, you can set this parameter to "true" to share the mobs between players.
+#
+# It means that if someone kill a mob, the quest progression will be updated for all players
+# that were involved in the fight and that have the quest.
+shared_mobs: false
