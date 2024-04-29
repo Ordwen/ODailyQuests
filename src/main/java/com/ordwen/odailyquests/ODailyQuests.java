@@ -28,6 +28,7 @@ import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.types.custom.items.PyroFishQuest;
 import com.ordwen.odailyquests.quests.types.custom.mobs.EliteMobsQuest;
 import com.ordwen.odailyquests.quests.types.custom.mobs.MythicMobsQuest;
+import com.ordwen.odailyquests.quests.types.custom.vote.NuVotifierQuest;
 import com.ordwen.odailyquests.quests.types.entity.BreedQuest;
 import com.ordwen.odailyquests.quests.types.entity.KillQuest;
 import com.ordwen.odailyquests.quests.types.entity.ShearQuest;
@@ -154,6 +155,7 @@ public final class ODailyQuests extends JavaPlugin {
 
         /* other plugins */
         questTypeRegistry.registerQuestType("PYRO_FISH", PyroFishQuest.class);
+        questTypeRegistry.registerQuestType("NU_VOTIFIER", NuVotifierQuest.class);
 
         /* register addons types */
         final Map<String, Class<? extends AbstractQuest>> externalTypes = ODailyQuestsAPI.getExternalTypes();

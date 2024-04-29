@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'com.ordwen'
-version = '2.3.0-SNAPSHOT-MM-SHARED'
+version = '2.3.0-SNAPSHOT-5'
 
 repositories {
     mavenCentral()
@@ -105,6 +105,9 @@ dependencies {
     /* protection */
     compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.5'
     implementation 'com.github.TownyAdvanced:Towny:0.100.2.2'
+
+    /* vote */
+    compileOnly 'com.github.NuVotifier:NuVotifier:2.7.2'
 
     /* Mojang auth API for heads */
     compileOnly 'com.mojang:authlib:1.5.21'
