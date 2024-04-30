@@ -21,13 +21,14 @@ public class NuVotifierQuest extends AbstractQuest {
 
     @Override
     public boolean canProgress(Event provided) {
+        System.out.println("HELLO FROM NuVotifierQuest");
         return provided instanceof VotifierEvent;
     }
 
     @Override
     public boolean loadParameters(ConfigurationSection section, String file, int index) {
-        if (!Bukkit.getPluginManager().isPluginEnabled("NuVotifier")) {
-            PluginLogger.configurationError(file, index, null, "You must have NuVotifier installed to use this quest.");
+        if (!Bukkit.getPluginManager().isPluginEnabled("Votifier")) {
+            PluginLogger.configurationError(file, index, null, "You must have Votifier installed to use this quest.");
             return false;
         }
 

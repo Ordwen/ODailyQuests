@@ -85,7 +85,7 @@ public class EventsManager {
             Bukkit.getPluginManager().registerEvents(new PyroFishCatchListener(), oDailyQuests);
         }
 
-        if (Bukkit.getServer().getPluginManager().isPluginEnabled("NuVotifier")) {
+        if (Bukkit.getServer().getPluginManager().isPluginEnabled("Votifier")) {
             Bukkit.getPluginManager().registerEvents(new VotifierListener(), oDailyQuests);
         }
 
