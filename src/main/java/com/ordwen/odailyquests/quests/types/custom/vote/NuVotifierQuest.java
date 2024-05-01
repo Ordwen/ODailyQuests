@@ -21,7 +21,6 @@ public class NuVotifierQuest extends AbstractQuest {
 
     @Override
     public boolean canProgress(Event provided) {
-        System.out.println("HELLO FROM NuVotifierQuest");
         return provided instanceof VotifierEvent;
     }
 
