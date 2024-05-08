@@ -1,5 +1,7 @@
 plugins {
     id 'java'
+    id("xyz.jpenilla.run-paper") version "2.2.3"
+    id("io.papermc.paperweight.userdev") version "1.5.15"
 }
 
 group = 'com.ordwen'
@@ -7,6 +9,7 @@ version = '2.3.0-SNAPSHOT-5'
 
 repositories {
     mavenCentral()
+
     maven {
         name = 'spigotmc-repo'
         url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
@@ -53,6 +56,9 @@ repositories {
     }
     maven {
         url = "https://maven.enginehub.org/repo/"
+    }
+    maven {
+        url = uri("https://papermc.io/repo/repository/maven-public/")
     }
     flatDir {
         dirs 'libs'
@@ -111,9 +117,43 @@ dependencies {
 
     /* Mojang auth API for heads */
     compileOnly 'com.mojang:authlib:1.5.21'
+
+    /* Paperweight */
+    paperweight.paperDevBundle("1.20.4-R0.1-SNAPSHOT")
 }
 
-def targetJavaVersion = 16
+tasks {
+    runServer {
+        // Configure the Minecraft version for our task.
+        // This is the only required configuration besides applying the plugin.
+        // Your plugin's jar (or shadowJar if present) will be used automatically.
+        minecraftVersion("1.20.4")
+        downloadPlugins {
+            github("Snewmy", "FileStuff", "1.20.4", "CMI.jar")
+            github("Snewmy", "FileStuff", "1.20.4", "CMIEInjector.jar")
+            github("Snewmy", "FileStuff", "1.20.4", "CMILib.jar")
+            github("Snewmy", "FileStuff", "1.20.4", "Vault.jar")
+            github("Snewmy", "FileStuff", "1.20.4", "ProtocolLib.jar")
+            github("Snewmy", "FileStuff", "1.20.4", "PlaceholderAPI.jar")
+            github("Snewmy", "FileStuff", "1.20.4", "ViaVersion.jar")
+            github("Snewmy", "FileStuff", "1.20.4", "ExcellentCrates.jar")
+            github("Snewmy", "FileStuff", "1.20.4", "Nightcore.jar")
+            github("Snewmy", "FileStuff", "1.20.4", "QuickShop-Hikari.jar")
+            github("Snewmy", "FileStuff", "1.20.4", "PlayerWarps.jar")
+            github("Snewmy", "FileStuff", "1.20.4", "PyroLib.jar")
+            github("Snewmy", "FileStuff", "1.20.4", "PyroFishingPro.jar")
+            github("Snewmy", "FileStuff", "1.20.4", "PyroMining.jar")
+            github("Snewmy", "FileStuff", "1.20.4", "PyroFarming.jar")
+            github("Snewmy", "FileStuff", "1.20.4", "CloudEnchants.jar")
+
+        }
+    }
+    assemble {
+        dependsOn(reobfJar)
+    }
+}
+
+def targetJavaVersion = 17
 java {
     def javaVersion = JavaVersion.toVersion(targetJavaVersion)
     if (JavaVersion.current() < javaVersion) {

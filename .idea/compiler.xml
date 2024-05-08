@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel target="17">
+      <module name="OWeeklyQuests.main" target="16" />
+      <module name="OWeeklyQuests.test" target="16" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
