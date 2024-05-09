@@ -54,7 +54,7 @@ public class CompleteCommand extends ACommandHandler {
      */
     private void complete(int questIndex, Player target) {
         if (questIndex >= 1 && questIndex <= QuestsAmount.getQuestsAmount()) {
-            final HashMap<AbstractQuest, Progression> playerQuests = QuestsManager.getActiveQuests().get(args[1]).getPlayerQuests();
+            final HashMap<AbstractQuest, Progression> playerQuests = QuestsManager.getActiveQuests().get(target.getName()).getPlayerQuests();
 
             int index = 0;
             for (Map.Entry<AbstractQuest, Progression> entry : playerQuests.entrySet()) {
