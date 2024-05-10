@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class GetQuestChecker {
 
@@ -84,15 +85,29 @@ public class GetQuestChecker {
             if (item == null) continue;
 
             if (item.getType() == toRemove.getType()) {
-                if (item.getAmount() > removeAmount) {
-                    item.setAmount(item.getAmount() - removeAmount);
-                    break;
-                } else {
-                    removeAmount -= item.getAmount();
-                    inventory.setItem(i, null);
+                if (haveSameCustomModelData(item, toRemove)) {
+                    if (item.getAmount() > removeAmount) {
+                        item.setAmount(item.getAmount() - removeAmount);
+                        break;
+                    } else {
+                        removeAmount -= item.getAmount();
+                        inventory.setItem(i, null);
+                    }
                 }
             }
         }
+    }
+
+    private static boolean haveSameCustomModelData(ItemStack item1, ItemStack item2) {
+        if (!item1.hasItemMeta() && !item2.hasItemMeta()) return true;
+
+        final ItemMeta meta1 = item1.getItemMeta();
+        final ItemMeta meta2 = item2.getItemMeta();
+
+        if (!meta1.hasCustomModelData() && !meta2.hasCustomModelData()) return true;
+        if (!meta1.hasCustomModelData() || !meta2.hasCustomModelData()) return false;
+
+        return meta1.getCustomModelData() == meta2.getCustomModelData();
     }
 
     /**
@@ -108,8 +123,10 @@ public class GetQuestChecker {
             if (itemStack == null) continue;
 
             if (ignoreNbt && item.getType() == itemStack.getType()) {
-                amount += itemStack.getAmount();
-                continue;
+                if (haveSameCustomModelData(item, itemStack)) {
+                    amount += itemStack.getAmount();
+                    continue;
+                }
             }
 
             if (itemStack.isSimilar(item)) {
