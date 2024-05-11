@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.tools;
 
+import com.ordwen.odailyquests.QuestSystem;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.configuration.essentials.Temporality;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
@@ -29,12 +30,12 @@ public class TimeRemain {
      * @param playerName player to consider.
      * @return the time remain before the next quests draw, in String.
      */
-    public static String timeRemain(String playerName) {
+    public static String timeRemain(String playerName, QuestSystem questSystem) {
 
-        long timestamp = QuestsManager.getActiveQuests().get(playerName).getTimestamp();
+        long timestamp = questSystem.getActiveQuests().get(playerName).getTimestamp();
         long diff;
 
-        if (Modes.getTimestampMode() == 1) {
+        if (questSystem.getTimeStampMode() == 1) {
             Calendar oldCal = Calendar.getInstance();
             oldCal.setTimeInMillis(timestamp);
             oldCal.set(Calendar.HOUR_OF_DAY, oldCal.getActualMinimum(Calendar.HOUR_OF_DAY));
@@ -54,7 +55,7 @@ public class TimeRemain {
 
         long rest;
 
-        switch (Temporality.getTemporalityMode()) {
+        switch (questSystem.getTemporalityMode()) {
             case 1 -> {
                 rest = 86400000L - diff;
                 int minutes = (int) ((rest / (1000 * 60)) % 60);

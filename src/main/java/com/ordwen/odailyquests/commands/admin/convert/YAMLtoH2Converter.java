@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.commands.admin.convert;
 
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.QuestSystem;
 import com.ordwen.odailyquests.files.ProgressionFile;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.h2.H2Manager;
@@ -10,7 +11,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 public class YAMLtoH2Converter extends SQLConverter {
 
-    public boolean convert(ODailyQuests oDailyQuests) {
+    public boolean convert(ODailyQuests oDailyQuests, QuestSystem questSystem) {
 
         try {
             Bukkit.getScheduler().runTaskAsynchronously(oDailyQuests, () -> {
@@ -18,7 +19,7 @@ public class YAMLtoH2Converter extends SQLConverter {
                 final FileConfiguration progressionFile = ProgressionFile.getProgressionFileConfiguration();
                 final SQLManager sqlManager = new H2Manager(ODailyQuests.INSTANCE);
 
-                convertData(progressionFile, sqlManager);
+                convertData(progressionFile, sqlManager, questSystem);
             });
         } catch (Exception e) {
             PluginLogger.error("An error occurred while converting YAML to H2.");

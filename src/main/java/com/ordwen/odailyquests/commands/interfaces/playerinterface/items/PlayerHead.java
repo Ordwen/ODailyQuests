@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.commands.interfaces.playerinterface.items;
 
+import com.ordwen.odailyquests.QuestSystem;
 import com.ordwen.odailyquests.externs.hooks.placeholders.PAPIHook;
 import com.ordwen.odailyquests.files.PlayerInterfaceFile;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
@@ -43,7 +44,7 @@ public class PlayerHead {
      * Get player head.
      * @return player head.
      */
-    public static ItemStack getPlayerHead(Player player) {
+    public static ItemStack getPlayerHead(Player player, QuestSystem questSystem) {
 
         SkullMeta meta = PlayerHead.skullMeta.clone();
         if (usePlaceholders) meta.setDisplayName(PAPIHook.getPlaceholders(player, meta.getDisplayName()));
@@ -59,10 +60,10 @@ public class PlayerHead {
                 string = PAPIHook.getPlaceholders(player, string);
             }
 
-            final PlayerQuests playerQuests = QuestsManager.getActiveQuests().get(player.getName());
+            final PlayerQuests playerQuests = questSystem.getActiveQuests().get(player.getName());
             itemDesc.set(index, ColorConvert.convertColorCode(string)
                     .replace("%achieved%", String.valueOf(playerQuests.getAchievedQuests()))
-                    .replace("%drawIn%", TimeRemain.timeRemain(player.getName())));
+                    .replace("%drawIn%", TimeRemain.timeRemain(player.getName(), questSystem)));
         }
 
         meta.setLore(itemDesc);

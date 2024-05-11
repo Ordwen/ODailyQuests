@@ -1,6 +1,9 @@
 package com.ordwen.odailyquests.externs.hooks.placeholders;
 
+import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.QuestSystem;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
+import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
@@ -16,6 +19,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class PAPIExpansion extends PlaceholderExpansion {
 
@@ -46,55 +50,58 @@ public class PAPIExpansion extends PlaceholderExpansion {
     @Override
     public String onRequest(OfflinePlayer player, String params) {
 
-        if (!QuestsManager.getActiveQuests().containsKey(player.getName())) return null;
-        if (QuestLoaderUtils.isTimeToRenew((Player) player, QuestsManager.getActiveQuests())) return null;
+        for (Map.Entry<String, QuestSystem> entry : ODailyQuests.questSystemMap.entrySet()) {
+            String key = entry.getKey();
+            QuestSystem questSystem = entry.getValue();
+            if (!questSystem.getActiveQuests().containsKey(player.getName())) return null;
+            if (QuestLoaderUtils.isTimeToRenew((Player) player, questSystem.getActiveQuests(), questSystem)) return null;
+            final PlayerQuests playerQuests = questSystem.getActiveQuests().get(player.getName());
 
-        final PlayerQuests playerQuests = QuestsManager.getActiveQuests().get(player.getName());
+            // player placeholders
+            if (params.equalsIgnoreCase(questSystem.getPapiPrefix() + "total")) {
+                return String.valueOf(playerQuests.getTotalAchievedQuests());
+            }
+            if (params.equalsIgnoreCase(questSystem.getPapiPrefix() + "achieved")) {
+                return String.valueOf(playerQuests.getAchievedQuests());
+            }
+            if (params.equalsIgnoreCase(questSystem.getPapiPrefix() + "drawin")) {
+                return TimeRemain.timeRemain(player.getName(), questSystem);
+            }
+            if (params.startsWith(questSystem.getPapiPrefix() + "interface")) {
+                return getInterfaceMessage(questSystem, params, player, playerQuests);
+            }
+            if (params.startsWith(questSystem.getPapiPrefix() + "progressbar")) {
+                return getProgressBar(params, playerQuests);
+            }
+            if (params.startsWith(questSystem.getPapiPrefix() + "progress")) {
+                return String.valueOf(getPlayerQuestProgression(params, playerQuests));
+            }
+            if (params.startsWith(questSystem.getPapiPrefix() + "name")) {
+                return getPlayerQuestName(params, playerQuests);
+            }
+            if (params.startsWith(questSystem.getPapiPrefix() + "desc")) {
+                return getPlayerQuestDescription(params, playerQuests);
+            }
+            if (params.startsWith(questSystem.getPapiPrefix() + "iscompleted")) {
+                return isPlayerQuestCompleted(params, playerQuests);
+            }
+            if (params.startsWith(questSystem.getPapiPrefix() + "requiredamount")) {
+                return getPlayerQuestRequiredAmount(params, playerQuests);
+            }
 
-        // player placeholders
-        if (params.equalsIgnoreCase("total")) {
-            return String.valueOf(playerQuests.getTotalAchievedQuests());
-        }
-        if (params.equalsIgnoreCase("achieved")) {
-            return String.valueOf(playerQuests.getAchievedQuests());
-        }
-        if (params.equalsIgnoreCase("drawin")) {
-            return TimeRemain.timeRemain(player.getName());
-        }
-        if (params.startsWith("interface")) {
-            return getInterfaceMessage(params, player, playerQuests);
-        }
-        if (params.startsWith("progressbar")) {
-            return getProgressBar(params, playerQuests);
-        }
-        if (params.startsWith("progress")) {
-            return String.valueOf(getPlayerQuestProgression(params, playerQuests));
-        }
-        if (params.startsWith("name")) {
-            return getPlayerQuestName(params, playerQuests);
-        }
-        if (params.startsWith("desc")) {
-            return getPlayerQuestDescription(params, playerQuests);
-        }
-        if (params.startsWith("iscompleted")) {
-            return isPlayerQuestCompleted(params, playerQuests);
-        }
-        if (params.startsWith("requiredamount")) {
-            return getPlayerQuestRequiredAmount(params, playerQuests);
-        }
-
-        // quests placeholders
-        if (params.startsWith("global")) {
-            return getQuestName(params, CategoriesLoader.getGlobalQuests());
-        }
-        if (params.startsWith("easy")) {
-            return getQuestName(params, CategoriesLoader.getEasyQuests());
-        }
-        if (params.startsWith("medium")) {
-            return getQuestName(params, CategoriesLoader.getMediumQuests());
-        }
-        if (params.startsWith("hard")) {
-            return getQuestName(params, CategoriesLoader.getHardQuests());
+            // quests placeholders
+            if (params.startsWith(questSystem.getPapiPrefix() + "global")) {
+                return getQuestName(params, questSystem.getGlobalCategory());
+            }
+            if (params.startsWith(questSystem.getPapiPrefix() + "easy")) {
+                return getQuestName(params, questSystem.getEasyCategory());
+            }
+            if (params.startsWith(questSystem.getPapiPrefix() + "medium")) {
+                return getQuestName(params, questSystem.getMediumCategory());
+            }
+            if (params.startsWith(questSystem.getPapiPrefix() + "hard")) {
+                return getQuestName(params, questSystem.getHardCategory());
+            }
         }
 
         return null;
@@ -108,9 +115,9 @@ public class PAPIExpansion extends PlaceholderExpansion {
      * @param playerQuests the player quests.
      * @return the result.
      */
-    private String getInterfaceMessage(String params, OfflinePlayer player, PlayerQuests playerQuests) {
+    private String getInterfaceMessage(QuestSystem questSystem, String params, OfflinePlayer player, PlayerQuests playerQuests) {
         if (params.equals("interface_complete_get_type")) {
-            return ColorConvert.convertColorCode(PlaceholderAPI.setPlaceholders(player, PlayerQuestsInterface.getCompleteGetType()));
+            return ColorConvert.convertColorCode(PlaceholderAPI.setPlaceholders(player, questSystem.getCompleteGetType()));
         } else if (params.startsWith("interface_status_")) {
             final String supposedIndex = params.substring("interface_status_".length());
             int index;
@@ -121,7 +128,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
                 return ChatColor.RED + "Invalid index.";
             }
 
-            return ColorConvert.convertColorCode(PlaceholderAPI.setPlaceholders(player, getQuestStatus(index, playerQuests)));
+            return ColorConvert.convertColorCode(PlaceholderAPI.setPlaceholders(player, getQuestStatus(questSystem, index, playerQuests)));
         }
 
         return ChatColor.RED + "Invalid placeholder.";
@@ -160,12 +167,12 @@ public class PAPIExpansion extends PlaceholderExpansion {
      * @param playerQuests the player quests.
      * @return the achieved message or the progress message.
      */
-    private String getQuestStatus(int index, PlayerQuests playerQuests) {
+    private String getQuestStatus(QuestSystem questSystem, int index, PlayerQuests playerQuests) {
 
         int i = 0;
         for (AbstractQuest quest : playerQuests.getPlayerQuests().keySet()) {
             if (i == index) {
-                return (playerQuests.getPlayerQuests().get(quest).isAchieved() ? PlayerQuestsInterface.getAchieved() : PlayerQuestsInterface.getProgression())
+                return (playerQuests.getPlayerQuests().get(quest).isAchieved() ? questSystem.getAchieved() : questSystem.getProgression())
                         .replace("%progress%", String.valueOf(playerQuests.getPlayerQuests().get(quest).getProgression()))
                         .replace("%required%", String.valueOf(quest.getAmountRequired()))
                         .replace("%progressBar%", ProgressBar.getProgressBar(playerQuests.getPlayerQuests().get(quest).getProgression(), quest.getAmountRequired()));

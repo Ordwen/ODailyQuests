@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.quests.player.progression.checkers;
 
+import com.ordwen.odailyquests.QuestSystem;
 import com.ordwen.odailyquests.api.events.QuestCompletedEvent;
 import com.ordwen.odailyquests.configuration.functionalities.TakeItems;
 import com.ordwen.odailyquests.enums.QuestsMessages;
@@ -19,7 +20,7 @@ public class GetQuestChecker {
      * @param progression progression of the quest.
      * @param quest       quest to validate.
      */
-    public static void makeQuestProgress(Player player, Progression progression, ItemQuest quest) {
+    public static void makeQuestProgress(QuestSystem questSystem, Player player, Progression progression, ItemQuest quest) {
         final boolean ignoreNbt = quest.isIgnoreNbt();
         boolean hasRequiredAmount = false;
         int amount = 0;
@@ -61,7 +62,7 @@ public class GetQuestChecker {
                 }
             }
 
-            final QuestCompletedEvent event = new QuestCompletedEvent(player, progression, quest);
+            final QuestCompletedEvent event = new QuestCompletedEvent(questSystem, player, progression, quest);
             Bukkit.getPluginManager().callEvent(event);
 
             player.closeInventory();

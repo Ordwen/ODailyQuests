@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.configuration.integrations;
 
+import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import org.bukkit.ChatColor;
 
@@ -11,60 +12,16 @@ public class NPCNames {
         this.configurationFiles = configurationFiles;
     }
 
-    private static String playerNPCName;
-    private static String globalNPCName;
-    private static String easyNPCName;
-    private static String mediumNPCName;
-    private static String hardNPCName;
-
     /**
      * Load all NPC names.
      */
     public void loadNPCNames() {
-        playerNPCName = ChatColor.translateAlternateColorCodes( '&', configurationFiles.getConfigFile().getConfigurationSection("npcs").getString(".name_player"));
-        globalNPCName = ChatColor.translateAlternateColorCodes( '&', configurationFiles.getConfigFile().getConfigurationSection("npcs").getString(".name_global"));
-        easyNPCName = ChatColor.translateAlternateColorCodes( '&', configurationFiles.getConfigFile().getConfigurationSection("npcs").getString(".name_easy"));
-        mediumNPCName = ChatColor.translateAlternateColorCodes( '&', configurationFiles.getConfigFile().getConfigurationSection("npcs").getString(".name_medium"));
-        hardNPCName = ChatColor.translateAlternateColorCodes( '&', configurationFiles.getConfigFile().getConfigurationSection("npcs").getString(".name_hard"));
-    }
-
-    /**
-     * Get player NPC name.
-     * @return player NPC name.
-     */
-    public static String getPlayerNPCName() {
-        return playerNPCName;
-    }
-
-    /**
-     * Get global NPC name.
-     * @return global NPC name.
-     */
-    public static String getGlobalNPCName() {
-        return globalNPCName;
-    }
-
-    /**
-     * Get easy NPC name.
-     * @return easy NPC name.
-     */
-    public static String getEasyNPCName() {
-        return easyNPCName;
-    }
-
-    /**
-     * Get medium NPC name.
-     * @return medium NPC name.
-     */
-    public static String getMediumNPCName() {
-        return mediumNPCName;
-    }
-
-    /**
-     * Get hard NPC name.
-     * @return hard NPC name.
-     */
-    public static String getHardNPCName() {
-        return hardNPCName;
+        ODailyQuests.questSystemMap.forEach((key, questSystem) -> {
+            questSystem.setPlayerNPCName(ChatColor.translateAlternateColorCodes('&', configurationFiles.getConfigFile().getConfigurationSection(questSystem.getConfigPath() + "npcs").getString(".name_player")));
+            questSystem.setGlobalNPCName(ChatColor.translateAlternateColorCodes('&', configurationFiles.getConfigFile().getConfigurationSection(questSystem.getConfigPath() + "npcs").getString(".name_global")));
+            questSystem.setEasyNPCName(ChatColor.translateAlternateColorCodes('&', configurationFiles.getConfigFile().getConfigurationSection(questSystem.getConfigPath() + "npcs").getString(".name_easy")));
+            questSystem.setMediumNPCName(ChatColor.translateAlternateColorCodes('&', configurationFiles.getConfigFile().getConfigurationSection(questSystem.getConfigPath() + "npcs").getString(".name_medium")));
+            questSystem.setHardNPCName(ChatColor.translateAlternateColorCodes('&', configurationFiles.getConfigFile().getConfigurationSection(questSystem.getConfigPath() + "npcs").getString(".name_hard")));
+        });
     }
 }

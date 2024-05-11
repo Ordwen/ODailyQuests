@@ -19,84 +19,11 @@ public class QuestsFiles {
 
     /**
      * Main class instance constructor.
+     *
      * @param oDailyQuests main class.
      */
     public QuestsFiles(ODailyQuests oDailyQuests) {
         this.oDailyQuests = oDailyQuests;
-    }
-
-    private static File globalQuestsFile;
-    private static File easyQuestsFile;
-    private static File mediumQuestsFile;
-    private static File hardQuestsFile;
-
-    private static FileConfiguration globalQuestsConfiguration;
-    private static FileConfiguration easyQuestsConfiguration;
-    private static FileConfiguration mediumQuestsConfiguration;
-    private static FileConfiguration hardQuestsConfiguration;
-
-    /**
-     * Get the global quests file.
-     * @return global quests file.
-     */
-    public static File getGlobalQuestsFile() {
-        return globalQuestsFile;
-    }
-
-    /**
-     * Get the easy quests file.
-     * @return easy quests file.
-     */
-    public static File getEasyQuestsFile() {
-        return easyQuestsFile;
-    }
-
-    /**
-     * Get the medium quests file.
-     * @return medium quests file.
-     */
-    public static File getMediumQuestsFile() {
-        return mediumQuestsFile;
-    }
-
-    /**
-     * Get the hard quests file.
-     * @return hard quests file.
-     */
-    public static File getHardQuestsFile() {
-        return hardQuestsFile;
-    }
-
-    /**
-     * Get the global quests configuration.
-     * @return global quests configuration.
-     */
-    public static FileConfiguration getGlobalQuestsConfiguration() {
-        return globalQuestsConfiguration;
-    }
-
-    /**
-     * Get the easy quests configuration.
-     * @return easy quests configuration.
-     */
-    public static FileConfiguration getEasyQuestsConfiguration() {
-        return easyQuestsConfiguration;
-    }
-
-    /**
-     * Get the medium quests configuration.
-     * @return medium quests configuration.
-     */
-    public static FileConfiguration getMediumQuestsConfiguration() {
-        return mediumQuestsConfiguration;
-    }
-
-    /**
-     * Get the hard quests configuration.
-     * @return hard quests configuration.
-     */
-    public static FileConfiguration getHardQuestsConfiguration() {
-        return hardQuestsConfiguration;
     }
 
     /**
@@ -104,79 +31,83 @@ public class QuestsFiles {
      */
     public void loadQuestsFiles() {
 
-        globalQuestsFile = new File(oDailyQuests.getDataFolder(), "quests/globalQuests.yml");
-        easyQuestsFile = new File(oDailyQuests.getDataFolder(), "quests/easyQuests.yml");
-        mediumQuestsFile = new File(oDailyQuests.getDataFolder(), "quests/mediumQuests.yml");
-        hardQuestsFile = new File(oDailyQuests.getDataFolder(), "quests/hardQuests.yml");
+        ODailyQuests.questSystemMap.forEach((key, questSystem) -> {
+            questSystem.setGlobalQuestsFile(new File(oDailyQuests.getDataFolder(), questSystem.getQuestsFilePath() + "globalQuests.yml"));
+            questSystem.setEasyQuestsFile(new File(oDailyQuests.getDataFolder(), questSystem.getQuestsFilePath() + "easyQuests.yml"));
+            questSystem.setMediumQuestsFile(new File(oDailyQuests.getDataFolder(), questSystem.getQuestsFilePath() + "mediumQuests.yml"));
+            questSystem.setHardQuestsFile(new File(oDailyQuests.getDataFolder(), questSystem.getQuestsFilePath() + "hardQuests.yml"));
 
-        /* Global quests */
-        if (!globalQuestsFile.exists()) {
-            oDailyQuests.saveResource("quests/globalQuests.yml", false);
-            PluginLogger.info("Global quests file created.");
-        }
+            /* Global quests */
+            if (!questSystem.getGlobalQuestsFile().exists()) {
+                oDailyQuests.saveResource(questSystem.getQuestsFilePath() + "globalQuests.yml", false);
+                PluginLogger.info(questSystem.getSystemName() + " global quests file created.");
+            }
 
-        /* Easy quests */
-        if (!easyQuestsFile.exists()) {
-            oDailyQuests.saveResource("quests/easyQuests.yml", false);
-            PluginLogger.info("Easy quests file created.");
-        }
+            /* Easy quests */
+            if (!questSystem.getEasyQuestsFile().exists()) {
+                oDailyQuests.saveResource(questSystem.getQuestsFilePath() + "easyQuests.yml", false);
+                PluginLogger.info(questSystem.getSystemName() + " easy quests file created.");
+            }
 
-        /* Medium quests */
-        if (!mediumQuestsFile.exists()) {
-            oDailyQuests.saveResource("quests/mediumQuests.yml", false);
-            PluginLogger.info("Medium quests file created.");
-        }
+            /* Medium quests */
+            if (!questSystem.getMediumQuestsFile().exists()) {
+                oDailyQuests.saveResource(questSystem.getQuestsFilePath() + "mediumQuests.yml", false);
+                PluginLogger.info(questSystem.getSystemName() + " medium quests file created.");
+            }
 
-        /* Hard quests */
-        if (!hardQuestsFile.exists()) {
-            oDailyQuests.saveResource("quests/hardQuests.yml", false);
-            PluginLogger.info("Hard quests file created.");
-        }
+            /* Hard quests */
+            if (!questSystem.getHardQuestsFile().exists()) {
+                oDailyQuests.saveResource(questSystem.getQuestsFilePath() + "hardQuests.yml", false);
+                PluginLogger.info(questSystem.getSystemName() + " hard quests file created.");
+            }
 
-        globalQuestsConfiguration = new YamlConfiguration();
-        easyQuestsConfiguration = new YamlConfiguration();
-        mediumQuestsConfiguration = new YamlConfiguration();
-        hardQuestsConfiguration = new YamlConfiguration();
+            questSystem.setGlobalQuestsConfig(new YamlConfiguration());
+            questSystem.setEasyQuestsConfig(new YamlConfiguration());
+            questSystem.setMediumQuestsConfig(new YamlConfiguration());
+            questSystem.setHardQuestsConfig(new YamlConfiguration());
 
-        /* Global quests */
-        try {
-            globalQuestsConfiguration.load(globalQuestsFile);
-        } catch (InvalidConfigurationException | IOException e) {
-            PluginLogger.error("An error occured on the load of the global quests file.");
-            PluginLogger.error("Please inform the developper.");
-            PluginLogger.error(e.getMessage());
-        }
-        PluginLogger.fine("Global quests file successfully loaded.");
+            /* Global quests */
+            try {
+                questSystem.getGlobalQuestsConfig().load(questSystem.getGlobalQuestsFile());
+            } catch (InvalidConfigurationException | IOException e) {
+                PluginLogger.error("An error occured on the load of the " + questSystem.getSystemName() + " global quests file.");
+                PluginLogger.error("Please inform the developer.");
+                PluginLogger.error(e.getMessage());
+            }
+            PluginLogger.fine(questSystem.getSystemName() + " global quests file successfully loaded.");
 
-        /* Easy quests */
-        try {
-            easyQuestsConfiguration.load(easyQuestsFile);
-        } catch (InvalidConfigurationException | IOException e) {
-            PluginLogger.error("An error occured on the load of the easy quests file.");
-            PluginLogger.error("Please inform the developper.");
-            PluginLogger.error(e.getMessage());
-        }
-        PluginLogger.fine("Easy quests file successfully loaded.");
+            /* Easy quests */
+            try {
+                questSystem.getEasyQuestsConfig().load(questSystem.getEasyQuestsFile());
+            } catch (InvalidConfigurationException | IOException e) {
+                PluginLogger.error("An error occured on the load of the " + questSystem.getSystemName() + " easy quests file.");
+                PluginLogger.error("Please inform the developer.");
+                PluginLogger.error(e.getMessage());
+            }
+            PluginLogger.fine(questSystem.getSystemName() + " easy quests file successfully loaded.");
 
-        /* Medium quests */
-        try {
-            mediumQuestsConfiguration.load(mediumQuestsFile);
-        } catch (InvalidConfigurationException | IOException e) {
-            PluginLogger.error("An error occured on the load of the medium quests file.");
-            PluginLogger.error("Please inform the developper.");
-            PluginLogger.error(e.getMessage());
-        }
-        PluginLogger.fine("Medium quests file successfully loaded.");
+            /* Medium quests */
+            try {
+                questSystem.getMediumQuestsConfig().load(questSystem.getMediumQuestsFile());
+            } catch (InvalidConfigurationException | IOException e) {
+                PluginLogger.error("An error occured on the load of the " + questSystem.getSystemName() + " medium quests file.");
+                PluginLogger.error("Please inform the developer.");
+                PluginLogger.error(e.getMessage());
+            }
+            PluginLogger.fine(questSystem.getSystemName() + " medium quests file successfully loaded.");
 
-        /* Hard quests */
-        try {
-            hardQuestsConfiguration.load(hardQuestsFile);
-        } catch (InvalidConfigurationException | IOException e) {
-            PluginLogger.error("An error occured on the load of the hard quests file.");
-            PluginLogger.error("Please inform the developper.");
-            PluginLogger.error(e.getMessage());
-        }
-        PluginLogger.fine("Hard quests file successfully loaded.");
+            /* Hard quests */
+            try {
+                questSystem.getHardQuestsConfig().load(questSystem.getHardQuestsFile());
+            } catch (InvalidConfigurationException | IOException e) {
+                PluginLogger.error("An error occured on the load of the " + questSystem.getSystemName() + " hard quests file.");
+                PluginLogger.error("Please inform the developer.");
+                PluginLogger.error(e.getMessage());
+            }
+            PluginLogger.fine(questSystem.getSystemName() + " hard quests file successfully loaded.");
+
+
+        });
     }
 
 }

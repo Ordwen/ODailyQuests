@@ -2,19 +2,16 @@ package com.ordwen.odailyquests;
 
 import com.ordwen.odailyquests.api.ODailyQuestsAPI;
 import com.ordwen.odailyquests.api.quests.QuestTypeRegistry;
+import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.events.restart.RestartHandler;
 import com.ordwen.odailyquests.externs.IntegrationsManager;
 import com.ordwen.odailyquests.commands.admin.AdminCommands;
 import com.ordwen.odailyquests.commands.player.PlayerCommands;
 import com.ordwen.odailyquests.commands.admin.ReloadService;
-import com.ordwen.odailyquests.commands.admin.AdminCompleter;
-import com.ordwen.odailyquests.commands.player.PlayerCompleter;
 import com.ordwen.odailyquests.commands.interfaces.InterfacesManager;
 import com.ordwen.odailyquests.commands.interfaces.InventoryClickListener;
 import com.ordwen.odailyquests.configuration.ConfigurationManager;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
-import com.ordwen.odailyquests.configuration.essentials.Modes;
-import com.ordwen.odailyquests.configuration.essentials.Temporality;
 import com.ordwen.odailyquests.events.EventsManager;
 import com.ordwen.odailyquests.files.*;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
@@ -42,11 +39,16 @@ import com.ordwen.odailyquests.quests.types.item.*;
 import com.ordwen.odailyquests.tools.*;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.mysql.MySQLManager;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandMap;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 
 public final class ODailyQuests extends JavaPlugin {
@@ -63,11 +65,13 @@ public final class ODailyQuests extends JavaPlugin {
     private FilesManager filesManager;
     private SQLManager sqlManager;
     private YamlManager yamlManager;
-    private TimerTask timerTask;
     private ReloadService reloadService;
     private CategoriesLoader categoriesLoader;
+    public static HashMap<String, QuestSystem> questSystemMap = new HashMap<>();
 
     boolean isServerStopping = false;
+    @Getter @Setter
+    public boolean isSecondSystemEnabled;
 
     @Override
     public void onLoad() {
@@ -90,10 +94,12 @@ public final class ODailyQuests extends JavaPlugin {
         this.filesManager = new FilesManager(this);
         this.filesManager.loadAllFiles();
 
+        setSecondSystemEnabled(configurationFiles.getConfigFile().getBoolean("second_system.enabled"));
+        loadQuestSystems();
+
         /* Check for updates */
         new AutoUpdater(this).checkForUpdate();
         checkForSpigotUpdate();
-
         /* Load SQL Support */
         switch (configurationFiles.getConfigFile().getString("storage_mode")) {
             case "MySQL" -> this.sqlManager = new MySQLManager(this);
@@ -170,13 +176,20 @@ public final class ODailyQuests extends JavaPlugin {
         /* Load listeners */
         new EventsManager(this).registerListeners();
 
-        /* Load commands */
-        getCommand("dquests").setExecutor(new PlayerCommands());
-        getCommand("dqadmin").setExecutor(new AdminCommands(this));
+        /* Little reflection to register commands without plugin.yml, so they can be configured in the config.yml */
+        ODailyQuests.questSystemMap.forEach((key, questSystem) -> {
+            try {
+                final Field bukkitCommandMap = Bukkit.getServer().getClass().getDeclaredField("commandMap");
 
-        /* Load Tab Completers */
-        getCommand("dquests").setTabCompleter(new PlayerCompleter());
-        getCommand("dqadmin").setTabCompleter(new AdminCompleter());
+                bukkitCommandMap.setAccessible(true);
+                CommandMap commandMap = (CommandMap) bukkitCommandMap.get(Bukkit.getServer());
+
+                commandMap.register(questSystem.getCommandName(), new PlayerCommands(questSystem.getCommandName(), questSystem));
+                commandMap.register(questSystem.getAdminCommandName(), new AdminCommands(this, questSystem, questSystem.getAdminCommandName()));
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
+        });
 
         /* Register plugin events */
         getServer().getPluginManager().registerEvents(new InventoryClickListener(), this);
@@ -190,7 +203,9 @@ public final class ODailyQuests extends JavaPlugin {
 
         /* Avoid errors on reload */
         if (!Bukkit.getServer().getOnlinePlayers().isEmpty()) {
-            reloadService.loadConnectedPlayerQuests();
+            ODailyQuests.questSystemMap.forEach((key, questSystem) -> {
+                reloadService.loadConnectedPlayerQuests(questSystem);
+            });
 
             PluginLogger.error("It seems that you have reloaded the server.");
             PluginLogger.error("Think that this can cause problems, especially in the data backup.");
@@ -198,9 +213,11 @@ public final class ODailyQuests extends JavaPlugin {
         }
 
         /* Init delayed task to draw new quests */
-        if (Modes.getTimestampMode() == 1 && Temporality.getTemporalityMode() == 1) {
-            timerTask = new TimerTask(LocalDateTime.now());
-        }
+        ODailyQuests.questSystemMap.forEach((key, questSystem) -> {
+            if (questSystem.getTimeStampMode() == 1 && questSystem.getTemporalityMode() == 1) {
+                questSystem.setTimerTask(new TimerTask(LocalDateTime.now(), questSystem));
+            }
+        });
 
         PluginLogger.info("Plugin is started!");
     }
@@ -215,13 +232,114 @@ public final class ODailyQuests extends JavaPlugin {
         API.getQuestTypeRegistry().registerQuestType(name, questClass);
     }
 
+    public void loadQuestSystems() {
+        QuestSystem normalSystem = new QuestSystem();
+        normalSystem.setSystemName("Normal Quest System");
+        normalSystem.setConfigPath("");
+        normalSystem.setPlayerTableSQL("create table PLAYER\n" +
+                "  (\n" +
+                "     PLAYERNAME char(32)  not null  ,\n" +
+                "     PLAYERTIMESTAMP bigint not null,  \n" +
+                "     ACHIEVEDQUESTS tinyint not null, \n" +
+                "     TOTALACHIEVEDQUESTS int not null, \n" +
+                "     constraint PK_PLAYER primary key (PLAYERNAME)\n" +
+                "  );");
+        normalSystem.setProgressionTableSQL("create table PROGRESSION\n" +
+                "  (\n" +
+                "     PRIMARYKEY int auto_increment  ,\n" +
+                "     PLAYERNAME char(32)  not null  ,\n" +
+                "     PLAYERQUESTID smallint  not null  ,\n" +
+                "     QUESTID int  not null  ,\n" +
+                "     ADVANCEMENT int  not null  ,\n" +
+                "     ISACHIEVED bit  not null  ,\n" +
+                "     primary key (PRIMARYKEY) ,\n" +
+                "     constraint UNIQUE_PLAYERNAME_PLAYERQUESTID unique (PLAYERNAME, PLAYERQUESTID)" +
+                "  ); ");
+        normalSystem.setPlayerTableName("PLAYER");
+        normalSystem.setProgressionTableName("PROGRESSION");
+        normalSystem.setMYSQL_PLAYER_QUERY("INSERT INTO PLAYER (PLAYERNAME, PLAYERTIMESTAMP, ACHIEVEDQUESTS, TOTALACHIEVEDQUESTS) " +
+                "VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE " +
+                "PLAYERTIMESTAMP = " + "VALUES(PLAYERTIMESTAMP), " +
+                "ACHIEVEDQUESTS = VALUES(ACHIEVEDQUESTS), " +
+                "TOTALACHIEVEDQUESTS = VALUES(TOTALACHIEVEDQUESTS)");
+        normalSystem.setMYSQL_PROGRESS_UPDATE("INSERT INTO PROGRESSION (PLAYERNAME, PLAYERQUESTID, QUESTID, ADVANCEMENT, ISACHIEVED) " +
+                "VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE " +
+                "QUESTID = VALUES(QUESTINDEX), " +
+                "ADVANCEMENT = VALUES(ADVANCEMENT), " +
+                "ISACHIEVED = VALUES(ISACHIEVED)");
+        normalSystem.setH2_PLAYER_QUERY("MERGE INTO PLAYER (PLAYERNAME, PLAYERTIMESTAMP, ACHIEVEDQUESTS, TOTALACHIEVEDQUESTS) " +
+                "KEY (PLAYERNAME) VALUES (?, ?, ?, ?)");
+        normalSystem.setH2_PROGRESS_UPDATE("MERGE INTO PROGRESSION (PLAYERNAME, PLAYERQUESTID, QUESTID, ADVANCEMENT, ISACHIEVED) " +
+                "KEY (PLAYERNAME, PLAYERQUESTID) VALUES (?, ?, ?, ?, ?)");
+        normalSystem.setQUESTS_RENEWED_MESSAGE(QuestsMessages.QUESTS_RENEWED);
+        normalSystem.setQuestsFilePath("quests/");
+        normalSystem.setALL_QUESTS_ACHIEVED(QuestsMessages.ALL_QUESTS_ACHIEVED);
+        normalSystem.setEASY_QUESTS_ACHIEVED(QuestsMessages.EASY_QUESTS_ACHIEVED);
+        normalSystem.setMEDIUM_QUESTS_ACHIEVED(QuestsMessages.MEDIUM_QUESTS_ACHIEVED);
+        normalSystem.setHARD_QUESTS_ACHIEVED(QuestsMessages.HARD_QUESTS_ACHIEVED);
+        normalSystem.setQUESTS_IN_PROGRESS(QuestsMessages.QUESTS_IN_PROGRESS);
+        normalSystem.setPapiPrefix("");
+
+        questSystemMap.put("normal", normalSystem);
+        if (isSecondSystemEnabled) {
+            QuestSystem secondSystem = new QuestSystem();
+            secondSystem.setSystemName("Second Quest System");
+            secondSystem.setConfigPath("second_system.");
+            secondSystem.setPlayerTableSQL("create table PLAYER_SECOND\n" +
+                    "  (\n" +
+                    "     PLAYERNAME char(32)  not null  ,\n" +
+                    "     PLAYERTIMESTAMP bigint not null,  \n" +
+                    "     ACHIEVEDQUESTS tinyint not null, \n" +
+                    "     TOTALACHIEVEDQUESTS int not null, \n" +
+                    "     constraint PK_PLAYER_SECOND primary key (PLAYERNAME)\n" +
+                    "  );");
+            secondSystem.setProgressionTableSQL("create table PROGRESSION_SECOND\n" +
+                    "  (\n" +
+                    "     PRIMARYKEY int auto_increment  ,\n" +
+                    "     PLAYERNAME char(32)  not null  ,\n" +
+                    "     PLAYERQUESTID smallint  not null  ,\n" +
+                    "     QUESTID int  not null  ,\n" +
+                    "     ADVANCEMENT int  not null  ,\n" +
+                    "     ISACHIEVED bit  not null  ,\n" +
+                    "     primary key (PRIMARYKEY) ,\n" +
+                    "     constraint UNIQUE_PLAYERNAME_PLAYERQUESTID_SECOND unique (PLAYERNAME, PLAYERQUESTID)" +
+                    "  ); ");
+            secondSystem.setPlayerTableName("PLAYER_SECOND");
+            secondSystem.setProgressionTableName("PROGRESSION_SECOND");
+            secondSystem.setMYSQL_PLAYER_QUERY("INSERT INTO PLAYER_SECOND (PLAYERNAME, PLAYERTIMESTAMP, ACHIEVEDQUESTS, TOTALACHIEVEDQUESTS) " +
+                    "VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE " +
+                    "PLAYERTIMESTAMP = " + "VALUES(PLAYERTIMESTAMP), " +
+                    "ACHIEVEDQUESTS = VALUES(ACHIEVEDQUESTS), " +
+                    "TOTALACHIEVEDQUESTS = VALUES(TOTALACHIEVEDQUESTS)");
+            secondSystem.setMYSQL_PROGRESS_UPDATE("INSERT INTO PROGRESSION_SECOND (PLAYERNAME, PLAYERQUESTID, QUESTID, ADVANCEMENT, ISACHIEVED) " +
+                    "VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE " +
+                    "QUESTID = VALUES(QUESTINDEX), " +
+                    "ADVANCEMENT = VALUES(ADVANCEMENT), " +
+                    "ISACHIEVED = VALUES(ISACHIEVED)");
+            secondSystem.setH2_PLAYER_QUERY("MERGE INTO PLAYER_SECOND (PLAYERNAME, PLAYERTIMESTAMP, ACHIEVEDQUESTS, TOTALACHIEVEDQUESTS) " +
+                    "KEY (PLAYERNAME) VALUES (?, ?, ?, ?)");
+            secondSystem.setH2_PROGRESS_UPDATE("MERGE INTO PROGRESSION_SECOND (PLAYERNAME, PLAYERQUESTID, QUESTID, ADVANCEMENT, ISACHIEVED) " +
+                    "KEY (PLAYERNAME, PLAYERQUESTID) VALUES (?, ?, ?, ?, ?)");
+            secondSystem.setQUESTS_RENEWED_MESSAGE(QuestsMessages.QUESTS_RENEWED_SECOND);
+            secondSystem.setQuestsFilePath("quests/second_system/");
+            secondSystem.setALL_QUESTS_ACHIEVED(QuestsMessages.ALL_QUESTS_ACHIEVED_SECOND);
+            secondSystem.setEASY_QUESTS_ACHIEVED(QuestsMessages.EASY_QUESTS_ACHIEVED_SECOND);
+            secondSystem.setMEDIUM_QUESTS_ACHIEVED(QuestsMessages.MEDIUM_QUESTS_ACHIEVED_SECOND);
+            secondSystem.setHARD_QUESTS_ACHIEVED(QuestsMessages.HARD_QUESTS_ACHIEVED_SECOND);
+            secondSystem.setQUESTS_IN_PROGRESS(QuestsMessages.QUESTS_IN_PROGRESS_SECOND);
+            secondSystem.setPapiPrefix(configurationFiles.getConfigFile().getString(secondSystem.getConfigPath() + "placeholder_prefix") + "_");
+            questSystemMap.put("second", secondSystem);
+        }
+    }
+
     @Override
     public void onDisable() {
 
-        if (timerTask != null) timerTask.stop();
-
-        /* Avoid errors on reload */
-        reloadService.saveConnectedPlayerQuests(false);
+        ODailyQuests.questSystemMap.forEach((key, questSystem) -> {
+            if (questSystem.getTimerTask() != null) questSystem.getTimerTask().stop();
+            /* Avoid errors on reload */
+            reloadService.saveConnectedPlayerQuests(false, questSystem);
+        });
 
         if (sqlManager != null) sqlManager.close();
         PluginLogger.info(ChatColor.RED + "Plugin is shutting down...");

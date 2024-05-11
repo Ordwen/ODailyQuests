@@ -1,80 +1,69 @@
 package com.ordwen.odailyquests.quests.categories;
 
 import com.ordwen.odailyquests.ODailyQuests;
-import com.ordwen.odailyquests.configuration.essentials.Modes;
-import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
-import com.ordwen.odailyquests.files.QuestsFiles;
+import com.ordwen.odailyquests.QuestSystem;
 import com.ordwen.odailyquests.quests.QuestsLoader;
-import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
-
-import java.util.ArrayList;
 
 public class CategoriesLoader {
-
-    private static final Category globalCategory = new Category("globalQuests");
-    private static final Category easyCategory = new Category("easyQuests");
-    private static final Category mediumCategory = new Category("mediumQuests");
-    private static final Category hardCategory = new Category("hardQuests");
-
-    private final QuestsLoader questsLoader = new QuestsLoader();
 
     /**
      * Load all quests from files.
      */
     public void loadCategories() {
 
-        globalCategory.clear();
-        easyCategory.clear();
-        mediumCategory.clear();
-        hardCategory.clear();
+        ODailyQuests.questSystemMap.forEach((key, questSystem) -> {
+            questSystem.setQuestsLoader(new QuestsLoader());
+            questSystem.setGlobalCategory(new Category("globalQuests"));
+            questSystem.setEasyCategory(new Category("easyQuests"));
+            questSystem.setMediumCategory(new Category("mediumQuests"));
+            questSystem.setHardCategory(new Category("hardQuests"));
+            questSystem.getGlobalCategory().clear();
+            questSystem.getEasyCategory().clear();
+            questSystem.getMediumCategory().clear();
+            questSystem.getHardCategory().clear();
 
-        /* init files */
-        FileConfiguration globalQuestsFile = QuestsFiles.getGlobalQuestsConfiguration();
-        FileConfiguration easyQuestsFile = QuestsFiles.getEasyQuestsConfiguration();
-        FileConfiguration mediumQuestsFile = QuestsFiles.getMediumQuestsConfiguration();
-        FileConfiguration hardQuestsFile = QuestsFiles.getHardQuestsConfiguration();
+            QuestsLoader questsLoader = questSystem.getQuestsLoader();
+            if (questSystem.getQuestsMode() == 1) {
 
-        if (Modes.getQuestsMode() == 1) {
+                /* load global quests */
+                questsLoader.loadQuests(questSystem.getGlobalQuestsConfig(), questSystem.getGlobalCategory(), "globalQuests");
+                if (questSystem.getGlobalCategory().size() < questSystem.getGlobalQuestsAmount()) {
+                    PluginLogger.error("Impossible to enable the plugin.");
+                    PluginLogger.error("You need to have at least " + questSystem.getGlobalQuestsAmount() + " quests in your globalQuest.yml file.");
+                    Bukkit.getPluginManager().disablePlugin(ODailyQuests.INSTANCE);
+                }
 
-            /* load global quests */
-            questsLoader.loadQuests(globalQuestsFile, globalCategory, "globalQuests");
-            if (globalCategory.size() < QuestsAmount.getQuestsAmount()) {
-                PluginLogger.error("Impossible to enable the plugin.");
-                PluginLogger.error("You need to have at least " + QuestsAmount.getQuestsAmount() + " quests in your globalQuest.yml file.");
-                Bukkit.getPluginManager().disablePlugin(ODailyQuests.INSTANCE);
+            } else if (questSystem.getQuestsMode() == 2) {
+
+                /* load easy quests */
+                questsLoader.loadQuests(questSystem.getEasyQuestsConfig(), questSystem.getEasyCategory(), "easyQuests");
+                if (questSystem.getEasyCategory().size() < questSystem.getEasyQuestsAmount()) {
+                    PluginLogger.error("Impossible to enable the plugin.");
+                    PluginLogger.error("You need to have at least " + questSystem.getEasyQuestsAmount() + " quest in your easyQuests.yml file.");
+                    Bukkit.getPluginManager().disablePlugin(ODailyQuests.INSTANCE);
+                }
+
+                /* load medium quests */
+                questsLoader.loadQuests(questSystem.getMediumQuestsConfig(), questSystem.getMediumCategory(), "mediumQuests");
+                if (questSystem.getMediumCategory().size() < questSystem.getMediumQuestsAmount()) {
+                    PluginLogger.error("Impossible to enable the plugin.");
+                    PluginLogger.error("You need to have at least " + questSystem.getMediumQuestsAmount() + " quest in your mediumQuests.yml file.");
+                    Bukkit.getPluginManager().disablePlugin(ODailyQuests.INSTANCE);
+                }
+
+                /* load hard quests */
+                questsLoader.loadQuests(questSystem.getHardQuestsConfig(), questSystem.getHardCategory(), "hardQuests");
+                if (questSystem.getHardCategory().size() < questSystem.getHardQuestsAmount()) {
+                    PluginLogger.error("Impossible to enable the plugin.");
+                    PluginLogger.error("You need to have at least " + questSystem.getHardQuestsAmount() + " quest in your hardQuests.yml file.");
+                    Bukkit.getPluginManager().disablePlugin(ODailyQuests.INSTANCE);
+                }
+            } else {
+                PluginLogger.error("Impossible to load the quests. The selected mode is incorrect.");
             }
-
-        } else if (Modes.getQuestsMode() == 2) {
-
-            /* load easy quests */
-            questsLoader.loadQuests(easyQuestsFile, easyCategory, "easyQuests");
-            if (easyCategory.size() < QuestsAmount.getEasyQuestsAmount()) {
-                PluginLogger.error("Impossible to enable the plugin.");
-                PluginLogger.error("You need to have at least " + QuestsAmount.getEasyQuestsAmount() + " quest in your easyQuests.yml file.");
-                Bukkit.getPluginManager().disablePlugin(ODailyQuests.INSTANCE);
-            }
-
-            /* load medium quests */
-            questsLoader.loadQuests(mediumQuestsFile, mediumCategory, "mediumQuests");
-            if (mediumCategory.size() < QuestsAmount.getMediumQuestsAmount()) {
-                PluginLogger.error("Impossible to enable the plugin.");
-                PluginLogger.error("You need to have at least " + QuestsAmount.getMediumQuestsAmount() + " quest in your mediumQuests.yml file.");
-                Bukkit.getPluginManager().disablePlugin(ODailyQuests.INSTANCE);
-            }
-
-            /* load hard quests */
-            questsLoader.loadQuests(hardQuestsFile, hardCategory, "hardQuests");
-            if (hardCategory.size() < QuestsAmount.getHardQuestsAmount()) {
-                PluginLogger.error("Impossible to enable the plugin.");
-                PluginLogger.error("You need to have at least " + QuestsAmount.getHardQuestsAmount() + " quest in your hardQuests.yml file.");
-                Bukkit.getPluginManager().disablePlugin(ODailyQuests.INSTANCE);
-            }
-        } else {
-            PluginLogger.error("Impossible to load the quests. The selected mode is incorrect.");
-        }
+        });
     }
 
     /**
@@ -82,50 +71,22 @@ public class CategoriesLoader {
      * @param name category name.
      * @return category.
      */
-    public static Category getCategoryByName(String name) {
+    public static Category getCategoryByName(QuestSystem questSystem, String name) {
         switch (name) {
             case "globalQuests" -> {
-                return globalCategory;
+                return questSystem.getGlobalCategory();
             }
             case "easyQuests" -> {
-                return easyCategory;
+                return questSystem.getEasyCategory();
             }
             case "mediumQuests" -> {
-                return mediumCategory;
+                return questSystem.getMediumCategory();
             }
             case "hardQuests" -> {
-                return hardCategory;
+                return questSystem.getHardCategory();
             }
         }
 
         return null;
-    }
-
-    /**
-     * Get global quests.
-     */
-    public static ArrayList<AbstractQuest> getGlobalQuests() {
-        return globalCategory;
-    }
-
-    /**
-     * Get easy quests.
-     */
-    public static ArrayList<AbstractQuest> getEasyQuests() {
-        return easyCategory;
-    }
-
-    /**
-     * Get medium quests.
-     */
-    public static ArrayList<AbstractQuest> getMediumQuests() {
-        return mediumCategory;
-    }
-
-    /**
-     * Get hard quests.
-     */
-    public static ArrayList<AbstractQuest> getHardQuests() {
-        return hardCategory;
     }
 }

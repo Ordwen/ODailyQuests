@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.commands.interfaces;
 
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.QuestSystem;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.Buttons;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.PlayerHead;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
@@ -38,7 +39,6 @@ public class InterfacesManager implements Listener {
     }
 
     /* variables */
-    private static List<ItemStack> emptyCaseItems;
     private static String globalQuestsInventoryName;
     private static String easyQuestsInventoryName;
     private static String mediumQuestsInventoryName;
@@ -67,7 +67,8 @@ public class InterfacesManager implements Listener {
      */
     public void loadPlayerQuestsInterface() {
         new PlayerHead().initPlayerHead();
-        new PlayerQuestsInterface().loadPlayerQuestsInterface();
+        PlayerQuestsInterface playerQuestsInterface = new PlayerQuestsInterface();
+        playerQuestsInterface.loadPlayerQuestsInterface();
 
         initEmptyCaseItems();
     }
@@ -78,11 +79,12 @@ public class InterfacesManager implements Listener {
     public void loadQuestsInterfaces() {
         initPaginationItemNames();
         questsInterfaces = new QuestsInterfaces(configurationFiles);
-
-        if (configurationFiles.getConfigFile().getInt("quests_mode") == 2) {
-            questsInterfaces.loadCategorizedInterfaces();
-        }
-        else questsInterfaces.loadGlobalInterface();
+        ODailyQuests.questSystemMap.forEach((key, questSystem) -> {
+            if (questSystem.getQuestsMode() == 2) {
+                questsInterfaces.loadCategorizedInterfaces(questSystem);
+            } else questsInterfaces.loadGlobalInterface(questSystem);
+            PluginLogger.fine("Successfully loaded category interfaces for " + questSystem.getSystemName());
+        });
     }
     /**
      * Init variables.
@@ -102,9 +104,9 @@ public class InterfacesManager implements Listener {
      * Init empty case items.
      */
     public void initEmptyCaseItems() {
-        emptyCaseItems = new ArrayList<>();
-        emptyCaseItems.addAll(PlayerQuestsInterface.getFillItems());
-        emptyCaseItems.addAll(QuestsInterfaces.getEmptyCaseItems());
+        ODailyQuests.questSystemMap.forEach((key, questSystem) -> {
+            questSystem.getEmptyCaseItems().addAll(questSystem.getFillItems());
+        });
     }
 
     /**
@@ -130,20 +132,19 @@ public class InterfacesManager implements Listener {
     public static String getHardQuestsInventoryName() {
         return hardQuestsInventoryName;
     }
-    public static List<ItemStack> getEmptyCaseItems() { return emptyCaseItems; }
     public static String getNextPageItemName() { return nextPageItemName; }
     public static String getPreviousPageItemName() { return previousPageItemName; }
 
-    public static Inventory getInterfaceFirstPage(String category, Player player) {
-        return questsInterfaces.getInterfacePage(category, 0, player);
+    public static InterfaceInventory getInterfaceFirstPage(QuestSystem questSystem, String category, Player player) {
+        return questsInterfaces.getInterfacePage(questSystem, category, 0, player);
     }
 
-    public static Inventory getInterfaceNextPage(String category, int page, Player player) {
-        return questsInterfaces.getInterfacePage(category, page + 1, player);
+    public static InterfaceInventory getInterfaceNextPage(QuestSystem questSystem, String category, int page, Player player) {
+        return questsInterfaces.getInterfacePage(questSystem, category, page + 1, player);
     }
 
-    public static Inventory getInterfacePreviousPage(String category, int page, Player player) {
-        return questsInterfaces.getInterfacePage(category, page - 1, player);
+    public static InterfaceInventory getInterfacePreviousPage(QuestSystem questSystem, String category, int page, Player player) {
+        return questsInterfaces.getInterfacePage(questSystem, category, page - 1, player);
     }
 }
 

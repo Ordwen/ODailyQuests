@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.quests.player.progression.storage.sql;
 
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.QuestSystem;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.essentials.Logs;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
@@ -29,35 +30,13 @@ public class SaveProgressionSQL {
         this.sqlManager = sqlManager;
     }
 
-    /* requests */
-    private final String MYSQL_PLAYER_QUERY =
-            "INSERT INTO PLAYER (PLAYERNAME, PLAYERTIMESTAMP, ACHIEVEDQUESTS, TOTALACHIEVEDQUESTS) " +
-                    "VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE " +
-                    "PLAYERTIMESTAMP = " + "VALUES(PLAYERTIMESTAMP), " +
-                    "ACHIEVEDQUESTS = VALUES(ACHIEVEDQUESTS), " +
-                    "TOTALACHIEVEDQUESTS = VALUES(TOTALACHIEVEDQUESTS)";
-
-    private final String H2_PLAYER_QUERY =
-            "MERGE INTO PLAYER (PLAYERNAME, PLAYERTIMESTAMP, ACHIEVEDQUESTS, TOTALACHIEVEDQUESTS) " +
-                    "KEY (PLAYERNAME) VALUES (?, ?, ?, ?)";
-    private final String MYSQL_PROGRESS_UPDATE =
-            "INSERT INTO PROGRESSION (PLAYERNAME, PLAYERQUESTID, QUESTINDEX, ADVANCEMENT, ISACHIEVED) " +
-                    "VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE " +
-                    "QUESTINDEX = VALUES(QUESTINDEX), " +
-                    "ADVANCEMENT = VALUES(ADVANCEMENT), " +
-                    "ISACHIEVED = VALUES(ISACHIEVED)";
-
-    private final String H2_PROGRESS_UPDATE =
-            "MERGE INTO PROGRESSION (PLAYERNAME, PLAYERQUESTID, QUESTINDEX, ADVANCEMENT, ISACHIEVED) " +
-                    "KEY (PLAYERNAME, PLAYERQUESTID) VALUES (?, ?, ?, ?, ?)";
-
     /**
      * Save player quests progression.
      *
      * @param playerName   name of the player.
      * @param playerQuests player quests.
      */
-    public void saveProgression(String playerName, PlayerQuests playerQuests, boolean isAsync) {
+    public void saveProgression(QuestSystem questSystem, String playerName, PlayerQuests playerQuests, boolean isAsync) {
         if (playerQuests == null) {
             PluginLogger.warn("Impossible to save progression for player " + playerName + " because playerQuests is null.");
             PluginLogger.warn("It can happen if the server is starting/reloading and the player's quests are not loaded yet.");
@@ -77,11 +56,11 @@ public class SaveProgressionSQL {
             Bukkit.getScheduler().runTaskAsynchronously(ODailyQuests.INSTANCE, () -> {
                 Debugger.addDebug("Saving player " + playerName + " progression asynchronously");
 
-                saveDatas(playerName, timestamp, achievedQuests, totalAchievedQuests, quests);
+                saveDatas(questSystem, playerName, timestamp, achievedQuests, totalAchievedQuests, quests);
             });
         } else {
             Debugger.addDebug("Saving player " + playerName + " progression");
-            saveDatas(playerName, timestamp, achievedQuests, totalAchievedQuests, quests);
+            saveDatas(questSystem, playerName, timestamp, achievedQuests, totalAchievedQuests, quests);
         }
     }
 
@@ -94,15 +73,15 @@ public class SaveProgressionSQL {
      * @param totalAchievedQuests total achieved quests.
      * @param quests              quests.
      */
-    private void saveDatas(String playerName, long timestamp, int achievedQuests, int totalAchievedQuests, LinkedHashMap<AbstractQuest, Progression> quests) {
+    private void saveDatas(QuestSystem questSystem, String playerName, long timestamp, int achievedQuests, int totalAchievedQuests, LinkedHashMap<AbstractQuest, Progression> quests) {
         final Connection connection = sqlManager.getConnection();
 
         Debugger.addDebug("Connection to database: " + (connection != null ? "OK" : "UNAVAILABLE"));
 
         try {
             PreparedStatement playerStatement;
-            if (Modes.getStorageMode().equalsIgnoreCase("mysql")) playerStatement = connection.prepareStatement(MYSQL_PLAYER_QUERY);
-            else playerStatement = connection.prepareStatement(H2_PLAYER_QUERY);
+            if (Modes.getStorageMode().equalsIgnoreCase("mysql")) playerStatement = connection.prepareStatement(questSystem.getMYSQL_PLAYER_QUERY());
+            else playerStatement = connection.prepareStatement(questSystem.getH2_PLAYER_QUERY());
 
             playerStatement.setString(1, playerName);
             playerStatement.setLong(2, timestamp);
@@ -116,21 +95,24 @@ public class SaveProgressionSQL {
             int index = 0;
             for (AbstractQuest quest : quests.keySet()) {
                 PreparedStatement progressionStatement;
-                if (Modes.getStorageMode().equalsIgnoreCase("mysql")) progressionStatement = connection.prepareStatement(MYSQL_PROGRESS_UPDATE);
-                else progressionStatement = connection.prepareStatement(H2_PROGRESS_UPDATE);
+                if (Modes.getStorageMode().equalsIgnoreCase("mysql")) progressionStatement = connection.prepareStatement(questSystem.getMYSQL_PROGRESS_UPDATE());
+                else progressionStatement = connection.prepareStatement(questSystem.getH2_PROGRESS_UPDATE());
 
                 progressionStatement.setString(1, playerName);
                 progressionStatement.setInt(2, index);
-                progressionStatement.setInt(3, quest.getQuestIndex());
+                progressionStatement.setInt(3, quest.getQuestId());
                 progressionStatement.setInt(4, quests.get(quest).getProgression());
                 progressionStatement.setBoolean(5, quests.get(quest).isAchieved());
 
                 progressionStatement.executeUpdate();
 
                 Debugger.addDebug("Quest number " + index + " saved for player " + playerName);
+                Debugger.addDebug("Quest Id: " + quest.getQuestId());
+                Debugger.addDebug("Quest Progression: " + quests.get(quest).getProgression());
 
                 index++;
             }
+            Debugger.addDebug("Quests Size: " + quests.size());
 
             Debugger.addDebug(playerName + " quests progression saved");
 

@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.api.events;
 
+import com.ordwen.odailyquests.QuestSystem;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import org.bukkit.entity.Player;
@@ -23,6 +24,7 @@ public class QuestProgressEvent extends Event implements Cancellable {
     private final Progression progression;
     private final AbstractQuest quest;
     private final int amount;
+    private QuestSystem questSystem;
 
     /**
      * Constructor for the QuestProgressEvent.
@@ -31,12 +33,12 @@ public class QuestProgressEvent extends Event implements Cancellable {
      * @param quest quest that was progressed
      * @param amount amount of progression
      */
-    public QuestProgressEvent(Player player, Progression progression, AbstractQuest quest, int amount) {
+    public QuestProgressEvent(QuestSystem questSystem, Player player, Progression progression, AbstractQuest quest, int amount) {
         this.player = player;
         this.progression = progression;
         this.quest = quest;
         this.amount = amount;
-
+        this.questSystem = questSystem;
         this.isCancelled = false;
     }
 
@@ -48,6 +50,10 @@ public class QuestProgressEvent extends Event implements Cancellable {
     @Override
     public void setCancelled(boolean isCancelled) {
         this.isCancelled = isCancelled;
+    }
+
+    public QuestSystem getQuestSystem() {
+        return questSystem;
     }
 
     @NotNull

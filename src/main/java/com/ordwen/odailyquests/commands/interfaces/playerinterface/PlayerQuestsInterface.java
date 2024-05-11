@@ -1,5 +1,8 @@
 package com.ordwen.odailyquests.commands.interfaces.playerinterface;
 
+import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.QuestSystem;
+import com.ordwen.odailyquests.commands.interfaces.QuestInventory;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.Buttons;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.ItemType;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.PlayerHead;
@@ -7,7 +10,6 @@ import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.getters
 import com.ordwen.odailyquests.externs.hooks.placeholders.PAPIHook;
 import com.ordwen.odailyquests.files.PlayerInterfaceFile;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
-import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.player.progression.QuestLoaderUtils;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
@@ -21,7 +23,6 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -30,39 +31,17 @@ import java.util.*;
 
 public class PlayerQuestsInterface extends InterfaceItemGetter {
 
-    /* item slots */
-    private static final Set<Integer> slotsPlayerHead = new HashSet<>();
-    private static final HashMap<Integer, List<Integer>> slotQuests = new HashMap<>();
-    /* item lists */
-    private static final Set<ItemStack> fillItems = new HashSet<>();
-    private static final Set<ItemStack> closeItems = new HashSet<>();
-    private static final Map<Integer, List<String>> playerCommandsItems = new HashMap<>();
-    private static final Map<Integer, List<String>> consoleCommandsItems = new HashMap<>();
-    /* items with placeholders */
-    private static final Map<Integer, ItemStack> papiItems = new HashMap<>();
-    /* init variables */
-    private static String interfaceName;
-    private static Inventory playerQuestsInventoryBase;
-    private static int size;
-    private static String achieved;
-    private static String status;
-    private static String progression;
-    private static String completeGetType;
-    private static boolean isPlayerHeadEnabled;
-    private static boolean isGlowingEnabled;
-    private static boolean isStatusDisabled;
-
     /**
      * Get player quests inventory.
      *
      * @return player quests inventory.
      */
-    public static Inventory getPlayerQuestsInterface(Player player) {
+    public static QuestInventory getPlayerQuestsInterface(QuestSystem questSystem, Player player) {
 
-        final Map<String, PlayerQuests> activeQuests = QuestsManager.getActiveQuests();
+        final Map<String, PlayerQuests> activeQuests = questSystem.getActiveQuests();
 
         if (!activeQuests.containsKey(player.getName())) {
-            PluginLogger.error("Impossible to find the player " + player.getName() + " in the active quests.");
+            PluginLogger.error("Impossible to find the player " + player.getName() + " in the " + questSystem.getSystemName() + " active quests.");
             PluginLogger.error("It can happen if the player try to open the interface while the server/plugin is reloading.");
             PluginLogger.error("If the problem persist, please contact the developer.");
             return null;
@@ -70,17 +49,17 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
 
         final PlayerQuests playerQuests = activeQuests.get(player.getName());
 
-        if (QuestLoaderUtils.isTimeToRenew(player, activeQuests)) return getPlayerQuestsInterface(player);
+        if (QuestLoaderUtils.isTimeToRenew(player, activeQuests, questSystem)) return getPlayerQuestsInterface(questSystem, player);
 
         final Map<AbstractQuest, Progression> questsMap = playerQuests.getPlayerQuests();
 
-        final Inventory playerQuestsInventoryIndividual = Bukkit.createInventory(null, size, PAPIHook.getPlaceholders(player, interfaceName));
-        playerQuestsInventoryIndividual.setContents(playerQuestsInventoryBase.getContents());
+        final QuestInventory playerQuestsInventoryIndividual = new QuestInventory(questSystem.getSize(), PAPIHook.getPlaceholders(player, questSystem.getInterfaceName()));
+        playerQuestsInventoryIndividual.getInventory().setContents(questSystem.getPlayerQuestsInventoryBase().getContents());
 
-        if (!papiItems.isEmpty()) {
-            for (Integer slot : papiItems.keySet()) {
+        if (!questSystem.getPapiItems().isEmpty()) {
+            for (Integer slot : questSystem.getPapiItems().keySet()) {
 
-                final ItemStack itemCopy = papiItems.get(slot).clone();
+                final ItemStack itemCopy = questSystem.getPapiItems().get(slot).clone();
                 final ItemMeta meta = itemCopy.getItemMeta();
                 final List<String> lore = meta.getLore();
 
@@ -89,20 +68,20 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
                 for (String str : lore) {
                     lore.set(lore.indexOf(str), PAPIHook.getPlaceholders(player, str)
                             .replace("%achieved%", String.valueOf(playerQuests.getAchievedQuests()))
-                            .replace("%drawIn%", TimeRemain.timeRemain(player.getName())));
+                            .replace("%drawIn%", TimeRemain.timeRemain(player.getName(), questSystem)));
                 }
 
                 meta.setLore(lore);
                 itemCopy.setItemMeta(meta);
-                playerQuestsInventoryIndividual.setItem(slot, itemCopy);
+                playerQuestsInventoryIndividual.getInventory().setItem(slot, itemCopy);
             }
         }
 
         /* load player head */
-        if (isPlayerHeadEnabled) {
-            final ItemStack playerHead = PlayerHead.getPlayerHead(player);
-            for (int slot : slotsPlayerHead) {
-                playerQuestsInventoryIndividual.setItem(slot, playerHead);
+        if (questSystem.isPlayerHeadEnabled()) {
+            final ItemStack playerHead = PlayerHead.getPlayerHead(player, questSystem);
+            for (int slot : questSystem.getSlotsPlayerHead()) {
+                playerQuestsInventoryIndividual.getInventory().setItem(slot, playerHead);
             }
         }
 
@@ -133,38 +112,38 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
                                     .replace("%progressBar%", ProgressBar.getProgressBar(progression.getProgression(), quest.getAmountRequired()))
                                     .replace("%required%", String.valueOf(quest.getAmountRequired()))
                                     .replace("%achieved%", String.valueOf(playerQuests.getAchievedQuests()))
-                                    .replace("%drawIn%", TimeRemain.timeRemain(player.getName()))
-                                    .replace("%status%", getQuestStatus(progression, quest, player))
+                                    .replace("%drawIn%", TimeRemain.timeRemain(player.getName(), questSystem))
+                                    .replace("%status%", getQuestStatus(questSystem, progression, quest, player))
                     );
                 }
 
                 itemMeta.setDisplayName(PAPIHook.getPlaceholders(player, itemMeta.getDisplayName()));
             }
 
-            if (!status.isEmpty() && !isStatusDisabled)
-                lore.add(ColorConvert.convertColorCode(PAPIHook.getPlaceholders(player, status)));
+            if (!questSystem.getStatus().isEmpty() && !questSystem.isStatusDisabled())
+                lore.add(ColorConvert.convertColorCode(PAPIHook.getPlaceholders(player, questSystem.getStatus())));
 
             if (questsMap.get(quest).isAchieved()) {
 
-                if (isGlowingEnabled) {
+                if (questSystem.isGlowingEnabled()) {
                     itemMeta.addEnchant(Enchantment.SILK_TOUCH, 1, false);
                 }
 
-                if (!achieved.isEmpty() && !isStatusDisabled) {
-                    lore.add(ColorConvert.convertColorCode(achieved));
+                if (!questSystem.getAchieved().isEmpty() && !questSystem.isStatusDisabled()) {
+                    lore.add(ColorConvert.convertColorCode(questSystem.getAchieved()));
                 }
             } else {
 
                 if (quest.getQuestType().equals("GET")) {
-                    if (!completeGetType.isEmpty())
-                        lore.add(ColorConvert.convertColorCode(PAPIHook.getPlaceholders(player, completeGetType)
+                    if (!questSystem.getCompleteGetType().isEmpty())
+                        lore.add(ColorConvert.convertColorCode(PAPIHook.getPlaceholders(player, questSystem.getCompleteGetType())
                                 .replace("%progress%", String.valueOf(questsMap.get(quest).getProgression()))
                                 .replace("%required%", String.valueOf(quest.getAmountRequired()))
                                 .replace("%progressBar%", ProgressBar.getProgressBar(questsMap.get(quest).getProgression(), quest.getAmountRequired()))
                         ));
                 } else {
-                    if (!progression.isEmpty() && !isStatusDisabled) {
-                        lore.add(ColorConvert.convertColorCode(PAPIHook.getPlaceholders(player, progression)
+                    if (!questSystem.getProgression().isEmpty() && !questSystem.isStatusDisabled()) {
+                        lore.add(ColorConvert.convertColorCode(PAPIHook.getPlaceholders(player, questSystem.getProgression())
                                 .replace("%progress%", String.valueOf(questsMap.get(quest).getProgression()))
                                 .replace("%required%", String.valueOf(quest.getAmountRequired()))
                                 .replace("%progressBar%", ProgressBar.getProgressBar(questsMap.get(quest).getProgression(), quest.getAmountRequired()))
@@ -186,9 +165,9 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
             itemMeta.setLore(lore);
             itemStack.setItemMeta(itemMeta);
 
-            if (slotQuests.get(i) != null) {
-                for (int slot : slotQuests.get(i)) {
-                    playerQuestsInventoryIndividual.setItem(slot - 1, itemStack);
+            if (questSystem.getSlotQuests().get(i) != null) {
+                for (int slot : questSystem.getSlotQuests().get(i)) {
+                    playerQuestsInventoryIndividual.getInventory().setItem(slot - 1, itemStack);
                 }
             } else {
                 PluginLogger.error("An error occurred when loading the player interface.");
@@ -208,11 +187,11 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
      * @param player      the player.
      * @return the achieved message or the progress message.
      */
-    private static String getQuestStatus(Progression progression, AbstractQuest quest, Player player) {
+    private static String getQuestStatus(QuestSystem questSystem, Progression progression, AbstractQuest quest, Player player) {
         if (progression.isAchieved()) {
-            return PAPIHook.getPlaceholders(player, getAchieved());
+            return PAPIHook.getPlaceholders(player, questSystem.getAchieved());
         } else {
-            return PAPIHook.getPlaceholders(player, getProgression()
+            return PAPIHook.getPlaceholders(player, questSystem.getProgression()
                     .replace("%progress%", String.valueOf(progression.getProgression()))
                     .replace("%required%", String.valueOf(quest.getAmountRequired()))
                     .replace("%progressBar%", ProgressBar.getProgressBar(progression.getProgression(), quest.getAmountRequired()))
@@ -221,111 +200,40 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
     }
 
     /**
-     * Get the name of the interface.
-     *
-     * @param player player to get the name.
-     * @return name of the interface.
-     */
-    public static String getInterfaceName(Player player) {
-        return PAPIHook.getPlaceholders(player, interfaceName);
-    }
-
-    /**
-     * Get the "achieved" message.
-     *
-     * @return "achieved" message.
-     */
-    public static String getAchieved() {
-        return achieved;
-    }
-
-    /**
-     * Get the "progression" message.
-     *
-     * @return "progression" message.
-     */
-    public static String getProgression() {
-        return progression;
-    }
-
-    /**
-     * Get the "completeGetType" message.
-     *
-     * @return "completeGetType" message.
-     */
-    public static String getCompleteGetType() {
-        return completeGetType;
-    }
-
-    /**
-     * Get all fill items.
-     *
-     * @return fill items set.
-     */
-    public static Set<ItemStack> getFillItems() {
-        return fillItems;
-    }
-
-    /**
-     * Get all player command items.
-     *
-     * @return player command items map.
-     */
-    public static Map<Integer, List<String>> getPlayerCommandsItems() {
-        return playerCommandsItems;
-    }
-
-    /**
-     * Get all console command items.
-     *
-     * @return console command items map.
-     */
-    public static Map<Integer, List<String>> getConsoleCommandsItems() {
-        return consoleCommandsItems;
-    }
-
-    /**
-     * Get all close items.
-     *
-     * @return close items set.
-     */
-    public static Set<ItemStack> getCloseItems() {
-        return closeItems;
-    }
-
-    /**
      * Load player quests interface.
      */
     public void loadPlayerQuestsInterface() {
 
-        final ConfigurationSection interfaceConfig = PlayerInterfaceFile.getPlayerInterfaceFileConfiguration().getConfigurationSection("player_interface");
-        if (interfaceConfig == null) {
-            PluginLogger.error("An error occurred when loading the player interface.");
-            PluginLogger.error("The playerInterface file is not correctly configured.");
-            return;
-        }
+        ODailyQuests.questSystemMap.forEach((key, questSystem) -> {
+            questSystem.setInterfaceConfig(PlayerInterfaceFile.getPlayerInterfaceFileConfiguration().getConfigurationSection(questSystem.getConfigPath() + "player_interface"));
+            if (questSystem.getInterfaceConfig() == null) {
+                PluginLogger.error("An error occurred when loading the " + questSystem.getSystemName() + " player interface.");
+                PluginLogger.error("The playerInterface file is not correctly configured.");
+                return;
+            }
 
-        initVariables(interfaceConfig);
+            initVariables(questSystem.getInterfaceConfig(), questSystem);
 
-        final ConfigurationSection questsSection = interfaceConfig.getConfigurationSection("quests");
-        if (questsSection == null) {
-            PluginLogger.error("An error occurred when loading the player interface.");
-            PluginLogger.error("The quests section is not defined in the playerInterface file.");
-            return;
-        }
+            final ConfigurationSection questsSection = questSystem.getInterfaceConfig().getConfigurationSection("quests");
+            if (questsSection == null) {
+                PluginLogger.error("An error occurred when loading the " + questSystem.getSystemName() + " player interface.");
+                PluginLogger.error("The quests section is not defined in the playerInterface file.");
+                return;
+            }
 
-        loadQuestsSlots(questsSection);
+            loadQuestsSlots(questSystem, questsSection);
 
-        final ConfigurationSection itemsSection = interfaceConfig.getConfigurationSection("items");
-        if (itemsSection == null) {
-            PluginLogger.error("An error occurred when loading the player interface.");
-            PluginLogger.error("The items section is not defined in the playerInterface file.");
-            return;
-        }
+            final ConfigurationSection itemsSection = questSystem.getInterfaceConfig().getConfigurationSection("items");
+            if (itemsSection == null) {
+                PluginLogger.error("An error occurred when loading the " + questSystem.getSystemName() + " player interface.");
+                PluginLogger.error("The items section is not defined in the playerInterface file.");
+                return;
+            }
 
-        loadItems(itemsSection);
+            loadItems(questSystem, itemsSection);
 
-        PluginLogger.fine("Player quests interface successfully loaded.");
+            PluginLogger.fine(questSystem.getSystemName() + " Player quests interface successfully loaded.");
+        });
     }
 
     /**
@@ -333,42 +241,41 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
      *
      * @param interfaceConfig configuration section of the interface.
      */
-    private void initVariables(ConfigurationSection interfaceConfig) {
+    private void initVariables(ConfigurationSection interfaceConfig, QuestSystem questSystem) {
+            /* clear all lists, in case of reload */
+            questSystem.getSlotsPlayerHead().clear();
+            questSystem.getSlotQuests().clear();
+            questSystem.getFillItems().clear();
+            questSystem.getCloseItems().clear();
+            questSystem.getPlayerCommandsItems().clear();
+            questSystem.getConsoleCommandsItems().clear();
+            questSystem.getPapiItems().clear();
 
-        /* clear all lists, in case of reload */
-        slotsPlayerHead.clear();
-        slotQuests.clear();
-        fillItems.clear();
-        closeItems.clear();
-        playerCommandsItems.clear();
-        consoleCommandsItems.clear();
-        papiItems.clear();
+            /* get inventory name */
+            questSystem.setInterfaceName(ColorConvert.convertColorCode(interfaceConfig.getString(".inventory_name")));
 
-        /* get inventory name */
-        interfaceName = ColorConvert.convertColorCode(interfaceConfig.getString(".inventory_name"));
+            /* get booleans */
+            questSystem.setPlayerHeadEnabled(interfaceConfig.getConfigurationSection("player_head").getBoolean(".enabled"));
+            questSystem.setGlowingEnabled(interfaceConfig.getBoolean("glowing_if_achieved"));
+            questSystem.setStatusDisabled(interfaceConfig.getBoolean("disable_status"));
 
-        /* get booleans */
-        isPlayerHeadEnabled = interfaceConfig.getConfigurationSection("player_head").getBoolean(".enabled");
-        isGlowingEnabled = interfaceConfig.getBoolean("glowing_if_achieved");
-        isStatusDisabled = interfaceConfig.getBoolean("disable_status");
+            /* create base of inventory */
+            questSystem.setSize(interfaceConfig.getInt(".size"));
+            questSystem.setPlayerQuestsInventoryBase(Bukkit.createInventory(null, questSystem.getSize(), "BASIC"));
 
-        /* create base of inventory */
-        size = interfaceConfig.getInt(".size");
-        playerQuestsInventoryBase = Bukkit.createInventory(null, size, "BASIC");
+            /* load all texts */
+            questSystem.setAchieved(interfaceConfig.getString(".achieved"));
+            questSystem.setStatus(interfaceConfig.getString(".status"));
+            questSystem.setProgression(interfaceConfig.getString(".progress"));
+            questSystem.setCompleteGetType(interfaceConfig.getString(".complete_get_type"));
 
-        /* load all texts */
-        achieved = interfaceConfig.getString(".achieved");
-        status = interfaceConfig.getString(".status");
-        progression = interfaceConfig.getString(".progress");
-        completeGetType = interfaceConfig.getString(".complete_get_type");
+            /* load player head slots */
+            if (questSystem.isPlayerHeadEnabled()) {
+                final ConfigurationSection section = interfaceConfig.getConfigurationSection("player_head");
 
-        /* load player head slots */
-        if (isPlayerHeadEnabled) {
-            final ConfigurationSection section = interfaceConfig.getConfigurationSection("player_head");
-
-            if (section.isList(".slot")) slotsPlayerHead.addAll(section.getIntegerList(".slot"));
-            else slotsPlayerHead.add(section.getInt(".slot") - 1);
-        }
+                if (section.isList(".slot")) questSystem.getSlotsPlayerHead().addAll(section.getIntegerList(".slot"));
+                else questSystem.getSlotsPlayerHead().add(section.getInt(".slot") - 1);
+            }
     }
 
     /**
@@ -376,15 +283,15 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
      *
      * @param questsSection configuration section of the quests.
      */
-    private void loadQuestsSlots(ConfigurationSection questsSection) {
+    private void loadQuestsSlots(QuestSystem questSystem, ConfigurationSection questsSection) {
         for (String index : questsSection.getKeys(false)) {
             int slot = Integer.parseInt(index) - 1;
             if (questsSection.isList(index)) {
                 final List<Integer> values = questsSection.getIntegerList(index);
-                slotQuests.put(slot, values);
+                questSystem.getSlotQuests().put(slot, values);
             } else {
                 int value = questsSection.getInt(index);
-                slotQuests.put(slot, Collections.singletonList(value));
+                questSystem.getSlotQuests().put(slot, Collections.singletonList(value));
             }
         }
     }
@@ -394,7 +301,7 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
      *
      * @param itemsSection configuration section of the items.
      */
-    private void loadItems(ConfigurationSection itemsSection) {
+    private void loadItems(QuestSystem questSystem, ConfigurationSection itemsSection) {
         for (String element : itemsSection.getKeys(false)) {
 
             final ConfigurationSection itemData = itemsSection.getConfigurationSection(element + ".item");
@@ -439,12 +346,12 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
 
                     fillItemMeta.setDisplayName(ChatColor.RESET + "");
                     item.setItemMeta(fillItemMeta);
-                    fillItems.add(item);
+                    questSystem.getFillItems().add(item);
                 }
 
                 case CLOSE -> {
                     item.setItemMeta(getItemMeta(item, itemData));
-                    closeItems.add(item);
+                    questSystem.getCloseItems().add(item);
                 }
 
                 case PLAYER_COMMAND -> {
@@ -452,7 +359,7 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
                     item.setItemMeta(getItemMeta(item, itemData));
 
                     for (int slot : slots) {
-                        playerCommandsItems.put(slot - 1, commands);
+                        questSystem.getPlayerCommandsItems().put(slot - 1, commands);
                     }
                 }
 
@@ -461,19 +368,19 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
                     item.setItemMeta(getItemMeta(item, itemData));
 
                     for (int slot : slots) {
-                        consoleCommandsItems.put(slot - 1, commands);
+                        questSystem.getConsoleCommandsItems().put(slot - 1, commands);
                     }
                 }
             }
 
             if (itemsSection.contains(element + ".use_placeholders") && itemsSection.getBoolean(element + ".use_placeholders")) {
                 for (int slot : slots) {
-                    papiItems.put(slot - 1, item);
+                    questSystem.getPapiItems().put(slot - 1, item);
                 }
             }
 
             for (int slot : slots) {
-                playerQuestsInventoryBase.setItem(slot - 1, item);
+                questSystem.getPlayerQuestsInventoryBase().setItem(slot - 1, item);
             }
         }
     }

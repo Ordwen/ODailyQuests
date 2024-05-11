@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.commands.admin.handlers;
 
+import com.ordwen.odailyquests.QuestSystem;
 import com.ordwen.odailyquests.commands.admin.ACommandHandler;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.externs.hooks.holograms.HologramsManager;
@@ -10,8 +11,8 @@ import org.bukkit.entity.Player;
 
 public class HoloCommand extends ACommandHandler {
 
-    public HoloCommand(CommandSender sender, String[] args) {
-        super(sender, args);
+    public HoloCommand(CommandSender sender, String[] args, QuestSystem questSystem) {
+        super(sender, args, questSystem);
     }
 
     @Override
@@ -49,32 +50,32 @@ public class HoloCommand extends ACommandHandler {
 
         switch (args[2]) {
             case "global" -> {
-                if (CategoriesLoader.getGlobalQuests().isEmpty()) {
+                if (questSystem.getGlobalCategory().isEmpty()) {
                     enabled();
                     return;
                 }
-                HolographicDisplaysHook.createHologram(index, CategoriesLoader.getGlobalQuests(), ((Player) sender).getPlayer());
+                HolographicDisplaysHook.createHologram(index, questSystem.getGlobalCategory(), ((Player) sender).getPlayer());
             }
             case "easy" -> {
-                if (!CategoriesLoader.getEasyQuests().isEmpty()) {
+                if (!questSystem.getEasyCategory().isEmpty()) {
                     disabled();
                     return;
                 }
-                HolographicDisplaysHook.createHologram(index, CategoriesLoader.getEasyQuests(), ((Player) sender).getPlayer());
+                HolographicDisplaysHook.createHologram(index, questSystem.getEasyCategory(), ((Player) sender).getPlayer());
             }
             case "medium" -> {
-                if (!CategoriesLoader.getMediumQuests().isEmpty()) {
+                if (!questSystem.getMediumCategory().isEmpty()) {
                     disabled();
                     return;
                 }
-                HolographicDisplaysHook.createHologram(index, CategoriesLoader.getMediumQuests(), ((Player) sender).getPlayer());
+                HolographicDisplaysHook.createHologram(index, questSystem.getMediumCategory(), ((Player) sender).getPlayer());
             }
             case "hard" -> {
-                if (CategoriesLoader.getHardQuests().isEmpty()) {
+                if (questSystem.getHardCategory().isEmpty()) {
                     disabled();
                     return;
                 }
-                HolographicDisplaysHook.createHologram(index, CategoriesLoader.getHardQuests(), ((Player) sender).getPlayer());
+                HolographicDisplaysHook.createHologram(index, questSystem.getHardCategory(), ((Player) sender).getPlayer());
             }
             default -> invalidCategory();
         }

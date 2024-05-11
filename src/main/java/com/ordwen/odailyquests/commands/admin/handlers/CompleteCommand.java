@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.commands.admin.handlers;
 
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.QuestSystem;
 import com.ordwen.odailyquests.api.events.QuestCompletedEvent;
 import com.ordwen.odailyquests.commands.admin.ACommandHandler;
 import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
@@ -17,8 +18,8 @@ import java.util.Map;
 
 public class CompleteCommand extends ACommandHandler {
 
-    public CompleteCommand(CommandSender sender, String[] args) {
-        super(sender, args);
+    public CompleteCommand(CommandSender sender, String[] args, QuestSystem questSystem) {
+        super(sender, args, questSystem);
     }
 
     @Override
@@ -53,8 +54,8 @@ public class CompleteCommand extends ACommandHandler {
      * @param target     the player
      */
     private void complete(int questIndex, Player target) {
-        if (questIndex >= 1 && questIndex <= QuestsAmount.getQuestsAmount()) {
-            final HashMap<AbstractQuest, Progression> playerQuests = QuestsManager.getActiveQuests().get(args[1]).getPlayerQuests();
+        if (questIndex >= 1 && questIndex <= questSystem.getQuestsAmount()) {
+            final HashMap<AbstractQuest, Progression> playerQuests = questSystem.getActiveQuests().get(args[1]).getPlayerQuests();
 
             int index = 0;
             for (Map.Entry<AbstractQuest, Progression> entry : playerQuests.entrySet()) {
@@ -72,7 +73,7 @@ public class CompleteCommand extends ACommandHandler {
                     return;
                 }
 
-                final QuestCompletedEvent event = new QuestCompletedEvent(target, progression, quest);
+                final QuestCompletedEvent event = new QuestCompletedEvent(questSystem, target, progression, quest);
                 ODailyQuests.INSTANCE.getServer().getPluginManager().callEvent(event);
 
                 return;

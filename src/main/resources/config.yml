@@ -24,6 +24,24 @@ database:
   password: "1234"     # Database password
   port: "3306"         # Database port
 
+# Customize what they commands are called
+commands:
+  main_command:
+    name: dquests
+    aliases:
+      - dailyquests
+      - dq
+      - quests
+      - daily
+  admin_command:
+    name: dqadmin
+    aliases:
+      - dailyquestsadmin
+      - dquestsadmin
+      - dqa
+      - qadmin
+
+
 # Select the mode of the quests.
 # ==========================================================
 # 1 : only the global quests will be loaded.
@@ -129,6 +147,63 @@ categories_rewards:
 # choose if they should progress simultaneously
 # or if the first should be completed before the second progresses.
 synchronised_progression: false
+
+second_system:
+  enabled: false
+  commands:
+    main_command:
+      name: wquests
+      aliases:
+        - weeklyquests
+        - wq
+        - weekly
+    admin_command:
+      name: wqadmin
+      aliases:
+        - weeklyquestsadmin
+        - wquestsadmin
+        - wqa
+        - wqadmin
+  #e.g weekly would be odailyquests_weekly_placeholder
+  placeholder_prefix: weekly
+  quests_mode: 1
+  global_quests_amount: 3
+  easy_quests_amount: 1
+  medium_quests_amount: 1
+  hard_quests_amount: 1
+  timestamp_mode: 1
+  temporality_mode: 2
+  global_reward:
+    enabled: true
+    reward_type: COMMAND
+    commands:
+      - "eco give %player% 5000"
+      - "give %player% diamond_block 32"
+  categories_rewards:
+    easy:
+      enabled: true
+      reward_type: COMMAND
+      commands:
+        - "eco give %player% 1000"
+        - "give %player% diamond_block 16"
+    medium:
+      enabled: true
+      reward_type: COMMAND
+      commands:
+        - "eco give %player% 2000"
+        - "give %player% diamond_block 32"
+    hard:
+      enabled: true
+      reward_type: COMMAND
+      commands:
+        - "eco give %player% 3000"
+        - "give %player% diamond_block 64"
+  npcs:
+    name_player: "&7Weekly Player Quests"
+    name_global: "&4Weekly Global Quests"
+    name_easy: "&a&lWeekly Easy &mQuests"
+    name_medium: "&e&lWeekly Medium &rQuests"
+    name_hard: "&cWeekly Hard &b&lQuests"
 
 # Set a title that will be displayed when a player completes a quest.
 # Reminder: 20 ticks is equal to one second.

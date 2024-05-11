@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.commands.admin;
 
+import com.ordwen.odailyquests.QuestSystem;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import org.bukkit.command.CommandSender;
 
@@ -7,10 +8,12 @@ public abstract class ACommandHandler {
 
     protected final CommandSender sender;
     protected final String[] args;
+    protected final QuestSystem questSystem;
 
-    protected ACommandHandler(CommandSender sender, String[] args) {
+    protected ACommandHandler(CommandSender sender, String[] args, QuestSystem questSystem) {
         this.sender = sender;
         this.args = args;
+        this.questSystem = questSystem;
     }
 
     /**

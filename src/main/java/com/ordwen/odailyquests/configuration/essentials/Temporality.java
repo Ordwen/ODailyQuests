@@ -1,7 +1,11 @@
 package com.ordwen.odailyquests.configuration.essentials;
 
+import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
+import com.ordwen.odailyquests.tools.TimerTask;
 import org.bukkit.configuration.ConfigurationSection;
+
+import java.time.LocalDateTime;
 
 public class Temporality {
 
@@ -11,7 +15,6 @@ public class Temporality {
         this.configurationFiles = configurationFiles;
     }
 
-    private static int temporalityMode;
     private static String d;
     private static String h;
     private static String m;
@@ -22,7 +25,9 @@ public class Temporality {
      */
     public void loadTemporalitySettings() {
         final ConfigurationSection config = configurationFiles.getConfigFile();
-        temporalityMode = config.getInt("temporality_mode");
+        ODailyQuests.questSystemMap.forEach((key, questSystem) -> {
+            questSystem.setTemporalityMode(config.getInt(questSystem.getConfigPath() + "temporality_mode"));
+        });
 
         final ConfigurationSection initials = config.getConfigurationSection("temporality_initials");
 
@@ -30,14 +35,6 @@ public class Temporality {
         h = initials.getString("hours");
         m = initials.getString("minutes");
         fewSeconds = initials.getString("few_seconds");
-    }
-
-    /**
-     * Get temporality mode.
-     * @return plugin mode.
-     */
-    public static int getTemporalityMode() {
-        return temporalityMode;
     }
 
     /**

@@ -11,13 +11,13 @@ public class RewardLoader {
      * @param section configuration section.
      * @return reward.
      */
-    public Reward getRewardFromSection(ConfigurationSection section, String fileName, int questIndex) {
+    public Reward getRewardFromSection(ConfigurationSection section, String fileName, int questId) {
 
         RewardType rewardType;
         try {
             rewardType = RewardType.valueOf(section.getString(".reward_type"));
         } catch (Exception e) {
-            configurationError(fileName, "reward_type", section.getString(".reward_type") + " is not a valid reward type.", questIndex);
+            configurationError(fileName, "reward_type", section.getString(".reward_type") + " is not a valid reward type.", questId);
             rewardType = RewardType.NONE;
         }
 

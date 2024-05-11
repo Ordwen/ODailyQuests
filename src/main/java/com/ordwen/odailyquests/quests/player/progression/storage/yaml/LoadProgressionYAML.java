@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.quests.player.progression.storage.yaml;
 
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.QuestSystem;
 import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
@@ -23,7 +24,7 @@ public class LoadProgressionYAML {
      * @param playerName   player.
      * @param activeQuests list of active players.
      */
-    public void loadPlayerQuests(String playerName, HashMap<String, PlayerQuests> activeQuests) {
+    public void loadPlayerQuests(QuestSystem questSystem, String playerName, HashMap<String, PlayerQuests> activeQuests) {
 
         Bukkit.getScheduler().runTaskAsynchronously(ODailyQuests.INSTANCE, () -> {
             final FileConfiguration progressionFile = ProgressionFile.getProgressionFileConfiguration();
@@ -37,35 +38,35 @@ public class LoadProgressionYAML {
             final LinkedHashMap<AbstractQuest, Progression> quests = new LinkedHashMap<>();
 
             /* check if player has data */
-            if (progressionFile.getString(playerName) != null) {
+            if (progressionFile.getString(questSystem.getConfigPath() + playerName) != null) {
 
-                timestamp = progressionFile.getConfigurationSection(playerName).getLong(".timestamp");
-                achievedQuests = progressionFile.getConfigurationSection(playerName).getInt(".achievedQuests");
-                totalAchievedQuests = progressionFile.getConfigurationSection(playerName).getInt(".totalAchievedQuests");
+                timestamp = progressionFile.getConfigurationSection(questSystem.getConfigPath() + playerName).getLong(".timestamp");
+                achievedQuests = progressionFile.getConfigurationSection(questSystem.getConfigPath() + playerName).getInt(".achievedQuests");
+                totalAchievedQuests = progressionFile.getConfigurationSection(questSystem.getConfigPath() + playerName).getInt(".totalAchievedQuests");
 
                 /* renew quests */
-                if (QuestLoaderUtils.checkTimestamp(timestamp)) {
-                    QuestLoaderUtils.loadNewPlayerQuests(playerName, activeQuests, totalAchievedQuests);
+                if (QuestLoaderUtils.checkTimestamp(questSystem, timestamp)) {
+                    QuestLoaderUtils.loadNewPlayerQuests(questSystem, playerName, activeQuests, totalAchievedQuests);
                 }
                 /* load non-achieved quests */
                 else {
                     int i = 1;
 
-                    for (String string : progressionFile.getConfigurationSection(playerName + ".quests").getKeys(false)) {
-                        if (i <= QuestsAmount.getQuestsAmount()) {
-                            int questIndex = progressionFile.getConfigurationSection(playerName + ".quests." + string).getInt(".index");
-                            int advancement = progressionFile.getConfigurationSection(playerName + ".quests." + string).getInt(".progression");
-                            boolean isAchieved = progressionFile.getConfigurationSection(playerName + ".quests." + string).getBoolean(".isAchieved");
+                    for (String string : progressionFile.getConfigurationSection(questSystem.getConfigPath() + playerName + ".quests").getKeys(false)) {
+                        if (i <= questSystem.getQuestsAmount()) {
+                            int questId = progressionFile.getConfigurationSection(questSystem.getConfigPath() + playerName + ".quests." + string).getInt(".id");
+                            int advancement = progressionFile.getConfigurationSection(questSystem.getConfigPath() + playerName + ".quests." + string).getInt(".progression");
+                            boolean isAchieved = progressionFile.getConfigurationSection(questSystem.getConfigPath() + playerName + ".quests." + string).getBoolean(".isAchieved");
 
                             Progression progression = new Progression(advancement, isAchieved);
-                            AbstractQuest quest = QuestLoaderUtils.findQuest(playerName, questIndex, Integer.parseInt(string));
+                            AbstractQuest quest = QuestLoaderUtils.findQuest(questSystem, playerName, questId, Integer.parseInt(string));
 
                             quests.put(quest, progression);
                             i++;
                         }
                         else {
                             PluginLogger.warn("Player " + playerName + " has more quests than the configuration.");
-                            PluginLogger.warn("Only the first " + QuestsAmount.getQuestsAmount() + " quests will be loaded.");
+                            PluginLogger.warn("Only the first " + questSystem.getQuestsAmount() + " quests will be loaded.");
                             PluginLogger.warn("After changing the number of quests, we recommend that you reset the progressions to avoid any problems.");
                             break;
                         }
@@ -85,14 +86,14 @@ public class LoadProgressionYAML {
 
                     final String msg;
                     if (achievedQuests == playerQuests.getPlayerQuests().size()) {
-                        msg = QuestsMessages.ALL_QUESTS_ACHIEVED_CONNECT.getMessage(playerName);
+                        msg = questSystem.getALL_QUESTS_ACHIEVED().getMessage(playerName);
                     } else {
-                        msg = QuestsMessages.QUESTS_IN_PROGRESS.getMessage(playerName);
+                        msg = questSystem.getQUESTS_IN_PROGRESS().getMessage(playerName);
                     }
                     if (msg != null) Bukkit.getPlayer(playerName).sendMessage(msg);
                 }
             } else {
-                QuestLoaderUtils.loadNewPlayerQuests(playerName, activeQuests, 0);
+                QuestLoaderUtils.loadNewPlayerQuests(questSystem, playerName, activeQuests, 0);
             }
         });
     }

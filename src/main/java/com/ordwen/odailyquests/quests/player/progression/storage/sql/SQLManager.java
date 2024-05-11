@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.quests.player.progression.storage.sql;
 
+import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -15,44 +16,26 @@ public abstract class SQLManager {
     public void setupTables() {
         final Connection connection = getConnection();
         try {
-            if (!tableExists(connection, "PLAYER")) {
-
-                String str = "create table PLAYER\n" +
-                        "  (\n" +
-                        "     PLAYERNAME char(32)  not null  ,\n" +
-                        "     PLAYERTIMESTAMP bigint not null,  \n" +
-                        "     ACHIEVEDQUESTS tinyint not null, \n" +
-                        "     TOTALACHIEVEDQUESTS int not null, \n" +
-                        "     constraint PK_PLAYER primary key (PLAYERNAME)\n" +
-                        "  );";
-
-                PreparedStatement preparedStatement = connection.prepareStatement(str);
-                preparedStatement.execute();
-
-                preparedStatement.close();
-                PluginLogger.info("Table 'Player' created in database.");
-            }
-            if (!tableExists(connection, "PROGRESSION")) {
-
-                String str = "create table PROGRESSION\n" +
-                        "  (\n" +
-                        "     PRIMARYKEY int auto_increment  ,\n" +
-                        "     PLAYERNAME char(32)  not null  ,\n" +
-                        "     PLAYERQUESTID smallint  not null  ,\n" +
-                        "     QUESTINDEX int  not null  ,\n" +
-                        "     ADVANCEMENT int  not null  ,\n" +
-                        "     ISACHIEVED bit  not null  ,\n" +
-                        "     primary key (PRIMARYKEY) ,\n" +
-                        "     constraint UNIQUE_PLAYERNAME_PLAYERQUESTID unique (PLAYERNAME, PLAYERQUESTID)" +
-                        "  ); ";
-
-                PreparedStatement preparedStatement = connection.prepareStatement(str);
-                preparedStatement.execute();
-
-                preparedStatement.close();
-                PluginLogger.info("Table 'Progression' created in database.");
-            }
+            ODailyQuests.questSystemMap.forEach((key, questSystem) -> {
+                createTable(questSystem.getPlayerTableName(), questSystem.getPlayerTableSQL(), connection);
+                createTable(questSystem.getProgressionTableName(), questSystem.getProgressionTableSQL(), connection);
+            });
             connection.close();
+        } catch (SQLException e) {
+            PluginLogger.error(e.getMessage());
+        }
+    }
+
+    public void createTable(String tableName, String tableCreation, Connection connection) {
+        try {
+            if (!tableExists(connection, tableName)) {
+
+                PreparedStatement preparedStatement = connection.prepareStatement(tableCreation);
+                preparedStatement.execute();
+
+                preparedStatement.close();
+                PluginLogger.info("Table '" + tableName + "' created in database.");
+            }
         } catch (SQLException e) {
             PluginLogger.error(e.getMessage());
         }
@@ -98,6 +81,7 @@ public abstract class SQLManager {
 
     /**
      * Test database connection.
+     *
      * @throws SQLException SQL errors.
      */
     protected void testConnection() throws SQLException {
@@ -110,6 +94,7 @@ public abstract class SQLManager {
 
     /**
      * Get load progression SQL instance.
+     *
      * @return load progression SQL instance.
      */
     public LoadProgressionSQL getLoadProgressionSQL() {
@@ -118,6 +103,7 @@ public abstract class SQLManager {
 
     /**
      * Get save progression SQL instance.
+     *
      * @return save progression SQL instance.
      */
     public SaveProgressionSQL getSaveProgressionSQL() {

@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.commands.admin;
 
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.QuestSystem;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.configuration.integrations.ItemsAdderEnabled;
 import com.ordwen.odailyquests.configuration.integrations.OraxenEnabled;
@@ -8,7 +9,6 @@ import com.ordwen.odailyquests.externs.hooks.holograms.HologramsManager;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.yaml.YamlManager;
-import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -44,10 +44,10 @@ public class ReloadService {
     /**
      * Load all quests from connected players, to avoid errors on reload.
      */
-    public void loadConnectedPlayerQuests() {
+    public void loadConnectedPlayerQuests(QuestSystem questSystem) {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            if (!QuestsManager.getActiveQuests().containsKey(player.getName())) {
-                loadQuestsForPlayer(player);
+            if (!questSystem.getActiveQuests().containsKey(player.getName())) {
+                loadQuestsForPlayer(player, questSystem);
             }
         }
     }
@@ -57,17 +57,19 @@ public class ReloadService {
      *
      * @param player player to load quests for.
      */
-    private void loadQuestsForPlayer(Player player) {
+    private void loadQuestsForPlayer(Player player, QuestSystem questSystem) {
         switch (Modes.getStorageMode()) {
             case "YAML" -> {
                 if (yamlManager == null) restartNeeded();
-                else
-                    yamlManager.getLoadProgressionYAML().loadPlayerQuests(player.getName(), QuestsManager.getActiveQuests());
+                else {
+                    yamlManager.getLoadProgressionYAML().loadPlayerQuests(questSystem, player.getName(), questSystem.getActiveQuests());
+                }
             }
             case "MySQL", "H2" -> {
                 if (sqlManager == null) restartNeeded();
-                else
-                    sqlManager.getLoadProgressionSQL().loadProgression(player.getName(), QuestsManager.getActiveQuests());
+                else {
+                    sqlManager.getLoadProgressionSQL().loadProgression(questSystem, player.getName(), questSystem.getActiveQuests());
+                }
             }
             default ->
                     PluginLogger.error("Impossible to load player quests : the selected storage mode is incorrect !");
@@ -77,7 +79,7 @@ public class ReloadService {
     /**
      * Save all quests from connected players, to avoid errors on reload.
      */
-    public void saveConnectedPlayerQuests(boolean isAsync) {
+    public void saveConnectedPlayerQuests(boolean isAsync, QuestSystem questSystem) {
 
         final Set<String> playersToRemove = new HashSet<>();
 
@@ -85,8 +87,8 @@ public class ReloadService {
             case "YAML" -> {
                 if (yamlManager == null) restartNeeded();
                 else {
-                    for (String player : QuestsManager.getActiveQuests().keySet()) {
-                        yamlManager.getSaveProgressionYAML().saveProgression(player, QuestsManager.getActiveQuests().get(player), isAsync);
+                    for (String player : questSystem.getActiveQuests().keySet()) {
+                        yamlManager.getSaveProgressionYAML().saveProgression(questSystem, player, questSystem.getActiveQuests().get(player), isAsync);
                         playersToRemove.add(player);
                     }
                 }
@@ -94,8 +96,8 @@ public class ReloadService {
             case "MySQL", "H2" -> {
                 if (sqlManager == null) restartNeeded();
                 else {
-                    for (String player : QuestsManager.getActiveQuests().keySet()) {
-                        sqlManager.getSaveProgressionSQL().saveProgression(player, QuestsManager.getActiveQuests().get(player), isAsync);
+                    for (String player : questSystem.getActiveQuests().keySet()) {
+                        sqlManager.getSaveProgressionSQL().saveProgression(questSystem, player, questSystem.getActiveQuests().get(player), isAsync);
                         playersToRemove.add(player);
                     }
                 }
@@ -104,8 +106,9 @@ public class ReloadService {
                     PluginLogger.error("Impossible to save player quests : the selected storage mode is incorrect !");
         }
 
+
         for (String player : playersToRemove) {
-            QuestsManager.getActiveQuests().remove(player);
+            questSystem.getActiveQuests().remove(player);
         }
     }
 
@@ -128,8 +131,15 @@ public class ReloadService {
             oDailyQuests.getInterfacesManager().initAllObjects();
         }
 
-        saveConnectedPlayerQuests(true);
-        Bukkit.getScheduler().runTaskLater(oDailyQuests, this::loadConnectedPlayerQuests, 20L);
+        ODailyQuests.questSystemMap.forEach((key, questSystem) -> {
+            saveConnectedPlayerQuests(true, questSystem);
+            Bukkit.getScheduler().runTaskLater(oDailyQuests, new Runnable() {
+                @Override
+                public void run() {
+                    loadConnectedPlayerQuests(questSystem);
+                }
+            }, 20L);
+        });
     }
 
     private void restartNeeded() {

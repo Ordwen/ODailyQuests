@@ -10,7 +10,7 @@ public class AllCategoryQuestsCompletedListener implements Listener {
 
     @EventHandler
     public void onAllQuestsFromCategoryCompletedEvent(AllCategoryQuestsCompletedEvent event) {
-        final String category = CategoriesLoader.getCategoryByName(event.getCategory()).getName();
-        CategoriesRewards.sendCategoryReward(event.getPlayer(), category);
+        final String category = CategoriesLoader.getCategoryByName(event.getQuestSystem(), event.getCategory()).getName();
+        CategoriesRewards.sendCategoryReward(event.getQuestSystem(), event.getPlayer(), category);
     }
 }

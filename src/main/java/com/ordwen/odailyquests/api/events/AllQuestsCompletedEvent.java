@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.api.events;
 
+import com.ordwen.odailyquests.QuestSystem;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -16,14 +17,17 @@ public class AllQuestsCompletedEvent extends Event implements Cancellable {
     private final Player player;
     private static final HandlerList HANDLERS = new HandlerList();
     private boolean isCancelled;
+    private QuestSystem questSystem;
 
     /**
      * Constructor for the AllQuestsCompletedEvent.
      * @param player player who completed all his quests
+     * @param questSystem quest system that the quest was completed in
      */
-    public AllQuestsCompletedEvent(Player player) {
+    public AllQuestsCompletedEvent(Player player, QuestSystem questSystem) {
         this.player = player;
         this.isCancelled = false;
+        this.questSystem = questSystem;
     }
 
     @NotNull
@@ -52,5 +56,13 @@ public class AllQuestsCompletedEvent extends Event implements Cancellable {
      */
     public Player getPlayer() {
         return player;
+    }
+
+    /**
+     * Get the quest system that the quest was completed in
+     * @return
+     */
+    public QuestSystem getQuestSystem() {
+        return questSystem;
     }
 }

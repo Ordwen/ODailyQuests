@@ -1,9 +1,12 @@
 package com.ordwen.odailyquests.events.listeners.inventory;
 
+import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.commands.interfaces.QuestInventory;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
 import com.ordwen.odailyquests.configuration.essentials.UseCustomFurnaceResults;
 import com.ordwen.odailyquests.events.customs.CustomFurnaceExtractEvent;
 import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractClickableChecker;
+import com.ordwen.odailyquests.tools.TimerTask;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -14,6 +17,8 @@ import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.*;
+
+import java.time.LocalDateTime;
 
 public class InventoryClickListener extends AbstractClickableChecker implements Listener {
 
@@ -39,11 +44,14 @@ public class InventoryClickListener extends AbstractClickableChecker implements 
             if (event.getClickedInventory().getHolder() instanceof Villager villager) {
 
                 if (merchantInventory.getSelectedRecipe() != null) {
-                    validateTradeQuestType(
-                            player,
-                            villager,
-                            merchantInventory.getSelectedRecipe(),
-                            clickedItem.getAmount());
+                    ODailyQuests.questSystemMap.forEach((key, questSystem) -> {
+                        validateTradeQuestType(
+                                questSystem,
+                                player,
+                                villager,
+                                merchantInventory.getSelectedRecipe(),
+                                clickedItem.getAmount());
+                    });
                 }
             }
             return;
@@ -80,41 +88,43 @@ public class InventoryClickListener extends AbstractClickableChecker implements 
             }
         }
 
-        // do action related to the clicked item
-        final String inventoryName = event.getView().getTitle();
-        if (inventoryName.startsWith(PlayerQuestsInterface.getInterfaceName(player))) {
-            event.setCancelled(true);
+        ODailyQuests.questSystemMap.forEach((key, questSystem) -> {
 
-            if (event.getAction() == InventoryAction.HOTBAR_SWAP) return;
+            // do action related to the clicked item
+            if (event.getClickedInventory().getHolder() instanceof QuestInventory) {
+                event.setCancelled(true);
 
-            if (PlayerQuestsInterface.getFillItems().contains(clickedItem)) return;
+                if (event.getAction() == InventoryAction.HOTBAR_SWAP) return;
 
-            if (PlayerQuestsInterface.getCloseItems().contains(clickedItem)) {
-                event.getWhoClicked().closeInventory();
-                return;
-            }
+                if (questSystem.getFillItems().contains(clickedItem)) return;
 
-            if (PlayerQuestsInterface.getPlayerCommandsItems().containsKey(slot)) {
-                for (String cmd : PlayerQuestsInterface.getPlayerCommandsItems().get(slot)) {
-                    Bukkit.getServer().dispatchCommand(event.getWhoClicked(), cmd);
+                if (questSystem.getCloseItems().contains(clickedItem)) {
+                    event.getWhoClicked().closeInventory();
+                    return;
                 }
-                return;
-            }
 
-            if (PlayerQuestsInterface.getConsoleCommandsItems().containsKey(slot)) {
-                for (String cmd : PlayerQuestsInterface.getConsoleCommandsItems().get(slot)) {
-                    Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd.replace("%player%", event.getWhoClicked().getName()));
+                if (questSystem.getPlayerCommandsItems().containsKey(slot)) {
+                    for (String cmd : questSystem.getPlayerCommandsItems().get(slot)) {
+                        Bukkit.getServer().dispatchCommand(event.getWhoClicked(), cmd);
+                    }
+                    return;
                 }
-                return;
-            }
 
-            // complete quest for types that requires a click ( GET - LOCATION - PLACEHOLDER)
-            setPlayerQuestProgression(player, clickedItem);
-        }
+                if (questSystem.getConsoleCommandsItems().containsKey(slot)) {
+                    for (String cmd : questSystem.getConsoleCommandsItems().get(slot)) {
+                        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd.replace("%player%", event.getWhoClicked().getName()));
+                    }
+                    return;
+                }
+
+                // complete quest for types that requires a click ( GET - LOCATION - PLACEHOLDER)
+                setPlayerQuestProgression(questSystem, player, clickedItem);
+
+            }
+        });
     }
 
     /**
-     *
      * @param expected
      * @param inv
      * @return
@@ -125,8 +135,7 @@ public class InventoryClickListener extends AbstractClickableChecker implements 
         for (ItemStack compared : inv.getStorageContents()) {
             if (compared == null) {
                 result += expected.getMaxStackSize();
-            }
-            else if (compared.isSimilar(expected)) {
+            } else if (compared.isSimilar(expected)) {
                 result += Math.max(expected.getMaxStackSize() - compared.getAmount(), 0);
             }
         }

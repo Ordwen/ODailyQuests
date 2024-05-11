@@ -1,5 +1,7 @@
 package com.ordwen.odailyquests.configuration.functionalities.rewards;
 
+import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.QuestSystem;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.rewards.Reward;
@@ -18,60 +20,58 @@ public class GlobalReward extends RewardLoader {
     public GlobalReward(ConfigurationFiles configurationFiles) {
         this.configurationFiles = configurationFiles;
     }
-
-    private static Reward globalReward;
-    private static boolean isEnabled;
-
     /**
      * Load global reward.
      */
     public void initGlobalReward() {
-        final ConfigurationSection globalRewardSection = configurationFiles.getConfigFile().getConfigurationSection("global_reward");
+        ODailyQuests.questSystemMap.forEach((key, questSystem) -> {
+        final ConfigurationSection globalRewardSection = configurationFiles.getConfigFile().getConfigurationSection(questSystem.getConfigPath() + "global_reward");
         if (globalRewardSection == null) {
-            isEnabled = false;
-            PluginLogger.error("Global reward section is missing in the configuration file.");
+            questSystem.setGlobalRewardEnabled(false);
+            PluginLogger.error(questSystem.getSystemName() + " Global reward section is missing in the configuration file.");
             return;
         }
 
         if (!globalRewardSection.contains("enabled")) {
-            isEnabled = false;
-            PluginLogger.error("Global reward section is missing in the configuration file.");
+            questSystem.setGlobalRewardEnabled(false);
+            PluginLogger.error(questSystem.getSystemName() + " Global reward section is missing in the configuration file.");
             return;
         }
 
-        isEnabled = globalRewardSection.getBoolean("enabled");
+        questSystem.setGlobalRewardEnabled(globalRewardSection.getBoolean("enabled"));
 
-        if (isEnabled) {
+        if (questSystem.isGlobalRewardEnabled()) {
             final RewardType rewardType = RewardType.valueOf(globalRewardSection.getString(".reward_type"));
 
             if (rewardType == RewardType.COMMAND) {
-                globalReward = new Reward(rewardType, globalRewardSection.getStringList(".commands"));
+                questSystem.setGlobalReward(new Reward(rewardType, globalRewardSection.getStringList(".commands")));
             } else {
-                globalReward = new Reward(rewardType, globalRewardSection.getInt(".amount"));
+                questSystem.setGlobalReward(new Reward(rewardType, globalRewardSection.getInt(".amount")));
             }
 
-            globalReward = new RewardLoader().getRewardFromSection(globalRewardSection, "config.yml", -1);
+            questSystem.setGlobalReward(new RewardLoader().getRewardFromSection(globalRewardSection, "config.yml", -1));
 
-            PluginLogger.fine("Global reward successfully loaded.");
-        } else PluginLogger.fine("Global reward is disabled.");
+            PluginLogger.fine(questSystem.getSystemName() + " Global reward successfully loaded.");
+        } else PluginLogger.fine(questSystem.getSystemName() + " Global reward is disabled.");
+        });
     }
 
     /**
      * Give reward when players have completed all their quests.
      * @param playerName player name.
      */
-    public static void sendGlobalReward(String playerName) {
-        if (isEnabled) {
+    public static void sendGlobalReward(QuestSystem questSystem, String playerName) {
+        if (questSystem.isGlobalRewardEnabled()) {
             final Player player = Bukkit.getPlayer(playerName);
             if (player == null) {
-                PluginLogger.warn("Impossible to send global reward to " + playerName + " because he is offline.");
+                PluginLogger.warn("Impossible to send " + questSystem.getSystemName() + " global reward to " + playerName + " because he is offline.");
                 return;
             }
 
-            final String msg = QuestsMessages.ALL_QUESTS_ACHIEVED.getMessage(playerName);
+            final String msg = questSystem.getALL_QUESTS_ACHIEVED().getMessage(playerName);
             if (msg != null) player.sendMessage(msg);
 
-            RewardManager.sendQuestReward(Bukkit.getPlayer(playerName), globalReward);
+            RewardManager.sendQuestReward(Bukkit.getPlayer(playerName), questSystem.getGlobalReward());
         }
     }
 }

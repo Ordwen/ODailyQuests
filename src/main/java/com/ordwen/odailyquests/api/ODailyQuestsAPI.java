@@ -1,5 +1,7 @@
 package com.ordwen.odailyquests.api;
 
+import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.QuestSystem;
 import com.ordwen.odailyquests.api.quests.QuestTypeRegistry;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
@@ -30,12 +32,23 @@ public class ODailyQuestsAPI {
 
     /**
      * Get the PlayerQuests object of a player.
+     * Default to default system if not specified to not break api.
      *
      * @param playerName name of the player
      * @return PlayerQuests object
      */
     public PlayerQuests getPlayerQuests(String playerName) {
-        return QuestsManager.getActiveQuests().get(playerName);
+        return ODailyQuests.questSystemMap.get("normal").getActiveQuests().get(playerName);
+    }
+
+    /**
+     * Get the PlayerQuests object of a player, with the supplied system
+     *
+     * @param playerName name of the player
+     * @return PlayerQuests object
+     */
+    public PlayerQuests getPlayerQuests(String playerName, QuestSystem questSystem) {
+        return questSystem.getActiveQuests().get(playerName);
     }
 
     /**

@@ -1,5 +1,7 @@
 package com.ordwen.odailyquests.commands.admin.convert;
 
+import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.QuestSystem;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.player.progression.QuestLoaderUtils;
@@ -19,7 +21,7 @@ public abstract class SQLConverter {
      * @param progressionFile the progression file.
      * @param sqlManager      the SQL manager.
      */
-    protected void convertData(FileConfiguration progressionFile, SQLManager sqlManager) {
+    protected void convertData(FileConfiguration progressionFile, SQLManager sqlManager, QuestSystem questSystem) {
         long timestamp;
         int achievedQuests;
         int totalAchievedQuests;
@@ -56,7 +58,7 @@ public abstract class SQLConverter {
                 boolean isAchieved = progressionSection.getBoolean(".isAchieved");
 
                 final Progression progression = new Progression(advancement, isAchieved);
-                final AbstractQuest quest = QuestLoaderUtils.findQuest(playerName, questIndex, Integer.parseInt(string));
+                final AbstractQuest quest = QuestLoaderUtils.findQuest(questSystem, playerName, questIndex, Integer.parseInt(string));
 
                 quests.put(quest, progression);
             }
@@ -65,7 +67,7 @@ public abstract class SQLConverter {
             playerQuests.setAchievedQuests(achievedQuests);
             playerQuests.setTotalAchievedQuests(totalAchievedQuests);
 
-            sqlManager.getSaveProgressionSQL().saveProgression(playerName, playerQuests, true);
+            sqlManager.getSaveProgressionSQL().saveProgression(questSystem, playerName, playerQuests, true);
         }
     }
 

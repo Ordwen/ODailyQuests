@@ -39,6 +39,7 @@ public class ConfigurationManager {
 
         // essentials
         new Modes(configurationFiles).loadPluginModes();
+        new Commands(configurationFiles).loadPluginCommands();
         new Temporality(configurationFiles).loadTemporalitySettings();
         new TimeRemain().setupInitials();
         new QuestsAmount(configurationFiles).loadQuestsAmount();

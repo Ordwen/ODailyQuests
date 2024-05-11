@@ -13,6 +13,6 @@ public class AllQuestsCompletedListener implements Listener {
     public void onAllQuestsCompletedEvent(AllQuestsCompletedEvent event) {
         if (event.isCancelled()) return;
 
-        Bukkit.getScheduler().runTaskLater(ODailyQuests.INSTANCE, () -> GlobalReward.sendGlobalReward(event.getPlayer().getName()), 1L);
+        Bukkit.getScheduler().runTaskLater(ODailyQuests.INSTANCE, () -> GlobalReward.sendGlobalReward(event.getQuestSystem(), event.getPlayer().getName()), 1L);
     }
 }

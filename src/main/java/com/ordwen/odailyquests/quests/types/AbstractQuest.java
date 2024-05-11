@@ -11,7 +11,7 @@ import java.util.List;
 
 public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
 
-    final int questIndex;
+    final int questId;
     final String questName;
     final String categoryName;
     final List<String> questDesc;
@@ -32,8 +32,8 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
      * @param amountRequired required amount of the item.
      * @param reward         reward of the quest.
      */
-    protected AbstractQuest(int questIndex, String questName, String categoryName, List<String> questDesc, String questType, ItemStack menuItem, ItemStack achievedItem, int amountRequired, Reward reward, List<String> requiredWorlds, boolean isUsingPlaceholders) {
-        this.questIndex = questIndex;
+    protected AbstractQuest(int questId, String questName, String categoryName, List<String> questDesc, String questType, ItemStack menuItem, ItemStack achievedItem, int amountRequired, Reward reward, List<String> requiredWorlds, boolean isUsingPlaceholders) {
+        this.questId = questId;
         this.questName = questName;
         this.categoryName = categoryName;
         this.questDesc = questDesc;
@@ -52,7 +52,7 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
      * @param basicQuest quest base.
      */
     protected AbstractQuest(BasicQuest basicQuest) {
-        this.questIndex = basicQuest.getQuestIndex();
+        this.questId = basicQuest.getQuestId();
         this.questName = basicQuest.getQuestName();
         this.categoryName = basicQuest.getCategoryName();
         this.questDesc = basicQuest.getQuestDesc();
@@ -70,8 +70,8 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
      *
      * @return quest index.
      */
-    public int getQuestIndex() {
-        return this.questIndex;
+    public int getQuestId() {
+        return this.questId;
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.quests.player.progression.checkers;
 
+import com.ordwen.odailyquests.QuestSystem;
 import com.ordwen.odailyquests.configuration.essentials.Synchronization;
 import com.ordwen.odailyquests.configuration.functionalities.DisabledWorlds;
 import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
@@ -20,9 +21,9 @@ public abstract class AbstractGlobalChecker {
      * @param amount    the amount to increase progression by.
      * @param questType the quest type to increase progression for.
      */
-    public void setPlayerQuestProgression(Player player, int amount, String questType) {
-        if (!QuestsManager.getActiveQuests().containsKey(player.getName())) {
-            PluginLogger.warn(player.getName() + " is not in the active quests list.");
+    public void setPlayerQuestProgression(QuestSystem questSystem, Player player, int amount, String questType) {
+        if (!questSystem.getActiveQuests().containsKey(player.getName())) {
+            PluginLogger.warn(player.getName() + " is not in the " + questSystem.getSystemName() + " active quests list.");
             return;
         }
 
@@ -30,13 +31,13 @@ public abstract class AbstractGlobalChecker {
             return;
         }
 
-        final HashMap<AbstractQuest, Progression> playerQuests = QuestsManager.getActiveQuests().get(player.getName()).getPlayerQuests();
+        final HashMap<AbstractQuest, Progression> playerQuests = questSystem.getActiveQuests().get(player.getName()).getPlayerQuests();
 
         for (AbstractQuest abstractQuest : playerQuests.keySet()) {
 
             final Progression progression = playerQuests.get(abstractQuest);
             if (!progression.isAchieved() && abstractQuest.getQuestType().equals(questType)) {
-                PlayerProgressor.actionQuest(player, progression, abstractQuest, amount);
+                PlayerProgressor.actionQuest(questSystem, player, progression, abstractQuest, amount);
                 if (!Synchronization.isSynchronised()) break;
             }
         }

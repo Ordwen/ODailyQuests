@@ -1,6 +1,8 @@
 package com.ordwen.odailyquests.commands.player.handlers;
 
+import com.ordwen.odailyquests.QuestSystem;
 import com.ordwen.odailyquests.commands.player.PCommandHandler;
+import com.ordwen.odailyquests.commands.player.PlayerMessages;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.enums.QuestsPermissions;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
@@ -11,19 +13,19 @@ import java.util.HashMap;
 
 public class PRerollCommand extends PCommandHandler {
 
-    public PRerollCommand(Player player, String[] args) {
-        super(player, args);
+    public PRerollCommand(Player player, String[] args, QuestSystem questSystem, PlayerMessages playerMessages) {
+        super(player, args, questSystem, playerMessages);
     }
 
     @Override
     public void handle() {
         if (!player.hasPermission(QuestsPermissions.QUEST_REROLL.getPermission())) {
-            noPermission(player);
+            playerMessages.noPermission(player);
             return;
         }
 
         if (args.length != 2) {
-            help(player);
+            playerMessages.help(player);
             return;
         }
 
@@ -31,7 +33,7 @@ public class PRerollCommand extends PCommandHandler {
         try {
             index = Integer.parseInt(args[1]);
         } catch (NumberFormatException e) {
-            help(player);
+            playerMessages.help(player);
             return;
         }
 
@@ -44,7 +46,7 @@ public class PRerollCommand extends PCommandHandler {
      */
     private void reroll(int index) {
         final String playerName = player.getName();
-        final HashMap<String, PlayerQuests> activeQuests = QuestsManager.getActiveQuests();
+        final HashMap<String, PlayerQuests> activeQuests = questSystem.getActiveQuests();
 
         if (index < 1 || index > activeQuests.get(playerName).getPlayerQuests().size()) {
             invalidQuest();
@@ -53,7 +55,7 @@ public class PRerollCommand extends PCommandHandler {
 
         if (activeQuests.containsKey(playerName)) {
             final PlayerQuests playerQuests = activeQuests.get(playerName);
-            if (playerQuests.rerollQuest(index - 1, player)) {
+            if (playerQuests.rerollQuest(questSystem, index-1, player)) {
                 rerollConfirm(index, player);
             }
         }

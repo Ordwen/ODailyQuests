@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.quests.player;
 
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.QuestSystem;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
@@ -44,8 +45,6 @@ public class QuestsManager implements Listener {
         }
     }
 
-    private static final HashMap<String, PlayerQuests> activeQuests = new HashMap<>();
-
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
 
@@ -56,23 +55,23 @@ public class QuestsManager implements Listener {
 
         Debugger.addDebug("Player " + playerName + " joined the server.");
 
-        if (!activeQuests.containsKey(playerName)) {
-
-            Debugger.addDebug("Player " + playerName + " is not in the array.");
-
-            switch (Modes.getStorageMode()) {
-                case "YAML" -> yamlManager.getLoadProgressionYAML().loadPlayerQuests(playerName, activeQuests);
-                case "MySQL", "H2" -> sqlManager.getLoadProgressionSQL().loadProgression(playerName, activeQuests);
-                default ->
-                        PluginLogger.error("Impossible to load player quests : the selected storage mode is incorrect !");
+        ODailyQuests.questSystemMap.forEach((key, questSystem) -> {
+            if (!questSystem.getActiveQuests().containsKey(playerName)) {
+                Debugger.addDebug("Player " + playerName + " is not in the " + questSystem.getSystemName() + " array.");
+                switch (Modes.getStorageMode()) {
+                    case "YAML" ->
+                            yamlManager.getLoadProgressionYAML().loadPlayerQuests(questSystem, playerName, questSystem.getActiveQuests());
+                    case "MySQL", "H2" ->
+                            sqlManager.getLoadProgressionSQL().loadProgression(questSystem, playerName, questSystem.getActiveQuests());
+                    default ->
+                            PluginLogger.error("Impossible to load player " + questSystem.getSystemName() + " quests : the selected storage mode is incorrect !");
+                }
+            } else {
+                Debugger.addDebug("Player " + playerName + " is already in the " + questSystem.getSystemName() + " array.");
+                PluginLogger.warn(playerName + " detected into the " + questSystem.getSystemName() + " array. This is not supposed to happen!");
+                PluginLogger.warn("If the player can't make his quests progress, please contact the plugin developer.");
             }
-        } else {
-
-            Debugger.addDebug("Player " + playerName + " is already in the array.");
-
-            PluginLogger.warn(playerName + " detected into the array. This is not supposed to happen!");
-            PluginLogger.warn("If the player can't make his quests progress, please contact the plugin developer.");
-        }
+        });
 
         Debugger.addDebug("[EVENT END]");
 
@@ -87,23 +86,28 @@ public class QuestsManager implements Listener {
 
         Debugger.addDebug("Player " + playerName + " left the server.");
 
-        final PlayerQuests playerQuests = activeQuests.get(playerName);
+        ODailyQuests.questSystemMap.forEach((key, questSystem) -> {
+            final PlayerQuests playerQuests = questSystem.getActiveQuests().get(playerName);
 
-        if (playerQuests == null) {
-            Debugger.addDebug("Player " + playerName + " not found in the array.");
+            if (playerQuests == null) {
+                Debugger.addDebug("Player " + playerName + " not found in the array.");
 
 
-            PluginLogger.warn("Player quests not found for player " + playerName);
-            return;
-        }
+                PluginLogger.warn("Player quests not found for player " + playerName);
+                return;
+            }
 
-        switch (Modes.getStorageMode()) {
-            case "YAML" -> yamlManager.getSaveProgressionYAML().saveProgression(playerName, playerQuests, !plugin.isServerStopping());
-            case "MySQL", "H2" -> sqlManager.getSaveProgressionSQL().saveProgression(playerName, playerQuests, !plugin.isServerStopping());
-            default -> PluginLogger.error("Impossible to save player quests : the selected storage mode is incorrect !");
-        }
+            switch (Modes.getStorageMode()) {
+                case "YAML" ->
+                        yamlManager.getSaveProgressionYAML().saveProgression(questSystem, playerName, playerQuests, !plugin.isServerStopping());
+                case "MySQL", "H2" ->
+                        sqlManager.getSaveProgressionSQL().saveProgression(questSystem, playerName, playerQuests, !plugin.isServerStopping());
+                default ->
+                        PluginLogger.error("Impossible to save player quests : the selected storage mode is incorrect !");
+            }
 
-        activeQuests.remove(playerName);
+            questSystem.getActiveQuests().remove(playerName);
+        });
 
         Debugger.addDebug("Player " + playerName + " removed from the array.");
         Debugger.addDebug("[EVENT END]");
@@ -113,50 +117,51 @@ public class QuestsManager implements Listener {
     /**
      * Select random quests.
      */
-    public static LinkedHashMap<AbstractQuest, Progression> selectRandomQuests() {
+    public static LinkedHashMap<AbstractQuest, Progression> selectRandomQuests(QuestSystem questSystem) {
 
         LinkedHashMap<AbstractQuest, Progression> quests = new LinkedHashMap<>();
 
-        if (Modes.getQuestsMode() == 1) {
-            ArrayList<AbstractQuest> globalQuests = CategoriesLoader.getGlobalQuests();
+        if (questSystem.getQuestsMode() == 1) {
+            ArrayList<AbstractQuest> globalQuests = questSystem.getGlobalCategory();
 
-            for (int i = 0; i < QuestsAmount.getQuestsAmount(); i++) {
+            for (int i = 0; i < questSystem.getGlobalQuestsAmount(); i++) {
                 final AbstractQuest quest = getRandomQuestForPlayer(quests.keySet(), globalQuests);
                 final Progression progression = new Progression(0, false);
                 quests.put(quest, progression);
             }
-        } else if (Modes.getQuestsMode() == 2) {
+        } else if (questSystem.getQuestsMode() == 2) {
 
-            final ArrayList<AbstractQuest> easyQuests = CategoriesLoader.getEasyQuests();
-            final ArrayList<AbstractQuest> mediumQuests = CategoriesLoader.getMediumQuests();
-            final ArrayList<AbstractQuest> hardQuests = CategoriesLoader.getHardQuests();
+            final ArrayList<AbstractQuest> easyQuests = questSystem.getEasyCategory();
+            final ArrayList<AbstractQuest> mediumQuests = questSystem.getMediumCategory();
+            final ArrayList<AbstractQuest> hardQuests = questSystem.getHardCategory();
 
-            for (int i = 0; i < QuestsAmount.getEasyQuestsAmount(); i++) {
+            for (int i = 0; i < questSystem.getEasyQuestsAmount(); i++) {
                 final AbstractQuest quest = getRandomQuestForPlayer(quests.keySet(), easyQuests);
                 final Progression progression = new Progression(0, false);
                 quests.put(quest, progression);
             }
 
-            for (int i = 0; i < QuestsAmount.getMediumQuestsAmount(); i++) {
+            for (int i = 0; i < questSystem.getMediumQuestsAmount(); i++) {
                 final AbstractQuest quest = getRandomQuestForPlayer(quests.keySet(), mediumQuests);
                 final Progression progression = new Progression(0, false);
                 quests.put(quest, progression);
             }
 
-            for (int i = 0; i < QuestsAmount.getHardQuestsAmount(); i++) {
+            for (int i = 0; i < questSystem.getHardQuestsAmount(); i++) {
                 final AbstractQuest quest = getRandomQuestForPlayer(quests.keySet(), hardQuests);
                 final Progression progression = new Progression(0, false);
                 quests.put(quest, progression);
             }
         } else
-            PluginLogger.error(ChatColor.RED + "Impossible to select quests for player. The selected mode is incorrect.");
+            PluginLogger.error(ChatColor.RED + "Impossible to select quests for player. The " + questSystem.getSystemName() + " selected mode is incorrect.");
 
         return quests;
     }
 
     /**
      * Get a random quest that is not already in the player's quests.
-     * @param currentQuests the player's current quests
+     *
+     * @param currentQuests   the player's current quests
      * @param availableQuests the available quests
      * @return a quest
      */
@@ -178,14 +183,4 @@ public class QuestsManager implements Listener {
         int questNumber = new Random().nextInt(quests.size());
         return quests.get(questNumber);
     }
-
-    /**
-     * Get active quests map.
-     *
-     * @return quests map.
-     */
-    public static HashMap<String, PlayerQuests> getActiveQuests() {
-        return activeQuests;
-    }
-
 }

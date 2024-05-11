@@ -1,5 +1,7 @@
 package com.ordwen.odailyquests.configuration.essentials;
 
+import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.QuestSystem;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -11,25 +13,25 @@ public class QuestsAmount {
         this.configurationFiles = configurationFiles;
     }
 
-    private static int questsAmount;
-
-    private static int easyQuestsAmount;
-    private static int mediumQuestsAmount;
-    private static int hardQuestsAmount;
-
     public void loadQuestsAmount() {
 
         final FileConfiguration config = configurationFiles.getConfigFile();
 
-        if (Modes.getQuestsMode() == 1) {
-            questsAmount = config.getInt("global_quests_amount");
-        } else if (Modes.getQuestsMode() == 2) {
-            easyQuestsAmount = config.getInt("easy_quests_amount");
-            mediumQuestsAmount = config.getInt("medium_quests_amount");
-            hardQuestsAmount = config.getInt("hard_quests_amount");
+        ODailyQuests.questSystemMap.forEach((key, questSystem) -> {
 
-            questsAmount = easyQuestsAmount + mediumQuestsAmount + hardQuestsAmount;
-        }
+            int questsAmount = 0;
+            if (questSystem.getQuestsMode() == 1) {
+                questSystem.setGlobalQuestsAmount(config.getInt(questSystem.getConfigPath() + "global_quests_amount"));
+                questsAmount = questSystem.getGlobalQuestsAmount();
+            } else if (questSystem.getQuestsMode() == 2) {
+                questSystem.setEasyQuestsAmount(config.getInt(questSystem.getConfigPath() + "easy_quests_amount"));
+                questSystem.setMediumQuestsAmount(config.getInt(questSystem.getConfigPath() + "medium_quests_amount"));
+                questSystem.setHardQuestsAmount(config.getInt(questSystem.getConfigPath() + "hard_quests_amount"));
+
+                questsAmount = questSystem.getEasyQuestsAmount() + questSystem.getMediumQuestsAmount() + questSystem.getHardQuestsAmount();
+            }
+            questSystem.setQuestsAmount(questsAmount);
+        });
     }
 
     /**
@@ -37,35 +39,18 @@ public class QuestsAmount {
      * @param name category name.
      * @return amount of quests by category.
      */
-    public static int getQuestsAmountByCategory(String name) {
+    public static int getQuestsAmountByCategory(QuestSystem questSystem, String name) {
         switch (name) {
             case "easyQuests" -> {
-                return easyQuestsAmount;
+                return questSystem.getEasyQuestsAmount();
             }
             case "mediumQuests" -> {
-                return mediumQuestsAmount;
+                return questSystem.getMediumQuestsAmount();
             }
             case "hardQuests" -> {
-                return hardQuestsAmount;
+                return questSystem.getHardQuestsAmount();
             }
         }
-
         return -1;
-    }
-
-    public static int getQuestsAmount() {
-        return questsAmount;
-    }
-
-    public static int getEasyQuestsAmount() {
-        return easyQuestsAmount;
-    }
-
-    public static int getMediumQuestsAmount() {
-        return mediumQuestsAmount;
-    }
-
-    public static int getHardQuestsAmount() {
-        return hardQuestsAmount;
     }
 }

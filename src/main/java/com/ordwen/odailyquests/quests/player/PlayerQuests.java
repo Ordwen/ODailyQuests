@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.quests.player;
 
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.QuestSystem;
 import com.ordwen.odailyquests.api.events.AllCategoryQuestsCompletedEvent;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
@@ -52,7 +53,7 @@ public class PlayerQuests {
      *
      * @param player player who achieved a quest.
      */
-    public void increaseAchievedQuests(String category, Player player) {
+    public void increaseAchievedQuests(QuestSystem questSystem, String category, Player player) {
 
         Debugger.addDebug("PlayerQuests: increaseAchievedQuests summoned by " + player.getName() + " for category " + category + ".");
 
@@ -66,11 +67,11 @@ public class PlayerQuests {
         }
 
         /* check if the player have completed all quests from a category */
-        if (Modes.getQuestsMode() == 2) {
+        if (questSystem.getQuestsMode() == 2) {
             for (Map.Entry<String, Integer> entry : this.achievedQuestsByCategory.entrySet()) {
                 if (claimedRewards.contains(entry.getKey())) continue;
-                if (entry.getValue() == QuestsAmount.getQuestsAmountByCategory(entry.getKey())) {
-                    final AllCategoryQuestsCompletedEvent event = new AllCategoryQuestsCompletedEvent(player, entry.getKey());
+                if (entry.getValue() == QuestsAmount.getQuestsAmountByCategory(questSystem, entry.getKey())) {
+                    final AllCategoryQuestsCompletedEvent event = new AllCategoryQuestsCompletedEvent(player, entry.getKey(), questSystem);
                     ODailyQuests.INSTANCE.getServer().getPluginManager().callEvent(event);
                     claimedRewards.add(entry.getKey());
                 }
@@ -78,10 +79,10 @@ public class PlayerQuests {
         }
 
         /* check if the player have completed all quests */
-        if (this.achievedQuests == QuestsAmount.getQuestsAmount()) {
+        if (this.achievedQuests == questSystem.getQuestsAmount()) {
             Debugger.addDebug("PlayerQuests: AllQuestsCompletedEvent is called.");
 
-            final AllQuestsCompletedEvent event = new AllQuestsCompletedEvent(player);
+            final AllQuestsCompletedEvent event = new AllQuestsCompletedEvent(player, questSystem);
             ODailyQuests.INSTANCE.getServer().getPluginManager().callEvent(event);
         }
     }
@@ -155,7 +156,7 @@ public class PlayerQuests {
      *
      * @param index index of the quest to reroll.
      */
-    public boolean rerollQuest(int index, Player player) {
+    public boolean rerollQuest(QuestSystem questSystem, int index, Player player) {
 
         final List<AbstractQuest> oldQuests = new ArrayList<>(this.playerQuests.keySet());
         final AbstractQuest questToRemove = oldQuests.get(index);
@@ -167,7 +168,7 @@ public class PlayerQuests {
             return false;
         }
 
-        final Category category = CategoriesLoader.getCategoryByName(questToRemove.getCategoryName());
+        final Category category = CategoriesLoader.getCategoryByName(questSystem, questToRemove.getCategoryName());
         if (category == null) {
             PluginLogger.error("An error occurred while rerolling a quest. The category is null.");
             PluginLogger.error("If the problem persists, please contact the developer.");

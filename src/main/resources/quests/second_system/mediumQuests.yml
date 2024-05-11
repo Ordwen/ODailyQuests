@@ -1,0 +1,68 @@
+# ==============================================================
+#                        MEDIUM QUESTS FILE
+# ==============================================================
+# Quests must be numbered and increment from 1 to 1.
+# Please be attentive to the indentation and respect the scheme.
+# This could cause several bugs.
+# ==============================================================
+# AVAILABLE QUESTS TYPES :
+# https://ordwenplugins.gitbook.io/odailyquests/quests/quests-types
+# ==============================================================
+# AVAILABLE REWARDS TYPES :
+# https://ordwenplugins.gitbook.io/odailyquests/quests/rewards-types
+# ==============================================================
+# AVAILABLE ENTITY TYPES :
+# https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/Entity.html
+# ==============================================================
+# AVAILABLE ITEM TYPES :
+# https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
+# ==============================================================
+# AVAILABLE PLUGIN PLACEHOLDERS FOR QUESTS DESCRIPTIONS :
+# %progressBar% is replaced by the progress bar defined in the configuration.
+# %progress% is replaced by the progression of the quest.
+# %required% is replaced by the required amount to complete the quest.
+# ==============================================================
+# More tips available on Wiki :
+# https://ordwenplugins.gitbook.io/odailyquests/
+# Need help ? https://discord.com/invite/NPAUE7kTgJ
+# For more affected objects or types, please make suggestion.
+# ==============================================================
+quests:
+  1:
+    name: "&aCobblestone"
+    menu_item: COBBLESTONE
+    description:
+      - "&bMine 32 cobblestones."
+      - "&bWin &c500$&b."
+    quest_type: BREAK
+    required_item: COBBLESTONE
+    required_amount: 32
+    reward:
+      reward_type: MONEY
+      amount: 500
+  2:
+    name: "&6&lGold blocks"
+    menu_item: GOLD_BLOCK
+    description:
+      - "&eGet 16 gold blocks."
+      - "&eWin &b&m32 diamond blocks."
+    quest_type: GET
+    required_item: GOLD_BLOCK
+    required_amount: 16
+    reward:
+      reward_type: COMMAND
+      commands:
+        - "msg %player% Hello !"
+        - "give %player% diamond_block 32"
+  3:
+    name: "Too many zombies"
+    menu_item: ZOMBIE_HEAD
+    description:
+      - "&cKill &65 &czombies."
+      - "&aWin &b500 &aTokens."
+    quest_type: KILL
+    required_entity: ZOMBIE
+    required_amount: 5
+    reward:
+      reward_type: POINTS
+      amount: 500

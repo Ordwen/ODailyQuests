@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.commands.admin.convert;
 
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.QuestSystem;
 import com.ordwen.odailyquests.commands.admin.ACommandHandler;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.ChatColor;
@@ -10,8 +11,8 @@ public class ConverterManager extends ACommandHandler {
 
     final ODailyQuests oDailyQuests;
 
-    public ConverterManager(CommandSender sender, String[] args) {
-        super(sender, args);
+    public ConverterManager(CommandSender sender, String[] args, QuestSystem questSystem) {
+        super(sender, args, questSystem);
         this.oDailyQuests = ODailyQuests.INSTANCE;
     }
 
@@ -21,7 +22,7 @@ public class ConverterManager extends ACommandHandler {
     @Override
     public void handle() {
         if (args.length == 3) {
-            if (!this.convert(args[1], args[2])) {
+            if (!this.convert(args[1], args[2], questSystem)) {
                 sender.sendMessage(ChatColor.RED + "Conversion failed! Please check the console for more information.");
             } else {
                 sender.sendMessage(ChatColor.GREEN + "Conversion successful!");
@@ -37,7 +38,7 @@ public class ConverterManager extends ACommandHandler {
      * @param newFormat new storage format.
      * @return true if the conversion was successful, false otherwise.
      */
-    public boolean convert(String oldFormat, String newFormat) {
+    public boolean convert(String oldFormat, String newFormat, QuestSystem questSystem) {
 
         if (oldFormat.equalsIgnoreCase(newFormat)) {
             PluginLogger.error("The old and new format are the same.");
@@ -47,10 +48,10 @@ public class ConverterManager extends ACommandHandler {
         if (oldFormat.equalsIgnoreCase("yaml")) {
             switch (newFormat) {
                 case "MySQL", "mysql" -> {
-                    return new YAMLtoMySQLConverter().convert(oDailyQuests);
+                    return new YAMLtoMySQLConverter().convert(oDailyQuests, questSystem);
                 }
                 case "H2", "h2" -> {
-                    return new YAMLtoH2Converter().convert(oDailyQuests);
+                    return new YAMLtoH2Converter().convert(oDailyQuests, questSystem);
                 }
                 default -> {
                     PluginLogger.error("The new format is not supported.");

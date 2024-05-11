@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.quests.player.progression.storage.yaml;
 
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.QuestSystem;
 import com.ordwen.odailyquests.configuration.essentials.Logs;
 import com.ordwen.odailyquests.files.ProgressionFile;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
@@ -21,14 +22,13 @@ public class SaveProgressionYAML {
      * @param playerName   player name.
      * @param playerQuests player quests.
      */
-    public void saveProgression(String playerName, PlayerQuests playerQuests, boolean isAsync) {
-
+    public void saveProgression(QuestSystem questSystem, String playerName, PlayerQuests playerQuests, boolean isAsync) {
         if (isAsync) {
-            Bukkit.getScheduler().runTaskAsynchronously(ODailyQuests.INSTANCE, () -> updateFile(playerName, playerQuests));
-        } else updateFile(playerName, playerQuests);
+            Bukkit.getScheduler().runTaskAsynchronously(ODailyQuests.INSTANCE, () -> updateFile(questSystem, playerName, playerQuests));
+        } else updateFile(questSystem, playerName, playerQuests);
     }
 
-    private void updateFile(String playerName, PlayerQuests playerQuests) {
+    private void updateFile(QuestSystem questSystem, String playerName, PlayerQuests playerQuests) {
         final FileConfiguration progressionFile = ProgressionFile.getProgressionFileConfiguration();
 
         long timestamp = playerQuests.getTimestamp();
@@ -37,15 +37,15 @@ public class SaveProgressionYAML {
 
         final LinkedHashMap<AbstractQuest, Progression> quests = playerQuests.getPlayerQuests();
 
-        progressionFile.set(playerName + ".timestamp", timestamp);
-        progressionFile.set(playerName + ".achievedQuests", achievedQuests);
-        progressionFile.set(playerName + ".totalAchievedQuests", totalAchievedQuests);
+        progressionFile.set(questSystem.getConfigPath() + playerName + ".timestamp", timestamp);
+        progressionFile.set(questSystem.getConfigPath() + playerName + ".achievedQuests", achievedQuests);
+        progressionFile.set(questSystem.getConfigPath() + playerName + ".totalAchievedQuests", totalAchievedQuests);
 
         int index = 1;
         for (AbstractQuest quest : quests.keySet()) {
-            progressionFile.set(playerName + ".quests." + index + ".index", quest.getQuestIndex());
-            progressionFile.set(playerName + ".quests." + index + ".progression", quests.get(quest).getProgression());
-            progressionFile.set(playerName + ".quests." + index + ".isAchieved", quests.get(quest).isAchieved());
+            progressionFile.set(questSystem.getConfigPath() + playerName + ".quests." + index + ".id", quest.getQuestId());
+            progressionFile.set(questSystem.getConfigPath() + playerName + ".quests." + index + ".progression", quests.get(quest).getProgression());
+            progressionFile.set(questSystem.getConfigPath() + playerName + ".quests." + index + ".isAchieved", quests.get(quest).isAchieved());
             index++;
         }
 

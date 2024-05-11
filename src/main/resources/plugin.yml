@@ -11,19 +11,6 @@ libraries:
   - com.zaxxer:HikariCP:5.0.1
   - com.h2database:h2:2.1.214
 commands:
-  dquests:
-    description: default player command
-    aliases:
-      - dailyquests
-      - dq
-      - quests
-  dqadmin:
-    description: admin command
-    aliases:
-      - dailyquestsadmin
-      - dquestsadmin
-      - dqa
-      - qadmin
 
 
 

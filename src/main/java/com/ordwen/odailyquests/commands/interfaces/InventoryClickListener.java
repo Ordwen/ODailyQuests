@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.commands.interfaces;
 
+import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.PlayerHead;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,7 +14,43 @@ public class InventoryClickListener implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
+        if (event.getClickedInventory() == null) {
+            return;
+        }
+        final Player player = (Player) event.getWhoClicked();
+        final ItemStack clickedItem = event.getCurrentItem();
+        if (clickedItem == null) return;
 
+        ODailyQuests.questSystemMap.forEach((key, questSystem) -> {
+            for (InterfaceInventory interfaceInventory : questSystem.getCategorizedInterfaces()) {
+                if (event.getClickedInventory().equals(interfaceInventory.getInventory())) {
+                    event.setCancelled(true);
+                    final ItemMeta clickedItemMeta = clickedItem.getItemMeta();
+                    if (!questSystem.getEmptyCaseItems().contains(clickedItem)
+                            && event.getClick().isLeftClick()
+                            && event.getSlot() < event.getView().getTopInventory().getSize()
+                            && !event.getSlotType().equals(InventoryType.SlotType.QUICKBAR)) {
+
+                        if (!clickedItem.equals(PlayerHead.getPlayerHead((Player) player, questSystem))) {
+
+                            int page = interfaceInventory.getPage();
+                            if (clickedItemMeta != null) {
+                                if (clickedItemMeta.getDisplayName().equals(InterfacesManager.getNextPageItemName())) {
+                                    player.closeInventory();
+                                    player.openInventory(InterfacesManager.getInterfaceNextPage(questSystem, interfaceInventory.getCategory(), page, player).getInventory());
+                                }
+                                if (clickedItemMeta.getDisplayName().equals(InterfacesManager.getPreviousPageItemName())) {
+                                    player.closeInventory();
+                                    player.openInventory(InterfacesManager.getInterfacePreviousPage(questSystem, interfaceInventory.getCategory(), page, player).getInventory());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        /*
         final String inventoryName = event.getView().getTitle();
         final Player player = (Player) event.getWhoClicked();
         
@@ -80,5 +117,7 @@ public class InventoryClickListener implements Listener {
                 }
             }
         }
+
+         */
     }
 }

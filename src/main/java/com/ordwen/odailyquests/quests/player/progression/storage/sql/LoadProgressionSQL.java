@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.quests.player.progression.storage.sql;
 
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.QuestSystem;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
 import com.ordwen.odailyquests.enums.QuestsMessages;
@@ -19,6 +20,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class LoadProgressionSQL {
 
@@ -39,7 +41,7 @@ public class LoadProgressionSQL {
      *
      * @param playerName name of the player.
      */
-    public void loadProgression(String playerName, HashMap<String, PlayerQuests> activeQuests) {
+    public void loadProgression(QuestSystem questSystem, String playerName, HashMap<String, PlayerQuests> activeQuests) {
 
         Debugger.addDebug("Entering loadProgression method for player " + playerName + ".");
 
@@ -56,7 +58,7 @@ public class LoadProgressionSQL {
 
             try {
                 final Connection connection = sqlManager.getConnection();
-                final String timestampQuery = "SELECT PLAYERTIMESTAMP,ACHIEVEDQUESTS,TOTALACHIEVEDQUESTS FROM PLAYER WHERE PLAYERNAME = ?";
+                final String timestampQuery = "SELECT PLAYERTIMESTAMP,ACHIEVEDQUESTS,TOTALACHIEVEDQUESTS FROM " + questSystem.getPlayerTableName() + " WHERE PLAYERNAME = ?";
 
                 final PreparedStatement preparedStatement = connection.prepareStatement(timestampQuery);
                 preparedStatement.setString(1, playerName);
@@ -95,34 +97,30 @@ public class LoadProgressionSQL {
             }
 
             if (hasStoredData) {
-                if (QuestLoaderUtils.checkTimestamp(timestamp)) {
-                    QuestLoaderUtils.loadNewPlayerQuests(playerName, activeQuests, totalAchievedQuests);
+                if (QuestLoaderUtils.checkTimestamp(questSystem, timestamp)) {
+                    QuestLoaderUtils.loadNewPlayerQuests(questSystem, playerName, activeQuests, totalAchievedQuests);
                 } else {
-                    loadPlayerQuests(playerName, quests);
-
+                    loadPlayerQuests(questSystem, playerName, quests);
                     PlayerQuests playerQuests = new PlayerQuests(timestamp, quests);
                     playerQuests.setAchievedQuests(achievedQuests);
                     playerQuests.setTotalAchievedQuests(totalAchievedQuests);
-
                     final Player target = Bukkit.getPlayer(playerName);
                     if (target == null) {
                         PluginLogger.warn("It looks like " + playerName + " has disconnected before his quests were loaded.");
                         return;
                     }
-
                     activeQuests.put(playerName, playerQuests);
                     PluginLogger.info(playerName + "'s quests have been loaded.");
-
                     final String msg;
                     if (achievedQuests == playerQuests.getPlayerQuests().size()) {
-                        msg = QuestsMessages.ALL_QUESTS_ACHIEVED_CONNECT.getMessage(playerName);
+                        msg = questSystem.getALL_QUESTS_ACHIEVED().getMessage(playerName);
                     } else {
-                        msg = QuestsMessages.QUESTS_IN_PROGRESS.getMessage(playerName);
+                        msg = questSystem.getQUESTS_IN_PROGRESS().getMessage(playerName);
                     }
                     if (msg != null) target.sendMessage(msg);
                 }
             } else {
-                QuestLoaderUtils.loadNewPlayerQuests(playerName, activeQuests, 0);
+                QuestLoaderUtils.loadNewPlayerQuests(questSystem, playerName, activeQuests, 0);
             }
         }, 10);
     }
@@ -133,14 +131,14 @@ public class LoadProgressionSQL {
      * @param playerName       player.
      * @param quests           list of player quests.
      */
-    private void loadPlayerQuests(String playerName, LinkedHashMap<AbstractQuest, Progression> quests) {
+    private void loadPlayerQuests(QuestSystem questSystem, String playerName, LinkedHashMap<AbstractQuest, Progression> quests) {
 
         Debugger.addDebug("Entering loadPlayerQuests method for player " + playerName + ".");
 
 
         try {
             final Connection connection = sqlManager.getConnection();
-            final String getQuestProgressionQuery = "SELECT * FROM PROGRESSION WHERE PLAYERNAME = ?";
+            final String getQuestProgressionQuery = "SELECT * FROM " + questSystem.getProgressionTableName() + " WHERE PLAYERNAME = ?";
 
             final PreparedStatement preparedStatement = connection.prepareStatement(getQuestProgressionQuery);
             preparedStatement.setString(1, playerName);
@@ -151,21 +149,21 @@ public class LoadProgressionSQL {
 
             resultSet.next();
             do {
-                int questIndex = resultSet.getInt("QUESTINDEX");
+                int questId = resultSet.getInt("QUESTID");
                 int advancement = resultSet.getInt("ADVANCEMENT");
                 boolean isAchieved = resultSet.getBoolean("ISACHIEVED");
 
                 Progression progression = new Progression(advancement, isAchieved);
-                AbstractQuest quest = QuestLoaderUtils.findQuest(playerName, questIndex, id);
+                AbstractQuest quest = QuestLoaderUtils.findQuest(questSystem, playerName, questId, id);
 
                 quests.put(quest, progression);
 
                 id++;
-            } while (resultSet.next() && id <= QuestsAmount.getQuestsAmount());
+            } while (resultSet.next() && id <= questSystem.getQuestsAmount());
 
             if (resultSet.next()) {
-                PluginLogger.warn("Player " + playerName + " has more quests than the configuration.");
-                PluginLogger.warn("Only the first " + QuestsAmount.getQuestsAmount() + " quests will be loaded.");
+                PluginLogger.warn("Player " + playerName + " has more " + questSystem.getSystemName() + " quests than the configuration.");
+                PluginLogger.warn("Only the first " + questSystem.getQuestsAmount() + " quests will be loaded.");
                 PluginLogger.warn("After changing the number of quests, we recommend that you reset the progressions to avoid any problems.");
             }
 
@@ -173,15 +171,15 @@ public class LoadProgressionSQL {
             preparedStatement.close();
             connection.close();
         } catch (SQLException e) {
-            PluginLogger.error(ChatColor.RED + "An error occurred while loading player " + playerName + "'s quests.");
+            PluginLogger.error(ChatColor.RED + "An error occurred while loading player " + playerName + "'s " + questSystem.getSystemName() + " quests.");
 
-            Debugger.addDebug("An error occurred while loading player " + playerName + "'s quests.");
+            Debugger.addDebug("An error occurred while loading player " + playerName + "'s " + questSystem.getSystemName() + " quests.");
             Debugger.addDebug(e.getMessage());
 
 
             PluginLogger.error(e.getMessage());
         }
 
-        Debugger.addDebug("Quests of player " + playerName + " have been loaded.");
+        Debugger.addDebug(questSystem.getSystemName() + " quests of player " + playerName + " have been loaded.");
     }
 }

@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.quests.player.progression;
 
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.QuestSystem;
 import com.ordwen.odailyquests.api.events.QuestCompletedEvent;
 import com.ordwen.odailyquests.api.events.QuestProgressEvent;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
@@ -10,6 +11,7 @@ import com.ordwen.odailyquests.configuration.functionalities.progression.Progres
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
+import com.ordwen.odailyquests.tools.TimerTask;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -18,6 +20,7 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,10 +37,11 @@ public class PlayerProgressor {
         if (DisabledWorlds.isWorldDisabled(player.getWorld().getName())) {
             return;
         }
-
-        if (QuestsManager.getActiveQuests().containsKey(player.getName())) {
-            checkForProgress(event, player, amount, questType);
-        }
+        ODailyQuests.questSystemMap.forEach((key, questSystem) -> {
+            if (questSystem.getActiveQuests().containsKey(player.getName())) {
+                checkForProgress(questSystem, event, player, amount, questType);
+            }
+        });
     }
 
     /**
@@ -48,14 +52,14 @@ public class PlayerProgressor {
      * @param amount    the amount of progression
      * @param questType the quest type to check for
      */
-    private static void checkForProgress(Event event, Player player, int amount, String questType) {
-        final HashMap<AbstractQuest, Progression> playerQuests = QuestsManager.getActiveQuests().get(player.getName()).getPlayerQuests();
+    private static void checkForProgress(QuestSystem questSystem, Event event, Player player, int amount, String questType) {
+        final HashMap<AbstractQuest, Progression> playerQuests = questSystem.getActiveQuests().get(player.getName()).getPlayerQuests();
         for (Map.Entry<AbstractQuest, Progression> entry : playerQuests.entrySet()) {
             final AbstractQuest quest = entry.getKey();
             if (quest.getQuestType().equals(questType)) {
                 final Progression progression = entry.getValue();
                 if (!progression.isAchieved() && quest.canProgress(event)) {
-                    actionQuest(player, progression, quest, amount);
+                    actionQuest(questSystem, player, progression, quest, amount);
                     if (!Synchronization.isSynchronised()) break;
                 }
             }
@@ -70,16 +74,16 @@ public class PlayerProgressor {
      * @param quest       quest to be progressed
      * @param amount      amount of progression
      */
-    public static void actionQuest(Player player, Progression progression, AbstractQuest quest, int amount) {
+    public static void actionQuest(QuestSystem questSystem, Player player, Progression progression, AbstractQuest quest, int amount) {
 
-        Debugger.addDebug("QuestProgressUtils: actionQuest summoned by " + player.getName() + " for " + quest.getQuestName() + " with amount " + amount + ".");
+        Debugger.addDebug(questSystem.getSystemName() + " QuestProgressUtils: actionQuest summoned by " + player.getName() + " for " + quest.getQuestName() + " with amount " + amount + ".");
 
-        final QuestProgressEvent event = new QuestProgressEvent(player, progression, quest, amount);
+        final QuestProgressEvent event = new QuestProgressEvent(questSystem, player, progression, quest, amount);
         Bukkit.getPluginManager().callEvent(event);
 
         if (!event.isCancelled()) {
-            Debugger.addDebug("QuestProgressUtils: QuestProgressEvent is not cancelled.");
-            runProgress(player, progression, quest, amount);
+            Debugger.addDebug(questSystem.getSystemName() + " QuestProgressUtils: QuestProgressEvent is not cancelled.");
+            runProgress(questSystem, player, progression, quest, amount);
         }
     }
 
@@ -91,8 +95,8 @@ public class PlayerProgressor {
      * @param quest       quest to be progressed
      * @param amount      amount of progression
      */
-    private static void runProgress(Player player, Progression progression, AbstractQuest quest, int amount) {
-        if (QuestLoaderUtils.isTimeToRenew(player, QuestsManager.getActiveQuests())) return;
+    private static void runProgress(QuestSystem questSystem, Player player, Progression progression, AbstractQuest quest, int amount) {
+        if (QuestLoaderUtils.isTimeToRenew(player, questSystem.getActiveQuests(), questSystem)) return;
 
         if (!quest.getRequiredWorlds().isEmpty() && !quest.getRequiredWorlds().contains(player.getWorld().getName())) {
             final String msg = QuestsMessages.NOT_REQUIRED_WORLD.getMessage(player);
@@ -102,15 +106,15 @@ public class PlayerProgressor {
         }
 
         for (int i = 0; i < amount; i++) {
-            Debugger.addDebug("QuestProgressUtils: increasing progression for " + quest.getQuestName() + " by " + amount + ".");
+            Debugger.addDebug(questSystem.getSystemName() + " QuestProgressUtils: increasing progression for " + quest.getQuestName() + " by " + amount + ".");
             progression.increaseProgression();
         }
 
         if (progression.getProgression() >= quest.getAmountRequired()) {
-            Debugger.addDebug("QuestProgressUtils: progression " + progression.getProgression() + " is greater than or equal to amount required " + quest.getAmountRequired() + ".");
+            Debugger.addDebug(questSystem.getSystemName() + " QuestProgressUtils: progression " + progression.getProgression() + " is greater than or equal to amount required " + quest.getAmountRequired() + ".");
             Bukkit.getScheduler().runTaskLater(ODailyQuests.INSTANCE, () -> {
-                Debugger.addDebug("QuestProgressUtils: QuestCompletedEvent is called.");
-                final QuestCompletedEvent completedEvent = new QuestCompletedEvent(player, progression, quest);
+                Debugger.addDebug(questSystem.getSystemName() + " QuestProgressUtils: QuestCompletedEvent is called.");
+                final QuestCompletedEvent completedEvent = new QuestCompletedEvent(questSystem, player, progression, quest);
                 Bukkit.getPluginManager().callEvent(completedEvent);
             }, 1L);
 

@@ -1,6 +1,9 @@
 package com.ordwen.odailyquests.configuration.essentials;
 
+import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.QuestSystem;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
+import lombok.Getter;
 
 public class Modes {
 
@@ -10,34 +13,38 @@ public class Modes {
         this.configurationFiles = configurationFiles;
     }
 
-    private static int questsMode;
-    private static int timestampMode;
     private static String storageMode;
 
     public void loadPluginModes() {
-        questsMode = configurationFiles.getConfigFile().getInt("quests_mode");
-        timestampMode = configurationFiles.getConfigFile().getInt("timestamp_mode");
+        ODailyQuests.questSystemMap.forEach((key, questSystem) -> {
+            questSystem.setQuestsMode(configurationFiles.getConfigFile().getInt(questSystem.getConfigPath() + "quests_mode"));
+            questSystem.setTimeStampMode(configurationFiles.getConfigFile().getInt(questSystem.getConfigPath() + "timestamp_mode"));
+            questSystem.setTemporalityMode(configurationFiles.getConfigFile().getInt(questSystem.getConfigPath() + "temporality_mode"));
+        });
         storageMode = configurationFiles.getConfigFile().getString("storage_mode");
     }
 
     /**
      * Get quests mode.
+     *
      * @return plugin mode.
      */
-    public static int getQuestsMode() {
-        return questsMode;
+    public static int getQuestsMode(QuestSystem questSystem) {
+        return questSystem.getTimeStampMode();
     }
 
     /**
      * Get timestamp mode.
+     *
      * @return plugin mode.
      */
-    public static int getTimestampMode() {
-        return timestampMode;
+    public static int getTimestampMode(QuestSystem questSystem) {
+        return questSystem.getTimeStampMode();
     }
 
     /**
      * Get storage mode.
+     *
      * @return plugin mode.
      */
     public static String getStorageMode() {

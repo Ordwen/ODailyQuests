@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.commands.admin.handlers;
 
+import com.ordwen.odailyquests.QuestSystem;
 import com.ordwen.odailyquests.commands.admin.ACommandHandler;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
@@ -12,8 +13,8 @@ import java.util.HashMap;
 
 public class ARerollCommand extends ACommandHandler {
 
-    public ARerollCommand(CommandSender sender, String[] args) {
-        super(sender, args);
+    public ARerollCommand(CommandSender sender, String[] args, QuestSystem questSystem) {
+        super(sender, args, questSystem);
     }
 
     @Override
@@ -47,7 +48,7 @@ public class ARerollCommand extends ACommandHandler {
      */
     private void reroll(Player target, int index) {
         final String playerName = target.getName();
-        final HashMap<String, PlayerQuests> activeQuests = QuestsManager.getActiveQuests();
+        final HashMap<String, PlayerQuests> activeQuests = questSystem.getActiveQuests();
 
         if (index < 1 || index > activeQuests.get(playerName).getPlayerQuests().size()) {
             invalidQuest();
@@ -56,7 +57,7 @@ public class ARerollCommand extends ACommandHandler {
 
         if (activeQuests.containsKey(playerName)) {
             final PlayerQuests playerQuests = activeQuests.get(playerName);
-            if (playerQuests.rerollQuest(index - 1, target)) {
+            if (playerQuests.rerollQuest(questSystem, index - 1, target)) {
                 confirmationToSender(index, playerName);
                 confirmationToTarget(index, target);
             }

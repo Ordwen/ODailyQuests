@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.quests.player.progression.checkers;
 
+import com.ordwen.odailyquests.QuestSystem;
 import com.ordwen.odailyquests.api.events.QuestCompletedEvent;
 import com.ordwen.odailyquests.configuration.essentials.Synchronization;
 import com.ordwen.odailyquests.configuration.functionalities.DisabledWorlds;
@@ -34,7 +35,7 @@ public abstract class AbstractClickableChecker {
      *
      * @param player the player to increase progression for.
      */
-    public void setPlayerQuestProgression(Player player, ItemStack clickedItem) {
+    public void setPlayerQuestProgression(QuestSystem questSystem, Player player, ItemStack clickedItem) {
         if (DisabledWorlds.isWorldDisabled(player.getWorld().getName())) {
             final String msg = QuestsMessages.WORLD_DISABLED.getMessage(player);
             if (msg != null) player.sendMessage(msg);
@@ -42,16 +43,16 @@ public abstract class AbstractClickableChecker {
             return;
         }
 
-        if (QuestsManager.getActiveQuests().containsKey(player.getName())) {
+        if (questSystem.getActiveQuests().containsKey(player.getName())) {
 
-            final HashMap<AbstractQuest, Progression> playerQuests = QuestsManager.getActiveQuests().get(player.getName()).getPlayerQuests();
+            final HashMap<AbstractQuest, Progression> playerQuests = questSystem.getActiveQuests().get(player.getName()).getPlayerQuests();
             for (AbstractQuest abstractQuest : playerQuests.keySet()) {
 
                 if (abstractQuest instanceof ItemQuest quest) {
                     if (isAppropriateQuestMenuItem(clickedItem, quest.getMenuItem()) && quest.getQuestType().equals("GET")) {
                         final Progression progression = playerQuests.get(abstractQuest);
                         if (!progression.isAchieved()) {
-                            GetQuestChecker.makeQuestProgress(player, progression, quest);
+                            GetQuestChecker.makeQuestProgress(questSystem, player, progression, quest);
                         }
                         break;
                     }
@@ -60,7 +61,7 @@ public abstract class AbstractClickableChecker {
 
                         final Progression progression = playerQuests.get(quest);
                         if (!progression.isAchieved()) {
-                            validateLocationQuestType(player, progression, quest);
+                            validateLocationQuestType(questSystem, player, progression, quest);
                         }
                     }
                 } else if (abstractQuest instanceof PlaceholderQuest quest
@@ -68,7 +69,7 @@ public abstract class AbstractClickableChecker {
                         && quest.getQuestType().equals("PLACEHOLDER")) {
                     final Progression progression = playerQuests.get(quest);
                     if (!progression.isAchieved()) {
-                        validatePlaceholderQuestType(player, progression, quest);
+                        validatePlaceholderQuestType(questSystem, player, progression, quest);
                     }
                 }
             }
@@ -100,10 +101,10 @@ public abstract class AbstractClickableChecker {
      * @param selectedRecipe item trade.
      * @param quantity       quantity trade.
      */
-    public void validateTradeQuestType(Player player, Villager villager, MerchantRecipe selectedRecipe, int quantity) {
-        if (QuestsManager.getActiveQuests().containsKey(player.getName())) {
+    public void validateTradeQuestType(QuestSystem questSystem, Player player, Villager villager, MerchantRecipe selectedRecipe, int quantity) {
+        if (questSystem.getActiveQuests().containsKey(player.getName())) {
 
-            final HashMap<AbstractQuest, Progression> playerQuests = QuestsManager.getActiveQuests().get(player.getName()).getPlayerQuests();
+            final HashMap<AbstractQuest, Progression> playerQuests = questSystem.getActiveQuests().get(player.getName()).getPlayerQuests();
 
 
             for (AbstractQuest abstractQuest : playerQuests.keySet()) {
@@ -140,7 +141,7 @@ public abstract class AbstractClickableChecker {
                         }
 
                         if (valid) {
-                            PlayerProgressor.actionQuest(player, questProgression, quest, quantity);
+                            PlayerProgressor.actionQuest(questSystem, player, questProgression, quest, quantity);
                             if (!Synchronization.isSynchronised()) break;
                         }
                     }
@@ -156,7 +157,7 @@ public abstract class AbstractClickableChecker {
      * @param progression progression of the quest.
      * @param quest       quest to validate.
      */
-    private void validateLocationQuestType(Player player, Progression progression, LocationQuest quest) {
+    private void validateLocationQuestType(QuestSystem questSystem, Player player, Progression progression, LocationQuest quest) {
         final Location requiredLocation = quest.getRequiredLocation();
 
         if (!requiredLocation.getWorld().equals(player.getLocation().getWorld())) {
@@ -167,7 +168,7 @@ public abstract class AbstractClickableChecker {
 
         double distance = player.getLocation().distance(requiredLocation);
         if (distance <= quest.getRadius()) {
-            final QuestCompletedEvent event = new QuestCompletedEvent(player, progression, quest);
+            final QuestCompletedEvent event = new QuestCompletedEvent(questSystem, player, progression, quest);
             Bukkit.getPluginManager().callEvent(event);
 
             player.closeInventory();
@@ -184,7 +185,7 @@ public abstract class AbstractClickableChecker {
      * @param progression progression of the quest.
      * @param quest       quest to validate.
      */
-    private void validatePlaceholderQuestType(Player player, Progression progression, PlaceholderQuest quest) {
+    private void validatePlaceholderQuestType(QuestSystem questSystem, Player player, Progression progression, PlaceholderQuest quest) {
         final String placeholder = quest.getPlaceholder();
         final String expectedValue = quest.getExpectedValue();
         final ConditionType conditionType = quest.getConditionType();
@@ -253,7 +254,7 @@ public abstract class AbstractClickableChecker {
         }
 
         if (valid) {
-            final QuestCompletedEvent event = new QuestCompletedEvent(player, progression, quest);
+            final QuestCompletedEvent event = new QuestCompletedEvent(questSystem, player, progression, quest);
             Bukkit.getPluginManager().callEvent(event);
 
             player.closeInventory();

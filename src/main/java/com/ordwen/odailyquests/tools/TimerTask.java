@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.tools;
 
+import com.ordwen.odailyquests.QuestSystem;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.QuestLoaderUtils;
@@ -16,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 public class TimerTask {
 
     final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    QuestSystem questSystem;
 
     final Runnable runnable = () -> {
         PluginLogger.fine("It's a new day. The player quests are being reloaded.");
@@ -24,8 +26,8 @@ public class TimerTask {
             final String msg = QuestsMessages.NEW_DAY.toString();
             if (msg != null) player.sendMessage(msg);
 
-            int totalAchievedQuests = QuestsManager.getActiveQuests().get(player.getName()).getTotalAchievedQuests();
-            QuestLoaderUtils.loadNewPlayerQuests(player.getName(), QuestsManager.getActiveQuests(), totalAchievedQuests);
+            int totalAchievedQuests = questSystem.getActiveQuests().get(player.getName()).getTotalAchievedQuests();
+            QuestLoaderUtils.loadNewPlayerQuests(questSystem, player.getName(), questSystem.getActiveQuests(), totalAchievedQuests);
         }
     };
 
@@ -33,11 +35,12 @@ public class TimerTask {
      * Set a runnable to reload quests at midnight.
      * @param start date and time to start the task.
      */
-    public TimerTask(LocalDateTime start) {
+    public TimerTask(LocalDateTime start, QuestSystem questSystem) {
         final LocalDateTime end = start.plusDays(1).truncatedTo(ChronoUnit.DAYS);
         final Duration duration = Duration.between(start, end);
 
         scheduler.scheduleAtFixedRate(runnable, duration.toMillis(), 86400000, TimeUnit.MILLISECONDS);
+        this.questSystem = questSystem;
     }
 
     public void stop() {
