@@ -17,6 +17,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import java.io.File;
 import java.util.*;
@@ -188,4 +189,10 @@ public class QuestSystem {
     private String adminCommandName;
     @Getter
     private final List<String> adminCommandAliases = new ArrayList<>();
+    @Getter @Setter
+    private ItemStack playerHead;
+    @Getter @Setter
+    private SkullMeta skullMeta;
+    @Getter @Setter
+    private boolean usePlaceholders = false;
 }

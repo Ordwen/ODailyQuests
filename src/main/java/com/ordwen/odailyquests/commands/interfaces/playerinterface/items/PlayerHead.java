@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.commands.interfaces.playerinterface.items;
 
+import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.QuestSystem;
 import com.ordwen.odailyquests.externs.hooks.placeholders.PAPIHook;
 import com.ordwen.odailyquests.files.PlayerInterfaceFile;
@@ -17,27 +18,25 @@ import java.util.List;
 
 public class PlayerHead {
 
-    private static ItemStack playerHead;
-    private static SkullMeta skullMeta;
-    private static boolean usePlaceholders = false;
-
     /**
      * Init player head.
      */
     public void initPlayerHead() {
-        final ConfigurationSection playerHeadSection = PlayerInterfaceFile.getPlayerInterfaceFileConfiguration().getConfigurationSection("player_interface.player_head");
+        ODailyQuests.questSystemMap.forEach((key, questSystem) -> {
+            final ConfigurationSection playerHeadSection = PlayerInterfaceFile.getPlayerInterfaceFileConfiguration().getConfigurationSection(questSystem.getConfigPath() + "player_interface.player_head");
 
-        playerHead = new ItemStack(Material.PLAYER_HEAD, 1);
-        skullMeta = (SkullMeta) playerHead.getItemMeta();
+            questSystem.setPlayerHead(new ItemStack(Material.PLAYER_HEAD, 1));
+            questSystem.setSkullMeta((SkullMeta) questSystem.getPlayerHead().getItemMeta());
 
-        skullMeta.setDisplayName(ColorConvert.convertColorCode(playerHeadSection.getString(".item_name")));
-        skullMeta.setLore(playerHeadSection.getStringList(".item_description"));
+            questSystem.getSkullMeta().setDisplayName(ColorConvert.convertColorCode(playerHeadSection.getString(".item_name")));
+            questSystem.getSkullMeta().setLore(playerHeadSection.getStringList(".item_description"));
 
-        if (playerHeadSection.isInt(".custom_model_data"))
-            skullMeta.setCustomModelData(playerHeadSection.getInt(".custom_model_data"));
+            if (playerHeadSection.isInt(".custom_model_data"))
+                questSystem.getSkullMeta().setCustomModelData(playerHeadSection.getInt(".custom_model_data"));
 
-        if (playerHeadSection.isBoolean(".use_placeholders"))
-            usePlaceholders = playerHeadSection.getBoolean(".use_placeholders");
+            if (playerHeadSection.isBoolean(".use_placeholders"))
+                questSystem.setUsePlaceholders(playerHeadSection.getBoolean(".use_placeholders"));
+        });
     }
 
     /**
@@ -46,8 +45,8 @@ public class PlayerHead {
      */
     public static ItemStack getPlayerHead(Player player, QuestSystem questSystem) {
 
-        SkullMeta meta = PlayerHead.skullMeta.clone();
-        if (usePlaceholders) meta.setDisplayName(PAPIHook.getPlaceholders(player, meta.getDisplayName()));
+        SkullMeta meta = questSystem.getSkullMeta().clone();
+        if (questSystem.isUsePlaceholders()) meta.setDisplayName(PAPIHook.getPlaceholders(player, meta.getDisplayName()));
 
         meta.setOwningPlayer(player);
         List<String> itemDesc = meta.getLore();
@@ -56,7 +55,7 @@ public class PlayerHead {
 
             int index = itemDesc.indexOf(string);
 
-            if (usePlaceholders) {
+            if (questSystem.isUsePlaceholders()) {
                 string = PAPIHook.getPlaceholders(player, string);
             }
 
@@ -67,8 +66,8 @@ public class PlayerHead {
         }
 
         meta.setLore(itemDesc);
-        playerHead.setItemMeta(meta);
-        return playerHead;
+        questSystem.getPlayerHead().setItemMeta(meta);
+        return questSystem.getPlayerHead();
     }
 
 }
