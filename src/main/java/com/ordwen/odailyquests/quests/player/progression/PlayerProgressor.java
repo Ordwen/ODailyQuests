@@ -95,7 +95,7 @@ public class PlayerProgressor {
      * @param quest       quest to be progressed
      * @param amount      amount of progression
      */
-    private static void runProgress(QuestSystem questSystem, Player player, Progression progression, AbstractQuest quest, int amount) {
+    public static void runProgress(QuestSystem questSystem, Player player, Progression progression, AbstractQuest quest, int amount) {
         if (QuestLoaderUtils.isTimeToRenew(player, questSystem.getActiveQuests(), questSystem)) return;
 
         if (!quest.getRequiredWorlds().isEmpty() && !quest.getRequiredWorlds().contains(player.getWorld().getName())) {
