@@ -9,6 +9,7 @@ import com.sk89q.worldguard.LocalPlayer;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.internal.platform.WorldGuardPlatform;
+import com.sk89q.worldguard.protection.flags.Flags;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
 import org.bukkit.Bukkit;
@@ -85,7 +86,7 @@ public class Protection {
      * @param block  involved block.
      * @return true if the player can build, false otherwise.
      */
-    public static boolean canBuild(Player player, Block block, StateFlag flag) {
+    public static boolean canBuild(Player player, Block block, String flag) {
         if (!isTownyEnabled() && !isWorldGuardEnabled()) return true;
 
         return checkTowny(player, block) && checkWg(player, block, flag);
@@ -117,7 +118,7 @@ public class Protection {
      * @param block  the block
      * @return true if the player can build, false otherwise
      */
-    public static boolean checkWg(Player player, Block block, StateFlag flag) {
+    public static boolean checkWg(Player player, Block block, String flag) {
         if (!isWorldGuardEnabled()) return true;
 
         Debugger.addDebug("Protection: checkWg summoned.");
@@ -135,7 +136,13 @@ public class Protection {
         }
 
         final RegionQuery query = wgPlatform.getRegionContainer().createQuery();
-        final boolean canBuild = query.testBuild(adaptedLocation, localPlayer, flag);
+        final StateFlag stateFlag = switch (flag) {
+            case "BLOCK_BREAK" -> Flags.BLOCK_BREAK;
+            case "BLOCK_PLACE" -> Flags.BLOCK_PLACE;
+            default -> Flags.BUILD;
+        };
+
+        final boolean canBuild = query.testBuild(adaptedLocation, localPlayer, stateFlag);
         Debugger.addDebug("Protection: checkWg result: " + canBuild);
 
         return canBuild;

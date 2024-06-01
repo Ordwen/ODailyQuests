@@ -25,7 +25,7 @@ public class BreakQuest extends ItemQuest {
     public boolean canProgress(Event provided) {
         if (provided instanceof BlockBreakEvent event) {
             final Block block = event.getBlock();
-            if (!Protection.canBuild(event.getPlayer(), block)) return false;
+            if (!Protection.canBuild(event.getPlayer(), block, "BLOCK_BREAK")) return false;
 
             Material material = switch (block.getType()) {
                 case POTATOES -> Material.POTATO;

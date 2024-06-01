@@ -23,7 +23,7 @@ public class PlaceQuest extends ItemQuest {
     public boolean canProgress(Event provided) {
         if (provided instanceof BlockPlaceEvent event) {
             final Block block = event.getBlock();
-            if (!Protection.canBuild(event.getPlayer(), block)) return false;
+            if (!Protection.canBuild(event.getPlayer(), block, "BLOCK_PLACE")) return false;
 
             return super.isRequiredItem(new ItemStack(block.getType()));
         }
