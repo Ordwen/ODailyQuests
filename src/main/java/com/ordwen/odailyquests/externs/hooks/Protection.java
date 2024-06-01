@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.externs.hooks;
 
+import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import com.palmergames.bukkit.towny.object.TownyPermission;
 import com.palmergames.bukkit.towny.utils.PlayerCacheUtil;
@@ -8,7 +9,7 @@ import com.sk89q.worldguard.LocalPlayer;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.internal.platform.WorldGuardPlatform;
-import com.sk89q.worldguard.protection.flags.Flags;
+import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -84,10 +85,10 @@ public class Protection {
      * @param block  involved block.
      * @return true if the player can build, false otherwise.
      */
-    public static boolean canBuild(Player player, Block block) {
+    public static boolean canBuild(Player player, Block block, StateFlag flag) {
         if (!isTownyEnabled() && !isWorldGuardEnabled()) return true;
 
-        return checkTowny(player, block) && checkWg(player, block);
+        return checkTowny(player, block) && checkWg(player, block, flag);
     }
 
     /**
@@ -100,8 +101,13 @@ public class Protection {
     private static boolean checkTowny(Player player, Block block) {
         if (!isTownyEnabled()) return true;
 
+        Debugger.addDebug("Protection: checkTowny summoned.");
+
         final Location location = block.getLocation();
-        return PlayerCacheUtil.getCachePermission(player, location, block.getType(), TownyPermission.ActionType.BUILD);
+        final boolean canBuild = PlayerCacheUtil.getCachePermission(player, location, block.getType(), TownyPermission.ActionType.BUILD);
+        Debugger.addDebug("Protection: checkTowny result: " + canBuild);
+
+        return canBuild;
     }
 
     /**
@@ -111,8 +117,10 @@ public class Protection {
      * @param block  the block
      * @return true if the player can build, false otherwise
      */
-    public static boolean checkWg(Player player, Block block) {
+    public static boolean checkWg(Player player, Block block, StateFlag flag) {
         if (!isWorldGuardEnabled()) return true;
+
+        Debugger.addDebug("Protection: checkWg summoned.");
 
         final Location location = block.getLocation();
         if (location.getWorld() == null) return true;
@@ -121,9 +129,15 @@ public class Protection {
         final com.sk89q.worldedit.world.World adaptedWorld = BukkitAdapter.adapt(location.getWorld());
         final LocalPlayer localPlayer = WorldGuardPlugin.inst().wrapPlayer(player);
 
-        if (wgPlatform.getSessionManager().hasBypass(localPlayer, adaptedWorld)) return true;
+        if (wgPlatform.getSessionManager().hasBypass(localPlayer, adaptedWorld)) {
+            Debugger.addDebug("Protection: checkWg bypassed.");
+            return true;
+        }
 
         final RegionQuery query = wgPlatform.getRegionContainer().createQuery();
-        return query.testBuild(adaptedLocation, localPlayer, Flags.BUILD);
+        final boolean canBuild = query.testBuild(adaptedLocation, localPlayer, flag);
+        Debugger.addDebug("Protection: checkWg result: " + canBuild);
+
+        return canBuild;
     }
 }

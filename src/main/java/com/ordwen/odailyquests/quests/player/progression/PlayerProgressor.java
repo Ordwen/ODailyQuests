@@ -32,10 +32,12 @@ public class PlayerProgressor {
      */
     public void setPlayerQuestProgression(Event event, Player player, int amount, String questType) {
         if (DisabledWorlds.isWorldDisabled(player.getWorld().getName())) {
+            Debugger.addDebug("PlayerProgressor: setPlayerQuestProgression cancelled due to disabled world.");
             return;
         }
 
         if (QuestsManager.getActiveQuests().containsKey(player.getName())) {
+            Debugger.addDebug("Active quests contain " + player.getName() + ".");
             checkForProgress(event, player, amount, questType);
         }
     }

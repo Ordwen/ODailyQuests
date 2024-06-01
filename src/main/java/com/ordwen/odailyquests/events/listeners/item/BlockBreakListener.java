@@ -12,44 +12,45 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 public class BlockBreakListener extends PlayerProgressor implements Listener {
 
     @EventHandler
     public void onBlockBreakEvent(BlockBreakEvent event) {
-
-        if (event.isCancelled()) return;
+        Debugger.addDebug("BlockBreakListener: onBlockBreakEvent summoned.");
+        if (event.isCancelled()) {
+            Debugger.addDebug("BlockBreakListener: onBlockBreakEvent cancelled.");
+            return;
+        }
 
         final Player player = event.getPlayer();
         final Block block = event.getBlock();
 
         if (ItemsAdderEnabled.isEnabled()) {
             final CustomBlock customBlock = CustomBlock.byAlreadyPlaced(block);
-            if (customBlock != null) return;
+            if (customBlock != null) {
+                Debugger.addDebug("BlockBreakListener: onBlockBreakEvent cancelled due to ItemsAdder custom block.");
+                return;
+            }
         }
 
-        final AtomicBoolean valid = new AtomicBoolean(true);
+        boolean valid = true;
 
         if (Antiglitch.isStorePlacedBlocks()) {
             if (block.getBlockData() instanceof Ageable ageable) {
                 if (ageable.getAge() != ageable.getMaximumAge()) {
-                    valid.set(false);
+                    Debugger.addDebug("BlockBreakListener: onBlockBreakEvent cancelled due to ageable block.");
+                    valid = false;
                 }
-            }
-
-            else {
+            } else {
                 if (!block.getMetadata("odailyquests:placed").isEmpty()) {
-                    valid.set(false);
+                    Debugger.addDebug("BlockBreakListener: onBlockBreakEvent cancelled due to placed block.");
+                    valid = false;
                 }
             }
         }
 
-        if (valid.get()) {
-
-            Debugger.addDebug("=========================================================================================");
+        if (valid) {
             Debugger.addDebug("BlockBreakListener: onBlockBreakEvent summoned by " + player.getName() + " for " + block.getType() + ".");
-
             setPlayerQuestProgression(event, player, 1, "BREAK");
         }
     }
