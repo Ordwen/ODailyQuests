@@ -65,8 +65,6 @@ public class PlayerQuests {
             this.achievedQuestsByCategory.put(category, 1);
         }
 
-        System.out.println("PlayerQuests: " + this.achievedQuestsByCategory.get(category) + " quests achieved in category " + category + ".");
-
         /* check if the player have completed all quests from a category */
         if (Modes.getQuestsMode() == 2) {
             for (Map.Entry<String, Integer> entry : this.achievedQuestsByCategory.entrySet()) {
