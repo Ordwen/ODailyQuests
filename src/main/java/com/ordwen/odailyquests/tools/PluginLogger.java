@@ -30,11 +30,11 @@ public class PluginLogger {
      * @param parameter  the parameter that caused the error
      * @param reason     the reason of the error
      */
-    public static void configurationError(String fileName, int questIndex, String parameter, String reason) {
+    public static void configurationError(String fileName, String questIndex, String parameter, String reason) {
         PluginLogger.error("-----------------------------------");
         PluginLogger.error("Invalid quest configuration detected.");
         PluginLogger.error("File : " + fileName);
-        PluginLogger.error("Quest number : " + (questIndex + 1));
+        PluginLogger.error("Quest number : " + questIndex);
         PluginLogger.error("Reason : " + reason);
 
         if (parameter != null) {

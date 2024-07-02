@@ -74,7 +74,7 @@ dependencies {
     /* economy & points */
     compileOnly 'com.github.MilkBowl:VaultAPI:1.7'
     compileOnly 'org.black_ixx:playerpoints:3.2.2'
-    compileOnly name: 'CoinsEngine-2.0.5'
+    compileOnly name: 'CoinsEngine-2.3.3'
     compileOnly ('com.github.Realizedd:TokenManager:3.2.4') { transitive = false }
 
     /* npcs */

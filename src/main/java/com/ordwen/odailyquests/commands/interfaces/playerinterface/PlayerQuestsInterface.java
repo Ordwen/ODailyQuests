@@ -318,8 +318,7 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
 
         final ConfigurationSection itemsSection = interfaceConfig.getConfigurationSection("items");
         if (itemsSection == null) {
-            PluginLogger.error("An error occurred when loading the player interface.");
-            PluginLogger.error("The items section is not defined in the playerInterface file.");
+            PluginLogger.warn("The items section is not defined in the playerInterface file.");
             return;
         }
 

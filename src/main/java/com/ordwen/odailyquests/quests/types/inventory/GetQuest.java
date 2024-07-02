@@ -28,7 +28,7 @@ public class GetQuest extends ItemQuest {
     }
 
     @Override
-    public boolean loadParameters(ConfigurationSection section, String file, int index) {
+    public boolean loadParameters(ConfigurationSection section, String file, String index) {
         if (!super.loadParameters(section, file, index)) return false;
 
         /* apply Persistent Data Container to the menu item to differentiate GET quests */
@@ -38,7 +38,7 @@ public class GetQuest extends ItemQuest {
 
         final PersistentDataContainer container = meta.getPersistentDataContainer();
         container.set(new NamespacedKey(ODailyQuests.INSTANCE, "quest_type"), PersistentDataType.STRING, "get");
-        container.set(new NamespacedKey(ODailyQuests.INSTANCE, "quest_index"), PersistentDataType.INTEGER, index);
+        container.set(new NamespacedKey(ODailyQuests.INSTANCE, "quest_index"), PersistentDataType.STRING, index);
         container.set(new NamespacedKey(ODailyQuests.INSTANCE, "file_name"), PersistentDataType.STRING, file);
 
         menuItem.setItemMeta(meta);

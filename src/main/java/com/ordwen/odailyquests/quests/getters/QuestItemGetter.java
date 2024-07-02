@@ -26,7 +26,7 @@ public class QuestItemGetter extends ItemGetter implements IQuestItem {
      * @return the ItemStack or null if the item cannot be loaded
      */
     @Override
-    public ItemStack getItem(String material, String fileName, int questIndex, String parameter) {
+    public ItemStack getItem(String material, String fileName, String questIndex, String parameter) {
         final String[] split = material.split(":", 2);
         return switch (split[0]) {
             case "oraxen" -> this.getOraxenItem(split[1], fileName, questIndex, parameter);
@@ -48,7 +48,7 @@ public class QuestItemGetter extends ItemGetter implements IQuestItem {
      * @return the ItemStack or null if the item cannot be loaded
      */
     @Override
-    public ItemStack getOraxenItem(String namespace, String fileName, int questIndex, String parameter) {
+    public ItemStack getOraxenItem(String namespace, String fileName, String questIndex, String parameter) {
         final Pair<String, ItemStack> result = super.getOraxenItem(namespace);
         if (!result.first().isEmpty()) {
             PluginLogger.configurationError(fileName, questIndex, parameter, result.first());
@@ -68,7 +68,7 @@ public class QuestItemGetter extends ItemGetter implements IQuestItem {
      * @return the ItemStack or null if the item cannot be loaded
      */
     @Override
-    public ItemStack getItemsAdderItem(String namespace, String fileName, int questIndex, String parameter) {
+    public ItemStack getItemsAdderItem(String namespace, String fileName, String questIndex, String parameter) {
         final Pair<String, ItemStack> result = super.getItemsAdderItem(namespace);
         if (!result.first().isEmpty()) {
             PluginLogger.configurationError(fileName, questIndex, parameter, result.first());
@@ -88,7 +88,7 @@ public class QuestItemGetter extends ItemGetter implements IQuestItem {
      * @return the ItemStack or null if the item cannot be loaded
      */
     @Override
-    public ItemStack getMMOItemsItem(String namespace, String fileName, int questIndex, String parameter) {
+    public ItemStack getMMOItemsItem(String namespace, String fileName, String questIndex, String parameter) {
         final Pair<String, ItemStack> result = super.getMMOItemsItem(namespace);
         if (!result.first().isEmpty()) {
             PluginLogger.configurationError(fileName, questIndex, parameter, result.first());
@@ -108,7 +108,7 @@ public class QuestItemGetter extends ItemGetter implements IQuestItem {
      * @return the ItemStack or null if the item cannot be loaded
      */
     @Override
-    public ItemStack getCustomModelDataItem(String customModelData, String fileName, int questIndex, String parameter) {
+    public ItemStack getCustomModelDataItem(String customModelData, String fileName, String questIndex, String parameter) {
         final String[] split = customModelData.split(":");
         if (split.length != 2) {
             PluginLogger.configurationError(fileName, questIndex, parameter, "You need to provide the item and the custom model data.");
@@ -149,7 +149,7 @@ public class QuestItemGetter extends ItemGetter implements IQuestItem {
      * @return the ItemStack or null if the item cannot be loaded
      */
     @Override
-    public ItemStack getCustomHead(String texture, String fileName, int questIndex, String parameter) {
+    public ItemStack getCustomHead(String texture, String fileName, String questIndex, String parameter) {
         final Pair<String, ItemStack> result = super.getCustomHead(texture);
         if (!result.first().isEmpty()) {
             PluginLogger.configurationError(fileName, questIndex, parameter, result.first());
@@ -167,7 +167,7 @@ public class QuestItemGetter extends ItemGetter implements IQuestItem {
      * @param index    quest index
      * @return the custom item
      */
-    public ItemStack loadCustomItem(ConfigurationSection provided, String file, int index) {
+    public ItemStack loadCustomItem(ConfigurationSection provided, String file, String index) {
         final ConfigurationSection section = provided.getConfigurationSection(".custom_item");
         if (section == null) {
             PluginLogger.configurationError(file, index, null, "The custom item is not defined.");
@@ -209,7 +209,7 @@ public class QuestItemGetter extends ItemGetter implements IQuestItem {
      * @param questIndex the quest index
      * @return the item stack
      */
-    public ItemStack getItemStackFromMaterial(String material, String fileName, int questIndex, String parameter) {
+    public ItemStack getItemStackFromMaterial(String material, String fileName, String questIndex, String parameter) {
         final ItemStack requiredItem;
 
         if (material.contains(":")) {
@@ -239,7 +239,7 @@ public class QuestItemGetter extends ItemGetter implements IQuestItem {
      * @param requiredItem current required item
      * @return potion meta
      */
-    public PotionMeta loadPotionItem(ConfigurationSection section, String fileName, int questIndex, ItemStack requiredItem) {
+    public PotionMeta loadPotionItem(ConfigurationSection section, String fileName, String questIndex, ItemStack requiredItem) {
         PotionMeta potionMeta = null;
 
         PotionType potionType;

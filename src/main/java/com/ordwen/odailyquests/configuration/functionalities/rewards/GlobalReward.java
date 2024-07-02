@@ -50,7 +50,7 @@ public class GlobalReward extends RewardLoader {
                 globalReward = new Reward(rewardType, globalRewardSection.getInt(".amount"));
             }
 
-            globalReward = new RewardLoader().getRewardFromSection(globalRewardSection, "config.yml", -1);
+            globalReward = new RewardLoader().getRewardFromSection(globalRewardSection, "config.yml", null);
 
             PluginLogger.fine("Global reward successfully loaded.");
         } else PluginLogger.fine("Global reward is disabled.");

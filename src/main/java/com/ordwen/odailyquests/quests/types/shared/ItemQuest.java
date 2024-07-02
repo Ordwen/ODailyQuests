@@ -53,7 +53,7 @@ public abstract class ItemQuest extends AbstractQuest {
     }
 
     @Override
-    public boolean loadParameters(ConfigurationSection section, String file, int index) {
+    public boolean loadParameters(ConfigurationSection section, String file, String index) {
         if (!section.contains(TYPE_PATH)) return true;
         ignoreNbt = section.getBoolean(".ignore_nbt");
 
@@ -76,7 +76,7 @@ public abstract class ItemQuest extends AbstractQuest {
      * @param itemGetter          the item getter.
      * @return true if the required items are loaded, false otherwise.
      */
-    private boolean loadRequiredItems(ConfigurationSection section, String file, int index, List<String> requiredItemStrings, QuestItemGetter itemGetter) {
+    private boolean loadRequiredItems(ConfigurationSection section, String file, String index, List<String> requiredItemStrings, QuestItemGetter itemGetter) {
         for (String type : requiredItemStrings) {
             if (type.equalsIgnoreCase("CUSTOM_ITEM")) {
                 final ItemStack item = itemGetter.loadCustomItem(section, file, index);

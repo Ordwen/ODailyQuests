@@ -30,7 +30,7 @@ public class QuestsLoader extends QuestItemGetter {
      * @param questIndex   the quest index in the file.
      * @return the reward of the quest.
      */
-    private Reward createReward(ConfigurationSection questSection, String fileName, int questIndex) {
+    private Reward createReward(ConfigurationSection questSection, String fileName, String questIndex) {
         if (!questSection.isConfigurationSection(".reward")) return new Reward(RewardType.NONE, 0);
         final ConfigurationSection rewardSection = questSection.getConfigurationSection(".reward");
 
@@ -45,7 +45,7 @@ public class QuestsLoader extends QuestItemGetter {
      * @param questIndex   the quest index in the file.
      * @return the global quest.
      */
-    private BasicQuest createBasicQuest(ConfigurationSection questSection, String fileName, int questIndex) {
+    private BasicQuest createBasicQuest(ConfigurationSection questSection, String fileName, int questIndex, String fileIndex) {
 
         /* quest name */
         String questName = ColorConvert.convertColorCode(questSection.getString(".name"));
@@ -60,7 +60,7 @@ public class QuestsLoader extends QuestItemGetter {
         /* quest type */
         final String questType = questSection.getString(".quest_type");
         if (!questTypeRegistry.containsKey(questType)) {
-            PluginLogger.configurationError(fileName, questIndex, "quest_type", questType + " is not a valid quest type.");
+            PluginLogger.configurationError(fileName, fileIndex, "quest_type", questType + " is not a valid quest type.");
             return null;
         }
 
@@ -73,24 +73,24 @@ public class QuestsLoader extends QuestItemGetter {
 
         String presumedItem = questSection.getString(".menu_item");
         if (presumedItem == null) {
-            PluginLogger.configurationError(fileName, questIndex, "menu_item", "The menu item is not defined.");
+            PluginLogger.configurationError(fileName, fileIndex, "menu_item", "The menu item is not defined.");
             return null;
         }
 
-        final ItemStack menuItem = getItemStackFromMaterial(presumedItem, fileName, questIndex, "menu_item");
+        final ItemStack menuItem = getItemStackFromMaterial(presumedItem, fileName, fileIndex, "menu_item");
         if (menuItem == null) return null;
 
         final ItemStack achievedItem;
         if (questSection.isString("achieved_menu_item")) {
             final String presumedAchievedItem = questSection.getString("achieved_menu_item");
-            achievedItem = getItemStackFromMaterial(presumedAchievedItem, fileName, questIndex, "achieved_menu_item");
+            achievedItem = getItemStackFromMaterial(presumedAchievedItem, fileName, fileIndex, "achieved_menu_item");
             if (achievedItem == null) return null;
         } else {
             achievedItem = menuItem;
         }
 
         /* reward */
-        final Reward reward = createReward(questSection, fileName, questIndex);
+        final Reward reward = createReward(questSection, fileName, fileIndex);
 
         return new BasicQuest(questIndex, questName, fileName, questDesc, questType, menuItem,
                 achievedItem, requiredAmount, reward, requiredWorlds, usePlaceholders);
@@ -104,7 +104,6 @@ public class QuestsLoader extends QuestItemGetter {
      * @param fileName file name for PluginLogger.
      */
     public void loadQuests(FileConfiguration file, List<AbstractQuest> quests, String fileName) {
-
         final ConfigurationSection allQuestsSection = file.getConfigurationSection("quests");
         if (allQuestsSection == null) {
             PluginLogger.error("Impossible to load " + fileName + " : there is no quests in " + fileName + " file !");
@@ -112,21 +111,21 @@ public class QuestsLoader extends QuestItemGetter {
         }
 
         int questIndex = 0;
-        for (String fileQuest : allQuestsSection.getKeys(false)) {
 
+        for (String fileQuest : allQuestsSection.getKeys(false)) {
             final ConfigurationSection questSection = allQuestsSection.getConfigurationSection(fileQuest);
             if (questSection == null) continue;
 
-            final BasicQuest base = createBasicQuest(questSection, fileName, questIndex);
+            final BasicQuest base = createBasicQuest(questSection, fileName, questIndex, fileQuest);
             if (base == null) continue;
 
             final String questType = base.getQuestType();
-            registerQuest(quests, fileName, questType, base, questSection, questIndex);
-
-            questIndex++;
+             if (registerQuest(quests, fileName, questType, base, questSection, fileQuest)) {
+                 questIndex++;
+             }
         }
 
-        PluginLogger.info(fileName + " array successfully loaded (" + quests.size() + ").");
+        PluginLogger.info(quests.size() + " quests loaded from " + fileName + " file.");
     }
 
     /**
@@ -139,7 +138,7 @@ public class QuestsLoader extends QuestItemGetter {
      * @param questSection current quest section.
      * @param questIndex   quest index in the file.
      */
-    private void registerQuest(List<AbstractQuest> quests, String fileName, String questType, BasicQuest base, ConfigurationSection questSection, int questIndex) {
+    private boolean registerQuest(List<AbstractQuest> quests, String fileName, String questType, BasicQuest base, ConfigurationSection questSection, String questIndex) {
         final Class<? extends AbstractQuest> questClass = questTypeRegistry.get(questType);
 
         AbstractQuest questInstance = null;
@@ -150,8 +149,12 @@ public class QuestsLoader extends QuestItemGetter {
             PluginLogger.error("Error while creating a new instance of " + questType + " quest.");
             PluginLogger.error(e.getMessage());
         }
+
         if (questInstance != null && questInstance.loadParameters(questSection, fileName, questIndex)) {
             quests.add(questInstance);
+            return true;
         }
+
+        return false;
     }
 }

@@ -37,7 +37,7 @@ public class LocationQuest extends AbstractQuest {
     }
 
     @Override
-    public boolean loadParameters(ConfigurationSection section, String file, int index) {
+    public boolean loadParameters(ConfigurationSection section, String file, String index) {
         final ConfigurationSection locationSection = section.getConfigurationSection(LOCATION_PATH);
         if (locationSection == null) {
             PluginLogger.configurationError(file, index, LOCATION_PATH, "You need to specify a location.");
@@ -76,7 +76,7 @@ public class LocationQuest extends AbstractQuest {
 
         final PersistentDataContainer container = meta.getPersistentDataContainer();
         container.set(new NamespacedKey(ODailyQuests.INSTANCE, "quest_type"), PersistentDataType.STRING, LOCATION_PATH);
-        container.set(new NamespacedKey(ODailyQuests.INSTANCE, "quest_index"), PersistentDataType.INTEGER, index);
+        container.set(new NamespacedKey(ODailyQuests.INSTANCE, "quest_index"), PersistentDataType.STRING, index);
         container.set(new NamespacedKey(ODailyQuests.INSTANCE, "file_name"), PersistentDataType.STRING, file);
 
         menuItem.setItemMeta(meta);

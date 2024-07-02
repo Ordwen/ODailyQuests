@@ -6,7 +6,6 @@ import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.configuration.integrations.NPCNames;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.enums.QuestsPermissions;
-import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -18,9 +17,8 @@ public class CitizensHook implements Listener {
     /**
      * Setup CitizensAPI.
      */
-    public static boolean setupCitizens() {
-        Citizens citizensAPI = (Citizens) Bukkit.getServer().getPluginManager().getPlugin("Citizens");
-        return citizensAPI != null;
+    public static boolean isCitizensEnabled() {
+        return Bukkit.getPluginManager().isPluginEnabled("Citizens");
     }
 
     @EventHandler

@@ -26,7 +26,7 @@ public class VillagerQuest extends ItemQuest {
     }
 
     @Override
-    public boolean loadParameters(ConfigurationSection section, String file, int index) {
+    public boolean loadParameters(ConfigurationSection section, String file, String index) {
         if (!super.loadParameters(section, file, index)) return false;
 
         /* check if the item have to be obtained by a villager */

@@ -25,7 +25,7 @@ public class NuVotifierQuest extends AbstractQuest {
     }
 
     @Override
-    public boolean loadParameters(ConfigurationSection section, String file, int index) {
+    public boolean loadParameters(ConfigurationSection section, String file, String index) {
         if (!Bukkit.getPluginManager().isPluginEnabled("Votifier")) {
             PluginLogger.configurationError(file, index, null, "You must have Votifier installed to use this quest.");
             return false;

@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.events.listeners.entity.custom.mobs;
 
 
+import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.integrations.SharedMobs;
 import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
 import io.lumine.mythic.api.adapters.AbstractEntity;
@@ -18,6 +19,12 @@ public class MythicMobDeathListener extends PlayerProgressor implements Listener
     public void onMythicMobsDeathEvent(MythicMobDeathEvent event) {
         if (SharedMobs.isEnabled()) {
             final ActiveMob.ThreatTable threatTable = event.getMob().getThreatTable();
+
+            if (threatTable == null) {
+                Debugger.addDebug("Threat table is null for mob: " + event.getMob().getDisplayName());
+                return;
+            }
+
             final Set<AbstractEntity> targets = threatTable.getAllThreatTargets();
 
             for (AbstractEntity target : targets) {

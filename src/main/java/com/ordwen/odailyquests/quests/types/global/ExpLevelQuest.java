@@ -23,7 +23,7 @@ public class ExpLevelQuest extends AbstractQuest {
     }
 
     @Override
-    public boolean loadParameters(ConfigurationSection section, String file, int index) {
+    public boolean loadParameters(ConfigurationSection section, String file, String index) {
         return true;
     }
 }

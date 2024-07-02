@@ -21,7 +21,7 @@ public abstract class CustomMobQuest extends AbstractQuest {
     }
 
     @Override
-    public boolean loadParameters(ConfigurationSection section, String file, int index) {
+    public boolean loadParameters(ConfigurationSection section, String file, String index) {
         if (section.isString(NAME_PATH)) {
             entityNames.add(section.getString(NAME_PATH));
         } else {

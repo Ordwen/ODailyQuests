@@ -116,7 +116,7 @@ public class IntegrationsManager {
      * Hook - Citizens
      */
     private void loadCitizens() {
-        if (CitizensHook.setupCitizens()) {
+        if (CitizensHook.isCitizensEnabled()) {
             getServer().getPluginManager().registerEvents(new CitizensHook(), oDailyQuests);
             PluginLogger.info("Citizens successfully hooked.");
         }

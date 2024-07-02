@@ -40,7 +40,7 @@ public class PyroFishQuest extends AbstractQuest {
     }
 
     @Override
-    public boolean loadParameters(ConfigurationSection section, String file, int index) {
+    public boolean loadParameters(ConfigurationSection section, String file, String index) {
         expectedFish.clear();
 
         if (!Bukkit.getPluginManager().isPluginEnabled("PyroFishingPro")) {
@@ -68,7 +68,7 @@ public class PyroFishQuest extends AbstractQuest {
      * @param index the index of the quest
      * @return true if the format is correct
      */
-    private boolean checkFormat(String fish, String file, int index) {
+    private boolean checkFormat(String fish, String file, String index) {
         final String[] split = fish.split(":");
         if (split.length != 2) {
             PluginLogger.configurationError(file, index, "required", "Invalid fish format: " + fish);

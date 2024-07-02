@@ -21,7 +21,7 @@ public class ShearQuest extends EntityQuest {
     }
 
     @Override
-    public boolean loadParameters(ConfigurationSection section, String file, int index) {
+    public boolean loadParameters(ConfigurationSection section, String file, String index) {
         if (!super.loadParameters(section, file, index)) return false;
         dyeColor = getDyeColor(section, file, index);
 
@@ -52,7 +52,7 @@ public class ShearQuest extends EntityQuest {
      * @param index   the quest index
      * @return the dye color, or null if the dye color is invalid/missing
      */
-    private DyeColor getDyeColor(ConfigurationSection section, String file, int index) {
+    private DyeColor getDyeColor(ConfigurationSection section, String file, String index) {
         final String expected = section.getString(".sheep_color");
         if (expected == null) return null;
 

@@ -11,7 +11,7 @@ public class RewardLoader {
      * @param section configuration section.
      * @return reward.
      */
-    public Reward getRewardFromSection(ConfigurationSection section, String fileName, int questIndex) {
+    public Reward getRewardFromSection(ConfigurationSection section, String fileName, String questIndex) {
 
         RewardType rewardType;
         try {
@@ -49,7 +49,7 @@ public class RewardLoader {
      * @param reason     the reason of the error
      * @param questIndex the index of the quest in the file
      */
-    public void configurationError(String fileName, String parameter, String reason, int questIndex) {
+    public void configurationError(String fileName, String parameter, String reason, String questIndex) {
         PluginLogger.error("-----------------------------------");
         PluginLogger.error("Invalid quest configuration detected.");
         PluginLogger.error("File : " + fileName);
@@ -59,7 +59,7 @@ public class RewardLoader {
             PluginLogger.error("Parameter : " + parameter);
         }
 
-        if (questIndex != -1) {
+        if (questIndex != null) {
             PluginLogger.error("Quest index : " + questIndex);
         }
 

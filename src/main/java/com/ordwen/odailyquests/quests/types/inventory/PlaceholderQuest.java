@@ -35,7 +35,7 @@ public class PlaceholderQuest extends AbstractQuest {
     }
 
     @Override
-    public boolean loadParameters(ConfigurationSection section, String file, int index) {
+    public boolean loadParameters(ConfigurationSection section, String file, String index) {
         final ConfigurationSection placeholderSection = section.getConfigurationSection(".placeholder");
         if (placeholderSection == null) {
             PluginLogger.configurationError(file, index, "placeholder", "The placeholder section is missing.");
@@ -74,7 +74,7 @@ public class PlaceholderQuest extends AbstractQuest {
 
         final PersistentDataContainer container = meta.getPersistentDataContainer();
         container.set(new NamespacedKey(ODailyQuests.INSTANCE, "quest_type"), PersistentDataType.STRING, "placeholder");
-        container.set(new NamespacedKey(ODailyQuests.INSTANCE, "quest_index"), PersistentDataType.INTEGER, index);
+        container.set(new NamespacedKey(ODailyQuests.INSTANCE, "quest_index"), PersistentDataType.STRING, index);
         container.set(new NamespacedKey(ODailyQuests.INSTANCE, "file_name"), PersistentDataType.STRING, file);
 
         return true;

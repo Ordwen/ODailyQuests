@@ -27,7 +27,7 @@ public class EliteMobsQuest extends CustomMobQuest {
     }
 
     @Override
-    public boolean loadParameters(ConfigurationSection section, String file, int index) {
+    public boolean loadParameters(ConfigurationSection section, String file, String index) {
         if (!Bukkit.getServer().getPluginManager().isPluginEnabled("EliteMobs")) {
             PluginLogger.configurationError(file, index, null, "EliteMobs is not enabled on the server.");
             return false;

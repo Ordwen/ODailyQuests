@@ -22,7 +22,7 @@ public abstract class EntityQuest extends AbstractQuest {
     }
 
     @Override
-    public boolean loadParameters(ConfigurationSection section, String file, int index) {
+    public boolean loadParameters(ConfigurationSection section, String file, String index) {
         if (!section.contains(TYPE_PATH)) return true;
 
         if (section.isString(TYPE_PATH)) {
@@ -48,7 +48,7 @@ public abstract class EntityQuest extends AbstractQuest {
      * @param value the value
      * @return the entity type, or null if the entity type is invalid
      */
-    private EntityType getEntityType(String file, int index, String value) {
+    private EntityType getEntityType(String file, String index, String value) {
         try {
             return EntityType.valueOf(value);
         } catch (Exception e) {

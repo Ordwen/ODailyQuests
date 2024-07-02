@@ -52,7 +52,7 @@ public class CategoriesRewards {
                 return;
             }
 
-            easyReward = rewardLoader.getRewardFromSection(easyRewardSection, "config.yml", -1);
+            easyReward = rewardLoader.getRewardFromSection(easyRewardSection, "config.yml", null);
         }
 
         if (isMediumRewardEnabled) {
@@ -63,7 +63,7 @@ public class CategoriesRewards {
                 return;
             }
 
-            mediumReward = rewardLoader.getRewardFromSection(mediumRewardSection, "config.yml", -1);
+            mediumReward = rewardLoader.getRewardFromSection(mediumRewardSection, "config.yml", null);
         }
 
         if (isHardRewardEnabled) {
@@ -74,7 +74,7 @@ public class CategoriesRewards {
                 return;
             }
 
-            hardReward = rewardLoader.getRewardFromSection(hardRewardSection, "config.yml", -1);
+            hardReward = rewardLoader.getRewardFromSection(hardRewardSection, "config.yml", null);
         }
     }
 
