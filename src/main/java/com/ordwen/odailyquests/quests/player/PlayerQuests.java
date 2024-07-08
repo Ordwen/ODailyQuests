@@ -36,6 +36,24 @@ public class PlayerQuests {
         this.playerQuests = playerQuests;
         this.achievedQuests = 0;
         this.totalAchievedQuests = 0;
+
+        setAchievedQuestsByCategory();
+    }
+
+    /**
+     * Set the number of achieved quests by category when the player logs in.
+     */
+    private void setAchievedQuestsByCategory() {
+        for (Map.Entry<AbstractQuest, Progression> entry : this.playerQuests.entrySet()) {
+            if (entry.getValue().isAchieved()) {
+                final String category = entry.getKey().getCategoryName();
+                if (this.achievedQuestsByCategory.containsKey(category)) {
+                    this.achievedQuestsByCategory.put(category, this.achievedQuestsByCategory.get(category) + 1);
+                } else {
+                    this.achievedQuestsByCategory.put(category, 1);
+                }
+            }
+        }
     }
 
     /**
@@ -52,7 +70,7 @@ public class PlayerQuests {
      *
      * @param player player who achieved a quest.
      */
-    public void increaseAchievedQuests(String category, Player player) {
+    public void increaseCategoryAchievedQuests(String category, Player player) {
 
         Debugger.addDebug("PlayerQuests: increaseAchievedQuests summoned by " + player.getName() + " for category " + category + ".");
 
@@ -64,6 +82,8 @@ public class PlayerQuests {
         } else {
             this.achievedQuestsByCategory.put(category, 1);
         }
+
+        Debugger.addDebug("PlayerQuests: increaseAchievedQuests: " + player.getName() + " has completed " + this.achievedQuestsByCategory.get(category) + " quests in category " + category + ".");
 
         /* check if the player have completed all quests from a category */
         if (Modes.getQuestsMode() == 2) {
