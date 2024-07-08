@@ -36,6 +36,7 @@ public class BlockBreakListener extends PlayerProgressor implements Listener {
         boolean valid = true;
 
         if (Antiglitch.isStorePlacedBlocks()) {
+            Debugger.addDebug("BlockBreakListener: onBlockBreakEvent checking for placed blocks.");
             if (block.getBlockData() instanceof Ageable ageable) {
                 if (ageable.getAge() != ageable.getMaximumAge()) {
                     Debugger.addDebug("BlockBreakListener: onBlockBreakEvent cancelled due to ageable block.");
@@ -47,6 +48,7 @@ public class BlockBreakListener extends PlayerProgressor implements Listener {
                     valid = false;
                 }
             }
+            Debugger.addDebug("BlockBreakListener: onBlockBreakEvent placed block check complete.");
         }
 
         if (valid) {

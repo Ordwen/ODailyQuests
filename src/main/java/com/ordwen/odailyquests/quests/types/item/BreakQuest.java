@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.quests.types.item;
 
+import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.externs.hooks.Protection;
 import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
 import com.ordwen.odailyquests.quests.types.shared.ItemQuest;
@@ -27,6 +28,8 @@ public class BreakQuest extends ItemQuest {
             final Block block = event.getBlock();
             if (!Protection.canBuild(event.getPlayer(), block, "BLOCK_BREAK")) return false;
 
+            Debugger.addDebug("BlockBreakListener: onBlockBreakEvent summoned by " + event.getPlayer().getName() + " for " + block.getType() + ".");
+
             Material material = switch (block.getType()) {
                 case POTATOES -> Material.POTATO;
                 case CARROTS -> Material.CARROT;
@@ -36,6 +39,13 @@ public class BreakQuest extends ItemQuest {
                 default -> block.getType();
             };
 
+            if (!material.isItem()) {
+                Debugger.addDebug("BreakQuest: canProgress material is not an item: " + material);
+                Debugger.addDebug("BreakQuest: cancelling event.");
+                return false;
+            }
+
+            Debugger.addDebug("BreakQuest: canProgress material: " + material);
             return super.isRequiredItem(new ItemStack(material));
         }
 

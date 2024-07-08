@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.quests.types.item;
 
+import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.externs.hooks.Protection;
 import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
 import com.ordwen.odailyquests.quests.types.shared.ItemQuest;
@@ -25,7 +26,10 @@ public class PlaceQuest extends ItemQuest {
             final Block block = event.getBlock();
             if (!Protection.canBuild(event.getPlayer(), block, "BLOCK_PLACE")) return false;
 
-            return super.isRequiredItem(new ItemStack(block.getType()));
+            final ItemStack placedItem = event.getItemInHand();
+
+            Debugger.addDebug("BlockPlaceListener: onBlockPlaceEvent summoned by " + event.getPlayer().getName() + " for " + placedItem.getType() + ".");
+            return super.isRequiredItem(new ItemStack(placedItem.getType()));
         }
 
         return false;

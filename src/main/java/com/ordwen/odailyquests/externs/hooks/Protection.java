@@ -87,7 +87,11 @@ public class Protection {
      * @return true if the player can build, false otherwise.
      */
     public static boolean canBuild(Player player, Block block, String flag) {
-        if (!isTownyEnabled() && !isWorldGuardEnabled()) return true;
+        Debugger.addDebug("Protection: canBuild summoned.");
+        if (!isTownyEnabled() && !isWorldGuardEnabled()) {
+            Debugger.addDebug("Protection: canBuild no hooks enabled.");
+            return true;
+        }
 
         return checkTowny(player, block) && checkWg(player, block, flag);
     }

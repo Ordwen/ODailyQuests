@@ -2,6 +2,7 @@ package com.ordwen.odailyquests.events.listeners.item;
 
 import com.ordwen.odailyquests.configuration.essentials.Antiglitch;
 
+import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
 import com.ordwen.odailyquests.quests.types.item.FarmingQuest;
 import org.bukkit.Material;
@@ -23,8 +24,12 @@ public class BlockDropItemListener extends PlayerProgressor implements Listener 
 
     @EventHandler
     public void onBlockDropItem(BlockDropItemEvent event) {
+        Debugger.addDebug("BlockDropItemListener: onBlockDropItemEvent summoned.");
 
-        if (event.isCancelled()) return;
+        if (event.isCancelled()) {
+            Debugger.addDebug("BlockDropItemListener: onBlockDropItemEvent is cancelled.");
+            return;
+        }
 
         final Player player = event.getPlayer();
         final BlockData data = event.getBlockState().getBlockData();
@@ -35,7 +40,9 @@ public class BlockDropItemListener extends PlayerProgressor implements Listener 
 
         // check if the dropped item is a crop
         if (data instanceof Ageable ageable) {
+            Debugger.addDebug("BlockDropItemListener: onBlockDropItemEvent ageable block: " + dataMaterial + ".");
             if (ageable.getAge() == ageable.getMaximumAge()) {
+                Debugger.addDebug("BlockDropItemListener: onBlockDropItemEvent ageable block is mature.");
                 handleDrops(event, player, drops);
                 return;
             }
@@ -45,6 +52,7 @@ public class BlockDropItemListener extends PlayerProgressor implements Listener 
         if (dataMaterial.isBlock()) {
             if (Antiglitch.isStorePlacedBlocks()) {
                 if (!event.getBlock().getMetadata("odailyquests:placed").isEmpty()) {
+                    Debugger.addDebug("BlockDropItemListener: onBlockDropItemEvent cancelled due to placed block.");
                     return;
                 }
             }
@@ -55,9 +63,10 @@ public class BlockDropItemListener extends PlayerProgressor implements Listener 
         // check if the dropped item is a block that can be posed
         if (dataMaterial.isBlock()) {
             if (Antiglitch.isStoreBrokenBlocks()) {
-
+                Debugger.addDebug("BlockDropItemListener: onBlockDropItemEvent storing broken block.");
                 for (Item item : event.getItems()) {
                     final ItemStack drop = item.getItemStack();
+                    Debugger.addDebug("BlockDropItemListener: onBlockDropItemEvent storing broken block: " + drop.getType());
                     final ItemMeta dropMeta = drop.getItemMeta();
                     if (dropMeta == null) continue;
 
@@ -77,7 +86,9 @@ public class BlockDropItemListener extends PlayerProgressor implements Listener 
      * @param drops  list of dropped items
      */
     private void handleDrops(BlockDropItemEvent event, Player player, List<Item> drops) {
+        Debugger.addDebug("BlockDropItemListener: handleDrops summoned.");
         for (Item item : drops) {
+            Debugger.addDebug("BlockDropItemListener: handling drop: " + item.getItemStack().getType() + ".");
             final ItemStack droppedItem = item.getItemStack();
             final Material droppedMaterial = droppedItem.getType();
             FarmingQuest.setCurrent(new ItemStack(droppedMaterial));

@@ -28,6 +28,7 @@ public class BlockPlaceListener extends PlayerProgressor implements Listener {
         boolean valid = true;
 
         if (Antiglitch.isStoreBrokenBlocks()) {
+            Debugger.addDebug("BlockPlaceListener: onBlockPlaceEvent checking for broken blocks.");
             final ItemStack placedItem = player.getInventory().getItemInMainHand();
             final ItemMeta placedItemMeta = placedItem.getItemMeta();
 
@@ -36,19 +37,20 @@ public class BlockPlaceListener extends PlayerProgressor implements Listener {
                 final String placedItemKey = pdc.get(Antiglitch.BROKEN_KEY, PersistentDataType.STRING);
 
                 if (placedItemKey != null && placedItemKey.equals(player.getUniqueId().toString())) {
+                    Debugger.addDebug("BlockPlaceListener: onBlockPlaceEvent cancelled due to broken block.");
                     valid = false;
                 }
             }
+            Debugger.addDebug("BlockPlaceListener: onBlockPlaceEvent broken block check complete.");
         }
 
         if (valid) {
-            Debugger.addDebug("=========================================================================================");
             Debugger.addDebug("BlockPlaceListener: onBlockPlaceEvent summoned by " + player.getName() + " for " + block.getType() + ".");
-
             setPlayerQuestProgression(event, player, 1, "PLACE");
         }
 
         if (Antiglitch.isStorePlacedBlocks()) {
+            Debugger.addDebug("BlockPlaceListener: onBlockPlaceEvent storing placed block.");
             block.setMetadata("odailyquests:placed", new FixedMetadataValue(ODailyQuests.INSTANCE, player.getUniqueId().toString()));
         }
     }
