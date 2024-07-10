@@ -80,6 +80,12 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
         if (!papiItems.isEmpty()) {
             for (Integer slot : papiItems.keySet()) {
 
+                if (slot < 0 || slot >= size) {
+                    PluginLogger.error("An error occurred when loading the player interface.");
+                    PluginLogger.error("A placeholder at slot " + slot + " is out of bounds.");
+                    continue;
+                }
+
                 final ItemStack itemCopy = papiItems.get(slot).clone();
                 final ItemMeta meta = itemCopy.getItemMeta();
                 final List<String> lore = meta.getLore();
@@ -102,7 +108,12 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
         if (isPlayerHeadEnabled) {
             final ItemStack playerHead = PlayerHead.getPlayerHead(player);
             for (int slot : slotsPlayerHead) {
-                playerQuestsInventoryIndividual.setItem(slot, playerHead);
+                if (slot > 0 && slot <= size) {
+                    playerQuestsInventoryIndividual.setItem(slot, playerHead);
+                } else {
+                    PluginLogger.error("An error occurred when loading the player interface.");
+                    PluginLogger.error("The slot defined for the player head is out of bounds.");
+                }
             }
         }
 
@@ -188,7 +199,12 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
 
             if (slotQuests.get(i) != null) {
                 for (int slot : slotQuests.get(i)) {
+                    if (slot > 0 && slot <= size) {
                     playerQuestsInventoryIndividual.setItem(slot - 1, itemStack);
+                    } else {
+                        PluginLogger.error("An error occurred when loading the player interface.");
+                        PluginLogger.error("The slot defined for the quest number " + (i + 1) + " is out of bounds.");
+                    }
                 }
             } else {
                 PluginLogger.error("An error occurred when loading the player interface.");
@@ -472,7 +488,13 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
             }
 
             for (int slot : slots) {
-                playerQuestsInventoryBase.setItem(slot - 1, item);
+                if (slot > 0 && slot <= size) {
+                    playerQuestsInventoryBase.setItem(slot - 1, item);
+                }
+                else {
+                    PluginLogger.error("An error occurred when loading the player interface.");
+                    PluginLogger.error("The slot defined for the item " + element + " is out of bounds.");
+                }
             }
         }
     }
