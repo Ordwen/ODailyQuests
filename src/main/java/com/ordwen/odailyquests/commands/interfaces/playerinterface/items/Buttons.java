@@ -4,6 +4,7 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.tools.ColorConvert;
+import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -75,7 +76,7 @@ public class Buttons {
             setProfileMethod.setAccessible(true);
             setProfileMethod.invoke(skullMeta, gameProfile);
         } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            e.printStackTrace();
+            PluginLogger.error(e.getMessage());
         }
 
         itemStack.setItemMeta(skullMeta);

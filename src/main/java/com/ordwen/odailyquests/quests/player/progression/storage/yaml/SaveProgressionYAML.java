@@ -8,13 +8,10 @@ import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 public class SaveProgressionYAML {
 
@@ -59,7 +56,7 @@ public class SaveProgressionYAML {
         } catch (IOException e) {
             PluginLogger.error("An error happened on the save of the progression file.");
             PluginLogger.error("If the problem persists, contact the developer.");
-            e.printStackTrace();
+            PluginLogger.error(e.getMessage());
         }
     }
 }

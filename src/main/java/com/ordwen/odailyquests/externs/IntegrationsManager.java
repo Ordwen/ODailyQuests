@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.externs;
 
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.externs.hooks.Protection;
 import com.ordwen.odailyquests.externs.hooks.eco.CoinsEngineHook;
 import com.ordwen.odailyquests.externs.hooks.eco.VaultHook;
 import com.ordwen.odailyquests.externs.hooks.holograms.HolographicDisplaysHook;
@@ -39,6 +40,8 @@ public class IntegrationsManager {
         loadPAPI();
         loadWildStacker();
         loadRoseStacker();
+
+        new Protection().load();
     }
 
     /**
@@ -113,7 +116,7 @@ public class IntegrationsManager {
      * Hook - Citizens
      */
     private void loadCitizens() {
-        if (CitizensHook.setupCitizens()) {
+        if (CitizensHook.isCitizensEnabled()) {
             getServer().getPluginManager().registerEvents(new CitizensHook(), oDailyQuests);
             PluginLogger.info("Citizens successfully hooked.");
         }

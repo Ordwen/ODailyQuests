@@ -7,8 +7,9 @@ public class Progression {
 
     /**
      * Progression constructor.
+     *
      * @param progression progression of quest.
-     * @param isAchieved status of quest.
+     * @param isAchieved  status of quest.
      */
     public Progression(int progression, boolean isAchieved) {
         this.progression = progression;
@@ -17,17 +18,23 @@ public class Progression {
 
     /**
      * Get the progression of quest.
+     *
      * @return progression.
      */
-    public int getProgression() { return this.progression; }
+    public int getProgression() {
+        return this.progression;
+    }
 
     /**
      * Increment the progression of quest.
      */
-    public void increaseProgression() { this.progression++; }
+    public void increaseProgression() {
+        this.progression++;
+    }
 
     /**
      * Get status of quest.
+     *
      * @return status.
      */
     public boolean isAchieved() {
@@ -40,5 +47,4 @@ public class Progression {
     public void setAchieved() {
         this.isAchieved = true;
     }
-
 }

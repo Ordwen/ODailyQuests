@@ -60,7 +60,7 @@ public class HologramsFile {
         } catch (InvalidConfigurationException | IOException e) {
             PluginLogger.error("An error occurred on the load of the holograms file.");
             PluginLogger.error("Please inform the developer.");
-            e.printStackTrace();
+            PluginLogger.error(e.getMessage());
         }
         PluginLogger.fine("Holograms file successfully loaded (YAML).");
     }

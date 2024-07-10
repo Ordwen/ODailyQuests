@@ -18,7 +18,7 @@ public class ItemsAdderEnabled {
         return isEnabled;
     }
     public static boolean isLoaded() {
-        return isLoaded;
+        return isEnabled && isLoaded;
     }
 
     public static void setLoaded(boolean isLoaded) {

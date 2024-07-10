@@ -1,9 +1,8 @@
 package com.ordwen.odailyquests.tools;
 
-import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
-import com.ordwen.odailyquests.quests.player.progression.Utils;
+import com.ordwen.odailyquests.quests.player.progression.QuestLoaderUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -26,7 +25,7 @@ public class TimerTask {
             if (msg != null) player.sendMessage(msg);
 
             int totalAchievedQuests = QuestsManager.getActiveQuests().get(player.getName()).getTotalAchievedQuests();
-            Utils.loadNewPlayerQuests(player.getName(), QuestsManager.getActiveQuests(), totalAchievedQuests);
+            QuestLoaderUtils.loadNewPlayerQuests(player.getName(), QuestsManager.getActiveQuests(), totalAchievedQuests);
         }
     };
 

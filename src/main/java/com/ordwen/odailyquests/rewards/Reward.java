@@ -8,7 +8,7 @@ public class Reward {
     final List<String> commands;
     final String currencyLabel;
     final String currencyDisplayName;
-    int amount;
+    double amount;
 
     /**
      * Constructor for a reward with a command.
@@ -26,7 +26,7 @@ public class Reward {
      * Constructor for other reward.
      * @param amount the reward amount.
      */
-    public Reward(RewardType rewardType, int amount) {
+    public Reward(RewardType rewardType, double amount) {
         this.rewardType = rewardType;
         this.amount = amount;
 
@@ -62,7 +62,7 @@ public class Reward {
      * Get the amount of a reward.
      * @return the quantity to give.
      */
-    public int getRewardAmount() {
+    public double getRewardAmount() {
         return this.amount;
     }
 

@@ -37,13 +37,12 @@ public class AutoUpdater {
             throw new RuntimeException(e);
         }
 
+        final String currentVersion = plugin.getDescription().getVersion();
         final String configVersion = configFile.getString("version");
         if (configVersion == null) {
             PluginLogger.error("The 'version' field is missing from the config file. The auto updater cannot work without it.");
             return;
         }
-
-        final String currentVersion = plugin.getDescription().getVersion();
 
         if (!configVersion.equals(currentVersion)) {
             PluginLogger.warn("It looks like you were using an older version of the plugin. Let's update your files!");
@@ -114,13 +113,41 @@ public class AutoUpdater {
             // PLAYER INTERFACE
 
             if (!playerInterfaceFile.contains("player_interface.disable_status")) {
-                AddDefault.addDefaultConfigItem("disable_status", false, playerInterfaceFile, playerInterface);
+                AddDefault.addDefaultConfigItem("player_interface.disable_status", false, playerInterfaceFile, playerInterface);
+            }
+
+            // --------------
+            // 2.2.5 -> 2.3.0
+            // --------------
+
+            // CONFIG
+
+            if (!configFile.contains("reroll_only_if_not_achieved")) {
+                AddDefault.addDefaultConfigItem("reroll_only_if_not_achieved", false, configFile, file);
+            }
+
+            if (!configFile.contains("shared_mobs")) {
+                AddDefault.addDefaultConfigItem("shared_mobs", false, configFile, file);
+            }
+
+            /* progress bar */
+            if (!configFile.contains("progress_bar")) {
+                AddDefault.addDefaultConfigItem("progress_bar.symbol", "|", configFile, file);
+                AddDefault.addDefaultConfigItem("progress_bar.completed_color", "&a", configFile, file);
+                AddDefault.addDefaultConfigItem("progress_bar.remaining_color", "&7", configFile, file);
+                AddDefault.addDefaultConfigItem("progress_bar.amount_of_symbols", 20, configFile, file);
             }
 
             PluginLogger.fine("All files have been updated!");
         }
 
         // update the config version
-        configFile.set("version", currentVersion + "SNAPSHOT");
+        configFile.set("version", currentVersion);
+
+        try {
+            configFile.save(file);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -59,7 +59,7 @@ public class PlayerInterfaceFile {
         } catch (InvalidConfigurationException | IOException e) {
             PluginLogger.error("An error occurred on the load of the player interface file.");
             PluginLogger.error("Please inform the developer.");
-            e.printStackTrace();
+            PluginLogger.error(e.getMessage());
         }
         PluginLogger.fine("Player interface file successfully loaded (YAML).");
     }

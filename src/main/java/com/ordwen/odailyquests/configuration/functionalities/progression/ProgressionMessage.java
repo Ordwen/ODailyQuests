@@ -38,7 +38,19 @@ public class ProgressionMessage {
      */
     public void loadProgressionMessage() {
         isEnabled = configurationFiles.getConfigFile().getBoolean("progression_message.enabled");
+
+        if (!isEnabled) {
+            PluginLogger.info("Progression message is disabled.");
+            return;
+        }
+
         message = configurationFiles.getConfigFile().getString("progression_message.text");
+
+        if (message == null) {
+            PluginLogger.error("Progression message is null, disabling progression message.");
+            PluginLogger.error("Please set a valid message in the configuration file (progression_message.text).");
+            isEnabled = false;
+        }
 
         final String type = configurationFiles.getConfigFile().getString("progression_message.type");
         if (type == null) {
@@ -68,10 +80,12 @@ public class ProgressionMessage {
                     .replace("%player%", player.getDisplayName())
                     .replace("%questName%", questName)
                     .replace("%progress%", String.valueOf(progression))
-                    .replace("%required%", String.valueOf(required)));
+                    .replace("%required%", String.valueOf(required))
+                    .replace("%progressBar%", ProgressBar.getProgressBar(progression, required))
+            );
 
             switch (progressionMessageType) {
-                case ACTIONBAR -> player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(toSend));
+                case ACTIONBAR -> player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(toSend));
                 case CHAT -> player.sendMessage(toSend);
                 case BOSSBAR -> {
                     if (currentBossBars.containsKey(player)) {

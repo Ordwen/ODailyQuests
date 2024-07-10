@@ -1,62 +1,59 @@
 package com.ordwen.odailyquests.events.listeners.item;
 
 import com.ordwen.odailyquests.configuration.essentials.Antiglitch;
+import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.integrations.ItemsAdderEnabled;
-import com.ordwen.odailyquests.enums.QuestType;
-import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractItemChecker;
+import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
 import dev.lone.itemsadder.api.CustomBlock;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.inventory.ItemStack;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
-public class BlockBreakListener extends AbstractItemChecker implements Listener {
+public class BlockBreakListener extends PlayerProgressor implements Listener {
 
     @EventHandler
     public void onBlockBreakEvent(BlockBreakEvent event) {
-        if (event.isCancelled()) return;
+        Debugger.addDebug("BlockBreakListener: onBlockBreakEvent summoned.");
+        if (event.isCancelled()) {
+            Debugger.addDebug("BlockBreakListener: onBlockBreakEvent cancelled.");
+            return;
+        }
 
         final Player player = event.getPlayer();
         final Block block = event.getBlock();
 
         if (ItemsAdderEnabled.isEnabled()) {
             final CustomBlock customBlock = CustomBlock.byAlreadyPlaced(block);
-            if (customBlock != null) return;
+            if (customBlock != null) {
+                Debugger.addDebug("BlockBreakListener: onBlockBreakEvent cancelled due to ItemsAdder custom block.");
+                return;
+            }
         }
 
-        final AtomicBoolean valid = new AtomicBoolean(true);
+        boolean valid = true;
 
         if (Antiglitch.isStorePlacedBlocks()) {
+            Debugger.addDebug("BlockBreakListener: onBlockBreakEvent checking for placed blocks.");
             if (block.getBlockData() instanceof Ageable ageable) {
                 if (ageable.getAge() != ageable.getMaximumAge()) {
-                    valid.set(false);
+                    Debugger.addDebug("BlockBreakListener: onBlockBreakEvent cancelled due to ageable block.");
+                    valid = false;
                 }
-            }
-
-            else {
+            } else {
                 if (!block.getMetadata("odailyquests:placed").isEmpty()) {
-                    valid.set(false);
+                    Debugger.addDebug("BlockBreakListener: onBlockBreakEvent cancelled due to placed block.");
+                    valid = false;
                 }
             }
+            Debugger.addDebug("BlockBreakListener: onBlockBreakEvent placed block check complete.");
         }
 
-        Material material = switch (block.getType()) {
-            case POTATOES -> Material.POTATO;
-            case CARROTS -> Material.CARROT;
-            case BEETROOTS -> Material.BEETROOT;
-            case COCOA -> Material.COCOA_BEANS;
-            case SWEET_BERRY_BUSH -> Material.SWEET_BERRIES;
-            default -> block.getType();
-        };
-
-        if (valid.get()) {
-            setPlayerQuestProgression(player, new ItemStack(material), 1, QuestType.BREAK, block.getBlockData().getAsString());
+        if (valid) {
+            Debugger.addDebug("BlockBreakListener: onBlockBreakEvent summoned by " + player.getName() + " for " + block.getType() + ".");
+            setPlayerQuestProgression(event, player, 1, "BREAK");
         }
     }
 }

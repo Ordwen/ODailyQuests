@@ -8,6 +8,8 @@ import com.ordwen.odailyquests.events.listeners.customs.CustomFurnaceExtractList
 import com.ordwen.odailyquests.events.listeners.integrations.itemsadder.CustomBlockBreakListener;
 import com.ordwen.odailyquests.events.listeners.integrations.itemsadder.ItemsAdderLoadDataListener;
 import com.ordwen.odailyquests.events.listeners.integrations.oraxen.OraxenItemsLoadedListener;
+import com.ordwen.odailyquests.events.listeners.item.custom.PyroFishCatchListener;
+import com.ordwen.odailyquests.events.listeners.vote.VotifierListener;
 import com.ordwen.odailyquests.externs.hooks.mobs.EliteMobsHook;
 import com.ordwen.odailyquests.externs.hooks.mobs.MythicMobsHook;
 import com.ordwen.odailyquests.externs.hooks.stackers.WildStackerHook;
@@ -61,11 +63,13 @@ public class EventsManager {
         Bukkit.getPluginManager().registerEvents(new PlayerInteractListener(), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new PlayerInteractEntityListener(), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new PlayerDeathListener(), oDailyQuests);
+        Bukkit.getPluginManager().registerEvents(new PlayerRespawnListener(), oDailyQuests);
 
         // item events
         Bukkit.getPluginManager().registerEvents(new BlockBreakListener(), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new BlockPlaceListener(), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new CraftItemListener(), oDailyQuests);
+        Bukkit.getPluginManager().registerEvents(new SmithItemListener(), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new EnchantItemListener(), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new FurnaceExtractListener(), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new PickupItemListener(), oDailyQuests);
@@ -76,6 +80,14 @@ public class EventsManager {
         Bukkit.getPluginManager().registerEvents(new BlockDropItemListener(), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new PlayerHarvestBlockListener(), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new PlayerDropItemListener(), oDailyQuests);
+
+        if (Bukkit.getServer().getPluginManager().isPluginEnabled("PyroFishingPro")) {
+            Bukkit.getPluginManager().registerEvents(new PyroFishCatchListener(), oDailyQuests);
+        }
+
+        if (Bukkit.getServer().getPluginManager().isPluginEnabled("Votifier")) {
+            Bukkit.getPluginManager().registerEvents(new VotifierListener(), oDailyQuests);
+        }
 
         // inventory events
         Bukkit.getPluginManager().registerEvents(new InventoryCloseListener(), oDailyQuests);

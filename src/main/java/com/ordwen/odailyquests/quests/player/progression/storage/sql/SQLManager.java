@@ -54,7 +54,7 @@ public abstract class SQLManager {
             }
             connection.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            PluginLogger.error(e.getMessage());
         }
     }
 
@@ -89,8 +89,8 @@ public abstract class SQLManager {
         if (this.hikariDataSource != null && !this.hikariDataSource.isClosed()) {
             try {
                 return this.hikariDataSource.getConnection();
-            } catch (SQLException throwable) {
-                throwable.printStackTrace();
+            } catch (SQLException e) {
+                PluginLogger.error(e.getMessage());
             }
         }
         return null;

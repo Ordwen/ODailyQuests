@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.rewards;
 
+import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.externs.hooks.eco.CoinsEngineHook;
 import com.ordwen.odailyquests.externs.hooks.placeholders.PAPIHook;
 import com.ordwen.odailyquests.externs.hooks.points.PlayerPointsHook;
@@ -20,6 +21,8 @@ public class RewardManager {
 
     public static void sendAllRewardItems(String questName, Player player, Reward reward) {
 
+        Debugger.addDebug("RewardManager: sendAllRewardItems summoned by " + player.getName() + " for " + questName + ".");
+
         final String msg = QuestsMessages.QUEST_ACHIEVED.getMessage(player);
         if (msg != null) player.sendMessage(msg.replace("%questName%", questName));
 
@@ -37,6 +40,8 @@ public class RewardManager {
     public static void sendQuestReward(Player player, Reward reward) {
         if (reward.getRewardType() == RewardType.NONE) return;
 
+        Debugger.addDebug("RewardManager: sendQuestReward summoned by " + player.getName() + " for " + reward.getRewardType());
+
         String msg;
         switch (reward.getRewardType()) {
 
@@ -51,13 +56,13 @@ public class RewardManager {
             }
 
             case EXP_LEVELS -> {
-                player.giveExpLevels(reward.getRewardAmount());
+                player.giveExpLevels((int) reward.getRewardAmount());
                 msg = QuestsMessages.REWARD_EXP_LEVELS.getMessage(player);
                 if (msg != null) player.sendMessage(msg.replace("%rewardAmount%", String.valueOf(reward.getRewardAmount())));
             }
 
             case EXP_POINTS -> {
-                player.giveExp(reward.getRewardAmount());
+                player.giveExp((int) reward.getRewardAmount());
                 msg = QuestsMessages.REWARD_EXP_POINTS.getMessage(player);
                 if (msg != null) player.sendMessage(msg.replace("%rewardAmount%", String.valueOf(reward.getRewardAmount())));
             }
@@ -79,14 +84,14 @@ public class RewardManager {
 
             case POINTS -> {
                 if (TokenManagerHook.getTokenManagerAPI() != null) {
-                    TokenManagerHook.getTokenManagerAPI().addTokens(player, reward.getRewardAmount());
+                    TokenManagerHook.getTokenManagerAPI().addTokens(player, (int) reward.getRewardAmount());
 
                     msg = QuestsMessages.REWARD_POINTS.getMessage(player);
                     if (msg != null) player.sendMessage(msg.replace("%rewardAmount%", String.valueOf(reward.getRewardAmount())));
                 }
 
                 else if (PlayerPointsHook.isPlayerPointsSetup()) {
-                    PlayerPointsHook.getPlayerPointsAPI().give(player.getUniqueId(), reward.getRewardAmount());
+                    PlayerPointsHook.getPlayerPointsAPI().give(player.getUniqueId(), (int) reward.getRewardAmount());
 
                     msg = QuestsMessages.REWARD_POINTS.getMessage(player);
                     if (msg != null)  player.sendMessage(msg.replace("%rewardAmount%", String.valueOf(reward.getRewardAmount())));

@@ -5,12 +5,11 @@ import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
-import com.ordwen.odailyquests.quests.player.progression.Utils;
+import com.ordwen.odailyquests.quests.player.progression.QuestLoaderUtils;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.files.ProgressionFile;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.HashMap;
@@ -45,8 +44,8 @@ public class LoadProgressionYAML {
                 totalAchievedQuests = progressionFile.getConfigurationSection(playerName).getInt(".totalAchievedQuests");
 
                 /* renew quests */
-                if (Utils.checkTimestamp(timestamp)) {
-                    Utils.loadNewPlayerQuests(playerName, activeQuests, totalAchievedQuests);
+                if (QuestLoaderUtils.checkTimestamp(timestamp)) {
+                    QuestLoaderUtils.loadNewPlayerQuests(playerName, activeQuests, totalAchievedQuests);
                 }
                 /* load non-achieved quests */
                 else {
@@ -59,7 +58,7 @@ public class LoadProgressionYAML {
                             boolean isAchieved = progressionFile.getConfigurationSection(playerName + ".quests." + string).getBoolean(".isAchieved");
 
                             Progression progression = new Progression(advancement, isAchieved);
-                            AbstractQuest quest = Utils.findQuest(playerName, questIndex, Integer.parseInt(string));
+                            AbstractQuest quest = QuestLoaderUtils.findQuest(playerName, questIndex, Integer.parseInt(string));
 
                             quests.put(quest, progression);
                             i++;
@@ -93,7 +92,7 @@ public class LoadProgressionYAML {
                     if (msg != null) Bukkit.getPlayer(playerName).sendMessage(msg);
                 }
             } else {
-                Utils.loadNewPlayerQuests(playerName, activeQuests, 0);
+                QuestLoaderUtils.loadNewPlayerQuests(playerName, activeQuests, 0);
             }
         });
     }

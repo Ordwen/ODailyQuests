@@ -28,8 +28,6 @@ public class ConfigurationFiles {
     private FileConfiguration config;
     private File configFile;
 
-    private static File LANG_FILE;
-
     /**
      * Get the configuration file.
      * @return config file.
@@ -67,7 +65,7 @@ public class ConfigurationFiles {
         } catch (InvalidConfigurationException | IOException e) {
             PluginLogger.error("An error occurred on the load of the configuration file.");
             PluginLogger.error("Please inform the developer.");
-            e.printStackTrace();
+            PluginLogger.error(e.getMessage());
         }
         PluginLogger.fine("Configuration file successfully loaded.");
     }
@@ -93,7 +91,7 @@ public class ConfigurationFiles {
         } catch (InvalidConfigurationException | IOException e) {
             PluginLogger.error("An error occurred on the load of the messages file.");
             PluginLogger.error("Please inform the developer.");
-            e.printStackTrace();
+            PluginLogger.error(e.getMessage());
         }
 
         for (QuestsMessages item : QuestsMessages.values()) {
@@ -108,7 +106,7 @@ public class ConfigurationFiles {
         } catch(IOException e) {
             PluginLogger.error("An error happened on the save of the messages file.");
             PluginLogger.error("If the problem persists, contact the developer.");
-            e.printStackTrace();
+            PluginLogger.error(e.getMessage());
         }
 
         PluginLogger.fine("Messages file successfully loaded.");

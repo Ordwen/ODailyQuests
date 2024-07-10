@@ -19,7 +19,7 @@ public class Debugger {
     }
 
     public void loadDebugMode() {
-        debugMode = oDailyQuests.getConfigurationFiles().getConfigFile().getBoolean("debug_mode");
+        debugMode = oDailyQuests.getConfigurationFiles().getConfigFile().getBoolean("debug");
         if (debugMode) {
             loadDebugFile();
             PluginLogger.warn("Debug mode is enabled. This may cause performance issues.");
@@ -48,7 +48,7 @@ public class Debugger {
             } catch (IOException e) {
                 PluginLogger.error("An error happened on the write of the debug file.");
                 PluginLogger.error("If the problem persists, contact the developer.");
-                e.printStackTrace();
+                PluginLogger.error(e.getMessage());
             }
         }
     }

@@ -1,13 +1,14 @@
 package com.ordwen.odailyquests;
 
 import com.ordwen.odailyquests.api.ODailyQuestsAPI;
-import com.ordwen.odailyquests.commands.RestartHandler;
+import com.ordwen.odailyquests.api.quests.QuestTypeRegistry;
+import com.ordwen.odailyquests.events.restart.RestartHandler;
 import com.ordwen.odailyquests.externs.IntegrationsManager;
-import com.ordwen.odailyquests.commands.AdminCommands;
-import com.ordwen.odailyquests.commands.PlayerCommands;
-import com.ordwen.odailyquests.commands.ReloadService;
-import com.ordwen.odailyquests.commands.completers.AdminCompleter;
-import com.ordwen.odailyquests.commands.completers.PlayerCompleter;
+import com.ordwen.odailyquests.commands.admin.AdminCommands;
+import com.ordwen.odailyquests.commands.player.PlayerCommands;
+import com.ordwen.odailyquests.commands.admin.ReloadService;
+import com.ordwen.odailyquests.commands.admin.AdminCompleter;
+import com.ordwen.odailyquests.commands.player.PlayerCompleter;
 import com.ordwen.odailyquests.commands.interfaces.InterfacesManager;
 import com.ordwen.odailyquests.commands.interfaces.InventoryClickListener;
 import com.ordwen.odailyquests.configuration.ConfigurationManager;
@@ -20,10 +21,24 @@ import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.player.progression.listeners.AllCategoryQuestsCompletedListener;
 import com.ordwen.odailyquests.quests.player.progression.listeners.AllQuestsCompletedListener;
 import com.ordwen.odailyquests.quests.player.progression.listeners.QuestCompletedListener;
-import com.ordwen.odailyquests.quests.player.progression.listeners.QuestProgressListener;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.h2.H2Manager;
 import com.ordwen.odailyquests.quests.player.progression.storage.yaml.YamlManager;
+import com.ordwen.odailyquests.quests.types.AbstractQuest;
+import com.ordwen.odailyquests.quests.types.custom.items.PyroFishQuest;
+import com.ordwen.odailyquests.quests.types.custom.mobs.EliteMobsQuest;
+import com.ordwen.odailyquests.quests.types.custom.mobs.MythicMobsQuest;
+import com.ordwen.odailyquests.quests.types.custom.vote.NuVotifierQuest;
+import com.ordwen.odailyquests.quests.types.entity.BreedQuest;
+import com.ordwen.odailyquests.quests.types.entity.KillQuest;
+import com.ordwen.odailyquests.quests.types.entity.ShearQuest;
+import com.ordwen.odailyquests.quests.types.entity.TameQuest;
+import com.ordwen.odailyquests.quests.types.global.*;
+import com.ordwen.odailyquests.quests.types.inventory.GetQuest;
+import com.ordwen.odailyquests.quests.types.inventory.LocationQuest;
+import com.ordwen.odailyquests.quests.types.inventory.PlaceholderQuest;
+import com.ordwen.odailyquests.quests.types.item.VillagerQuest;
+import com.ordwen.odailyquests.quests.types.item.*;
 import com.ordwen.odailyquests.tools.*;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.mysql.MySQLManager;
@@ -32,6 +47,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 public final class ODailyQuests extends JavaPlugin {
 
@@ -54,16 +70,20 @@ public final class ODailyQuests extends JavaPlugin {
     boolean isServerStopping = false;
 
     @Override
-    public void onEnable() {
+    public void onLoad() {
         INSTANCE = this;
-        API = new ODailyQuestsAPI(this);
+        API = new ODailyQuestsAPI();
+    }
 
+    @Override
+    public void onEnable() {
         PluginLogger.info("Plugin is starting...");
+        ODailyQuestsAPI.disableRegistration();
 
         /* Load Metrics */
         // https://bstats.org/plugin/bukkit/ODailyQuests/14277
         int pluginId = 14277;
-        Metrics metrics = new Metrics(this, pluginId);
+        final Metrics metrics = new Metrics(this, pluginId);
 
         /* Load files */
         this.configurationFiles = new ConfigurationFiles(this);
@@ -71,7 +91,7 @@ public final class ODailyQuests extends JavaPlugin {
         this.filesManager.loadAllFiles();
 
         /* Check for updates */
-        new AutoUpdater(this).checkForUpdate(); // LAST USE : 2.1.0 -> 2.1.1
+        new AutoUpdater(this).checkForUpdate();
         checkForSpigotUpdate();
 
         /* Load SQL Support */
@@ -95,6 +115,55 @@ public final class ODailyQuests extends JavaPlugin {
         /* Load debugger */
         new Debugger(this).loadDebugMode();
 
+        /* Register quest types */
+        final QuestTypeRegistry questTypeRegistry = API.getQuestTypeRegistry();
+
+        /* entity quests */
+        questTypeRegistry.registerQuestType("KILL", KillQuest.class);
+        questTypeRegistry.registerQuestType("BREED", BreedQuest.class);
+        questTypeRegistry.registerQuestType("SHEAR", ShearQuest.class);
+        questTypeRegistry.registerQuestType("TAME", TameQuest.class);
+        questTypeRegistry.registerQuestType("FIREBALL_REFLECT", FireballReflectQuest.class);
+        questTypeRegistry.registerQuestType("ELITE_MOBS", EliteMobsQuest.class);
+        questTypeRegistry.registerQuestType("MYTHIC_MOBS", MythicMobsQuest.class);
+
+        /* item quests */
+        questTypeRegistry.registerQuestType("BREAK", BreakQuest.class);
+        questTypeRegistry.registerQuestType("PLACE", PlaceQuest.class);
+        questTypeRegistry.registerQuestType("CRAFT", CraftQuest.class);
+        questTypeRegistry.registerQuestType("PICKUP", PickupQuest.class);
+        questTypeRegistry.registerQuestType("LAUNCH", LaunchQuest.class);
+        questTypeRegistry.registerQuestType("CONSUME", ConsumeQuest.class);
+        questTypeRegistry.registerQuestType("COOK", CookQuest.class);
+        questTypeRegistry.registerQuestType("ENCHANT", EnchantQuest.class);
+        questTypeRegistry.registerQuestType("FISH", FishQuest.class);
+        questTypeRegistry.registerQuestType("FARMING", FarmingQuest.class);
+
+        /* inventory quests */
+        questTypeRegistry.registerQuestType("GET", GetQuest.class);
+        questTypeRegistry.registerQuestType("LOCATION", LocationQuest.class);
+        questTypeRegistry.registerQuestType("VILLAGER_TRADE", VillagerQuest.class);
+        questTypeRegistry.registerQuestType("PLACEHOLDER", PlaceholderQuest.class);
+        questTypeRegistry.registerQuestType("CARVE", CarveQuest.class);
+
+        /* global quests */
+        questTypeRegistry.registerQuestType("MILKING", MilkingQuest.class);
+        questTypeRegistry.registerQuestType("EXP_POINTS", ExpPointsQuest.class);
+        questTypeRegistry.registerQuestType("EXP_LEVELS", ExpLevelQuest.class);
+        questTypeRegistry.registerQuestType("PLAYER_DEATH", PlayerDeathQuest.class);
+        questTypeRegistry.registerQuestType("FIREBALL_REFLECT", FireballReflectQuest.class);
+
+        /* other plugins */
+        questTypeRegistry.registerQuestType("PYRO_FISH", PyroFishQuest.class);
+        questTypeRegistry.registerQuestType("NU_VOTIFIER", NuVotifierQuest.class);
+
+        /* register addons types */
+        final Map<String, Class<? extends AbstractQuest>> externalTypes = ODailyQuestsAPI.getExternalTypes();
+        for (Map.Entry<String, Class<? extends AbstractQuest>> entry : externalTypes.entrySet()) {
+            questTypeRegistry.registerQuestType(entry.getKey(), entry.getValue());
+            PluginLogger.info("Registered external quest type: " + entry.getKey());
+        }
+
         /* Load all elements */
         reloadService.reload();
 
@@ -102,7 +171,7 @@ public final class ODailyQuests extends JavaPlugin {
         new EventsManager(this).registerListeners();
 
         /* Load commands */
-        getCommand("dquests").setExecutor(new PlayerCommands(this));
+        getCommand("dquests").setExecutor(new PlayerCommands());
         getCommand("dqadmin").setExecutor(new AdminCommands(this));
 
         /* Load Tab Completers */
@@ -112,11 +181,12 @@ public final class ODailyQuests extends JavaPlugin {
         /* Register plugin events */
         getServer().getPluginManager().registerEvents(new InventoryClickListener(), this);
         getServer().getPluginManager().registerEvents(new QuestsManager(this, sqlManager != null), this);
-        getServer().getPluginManager().registerEvents(new QuestProgressListener(), this);
         getServer().getPluginManager().registerEvents(new QuestCompletedListener(), this);
         getServer().getPluginManager().registerEvents(new AllQuestsCompletedListener(), this);
         getServer().getPluginManager().registerEvents(new AllCategoryQuestsCompletedListener(), this);
-        getServer().getPluginManager().registerEvents(new RestartHandler(this), this);
+
+        /* Register server restart related events */
+        new RestartHandler(this).registerSubClasses();
 
         /* Avoid errors on reload */
         if (!Bukkit.getServer().getOnlinePlayers().isEmpty()) {
@@ -133,6 +203,16 @@ public final class ODailyQuests extends JavaPlugin {
         }
 
         PluginLogger.info("Plugin is started!");
+    }
+
+    /**
+     * Register a new quest type.
+     *
+     * @param name       name of the quest type
+     * @param questClass class of the quest type
+     */
+    public void registerQuestType(String name, Class<? extends AbstractQuest> questClass) {
+        API.getQuestTypeRegistry().registerQuestType(name, questClass);
     }
 
     @Override
@@ -166,6 +246,7 @@ public final class ODailyQuests extends JavaPlugin {
 
     /**
      * Check if the server is stopping.
+     *
      * @return true if the server is stopping.
      */
     public boolean isServerStopping() {
@@ -174,6 +255,7 @@ public final class ODailyQuests extends JavaPlugin {
 
     /**
      * Set if the server is stopping.
+     *
      * @param isServerStopping true if the server is stopping.
      */
     public void setServerStopping(boolean isServerStopping) {
@@ -182,6 +264,7 @@ public final class ODailyQuests extends JavaPlugin {
 
     /**
      * Get ConfigurationManager instance.
+     *
      * @return ConfigurationManager instance.
      */
     public ConfigurationFiles getConfigurationFiles() {
@@ -190,6 +273,7 @@ public final class ODailyQuests extends JavaPlugin {
 
     /**
      * Get MySQLManager instance.
+     *
      * @return MySQLManager instance.
      */
     public SQLManager getSQLManager() {
@@ -198,6 +282,7 @@ public final class ODailyQuests extends JavaPlugin {
 
     /**
      * Get ReloadService instance.
+     *
      * @return ReloadService instance.
      */
     public ReloadService getReloadService() {
@@ -206,6 +291,7 @@ public final class ODailyQuests extends JavaPlugin {
 
     /**
      * Get FilesManager instance.
+     *
      * @return FilesManager instance.
      */
     public FilesManager getFilesManager() {
@@ -214,6 +300,7 @@ public final class ODailyQuests extends JavaPlugin {
 
     /**
      * Get InterfacesManager instance.
+     *
      * @return InterfacesManager instance.
      */
     public InterfacesManager getInterfacesManager() {
@@ -222,6 +309,7 @@ public final class ODailyQuests extends JavaPlugin {
 
     /**
      * Get ConfigurationManager instance.
+     *
      * @return ConfigurationManager instance.
      */
     public ConfigurationManager getConfigurationManager() {
@@ -230,6 +318,7 @@ public final class ODailyQuests extends JavaPlugin {
 
     /**
      * Get YamlManager instance.
+     *
      * @return YamlManager instance.
      */
     public YamlManager getYamlManager() {
@@ -238,6 +327,7 @@ public final class ODailyQuests extends JavaPlugin {
 
     /**
      * Get QuestsLoader instance.
+     *
      * @return QuestsLoader instance.
      */
     public CategoriesLoader getCategoriesLoader() {
@@ -246,6 +336,7 @@ public final class ODailyQuests extends JavaPlugin {
 
     /**
      * Get ODailyQuestsAPI instance.
+     *
      * @return ODailyQuestsAPI instance.
      */
     public ODailyQuestsAPI getAPI() {
