@@ -71,6 +71,9 @@ public class QuestsLoader extends QuestItemGetter {
         /* required worlds */
         final List<String> requiredWorlds = questSection.getStringList(".required_worlds");
 
+        /* required regions */
+        final List<String> requiredRegions = questSection.getStringList(".required_regions");
+
         String presumedItem = questSection.getString(".menu_item");
         if (presumedItem == null) {
             PluginLogger.configurationError(fileName, fileIndex, "menu_item", "The menu item is not defined.");
@@ -93,7 +96,7 @@ public class QuestsLoader extends QuestItemGetter {
         final Reward reward = createReward(questSection, fileName, fileIndex);
 
         return new BasicQuest(questIndex, questName, fileName, questDesc, questType, menuItem,
-                achievedItem, requiredAmount, reward, requiredWorlds, usePlaceholders);
+                achievedItem, requiredAmount, reward, requiredWorlds, requiredRegions, usePlaceholders);
     }
 
     /**

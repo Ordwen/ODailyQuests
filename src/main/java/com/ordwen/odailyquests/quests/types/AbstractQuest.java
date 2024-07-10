@@ -21,6 +21,7 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
     final int amountRequired;
     final Reward reward;
     final List<String> requiredWorlds;
+    final List<String> requiredRegions;
     final boolean isUsingPlaceholders;
 
     /**
@@ -32,7 +33,7 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
      * @param amountRequired required amount of the item.
      * @param reward         reward of the quest.
      */
-    protected AbstractQuest(int questIndex, String questName, String categoryName, List<String> questDesc, String questType, ItemStack menuItem, ItemStack achievedItem, int amountRequired, Reward reward, List<String> requiredWorlds, boolean isUsingPlaceholders) {
+    protected AbstractQuest(int questIndex, String questName, String categoryName, List<String> questDesc, String questType, ItemStack menuItem, ItemStack achievedItem, int amountRequired, Reward reward, List<String> requiredWorlds, final List<String> requiredRegions, boolean isUsingPlaceholders) {
         this.questIndex = questIndex;
         this.questName = questName;
         this.categoryName = categoryName;
@@ -43,6 +44,7 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
         this.amountRequired = amountRequired;
         this.reward = reward;
         this.requiredWorlds = requiredWorlds;
+        this.requiredRegions = requiredRegions;
         this.isUsingPlaceholders = isUsingPlaceholders;
     }
 
@@ -62,6 +64,7 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
         this.amountRequired = basicQuest.getAmountRequired();
         this.reward = basicQuest.getReward();
         this.requiredWorlds = basicQuest.getRequiredWorlds();
+        this.requiredRegions = basicQuest.getRequiredRegions();
         this.isUsingPlaceholders = basicQuest.isUsingPlaceholders();
     }
 
@@ -153,6 +156,15 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
      */
     public List<String> getRequiredWorlds() {
         return this.requiredWorlds;
+    }
+
+    /**
+     * Get the required regions of the quest.
+     *
+     * @return quest required regions.
+     */
+    public List<String> getRequiredRegions() {
+        return this.requiredRegions;
     }
 
     /**

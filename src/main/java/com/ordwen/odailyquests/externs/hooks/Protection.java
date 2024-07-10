@@ -9,13 +9,17 @@ import com.sk89q.worldguard.LocalPlayer;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.internal.platform.WorldGuardPlatform;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.Flags;
 import com.sk89q.worldguard.protection.flags.StateFlag;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+
+import java.util.List;
 
 public class Protection {
 
@@ -150,5 +154,37 @@ public class Protection {
         Debugger.addDebug("Protection: checkWg result: " + canBuild);
 
         return canBuild;
+    }
+
+    /**
+     * Check if the player is in the required region to progress the quest.
+     *
+     * @param player         involved player
+     * @param requiredRegions required regions
+     * @return true if the player is in the required region, false otherwise
+     */
+    public static boolean checkRegion(Player player, List<String> requiredRegions) {
+        if (!isWorldGuardEnabled()) return true;
+
+        Debugger.addDebug("Protection: checkRegion summoned.");
+
+        final Location location = player.getLocation();
+        if (location.getWorld() == null) return true;
+
+        final com.sk89q.worldedit.util.Location adaptedLocation = BukkitAdapter.adapt(location);
+
+        final RegionContainer container = wgPlatform.getRegionContainer();
+        final RegionQuery query = container.createQuery();
+        final ApplicableRegionSet regions = query.getApplicableRegions(adaptedLocation);
+
+        for (String region : requiredRegions) {
+            if (regions.size() == 0) return false;
+
+            if (regions.getRegions().stream().noneMatch(r -> r.getId().equalsIgnoreCase(region))) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

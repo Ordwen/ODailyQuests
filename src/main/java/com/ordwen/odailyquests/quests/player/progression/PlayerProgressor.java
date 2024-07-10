@@ -8,6 +8,7 @@ import com.ordwen.odailyquests.configuration.essentials.Synchronization;
 import com.ordwen.odailyquests.configuration.functionalities.DisabledWorlds;
 import com.ordwen.odailyquests.configuration.functionalities.progression.ProgressionMessage;
 import com.ordwen.odailyquests.enums.QuestsMessages;
+import com.ordwen.odailyquests.externs.hooks.Protection;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import org.bukkit.Bukkit;
@@ -96,8 +97,17 @@ public class PlayerProgressor {
     private static void runProgress(Player player, Progression progression, AbstractQuest quest, int amount) {
         if (QuestLoaderUtils.isTimeToRenew(player, QuestsManager.getActiveQuests())) return;
 
+        /* check if player is in the required world */
         if (!quest.getRequiredWorlds().isEmpty() && !quest.getRequiredWorlds().contains(player.getWorld().getName())) {
             final String msg = QuestsMessages.NOT_REQUIRED_WORLD.getMessage(player);
+            if (msg != null) player.sendMessage(msg);
+
+            return;
+        }
+
+        /* check if player is in the required region */
+        if (!quest.getRequiredRegions().isEmpty() && !Protection.checkRegion(player, quest.getRequiredRegions())) {
+            final String msg = QuestsMessages.NOT_REQUIRED_REGION.getMessage(player);
             if (msg != null) player.sendMessage(msg);
 
             return;
