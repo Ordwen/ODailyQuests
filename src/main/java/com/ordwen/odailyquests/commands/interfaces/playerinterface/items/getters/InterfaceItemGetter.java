@@ -123,9 +123,9 @@ public class InterfaceItemGetter extends ItemGetter implements IInterfaceItem {
 
         int cmd;
         try {
-            cmd = Integer.parseInt(customModelData);
+            cmd = Integer.parseInt(split[1]);
         } catch (Exception e) {
-            configurationError(questIndex, parameter, customModelData + " is not a number!");
+            configurationError(questIndex, parameter, split[1] + " is not a number!");
             return null;
         }
 
