@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -38,14 +39,32 @@ public class InventoryClickListener extends AbstractClickableChecker implements 
             final MerchantInventory merchantInventory = (MerchantInventory) event.getClickedInventory();
             if (event.getClickedInventory().getHolder() instanceof Villager villager) {
 
+                int amount = clickedItem.getAmount();
+
+                final ClickType click = event.getClick();
+                switch (click) {
+                    case SHIFT_RIGHT, SHIFT_LEFT -> {
+                        if (clickedItem.getAmount() == 0) break;
+                        int maxTradable = getMaxTradeAmount(merchantInventory);
+                        int capacity = fits(clickedItem, event.getView().getBottomInventory());
+                        if (capacity < maxTradable) {
+                            maxTradable = ((capacity + clickedItem.getAmount() - 1) / clickedItem.getAmount()) * clickedItem.getAmount();
+                        }
+                        amount = maxTradable;
+                    }
+                }
+
+                if (amount == 0) return;
+
                 if (merchantInventory.getSelectedRecipe() != null) {
                     validateTradeQuestType(
                             player,
                             villager,
                             merchantInventory.getSelectedRecipe(),
-                            clickedItem.getAmount());
+                            amount);
                 }
             }
+
             return;
         }
 
@@ -113,24 +132,29 @@ public class InventoryClickListener extends AbstractClickableChecker implements 
         }
     }
 
-    /**
-     *
-     * @param expected
-     * @param inv
-     * @return
-     */
     private int fits(ItemStack expected, Inventory inv) {
         int result = 0;
 
         for (ItemStack compared : inv.getStorageContents()) {
             if (compared == null) {
                 result += expected.getMaxStackSize();
-            }
-            else if (compared.isSimilar(expected)) {
+            } else if (compared.isSimilar(expected)) {
                 result += Math.max(expected.getMaxStackSize() - compared.getAmount(), 0);
             }
         }
 
         return result;
+    }
+
+    private int getMaxTradeAmount(MerchantInventory inv) {
+        if (inv.getSelectedRecipe() == null) return 0;
+
+        int resultCount = inv.getSelectedRecipe().getResult().getAmount();
+        int materialCount = Integer.MAX_VALUE;
+
+        for (ItemStack is : inv.getStorageContents())
+            if (is != null && is.getAmount() < materialCount) materialCount = is.getAmount();
+
+        return resultCount * materialCount;
     }
 }

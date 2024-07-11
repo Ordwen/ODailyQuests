@@ -111,7 +111,7 @@ public abstract class AbstractClickableChecker {
                 if (abstractQuest instanceof VillagerQuest quest) {
 
                     boolean valid = false;
-                    Progression questProgression = playerQuests.get(quest);
+                    final Progression questProgression = playerQuests.get(quest);
                     if (!questProgression.isAchieved() && quest.getQuestType().equals("VILLAGER_TRADE")) {
                         if (quest.getRequiredItems() == null) valid = true;
                         else {
