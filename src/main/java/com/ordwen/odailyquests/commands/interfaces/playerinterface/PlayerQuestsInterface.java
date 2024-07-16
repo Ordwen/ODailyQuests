@@ -108,7 +108,8 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
         if (isPlayerHeadEnabled) {
             final ItemStack playerHead = PlayerHead.getPlayerHead(player);
             for (int slot : slotsPlayerHead) {
-                if (slot > 0 && slot <= size) {
+                System.out.println(slot + ", " + size);
+                if (slot >= 0 && slot <= size) {
                     playerQuestsInventoryIndividual.setItem(slot, playerHead);
                 } else {
                     PluginLogger.error("An error occurred when loading the player interface.");
