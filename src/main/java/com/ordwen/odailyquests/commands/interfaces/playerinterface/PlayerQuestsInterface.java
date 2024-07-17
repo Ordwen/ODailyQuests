@@ -108,7 +108,6 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
         if (isPlayerHeadEnabled) {
             final ItemStack playerHead = PlayerHead.getPlayerHead(player);
             for (int slot : slotsPlayerHead) {
-                System.out.println(slot + ", " + size);
                 if (slot >= 0 && slot <= size) {
                     playerQuestsInventoryIndividual.setItem(slot, playerHead);
                 } else {
@@ -200,7 +199,7 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
 
             if (slotQuests.get(i) != null) {
                 for (int slot : slotQuests.get(i)) {
-                    if (slot > 0 && slot <= size) {
+                    if (slot >= 0 && slot <= size) {
                     playerQuestsInventoryIndividual.setItem(slot - 1, itemStack);
                     } else {
                         PluginLogger.error("An error occurred when loading the player interface.");
@@ -489,7 +488,7 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
             }
 
             for (int slot : slots) {
-                if (slot > 0 && slot <= size) {
+                if (slot >= 0 && slot <= size) {
                     playerQuestsInventoryBase.setItem(slot - 1, item);
                 }
                 else {
