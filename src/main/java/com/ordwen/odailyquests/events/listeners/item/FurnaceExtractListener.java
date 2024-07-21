@@ -12,7 +12,10 @@ public class FurnaceExtractListener extends PlayerProgressor implements Listener
 
     @EventHandler
     public void onFurnaceExtractEvent(FurnaceExtractEvent event) {
-        if (UseCustomFurnaceResults.isEnabled()) return;
+        if (UseCustomFurnaceResults.isEnabled()) {
+            Debugger.addDebug("CustomFurnaceExtractEvent is enabled. Skipping FurnaceExtractEvent.");
+            return;
+        }
 
         Debugger.addDebug("=========================================================================================");
         Debugger.addDebug("FurnaceExtractListener: onFurnaceExtractEvent summoned by " + event.getPlayer().getName() + " for " + event.getItemType() + ".");

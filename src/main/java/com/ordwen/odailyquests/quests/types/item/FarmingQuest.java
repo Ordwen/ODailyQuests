@@ -1,11 +1,13 @@
 package com.ordwen.odailyquests.quests.types.item;
 
+import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.externs.hooks.Protection;
 import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
 import com.ordwen.odailyquests.quests.types.shared.ItemQuest;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.player.PlayerHarvestBlockEvent;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
 public class FarmingQuest extends ItemQuest {
@@ -29,6 +31,12 @@ public class FarmingQuest extends ItemQuest {
         }
 
         if (provided instanceof BlockDropItemEvent event) {
+            // check if the broken block is a container
+            if (event.getBlockState() instanceof InventoryHolder) {
+                Debugger.addDebug("FarmingQuest:canProgress: Block is a container.");
+                return false;
+            }
+
             if (!Protection.canBuild(event.getPlayer(), event.getBlock(),"BLOCK_BREAK")) return false;
             return super.isRequiredItem(current);
         }

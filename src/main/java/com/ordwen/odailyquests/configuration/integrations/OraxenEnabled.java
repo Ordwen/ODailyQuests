@@ -2,6 +2,8 @@ package com.ordwen.odailyquests.configuration.integrations;
 
 import com.ordwen.odailyquests.configuration.essentials.UseCustomFurnaceResults;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
+import com.ordwen.odailyquests.tools.PluginLogger;
+import org.bukkit.Bukkit;
 
 public class OraxenEnabled {
 
@@ -32,7 +34,11 @@ public class OraxenEnabled {
     public void loadOraxenEnabled() {
         final String path = "use_oraxen";
         isEnabled = configurationFiles.getConfigFile().getBoolean(path);
-        if (isEnabled()) UseCustomFurnaceResults.setEnabled(true);
+        if (isEnabled && !Bukkit.getPluginManager().isPluginEnabled("Oraxen")) {
+            PluginLogger.warn("Oraxen is not installed on the server but the option is enabled in the config.");
+            PluginLogger.warn("Disabling 'use_oraxen' option, otherwise quests will not load.");
+            isEnabled = false;
+        }
+        if (isEnabled) UseCustomFurnaceResults.setEnabled(true);
     }
-
 }

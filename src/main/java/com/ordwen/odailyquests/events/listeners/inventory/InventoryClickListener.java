@@ -82,7 +82,7 @@ public class InventoryClickListener extends AbstractClickableChecker implements 
                 int amount;
                 switch (action) {
                     case PICKUP_HALF -> amount = (int) Math.ceil(clickedItem.getAmount() / 2.0);
-                    case PICKUP_ONE -> amount = 1;
+                    case PICKUP_ONE, DROP_ONE_SLOT -> amount = 1;
                     case MOVE_TO_OTHER_INVENTORY -> {
                         int max = clickedItem.getAmount();
                         amount = Math.min(max, fits(clickedItem, player.getInventory()));

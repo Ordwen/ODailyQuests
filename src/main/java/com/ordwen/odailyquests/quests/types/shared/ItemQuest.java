@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.quests.types.shared;
 
+import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.quests.getters.QuestItemGetter;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import org.bukkit.Material;
@@ -33,22 +34,31 @@ public abstract class ItemQuest extends AbstractQuest {
         if (requiredItems == null || requiredItems.isEmpty()) return true;
 
         for (ItemStack item : requiredItems) {
+            Debugger.addDebug("ItemQuest:isRequiredItem: Checking if item is required: " + item.getType() + " vs " + provided.getType() + ".");
 
             if (ignoreNbt && item.getType() == provided.getType()) {
+                Debugger.addDebug("ItemQuest:isRequiredItem: Ignoring NBT data.");
                 return true;
             }
 
             if (item.hasItemMeta() && item.getItemMeta().hasCustomModelData()) {
+                Debugger.addDebug("ItemQuest:isRequiredItem: Required item has custom model data.");
                 if (provided.hasItemMeta() && provided.getItemMeta().hasCustomModelData()) {
+                    Debugger.addDebug("ItemQuest:isRequiredItem: Provided item has custom model data.");
                     return item.getType() == provided.getType() && item.getItemMeta().getCustomModelData() == provided.getItemMeta().getCustomModelData();
                 }
+                Debugger.addDebug("ItemQuest:isRequiredItem: Provided item does not have custom model data.");
                 return false;
             }
 
             if (item.isSimilar(provided)) {
+                Debugger.addDebug("ItemQuest:isRequiredItem: Item is similar.");
                 return true;
             }
+
+            Debugger.addDebug("ItemQuest:isRequiredItem: Item is not similar.");
         }
+        Debugger.addDebug("ItemQuest:isRequiredItem: Item is not required.");
         return false;
     }
 
