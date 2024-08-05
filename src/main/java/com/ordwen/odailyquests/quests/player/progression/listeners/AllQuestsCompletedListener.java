@@ -4,6 +4,7 @@ import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.functionalities.rewards.GlobalReward;
 import com.ordwen.odailyquests.api.events.AllQuestsCompletedEvent;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -13,6 +14,7 @@ public class AllQuestsCompletedListener implements Listener {
     public void onAllQuestsCompletedEvent(AllQuestsCompletedEvent event) {
         if (event.isCancelled()) return;
 
-        Bukkit.getScheduler().runTaskLater(ODailyQuests.INSTANCE, () -> GlobalReward.sendGlobalReward(event.getPlayer().getName()), 1L);
+        Player player = event.getPlayer();
+        ODailyQuests.morePaperLib.scheduling().entitySpecificScheduler(player).runDelayed(() -> GlobalReward.sendGlobalReward(player.getName()), null, 1L);
     }
 }

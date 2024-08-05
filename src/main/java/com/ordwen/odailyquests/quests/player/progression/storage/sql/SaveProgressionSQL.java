@@ -74,7 +74,7 @@ public class SaveProgressionSQL {
         final LinkedHashMap<AbstractQuest, Progression> quests = playerQuests.getPlayerQuests();
 
         if (isAsync) {
-            Bukkit.getScheduler().runTaskAsynchronously(ODailyQuests.INSTANCE, () -> {
+            ODailyQuests.morePaperLib.scheduling().asyncScheduler().run(() -> {
                 Debugger.addDebug("Saving player " + playerName + " progression asynchronously");
 
                 saveDatas(playerName, timestamp, achievedQuests, totalAchievedQuests, quests);

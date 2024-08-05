@@ -4,10 +4,10 @@ import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
 import com.ordwen.odailyquests.enums.QuestsMessages;
-import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.player.progression.QuestLoaderUtils;
+import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -17,6 +17,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
@@ -45,7 +46,7 @@ public class LoadProgressionSQL {
 
         LinkedHashMap<AbstractQuest, Progression> quests = new LinkedHashMap<>();
 
-        Bukkit.getScheduler().runTaskLaterAsynchronously(ODailyQuests.INSTANCE, () -> {
+        ODailyQuests.morePaperLib.scheduling().asyncScheduler().runDelayed(() -> {
 
             Debugger.addDebug("Running async task to load progression of " + playerName + " from SQL database.");
 
@@ -124,14 +125,14 @@ public class LoadProgressionSQL {
             } else {
                 QuestLoaderUtils.loadNewPlayerQuests(playerName, activeQuests, 0);
             }
-        }, 10);
+        }, Duration.ofMillis(500));
     }
 
     /**
      * Load player quests.
      *
-     * @param playerName       player.
-     * @param quests           list of player quests.
+     * @param playerName player.
+     * @param quests     list of player quests.
      */
     private void loadPlayerQuests(String playerName, LinkedHashMap<AbstractQuest, Progression> quests) {
 

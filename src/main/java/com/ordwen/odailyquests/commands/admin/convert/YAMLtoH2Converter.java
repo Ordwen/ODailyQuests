@@ -5,15 +5,14 @@ import com.ordwen.odailyquests.files.ProgressionFile;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.h2.H2Manager;
 import com.ordwen.odailyquests.tools.PluginLogger;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class YAMLtoH2Converter extends SQLConverter {
 
-    public boolean convert(ODailyQuests oDailyQuests) {
+    public boolean convert() {
 
         try {
-            Bukkit.getScheduler().runTaskAsynchronously(oDailyQuests, () -> {
+            ODailyQuests.morePaperLib.scheduling().asyncScheduler().run(() -> {
 
                 final FileConfiguration progressionFile = ProgressionFile.getProgressionFileConfiguration();
                 final SQLManager sqlManager = new H2Manager(ODailyQuests.INSTANCE);
