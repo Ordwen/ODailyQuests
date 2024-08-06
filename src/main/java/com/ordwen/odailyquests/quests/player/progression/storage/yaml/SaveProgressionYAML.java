@@ -24,7 +24,7 @@ public class SaveProgressionYAML {
     public void saveProgression(String playerName, PlayerQuests playerQuests, boolean isAsync) {
 
         if (isAsync) {
-            Bukkit.getScheduler().runTaskAsynchronously(ODailyQuests.INSTANCE, () -> updateFile(playerName, playerQuests));
+            ODailyQuests.morePaperLib.scheduling().asyncScheduler().run(() -> updateFile(playerName, playerQuests));
         } else updateFile(playerName, playerQuests);
     }
 

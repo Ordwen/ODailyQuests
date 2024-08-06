@@ -97,7 +97,7 @@ public class ProgressionMessage {
                     bossBar.addPlayer(player);
                     currentBossBars.put(player, bossBar);
 
-                    Bukkit.getScheduler().runTaskLater(ODailyQuests.INSTANCE, () -> removeBossBar(player), 100L);
+                    ODailyQuests.morePaperLib.scheduling().entitySpecificScheduler(player).runDelayed(() -> removeBossBar(player), null, 100L);
                 }
             }
         }

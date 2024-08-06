@@ -45,6 +45,7 @@ import com.ordwen.odailyquests.quests.player.progression.storage.sql.mysql.MySQL
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
+import space.arim.morepaperlib.MorePaperLib;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -52,6 +53,7 @@ import java.util.Map;
 public final class ODailyQuests extends JavaPlugin {
 
     public static ODailyQuests INSTANCE;
+    public static MorePaperLib morePaperLib;
     private ODailyQuestsAPI API;
 
     /**
@@ -79,6 +81,7 @@ public final class ODailyQuests extends JavaPlugin {
     public void onEnable() {
         PluginLogger.info("Plugin is starting...");
         ODailyQuestsAPI.disableRegistration();
+        morePaperLib = new MorePaperLib(this);
 
         /* Load Metrics */
         // https://bstats.org/plugin/bukkit/ODailyQuests/14277

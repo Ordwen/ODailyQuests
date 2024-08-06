@@ -47,10 +47,10 @@ public class ConverterManager extends ACommandHandler {
         if (oldFormat.equalsIgnoreCase("yaml")) {
             switch (newFormat) {
                 case "MySQL", "mysql" -> {
-                    return new YAMLtoMySQLConverter().convert(oDailyQuests);
+                    return new YAMLtoMySQLConverter().convert();
                 }
                 case "H2", "h2" -> {
-                    return new YAMLtoH2Converter().convert(oDailyQuests);
+                    return new YAMLtoH2Converter().convert();
                 }
                 default -> {
                     PluginLogger.error("The new format is not supported.");

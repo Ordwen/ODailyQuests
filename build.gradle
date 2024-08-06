@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'io.github.goooler.shadow' version "8.1.7"
 }
 
 group = 'com.ordwen'
@@ -7,6 +8,10 @@ version = '2.3.0-SNAPSHOT-13'
 
 repositories {
     mavenCentral()
+    maven {
+        name 'papermc'
+        url 'https://repo.papermc.io/repository/maven-public/'
+    }
     maven {
         name = 'spigotmc-repo'
         url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
@@ -43,6 +48,10 @@ repositories {
     maven {
         name = 'bg-repo'
         url = 'https://repo.bg-software.com/repository/api/'
+    }
+    maven {
+        name 'arim-mvn-lgpl3'
+        url 'https://mvn-repo.arim.space/lesser-gpl3/'
     }
     maven {
         url = 'https://repo.rosewooddev.io/repository/public/'
@@ -100,14 +109,18 @@ dependencies {
     compileOnly name: 'PyroFishingPro-4.9.1'
 
     /* auto restart */
-    implementation 'com.github.N0RSKA:UltimateAutoRestartAPI:2023.12'
+    compileOnly 'com.github.N0RSKA:UltimateAutoRestartAPI:2023.12'
 
     /* protection */
     compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.5'
-    implementation 'com.github.TownyAdvanced:Towny:0.100.2.2'
+    compileOnly 'com.github.TownyAdvanced:Towny:0.100.2.2'
 
     /* vote */
     compileOnly 'com.github.NuVotifier:NuVotifier:2.7.2'
+
+    /* Folia */
+    implementation 'io.papermc:paperlib:1.0.7'
+    implementation 'space.arim.morepaperlib:morepaperlib:0.4.3'
 
     /* Mojang auth API for heads */
     compileOnly 'com.mojang:authlib:1.5.21'
@@ -127,6 +140,12 @@ tasks.withType(JavaCompile).configureEach {
     }
 }
 
+shadowJar {
+    archiveFileName.set("${project.name}-${project.version}.jar")
+    relocate 'io.papermc.lib', 'com.ordwen.odailyquests.lib.paperlib'
+    relocate 'space.arim.morepaperlib', 'com.ordwen.odailyquests.lib.morepaperlib'
+}
+
 processResources {
     def props = [version: version]
     inputs.properties props
@@ -134,4 +153,8 @@ processResources {
     filesMatching('plugin.yml') {
         expand props
     }
+}
+
+tasks.build {
+    dependsOn shadowJar
 }

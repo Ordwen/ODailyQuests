@@ -25,7 +25,7 @@ public class LoadProgressionYAML {
      */
     public void loadPlayerQuests(String playerName, HashMap<String, PlayerQuests> activeQuests) {
 
-        Bukkit.getScheduler().runTaskAsynchronously(ODailyQuests.INSTANCE, () -> {
+        ODailyQuests.morePaperLib.scheduling().asyncScheduler().run(() -> {
             final FileConfiguration progressionFile = ProgressionFile.getProgressionFileConfiguration();
 
             /* init variables */
