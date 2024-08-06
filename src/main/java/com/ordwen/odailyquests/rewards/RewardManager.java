@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.rewards;
 
+import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.externs.hooks.eco.CoinsEngineHook;
 import com.ordwen.odailyquests.externs.hooks.placeholders.PAPIHook;
@@ -48,7 +49,8 @@ public class RewardManager {
             case COMMAND -> {
                 for (String cmd : reward.getRewardCommands()) {
                     cmd = ColorConvert.convertColorCode(PAPIHook.getPlaceholders(player, cmd));
-                    Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd.replace("%player%", player.getName()));
+                    String finalCmd = cmd;
+                    ODailyQuests.morePaperLib.scheduling().globalRegionalScheduler().run(() -> Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), finalCmd.replace("%player%", player.getName())));
                 }
 
                 msg = QuestsMessages.REWARD_COMMAND.getMessage(player);
@@ -56,13 +58,13 @@ public class RewardManager {
             }
 
             case EXP_LEVELS -> {
-                player.giveExpLevels((int) reward.getRewardAmount());
+                ODailyQuests.morePaperLib.scheduling().entitySpecificScheduler(player).run(() -> player.giveExpLevels((int) reward.getRewardAmount()), null);
                 msg = QuestsMessages.REWARD_EXP_LEVELS.getMessage(player);
                 if (msg != null) player.sendMessage(msg.replace("%rewardAmount%", String.valueOf(reward.getRewardAmount())));
             }
 
             case EXP_POINTS -> {
-                player.giveExp((int) reward.getRewardAmount());
+                ODailyQuests.morePaperLib.scheduling().entitySpecificScheduler(player).run(() -> player.giveExp((int) reward.getRewardAmount()), null);
                 msg = QuestsMessages.REWARD_EXP_POINTS.getMessage(player);
                 if (msg != null) player.sendMessage(msg.replace("%rewardAmount%", String.valueOf(reward.getRewardAmount())));
             }
