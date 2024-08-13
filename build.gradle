@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'com.ordwen'
-version = '2.3.0-SNAPSHOT-13'
+version = '2.3.0-SNAPSHOT-14'
 
 repositories {
     mavenCentral()
@@ -94,10 +94,10 @@ dependencies {
 
     /* custom items */
     compileOnly 'com.github.oraxen:oraxen:1.157.0'
-    compileOnly 'com.github.LoneDev6:API-ItemsAdder:3.5.0b'
+    compileOnly 'com.github.LoneDev6:API-ItemsAdder:3.6.3-beta-14'
     compileOnly 'net.Indyuce:MMOItems-API:6.9.2-SNAPSHOT'
     compileOnly 'io.lumine:MythicLib-dist:1.5.2-SNAPSHOT'
-    compileOnly name: 'PyroFishingPro-4.9.1'
+    compileOnly name: 'PyroFishingPro-4.9.8'
 
     /* auto restart */
     implementation 'com.github.N0RSKA:UltimateAutoRestartAPI:2023.12'

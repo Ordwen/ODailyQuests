@@ -51,7 +51,7 @@ public abstract class ExternalItemGetter implements IExternalItemGetter {
             return new Pair<>("The item " + namespace + " does not exist in ItemsAdder.", null);
         }
 
-        return new Pair<>("", CustomStack.getInstance(namespace).getItemStack());
+        return new Pair<>("", CustomStack.getInstance(namespace).getItemStack().clone());
     }
 
     /**

@@ -22,6 +22,7 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
     final Reward reward;
     final List<String> requiredWorlds;
     final List<String> requiredRegions;
+    final boolean protectionBypass;
     final boolean isUsingPlaceholders;
 
     /**
@@ -33,7 +34,7 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
      * @param amountRequired required amount of the item.
      * @param reward         reward of the quest.
      */
-    protected AbstractQuest(int questIndex, String questName, String categoryName, List<String> questDesc, String questType, ItemStack menuItem, ItemStack achievedItem, int amountRequired, Reward reward, List<String> requiredWorlds, final List<String> requiredRegions, boolean isUsingPlaceholders) {
+    protected AbstractQuest(int questIndex, String questName, String categoryName, List<String> questDesc, String questType, ItemStack menuItem, ItemStack achievedItem, int amountRequired, Reward reward, List<String> requiredWorlds, final List<String> requiredRegions, boolean protectionBypass, boolean isUsingPlaceholders) {
         this.questIndex = questIndex;
         this.questName = questName;
         this.categoryName = categoryName;
@@ -45,6 +46,7 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
         this.reward = reward;
         this.requiredWorlds = requiredWorlds;
         this.requiredRegions = requiredRegions;
+        this.protectionBypass = protectionBypass;
         this.isUsingPlaceholders = isUsingPlaceholders;
     }
 
@@ -65,6 +67,7 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
         this.reward = basicQuest.getReward();
         this.requiredWorlds = basicQuest.getRequiredWorlds();
         this.requiredRegions = basicQuest.getRequiredRegions();
+        this.protectionBypass = basicQuest.isProtectionBypass();
         this.isUsingPlaceholders = basicQuest.isUsingPlaceholders();
     }
 
@@ -165,6 +168,15 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
      */
     public List<String> getRequiredRegions() {
         return this.requiredRegions;
+    }
+
+    /**
+     * Get whether the quest has protection bypass.
+     *
+     * @return quest protection bypass.
+     */
+    public boolean isProtectionBypass() {
+        return this.protectionBypass;
     }
 
     /**

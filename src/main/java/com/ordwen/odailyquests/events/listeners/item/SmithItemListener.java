@@ -42,10 +42,16 @@ public class SmithItemListener extends PlayerProgressor implements Listener {
                 if (recipeAmount == 0)
                     break;
                 int maxCraftable = getMaxSmithAmount(event.getInventory());
-                int capacity = fits(result, event.getView().getBottomInventory());
-                if (capacity < maxCraftable)
+                int capacity = fits(result, player.getInventory().getStorageContents());
+                if (capacity < maxCraftable) {
                     maxCraftable = ((capacity + recipeAmount - 1) / recipeAmount) * recipeAmount;
+                }
                 recipeAmount = maxCraftable;
+            }
+            case SWAP_OFFHAND -> {
+                boolean haveItemInOffHand = player.getInventory().getItemInOffHand().getType() != Material.AIR;
+                if (haveItemInOffHand) recipeAmount = 0;
+                else recipeAmount = 1;
             }
         }
 

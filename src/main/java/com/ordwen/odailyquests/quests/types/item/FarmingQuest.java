@@ -26,7 +26,9 @@ public class FarmingQuest extends ItemQuest {
     @Override
     public boolean canProgress(Event provided) {
         if (provided instanceof PlayerHarvestBlockEvent event) {
-            if (!Protection.canBuild(event.getPlayer(), event.getHarvestedBlock(), "BLOCK_BREAK")) return false;
+            if (!this.isProtectionBypass()) {
+                if (!Protection.canBuild(event.getPlayer(), event.getHarvestedBlock(), "BLOCK_BREAK")) return false;
+            }
             return super.isRequiredItem(current);
         }
 
@@ -37,7 +39,9 @@ public class FarmingQuest extends ItemQuest {
                 return false;
             }
 
-            if (!Protection.canBuild(event.getPlayer(), event.getBlock(),"BLOCK_BREAK")) return false;
+            if (!this.isProtectionBypass()) {
+                if (!Protection.canBuild(event.getPlayer(), event.getBlock(), "BLOCK_BREAK")) return false;
+            }
             return super.isRequiredItem(current);
         }
 

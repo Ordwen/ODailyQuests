@@ -133,19 +133,36 @@ public class PlayerProgressor {
     }
 
     /**
-     * @param stack the item to check.
-     * @param inv   the inventory to check.
+     * @param stack    the item to check.
+     * @param contents the inventory contents to compare.
      * @return the amount of items that can be added to the inventory.
      */
-    public int fits(ItemStack stack, Inventory inv) {
-        ItemStack[] contents = inv.getContents();
+    public int fits(ItemStack stack, ItemStack[] contents) {
         int result = 0;
 
-        for (ItemStack is : contents)
-            if (is == null) result += stack.getMaxStackSize();
-            else if (is.isSimilar(stack)) result += Math.max(stack.getMaxStackSize() - is.getAmount(), 0);
+        for (ItemStack is : contents) {
+            if (is == null) {
+                result += stack.getMaxStackSize();
+            } else if (is.isSimilar(stack)) {
+                result += Math.max(stack.getMaxStackSize() - is.getAmount(), 0);
+            }
+        }
 
         return result;
+    }
+
+    /**
+     * Checks if the item fits in the offhand.
+     *
+     * @param stack   the item to check.
+     * @param offHand the offhand item.
+     * @return the amount of items that can be added to the offhand.
+     */
+    public int fitsInOffHand(ItemStack stack, ItemStack offHand) {
+        if (offHand == null) {
+            return stack.getMaxStackSize();
+        }
+        return Math.max(stack.getMaxStackSize() - offHand.getAmount(), 0);
     }
 
     /**

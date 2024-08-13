@@ -15,7 +15,6 @@ public class CraftItemListener extends PlayerProgressor implements Listener {
 
     @EventHandler
     public void onCraftItemEvent(CraftItemEvent event) {
-
         if (event.isCancelled()) return;
         if (event.getCurrentItem() == null) return;
 
@@ -33,7 +32,11 @@ public class CraftItemListener extends PlayerProgressor implements Listener {
         final ClickType click = event.getClick();
         int recipeAmount = test.getAmount();
 
-        if (movingItem(test, recipeAmount, player, click)) return;
+        /*
+        if (movingItem(test, recipeAmount, player, click)) {
+            return;
+        }
+        */
 
         switch (click) {
             case NUMBER_KEY -> {
@@ -49,10 +52,16 @@ public class CraftItemListener extends PlayerProgressor implements Listener {
                 if (recipeAmount == 0)
                     break;
                 int maxCraftable = getMaxCraftAmount(event.getInventory());
-                int capacity = fits(test, event.getView().getBottomInventory());
-                if (capacity < maxCraftable)
+                int capacity = fits(test, player.getInventory().getStorageContents());
+                if (capacity < maxCraftable) {
                     maxCraftable = ((capacity + recipeAmount - 1) / recipeAmount) * recipeAmount;
+                }
                 recipeAmount = maxCraftable;
+            }
+            case SWAP_OFFHAND -> {
+                boolean haveItemInOffHand = player.getInventory().getItemInOffHand().getType() != Material.AIR;
+                if (haveItemInOffHand) recipeAmount = 0;
+                else recipeAmount = 1;
             }
         }
 

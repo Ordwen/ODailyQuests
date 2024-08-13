@@ -24,7 +24,9 @@ public class PlaceQuest extends ItemQuest {
     public boolean canProgress(Event provided) {
         if (provided instanceof BlockPlaceEvent event) {
             final Block block = event.getBlock();
-            if (!Protection.canBuild(event.getPlayer(), block, "BLOCK_PLACE")) return false;
+            if (!this.isProtectionBypass()) {
+                if (!Protection.canBuild(event.getPlayer(), block, "BLOCK_PLACE")) return false;
+            }
 
             final ItemStack placedItem = event.getItemInHand();
 
