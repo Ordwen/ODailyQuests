@@ -24,10 +24,4 @@ commands:
       - dquestsadmin
       - dqa
       - qadmin
-
-
-
-
-
-
-
+folia-supported: true

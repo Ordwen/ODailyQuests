@@ -120,7 +120,7 @@ public class PlayerProgressor {
 
         if (progression.getProgression() >= quest.getAmountRequired()) {
             Debugger.addDebug("QuestProgressUtils: progression " + progression.getProgression() + " is greater than or equal to amount required " + quest.getAmountRequired() + ".");
-            Bukkit.getScheduler().runTaskLater(ODailyQuests.INSTANCE, () -> {
+            ODailyQuests.morePaperLib.scheduling().globalRegionalScheduler().runDelayed(() -> {
                 Debugger.addDebug("QuestProgressUtils: QuestCompletedEvent is called.");
                 final QuestCompletedEvent completedEvent = new QuestCompletedEvent(player, progression, quest);
                 Bukkit.getPluginManager().callEvent(completedEvent);

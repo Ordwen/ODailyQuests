@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.events.listeners.inventory;
 
+import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
 import com.ordwen.odailyquests.configuration.essentials.UseCustomFurnaceResults;
 import com.ordwen.odailyquests.events.customs.CustomFurnaceExtractEvent;
@@ -122,7 +123,7 @@ public class InventoryClickListener extends AbstractClickableChecker implements 
 
             if (PlayerQuestsInterface.getConsoleCommandsItems().containsKey(slot)) {
                 for (String cmd : PlayerQuestsInterface.getConsoleCommandsItems().get(slot)) {
-                    Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd.replace("%player%", event.getWhoClicked().getName()));
+                    ODailyQuests.morePaperLib.scheduling().globalRegionalScheduler().run(() -> Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd.replace("%player%", event.getWhoClicked().getName())));
                 }
                 return;
             }
