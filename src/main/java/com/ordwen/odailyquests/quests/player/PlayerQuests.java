@@ -108,7 +108,6 @@ public class PlayerQuests {
 
     public void decreaseAchievedQuests() {
         this.achievedQuests--;
-        this.totalAchievedQuests--;
     }
 
     /**
@@ -187,7 +186,9 @@ public class PlayerQuests {
             return false;
         }
 
-        final Category category = CategoriesLoader.getCategoryByName(questToRemove.getCategoryName());
+        final String categoryName = questToRemove.getCategoryName();
+        final Category category = CategoriesLoader.getCategoryByName(categoryName);
+
         if (category == null) {
             PluginLogger.error("An error occurred while rerolling a quest. The category is null.");
             PluginLogger.error("If the problem persists, please contact the developer.");
@@ -215,6 +216,16 @@ public class PlayerQuests {
 
         if (progressionToRemove.isAchieved()) {
             this.decreaseAchievedQuests();
+
+            final int achievedByCategory = this.achievedQuestsByCategory.get(categoryName);
+
+            // check if the player has completed all quests from a category
+            if (achievedByCategory >= QuestsAmount.getQuestsAmountByCategory(categoryName)) {
+                Debugger.addDebug("All quests from category " + categoryName + " have been completed. Nothing to do.");
+            } else {
+                this.achievedQuestsByCategory.put(questToRemove.getCategoryName(), achievedByCategory - 1);
+                Debugger.addDebug("Quest removed from category " + categoryName + ". Quests completed: " + (achievedByCategory - 1) + "/" + QuestsAmount.getQuestsAmountByCategory(categoryName) + ".");
+            }
         }
 
         return true;

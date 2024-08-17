@@ -80,6 +80,7 @@ public class EventsManager {
         Bukkit.getPluginManager().registerEvents(new BlockDropItemListener(), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new PlayerHarvestBlockListener(), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new PlayerDropItemListener(), oDailyQuests);
+        Bukkit.getPluginManager().registerEvents(new StructureGrowListener(), oDailyQuests);
 
         if (Bukkit.getServer().getPluginManager().isPluginEnabled("PyroFishingPro")) {
             Bukkit.getPluginManager().registerEvents(new PyroFishCatchListener(), oDailyQuests);

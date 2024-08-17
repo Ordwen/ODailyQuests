@@ -80,17 +80,6 @@ temporality_initials:
   minutes: "m"
   few_seconds: "Few seconds"
 
-# Here you can customize the progress bar.
-# symbol: the symbol that will be used to fill the progress bar.
-# amount_of_symbols: the number of symbols that will be used.
-# completed_color: the color of the symbols for the progress made.
-# remaining_color: the color of the symbols for the progress to be achieved.
-progress_bar:
-  symbol: "|"
-  amount_of_symbols: 20
-  completed_color: "&a"
-  remaining_color: "&7"
-
 # Global Reward
 # Will be given when the player has completed all his daily quests.
 # The syntax is the same as for quest rewards.
@@ -154,7 +143,21 @@ actionbar:
 progression_message:
   enabled: true
   text: "%progressBar% &7(&b%progress%&a/&b%required% &7- &e%questName%&7)"
-  type: ACTIONBAR
+  type: BOSSBAR
+  bossbar: # only apply if type is set to BOSSBAR
+    color: PURPLE # https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/boss/BarColor.html
+    style: SEGMENTED_6 # https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/boss/BarStyle.html
+
+# Here you can customize the progress bar that can be used with the %progressBar% placeholder.
+# symbol: the symbol that will be used to fill the progress bar.
+# amount_of_symbols: the number of symbols that will be used.
+# completed_color: the color of the symbols for the progress made.
+# remaining_color: the color of the symbols for the progress to be achieved.
+progress_bar:
+  symbol: "|"
+  amount_of_symbols: 20
+  completed_color: "&a"
+  remaining_color: "&7"
 
 # Disables the progression of quests where you have to kill an entity if it comes from a Spawner.
 disable_spawners_progression: false

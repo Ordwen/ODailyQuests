@@ -31,6 +31,9 @@ public class ProgressionMessage {
     private static String message;
     private static ProgressionMessageType progressionMessageType;
 
+    private static BarColor barColor;
+    private static BarStyle barStyle;
+
     private static final Map<Player, BossBar> currentBossBars = new HashMap<>();
 
     /**
@@ -65,6 +68,35 @@ public class ProgressionMessage {
             PluginLogger.warn("Progression message type is invalid, defaulting to CHAT.");
             progressionMessageType = ProgressionMessageType.CHAT;
         }
+
+        if (progressionMessageType == ProgressionMessageType.BOSSBAR) {
+            final String color = configurationFiles.getConfigFile().getString("progression_message.bossbar.color");
+            final String style = configurationFiles.getConfigFile().getString("progression_message.bossbar.style");
+
+            if (color == null) {
+                PluginLogger.warn("Progression message bossbar color is null, defaulting to BLUE.");
+                barColor = BarColor.BLUE;
+            } else {
+                try {
+                    barColor = BarColor.valueOf(color.toUpperCase());
+                } catch (IllegalArgumentException e) {
+                    PluginLogger.warn("Progression message bossbar color is invalid, defaulting to BLUE.");
+                    barColor = BarColor.BLUE;
+                }
+            }
+
+            if (style == null) {
+                PluginLogger.warn("Progression message bossbar style is null, defaulting to SOLID.");
+                barStyle = BarStyle.SOLID;
+            } else {
+                try {
+                    barStyle = BarStyle.valueOf(style.toUpperCase());
+                } catch (IllegalArgumentException e) {
+                    PluginLogger.warn("Progression message bossbar style is invalid, defaulting to SOLID.");
+                    barStyle = BarStyle.SOLID;
+                }
+            }
+        }
     }
 
     /**
@@ -93,7 +125,7 @@ public class ProgressionMessage {
                         return;
                     }
 
-                    final BossBar bossBar = Bukkit.getServer().createBossBar(toSend, BarColor.BLUE, BarStyle.SOLID);
+                    final BossBar bossBar = Bukkit.getServer().createBossBar(toSend, barColor, barStyle);
                     bossBar.addPlayer(player);
                     currentBossBars.put(player, bossBar);
 

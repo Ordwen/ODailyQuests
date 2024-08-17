@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'com.ordwen'
-version = '2.3.0-SNAPSHOT-14'
+version = '2.3.0-SNAPSHOT-15'
 
 repositories {
     mavenCentral()
@@ -77,8 +77,15 @@ dependencies {
     compileOnly 'com.zaxxer:HikariCP:5.0.1'
     compileOnly 'com.h2database:h2:2.1.214'
 
-    /* spigot */
+    /* Spigot */
     compileOnly 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
+
+    /* Folia */
+    //implementation 'io.papermc:paperlib:1.0.7'
+    implementation 'space.arim.morepaperlib:morepaperlib:0.4.3'
+
+    /* Mojang auth API for heads */
+    compileOnly 'com.mojang:authlib:1.5.21'
 
     /* economy & points */
     compileOnly 'com.github.MilkBowl:VaultAPI:1.7'
@@ -106,7 +113,7 @@ dependencies {
     compileOnly 'com.github.LoneDev6:API-ItemsAdder:3.6.3-beta-14'
     compileOnly 'net.Indyuce:MMOItems-API:6.9.2-SNAPSHOT'
     compileOnly 'io.lumine:MythicLib-dist:1.5.2-SNAPSHOT'
-    compileOnly name: 'PyroFishingPro-4.9.8'
+    compileOnly name: 'PyroFishingPro-4.9.11'
 
     /* auto restart */
     compileOnly 'com.github.N0RSKA:UltimateAutoRestartAPI:2023.12'
@@ -117,13 +124,6 @@ dependencies {
 
     /* vote */
     compileOnly 'com.github.NuVotifier:NuVotifier:2.7.2'
-
-    /* Folia */
-    implementation 'io.papermc:paperlib:1.0.7'
-    implementation 'space.arim.morepaperlib:morepaperlib:0.4.3'
-
-    /* Mojang auth API for heads */
-    compileOnly 'com.mojang:authlib:1.5.21'
 }
 
 def targetJavaVersion = 16
