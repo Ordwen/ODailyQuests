@@ -37,6 +37,7 @@ public class AdminCommands implements CommandExecutor {
                     case "show" -> new ShowCommand(sender, args).handle();
                     case "open" -> new OpenCommand(sender, args).handle();
                     case "complete" -> new CompleteCommand(sender, args).handle();
+                    case "customcomplete" -> new CustomCompleteCommand(sender, args).handle();
                     case "holo" -> new HoloCommand(sender, args).handle();
                     default -> help(sender);
                 }

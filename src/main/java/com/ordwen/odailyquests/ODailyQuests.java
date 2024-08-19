@@ -2,6 +2,7 @@ package com.ordwen.odailyquests;
 
 import com.ordwen.odailyquests.api.ODailyQuestsAPI;
 import com.ordwen.odailyquests.api.quests.QuestTypeRegistry;
+import com.ordwen.odailyquests.configuration.essentials.CustomTypes;
 import com.ordwen.odailyquests.events.restart.RestartHandler;
 import com.ordwen.odailyquests.externs.IntegrationsManager;
 import com.ordwen.odailyquests.commands.admin.AdminCommands;
