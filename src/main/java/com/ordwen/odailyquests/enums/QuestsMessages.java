@@ -18,6 +18,7 @@ public enum QuestsMessages {
     ADMIN_HELP("admin_help", """
             &c&nAdmin commands:
             &e/dqa complete <player> <index> &a: complete a player quest
+            &e/dqa customcomplete <player> <index> <amount> &a: complete a player quest from a custom type
             &e/dqa reset <quests/total> <player> &a: draw new quests for a player, or reset his total number of achieved quests.
             &e/dqa add total <player> <amount> &a: add a number of achieved quests to a player.
             &e/dqa reroll <player> <index> &a: draw a new quest for a player, at a specific index.

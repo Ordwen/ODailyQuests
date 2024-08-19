@@ -126,9 +126,9 @@ public class QuestsLoader extends QuestItemGetter {
             if (base == null) continue;
 
             final String questType = base.getQuestType();
-             if (registerQuest(quests, fileName, questType, base, questSection, fileQuest)) {
-                 questIndex++;
-             }
+            if (registerQuest(quests, fileName, questType, base, questSection, fileQuest)) {
+                questIndex++;
+            }
         }
 
         PluginLogger.info(quests.size() + " quests loaded from " + fileName + " file.");

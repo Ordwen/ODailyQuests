@@ -44,6 +44,7 @@ public class ConfigurationManager {
         new QuestsAmount(configurationFiles).loadQuestsAmount();
         new UseCustomFurnaceResults(configurationFiles).loadUseCustomFurnaceResults();
         new Logs(configurationFiles).loadLogs();
+        new CustomTypes(configurationFiles).loadCustomTypes();
 
         // functionalities
         new ActionBar(configurationFiles).loadActionbar();

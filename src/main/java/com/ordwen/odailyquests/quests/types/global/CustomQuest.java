@@ -4,26 +4,27 @@ import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.Event;
-import org.bukkit.event.player.PlayerInteractEvent;
+import org.jetbrains.annotations.Nullable;
 
-public class CarveQuest extends AbstractQuest {
+public class CustomQuest extends AbstractQuest {
 
-    public CarveQuest(BasicQuest base) {
+    public CustomQuest(BasicQuest base) {
         super(base);
     }
 
     @Override
     public String getType() {
-        return "CARVE";
+        return this.getQuestType();
     }
 
     @Override
-    public boolean canProgress(Event provided) {
-        return provided instanceof PlayerInteractEvent;
+    public boolean canProgress(@Nullable Event provided) {
+        return true;
     }
 
     @Override
     public boolean loadParameters(ConfigurationSection section, String file, String index) {
         return true;
     }
+
 }
