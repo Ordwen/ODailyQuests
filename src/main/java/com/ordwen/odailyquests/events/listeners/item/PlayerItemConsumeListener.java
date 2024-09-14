@@ -21,9 +21,14 @@ public class PlayerItemConsumeListener extends PlayerProgressor implements Liste
         setPlayerQuestProgression(event, event.getPlayer(), 1, "CONSUME");
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onResurrect(EntityResurrectEvent event) {
-        if(!(event.getEntity() instanceof Player player)) return;
+        if (event.isCancelled()) {
+            Debugger.addDebug("PlayerItemConsumeListener: onResurrect cancelled.");
+            return;
+        }
+
+        if (!(event.getEntity() instanceof Player player)) return;
         setPlayerQuestProgression(event, player, 1, "CONSUME");
     }
 }
