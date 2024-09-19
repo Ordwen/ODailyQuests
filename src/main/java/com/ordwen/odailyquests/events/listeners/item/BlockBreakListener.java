@@ -3,6 +3,7 @@ package com.ordwen.odailyquests.events.listeners.item;
 import com.ordwen.odailyquests.configuration.essentials.Antiglitch;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.integrations.ItemsAdderEnabled;
+import com.ordwen.odailyquests.externs.hooks.items.KGeneratorsHook;
 import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
 import dev.lone.itemsadder.api.CustomBlock;
 import org.bukkit.block.Block;
@@ -16,6 +17,7 @@ public class BlockBreakListener extends PlayerProgressor implements Listener {
 
     @EventHandler
     public void onBlockBreakEvent(BlockBreakEvent event) {
+
         Debugger.addDebug("BlockBreakListener: onBlockBreakEvent summoned.");
         if (event.isCancelled()) {
             Debugger.addDebug("BlockBreakListener: onBlockBreakEvent cancelled.");
@@ -44,8 +46,12 @@ public class BlockBreakListener extends PlayerProgressor implements Listener {
                 }
             } else {
                 if (!block.getMetadata("odailyquests:placed").isEmpty()) {
-                    Debugger.addDebug("BlockBreakListener: onBlockBreakEvent cancelled due to placed block.");
-                    valid = false;
+                    if (KGeneratorsHook.isKGeneratorsLocation(block.getLocation())) {
+                        Debugger.addDebug("BlockBreakListener: onBlockBreakEvent processing KGenerators generator.");
+                    } else {
+                        Debugger.addDebug("BlockBreakListener: onBlockBreakEvent cancelled due to placed block.");
+                        valid = false;
+                    }
                 }
             }
             Debugger.addDebug("BlockBreakListener: onBlockBreakEvent placed block check complete.");
