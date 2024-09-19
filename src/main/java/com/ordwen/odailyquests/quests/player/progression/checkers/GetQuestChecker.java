@@ -6,9 +6,13 @@ import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.types.shared.ItemQuest;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+
+import java.util.Map;
 
 public class GetQuestChecker {
 
@@ -54,7 +58,19 @@ public class GetQuestChecker {
                     int removeAmount = Math.min(current, quest.getAmountRequired() - totalRemoved);
 
                     toRemove.setAmount(removeAmount);
-                    if (!ignoreNbt) player.getInventory().removeItem(toRemove);
+
+                    final ItemStack[] copy = player.getInventory().getContents();
+
+                    if (!ignoreNbt) {
+                        final Map<Integer, ItemStack> notRemoved = player.getInventory().removeItem(toRemove);
+                        if (!notRemoved.isEmpty()) {
+                            player.getInventory().setContents(copy);
+
+                            final String msg = QuestsMessages.NOT_ENOUGH_ITEM.getMessage(player);
+                            if (msg != null) player.sendMessage(msg);
+                            return;
+                        }
+                    }
                     else removeItem(player.getInventory(), toRemove, removeAmount);
 
                     totalRemoved += current;
