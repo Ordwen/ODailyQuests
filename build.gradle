@@ -105,7 +105,7 @@ dependencies {
     compileOnly 'com.bgsoftware:WildStackerAPI:3.8.0'
 
     /* guis */
-    compileOnly 'me.clip:placeholderapi:2.10.0'
+    compileOnly 'me.clip:placeholderapi:2.11.6'
     compileOnly 'com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.4.9'
 
     /* custom items */
@@ -113,6 +113,7 @@ dependencies {
     compileOnly 'com.github.LoneDev6:API-ItemsAdder:3.6.3-beta-14'
     compileOnly 'net.Indyuce:MMOItems-API:6.9.2-SNAPSHOT'
     compileOnly 'io.lumine:MythicLib-dist:1.5.2-SNAPSHOT'
+    compileOnly 'me.kryniowesegryderiusz:kgenerators-core:7.3'
     compileOnly name: 'PyroFishingPro-4.9.11'
 
     /* auto restart */

@@ -5,6 +5,7 @@ import com.ordwen.odailyquests.externs.hooks.Protection;
 import com.ordwen.odailyquests.externs.hooks.eco.CoinsEngineHook;
 import com.ordwen.odailyquests.externs.hooks.eco.VaultHook;
 import com.ordwen.odailyquests.externs.hooks.holograms.HolographicDisplaysHook;
+import com.ordwen.odailyquests.externs.hooks.items.KGeneratorsHook;
 import com.ordwen.odailyquests.externs.hooks.mobs.EliteMobsHook;
 import com.ordwen.odailyquests.externs.hooks.mobs.MythicMobsHook;
 import com.ordwen.odailyquests.externs.hooks.npcs.CitizensHook;
@@ -40,6 +41,7 @@ public class IntegrationsManager {
         loadPAPI();
         loadWildStacker();
         loadRoseStacker();
+        loadKGenerators();
 
         new Protection().load();
     }
@@ -138,6 +140,15 @@ public class IntegrationsManager {
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new PAPIExpansion().register();
             PluginLogger.info("PlaceholderAPI successfully hooked.");
+        }
+    }
+
+    /**
+     * Hook - KGenerators
+     */
+    private void loadKGenerators() {
+        if (KGeneratorsHook.setupKGeneratorsAPI()) {
+            PluginLogger.info("KGenerators successfully hooked.");
         }
     }
 }
