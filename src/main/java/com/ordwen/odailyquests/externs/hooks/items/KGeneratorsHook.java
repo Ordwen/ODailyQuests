@@ -1,7 +1,6 @@
 package com.ordwen.odailyquests.externs.hooks.items;
 
 import me.kryniowesegryderiusz.kgenerators.api.KGeneratorsAPI;
-import me.kryniowesegryderiusz.kgenerators.api.interfaces.IGeneratorLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
@@ -17,6 +16,7 @@ public class KGeneratorsHook {
             isHooked = true;
             return true;
         }
+
         return false;
     }
 
