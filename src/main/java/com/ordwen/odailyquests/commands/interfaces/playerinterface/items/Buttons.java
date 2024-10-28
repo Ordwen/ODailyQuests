@@ -3,6 +3,7 @@ package com.ordwen.odailyquests.commands.interfaces.playerinterface.items;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
+import com.ordwen.odailyquests.nms.NMSHandler;
 import com.ordwen.odailyquests.tools.ColorConvert;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Material;
@@ -62,22 +63,9 @@ public class Buttons {
 
     public static ItemStack getCustomHead(String texture) {
         final ItemStack itemStack = new ItemStack(Material.PLAYER_HEAD, 1);
-        final SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
 
-        final GameProfile gameProfile = new GameProfile(UUID.randomUUID(), "ODQ");
-
-        final String toEncode = "{textures:{SKIN:{url:\"https://textures.minecraft.net/texture/" + texture + "\"}}}";
-        final byte[] data = Base64.getEncoder().encodeToString(toEncode.getBytes()).getBytes();
-
-        gameProfile.getProperties().put("textures", new Property("textures", new String(data)));
-
-        try {
-            final Method setProfileMethod = skullMeta.getClass().getDeclaredMethod("setProfile", GameProfile.class);
-            setProfileMethod.setAccessible(true);
-            setProfileMethod.invoke(skullMeta, gameProfile);
-        } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            PluginLogger.error(e.getMessage());
-        }
+        SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
+        skullMeta = NMSHandler.applySkullTexture(skullMeta, texture);
 
         itemStack.setItemMeta(skullMeta);
         return itemStack;
