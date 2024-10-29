@@ -23,7 +23,7 @@ public class NMSHandler {
     private final String version;
 
     private NMSHandler() {
-        this.version = Bukkit.getVersion().split("-")[0];
+        this.version = Bukkit.getBukkitVersion().split("-")[0];
         System.out.println("VERSION: " + version);
     }
 
