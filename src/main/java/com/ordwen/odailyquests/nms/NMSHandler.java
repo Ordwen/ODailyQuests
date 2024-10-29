@@ -24,7 +24,6 @@ public class NMSHandler {
 
     private NMSHandler() {
         this.version = Bukkit.getBukkitVersion().split("-")[0];
-        System.out.println("VERSION: " + version);
     }
 
     public static NMSHandler getInstance() {
@@ -40,9 +39,6 @@ public class NMSHandler {
     }
 
     public static SkullMeta applySkullTexture(SkullMeta skullMeta, String texture) {
-        System.out.println("APPLY SKULL TEXTURE");
-        System.out.println("VERSION: " + getInstance().getVersion());
-
         if (getInstance().isVersionAtLeast("1.18.1")) {
             return applyTextureModern(skullMeta, texture);
         } else {
@@ -51,9 +47,7 @@ public class NMSHandler {
     }
 
     private static SkullMeta applyTextureModern(SkullMeta skullMeta, String texture) {
-        System.out.println("APPLY TEXTURE MODERN");
-
-        PlayerProfile profile = Bukkit.createPlayerProfile(DUMMY_UUID);
+        final PlayerProfile profile = Bukkit.createPlayerProfile(DUMMY_UUID);
         final PlayerTextures textures = profile.getTextures();
 
         final URL url;
@@ -72,8 +66,6 @@ public class NMSHandler {
     }
 
     private static SkullMeta applyTextureLegacy(SkullMeta skullMeta, String texture) {
-        System.out.println("APPLY TEXTURE LEGACY");
-
         final GameProfile profile = new GameProfile(DUMMY_UUID, "odq_skull");
         final String toEncode = "{textures:{SKIN:{url:\"https://textures.minecraft.net/texture/" + texture + "\"}}}";
         final byte[] data = Base64.getEncoder().encodeToString(toEncode.getBytes()).getBytes();
