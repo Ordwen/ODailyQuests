@@ -16,7 +16,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 public class BlockBreakListener extends PlayerProgressor implements Listener {
 
     @EventHandler
-    public void onBlockBreakEvent(BlockBreakEvent event) {
+    public void onBlockBreakEvent(final BlockBreakEvent event) {
 
         Debugger.addDebug("BlockBreakListener: onBlockBreakEvent summoned.");
         if (event.isCancelled()) {
@@ -35,11 +35,16 @@ public class BlockBreakListener extends PlayerProgressor implements Listener {
             }
         }
 
+        if (!block.getType().isItem()) {
+            Debugger.addDebug("BlockBreakListener: O tipo do bloco " + block.getType() + " não é um item válido. Evento cancelado.");
+            return;
+        }
+
         boolean valid = true;
 
         if (Antiglitch.isStorePlacedBlocks()) {
             Debugger.addDebug("BlockBreakListener: onBlockBreakEvent checking for placed blocks.");
-            if (block.getBlockData() instanceof Ageable ageable) {
+            if (block.getBlockData() instanceof final Ageable ageable) {
                 if (ageable.getAge() != ageable.getMaximumAge()) {
                     Debugger.addDebug("BlockBreakListener: onBlockBreakEvent cancelled due to ageable block.");
                     valid = false;
