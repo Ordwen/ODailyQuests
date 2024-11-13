@@ -16,32 +16,12 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.inventory.ClickType;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class PlayerProgressor {
-
-    /**
-     * Set the player's progression for a specific quest type
-     *
-     * @param player    the player to set the progression for
-     * @param amount    the amount to set the progression to
-     * @param questType the quest type to set the progression for
-     */
-    public void setPlayerQuestProgression(Event event, Player player, int amount, String questType) {
-        if (DisabledWorlds.isWorldDisabled(player.getWorld().getName())) {
-            Debugger.addDebug("PlayerProgressor: setPlayerQuestProgression cancelled due to disabled world.");
-            return;
-        }
-
-        if (QuestsManager.getActiveQuests().containsKey(player.getName())) {
-            Debugger.addDebug("Active quests contain " + player.getName() + ".");
-            checkForProgress(event, player, amount, questType);
-        }
-    }
 
     /**
      * Check for progress for a specific quest type
@@ -130,6 +110,25 @@ public class PlayerProgressor {
         }
 
         ProgressionMessage.sendProgressionMessage(player, quest.getQuestName(), progression.getProgression(), quest.getAmountRequired());
+    }
+
+    /**
+     * Set the player's progression for a specific quest type
+     *
+     * @param player    the player to set the progression for
+     * @param amount    the amount to set the progression to
+     * @param questType the quest type to set the progression for
+     */
+    public void setPlayerQuestProgression(Event event, Player player, int amount, String questType) {
+        if (DisabledWorlds.isWorldDisabled(player.getWorld().getName())) {
+            Debugger.addDebug("PlayerProgressor: setPlayerQuestProgression cancelled due to disabled world.");
+            return;
+        }
+
+        if (QuestsManager.getActiveQuests().containsKey(player.getName())) {
+            Debugger.addDebug("Active quests contain " + player.getName() + ".");
+            checkForProgress(event, player, amount, questType);
+        }
     }
 
     /**

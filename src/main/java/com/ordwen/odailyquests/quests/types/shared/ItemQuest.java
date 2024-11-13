@@ -16,7 +16,7 @@ public abstract class ItemQuest extends AbstractQuest {
 
     private static final Set<Material> POTIONS_TYPES = Set.of(Material.POTION, Material.SPLASH_POTION, Material.LINGERING_POTION);
     private static final String TYPE_PATH = ".required_item";
-    
+
     private final List<ItemStack> requiredItems;
     private boolean ignoreNbt = false;
 

@@ -2,7 +2,6 @@ package com.ordwen.odailyquests.events.listeners.entity.custom.stackers;
 
 import com.bgsoftware.wildstacker.api.events.EntityUnstackEvent;
 import com.ordwen.odailyquests.configuration.integrations.WildStackerEnabled;
-
 import com.ordwen.odailyquests.events.antiglitch.EntitySource;
 import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
 import org.bukkit.entity.Entity;

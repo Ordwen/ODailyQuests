@@ -1,7 +1,6 @@
 package com.ordwen.odailyquests.events.listeners.item;
 
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
-
 import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -9,7 +8,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.CraftItemEvent;
-import org.bukkit.inventory.*;
+import org.bukkit.inventory.ComplexRecipe;
+import org.bukkit.inventory.CraftingInventory;
+import org.bukkit.inventory.ItemStack;
 
 public class CraftItemListener extends PlayerProgressor implements Listener {
 

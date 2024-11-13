@@ -12,6 +12,7 @@ public class Reward {
 
     /**
      * Constructor for a reward with a command.
+     *
      * @param commands the reward-command.
      */
     public Reward(RewardType rewardType, List<String> commands) {
@@ -24,6 +25,7 @@ public class Reward {
 
     /**
      * Constructor for other reward.
+     *
      * @param amount the reward amount.
      */
     public Reward(RewardType rewardType, double amount) {
@@ -37,9 +39,10 @@ public class Reward {
 
     /**
      * Constructor for a reward that is using CoinsEngine.
-     * @param currencyLabel the reward-currency, by its name in the configuration.
+     *
+     * @param currencyLabel       the reward-currency, by its name in the configuration.
      * @param currencyDisplayName the name of the currency that will be displayed to the player.
-     * @param amount the reward amount.
+     * @param amount              the reward amount.
      */
     public Reward(RewardType rewardType, String currencyLabel, String currencyDisplayName, int amount) {
         this.rewardType = rewardType;
@@ -52,6 +55,7 @@ public class Reward {
 
     /**
      * Get the command of a reward.
+     *
      * @return the command to perform.
      */
     public List<String> getRewardCommands() {
@@ -60,6 +64,7 @@ public class Reward {
 
     /**
      * Get the amount of a reward.
+     *
      * @return the quantity to give.
      */
     public double getRewardAmount() {
@@ -68,6 +73,7 @@ public class Reward {
 
     /**
      * Get the currency of a reward.
+     *
      * @return the currency to give.
      */
     public String getRewardCurrency() {
@@ -76,6 +82,7 @@ public class Reward {
 
     /**
      * Get the currency display name of a reward.
+     *
      * @return the currency display name to give.
      */
     public String getRewardCurrencyDisplayName() {
@@ -84,6 +91,7 @@ public class Reward {
 
     /**
      * Get the reward type of reward.
+     *
      * @return reward-type.
      */
     public RewardType getRewardType() {

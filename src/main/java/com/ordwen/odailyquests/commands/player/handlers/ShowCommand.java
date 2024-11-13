@@ -37,6 +37,7 @@ public class ShowCommand extends PCommandHandler {
 
     /**
      * Opens the category interface.
+     *
      * @param category the category.
      */
     private void openCategory(String category) {

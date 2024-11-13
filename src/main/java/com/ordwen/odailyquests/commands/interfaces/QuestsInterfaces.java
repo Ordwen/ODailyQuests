@@ -2,13 +2,13 @@ package com.ordwen.odailyquests.commands.interfaces;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.Buttons;
+import com.ordwen.odailyquests.configuration.functionalities.progression.ProgressBar;
 import com.ordwen.odailyquests.externs.hooks.placeholders.PAPIHook;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.tools.Pair;
 import com.ordwen.odailyquests.tools.PluginLogger;
-import com.ordwen.odailyquests.configuration.functionalities.progression.ProgressBar;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -18,30 +18,41 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class QuestsInterfaces {
 
+    private static final List<ItemStack> emptyCaseItems = new ArrayList<>();
     /**
      * Getting instance of classes.
      */
     private final ConfigurationFiles configurationFiles;
-
+    /* init items */
+    private final float invSize = 45;
+    private final Map<String, Pair<String, List<Inventory>>> categorizedInterfaces = new HashMap<>();
+    private final NamespacedKey usePlaceholdersKey = new NamespacedKey(ODailyQuests.INSTANCE, "odq_interface_use_placeholders");
+    private final NamespacedKey requiredKey = new NamespacedKey(ODailyQuests.INSTANCE, "odq_interface_required");
     /**
      * Class instance constructor.
+     *
      * @param configurationFiles configuration files class.
      */
-    public QuestsInterfaces(ConfigurationFiles configurationFiles) {
+    public QuestsInterfaces(final ConfigurationFiles configurationFiles) {
         this.configurationFiles = configurationFiles;
     }
 
-    /* init items */
-    private final float invSize = 45;
-    private static final List<ItemStack> emptyCaseItems = new ArrayList<>();
-    private final Map<String, Pair<String, List<Inventory>>> categorizedInterfaces = new HashMap<>();
-
-    private final NamespacedKey usePlaceholdersKey = new NamespacedKey(ODailyQuests.INSTANCE, "odq_interface_use_placeholders");
-    private final NamespacedKey requiredKey = new NamespacedKey(ODailyQuests.INSTANCE, "odq_interface_required");
+    /**
+     * Get empty case item material.
+     *
+     * @return material.
+     */
+    public static List<ItemStack> getEmptyCaseItems() {
+        return emptyCaseItems;
+    }
 
     /**
      * Load the global quests interface.
@@ -54,7 +65,7 @@ public class QuestsInterfaces {
         emptyCaseItems.add(globalEmptyCaseItem);
 
         /* Global quests inventory */
-        int neededInventories = (int) Math.ceil(CategoriesLoader.getGlobalQuests().size() / invSize);
+        final int neededInventories = (int) Math.ceil(CategoriesLoader.getGlobalQuests().size() / invSize);
         loadSelectedInterface("global", InterfacesManager.getGlobalQuestsInventoryName(), globalEmptyCaseItem, neededInventories, CategoriesLoader.getGlobalQuests());
     }
 
@@ -85,11 +96,12 @@ public class QuestsInterfaces {
 
     /**
      * Load specified interface.
+     *
      * @param inventoryName name of interface.
      * @param emptyCaseItem item for empty-cases.
-     * @param quests list of quests.
+     * @param quests        list of quests.
      */
-    public void loadSelectedInterface(String category, String inventoryName, ItemStack emptyCaseItem, int neededInventories, ArrayList<AbstractQuest> quests) {
+    public void loadSelectedInterface(final String category, final String inventoryName, final ItemStack emptyCaseItem, final int neededInventories, final ArrayList<AbstractQuest> quests) {
 
         boolean allQuestsLoaded = false;
         int currentQuestIndex = 0;
@@ -97,7 +109,7 @@ public class QuestsInterfaces {
         final List<Inventory> questsInventories = new ArrayList<>();
 
         for (int i = 0; i < neededInventories; i++) {
-            Inventory inv = Bukkit.createInventory(null, 54, inventoryName + " - " + (i + 1));
+            final Inventory inv = Bukkit.createInventory(null, 54, inventoryName + " - " + (i + 1));
             if (i > 0) {
                 inv.setItem(45, Buttons.getPreviousButton());
             }
@@ -107,7 +119,7 @@ public class QuestsInterfaces {
             questsInventories.add(inv);
         }
 
-        for (Inventory inv : questsInventories) {
+        for (final Inventory inv : questsInventories) {
             int i = 0;
 
             /* add quests items on slots */
@@ -148,7 +160,7 @@ public class QuestsInterfaces {
         PluginLogger.fine("Categorized quests interface named " + inventoryName + " successfully loaded.");
     }
 
-    public Inventory getInterfacePage(String category, int page, Player player) {
+    public Inventory getInterfacePage(final String category, final int page, final Player player) {
         final Inventory inventory = categorizedInterfaces.get(category).second().get(page);
 
         for (int i = 0; i < inventory.getSize(); i++) {
@@ -173,14 +185,5 @@ public class QuestsInterfaces {
             }
         }
         return inventory;
-    }
-
-    /**
-     * Get empty case item material.
-     *
-     * @return material.
-     */
-    public static List<ItemStack> getEmptyCaseItems() {
-        return emptyCaseItems;
     }
 }

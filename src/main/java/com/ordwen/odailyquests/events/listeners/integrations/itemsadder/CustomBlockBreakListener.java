@@ -1,7 +1,6 @@
 package com.ordwen.odailyquests.events.listeners.integrations.itemsadder;
 
 import com.ordwen.odailyquests.configuration.essentials.Antiglitch;
-
 import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
 import dev.lone.itemsadder.api.Events.CustomBlockBreakEvent;
 import org.bukkit.block.Block;

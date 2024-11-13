@@ -22,8 +22,65 @@ public class CategoriesRewards {
     private final ConfigurationFiles configurationFiles;
     private final RewardLoader rewardLoader = new RewardLoader();
 
-    public CategoriesRewards(ConfigurationFiles configurationFiles) {
+    public CategoriesRewards(final ConfigurationFiles configurationFiles) {
         this.configurationFiles = configurationFiles;
+    }
+
+    /**
+     * Send a reward to a player depending on the category.
+     *
+     * @param player   player.
+     * @param category category.
+     */
+    public static void sendCategoryReward(final Player player, final String category) {
+        switch (category) {
+            case "easyQuests" -> sendEasyReward(player);
+            case "mediumQuests" -> sendMediumReward(player);
+            case "hardQuests" -> sendHardReward(player);
+            default -> PluginLogger.error("Category " + category + " is not valid.");
+        }
+    }
+
+    /**
+     * Give reward when players have completed all their easy quests.
+     *
+     * @param player player.
+     */
+    private static void sendEasyReward(final Player player) {
+        if (isEasyRewardEnabled) {
+            final String msg = QuestsMessages.EASY_QUESTS_ACHIEVED.getMessage(player);
+            if (msg != null) player.sendMessage(msg);
+
+            RewardManager.sendQuestReward(player, easyReward);
+        }
+    }
+
+    /**
+     * Give reward when players have completed all their medium quests.
+     *
+     * @param player player.
+     */
+    private static void sendMediumReward(final Player player) {
+        if (isMediumRewardEnabled) {
+            final String msg = QuestsMessages.MEDIUM_QUESTS_ACHIEVED.getMessage(player);
+            if (msg != null) player.sendMessage(msg);
+
+            RewardManager.sendQuestReward(player, mediumReward);
+        }
+    }
+
+    /**
+     * Give reward when players have completed all their hard quests.
+     *
+     * @param player player.
+     */
+    private static void sendHardReward(final Player player) {
+        if (isHardRewardEnabled) {
+            final String msg = QuestsMessages.HARD_QUESTS_ACHIEVED.getMessage(player);
+            if (msg != null) player.sendMessage(msg);
+
+            RewardManager.sendQuestReward(player, hardReward);
+        }
     }
 
     /**
@@ -75,59 +132,6 @@ public class CategoriesRewards {
             }
 
             hardReward = rewardLoader.getRewardFromSection(hardRewardSection, "config.yml", null);
-        }
-    }
-
-    /**
-     * Send a reward to a player depending on the category.
-     * @param player player.
-     * @param category category.
-     */
-    public static void sendCategoryReward(Player player, String category) {
-        switch (category) {
-            case "easyQuests" -> sendEasyReward(player);
-            case "mediumQuests" -> sendMediumReward(player);
-            case "hardQuests" -> sendHardReward(player);
-            default -> PluginLogger.error("Category " + category + " is not valid.");
-        }
-    }
-
-    /**
-     * Give reward when players have completed all their easy quests.
-     * @param player player.
-     */
-    private static void sendEasyReward(Player player) {
-        if (isEasyRewardEnabled) {
-            final String msg = QuestsMessages.EASY_QUESTS_ACHIEVED.getMessage(player);
-            if (msg != null) player.sendMessage(msg);
-
-            RewardManager.sendQuestReward(player, easyReward);
-        }
-    }
-
-    /**
-     * Give reward when players have completed all their medium quests.
-     * @param player player.
-     */
-    private static void sendMediumReward(Player player) {
-        if (isMediumRewardEnabled) {
-            final String msg = QuestsMessages.MEDIUM_QUESTS_ACHIEVED.getMessage(player);
-            if (msg != null) player.sendMessage(msg);
-
-            RewardManager.sendQuestReward(player, mediumReward);
-        }
-    }
-
-    /**
-     * Give reward when players have completed all their hard quests.
-     * @param player player.
-     */
-    private static void sendHardReward(Player player) {
-        if (isHardRewardEnabled) {
-            final String msg = QuestsMessages.HARD_QUESTS_ACHIEVED.getMessage(player);
-            if (msg != null) player.sendMessage(msg);
-
-            RewardManager.sendQuestReward(player, hardReward);
         }
     }
 }

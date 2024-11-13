@@ -9,18 +9,20 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Called when a player completed all his quests from a category.
  * If defined, this method sends the reward associated with the category to the player.
+ *
  * @since 2.1.0
  */
 public class AllCategoryQuestsCompletedEvent extends Event implements Cancellable {
 
+    private static final HandlerList HANDLERS = new HandlerList();
     private final Player player;
     private final String category;
-    private static final HandlerList HANDLERS = new HandlerList();
     private boolean isCancelled;
 
     /**
      * Constructor for the AllQuestsFromCategoryCompleted.
-     * @param player player who completed all his quests.
+     *
+     * @param player   player who completed all his quests.
      * @param category name of the category.
      */
     public AllCategoryQuestsCompletedEvent(Player player, String category) {
@@ -29,13 +31,13 @@ public class AllCategoryQuestsCompletedEvent extends Event implements Cancellabl
         this.isCancelled = false;
     }
 
-    @NotNull
-    @Override
-    public HandlerList getHandlers() {
+    public static HandlerList getHandlerList() {
         return HANDLERS;
     }
 
-    public static HandlerList getHandlerList() {
+    @NotNull
+    @Override
+    public HandlerList getHandlers() {
         return HANDLERS;
     }
 
@@ -51,6 +53,7 @@ public class AllCategoryQuestsCompletedEvent extends Event implements Cancellabl
 
     /**
      * Get the player who completed all his quests.
+     *
      * @return Player object
      */
     public Player getPlayer() {
@@ -59,6 +62,7 @@ public class AllCategoryQuestsCompletedEvent extends Event implements Cancellabl
 
     /**
      * Get the name of the quests' category.
+     *
      * @return the name of the quests' category.
      */
     public String getCategory() {

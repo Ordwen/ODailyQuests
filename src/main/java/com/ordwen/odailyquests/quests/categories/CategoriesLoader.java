@@ -22,6 +22,59 @@ public class CategoriesLoader {
     private final QuestsLoader questsLoader = new QuestsLoader();
 
     /**
+     * Get category by name.
+     *
+     * @param name category name.
+     * @return category.
+     */
+    public static Category getCategoryByName(String name) {
+        switch (name) {
+            case "globalQuests" -> {
+                return globalCategory;
+            }
+            case "easyQuests" -> {
+                return easyCategory;
+            }
+            case "mediumQuests" -> {
+                return mediumCategory;
+            }
+            case "hardQuests" -> {
+                return hardCategory;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Get global quests.
+     */
+    public static ArrayList<AbstractQuest> getGlobalQuests() {
+        return globalCategory;
+    }
+
+    /**
+     * Get easy quests.
+     */
+    public static ArrayList<AbstractQuest> getEasyQuests() {
+        return easyCategory;
+    }
+
+    /**
+     * Get medium quests.
+     */
+    public static ArrayList<AbstractQuest> getMediumQuests() {
+        return mediumCategory;
+    }
+
+    /**
+     * Get hard quests.
+     */
+    public static ArrayList<AbstractQuest> getHardQuests() {
+        return hardCategory;
+    }
+
+    /**
      * Load all quests from files.
      */
     public void loadCategories() {
@@ -75,57 +128,5 @@ public class CategoriesLoader {
         } else {
             PluginLogger.error("Impossible to load the quests. The selected mode is incorrect.");
         }
-    }
-
-    /**
-     * Get category by name.
-     * @param name category name.
-     * @return category.
-     */
-    public static Category getCategoryByName(String name) {
-        switch (name) {
-            case "globalQuests" -> {
-                return globalCategory;
-            }
-            case "easyQuests" -> {
-                return easyCategory;
-            }
-            case "mediumQuests" -> {
-                return mediumCategory;
-            }
-            case "hardQuests" -> {
-                return hardCategory;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Get global quests.
-     */
-    public static ArrayList<AbstractQuest> getGlobalQuests() {
-        return globalCategory;
-    }
-
-    /**
-     * Get easy quests.
-     */
-    public static ArrayList<AbstractQuest> getEasyQuests() {
-        return easyCategory;
-    }
-
-    /**
-     * Get medium quests.
-     */
-    public static ArrayList<AbstractQuest> getMediumQuests() {
-        return mediumCategory;
-    }
-
-    /**
-     * Get hard quests.
-     */
-    public static ArrayList<AbstractQuest> getHardQuests() {
-        return hardCategory;
     }
 }

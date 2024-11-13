@@ -1,7 +1,6 @@
 package com.ordwen.odailyquests.events.listeners.global;
 
 import com.ordwen.odailyquests.ODailyQuests;
-
 import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractGlobalChecker;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

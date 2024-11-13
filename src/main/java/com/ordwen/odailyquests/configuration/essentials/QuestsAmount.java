@@ -5,39 +5,22 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 public class QuestsAmount {
 
-    private final ConfigurationFiles configurationFiles;
-
-    public QuestsAmount(ConfigurationFiles configurationFiles) {
-        this.configurationFiles = configurationFiles;
-    }
-
     private static int questsAmount;
-
     private static int easyQuestsAmount;
     private static int mediumQuestsAmount;
     private static int hardQuestsAmount;
-
-    public void loadQuestsAmount() {
-
-        final FileConfiguration config = configurationFiles.getConfigFile();
-
-        if (Modes.getQuestsMode() == 1) {
-            questsAmount = config.getInt("global_quests_amount");
-        } else if (Modes.getQuestsMode() == 2) {
-            easyQuestsAmount = config.getInt("easy_quests_amount");
-            mediumQuestsAmount = config.getInt("medium_quests_amount");
-            hardQuestsAmount = config.getInt("hard_quests_amount");
-
-            questsAmount = easyQuestsAmount + mediumQuestsAmount + hardQuestsAmount;
-        }
+    private final ConfigurationFiles configurationFiles;
+    public QuestsAmount(final ConfigurationFiles configurationFiles) {
+        this.configurationFiles = configurationFiles;
     }
 
     /**
      * Get the amount of quests by category.
+     *
      * @param name category name.
      * @return amount of quests by category.
      */
-    public static int getQuestsAmountByCategory(String name) {
+    public static int getQuestsAmountByCategory(final String name) {
         switch (name) {
             case "easyQuests" -> {
                 return easyQuestsAmount;
@@ -67,5 +50,20 @@ public class QuestsAmount {
 
     public static int getHardQuestsAmount() {
         return hardQuestsAmount;
+    }
+
+    public void loadQuestsAmount() {
+
+        final FileConfiguration config = configurationFiles.getConfigFile();
+
+        if (Modes.getQuestsMode() == 1) {
+            questsAmount = config.getInt("global_quests_amount");
+        } else if (Modes.getQuestsMode() == 2) {
+            easyQuestsAmount = config.getInt("easy_quests_amount");
+            mediumQuestsAmount = config.getInt("medium_quests_amount");
+            hardQuestsAmount = config.getInt("hard_quests_amount");
+
+            questsAmount = easyQuestsAmount + mediumQuestsAmount + hardQuestsAmount;
+        }
     }
 }

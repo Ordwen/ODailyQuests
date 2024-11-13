@@ -34,10 +34,6 @@ public class NMSHandler {
         return instance;
     }
 
-    public boolean isVersionAtLeast(String versionPrefix) {
-        return version.compareTo(versionPrefix) >= 0;
-    }
-
     public static SkullMeta applySkullTexture(SkullMeta skullMeta, String texture) {
         if (getInstance().isVersionAtLeast("1.18.1")) {
             return applyTextureModern(skullMeta, texture);
@@ -80,6 +76,10 @@ public class NMSHandler {
         }
 
         return skullMeta;
+    }
+
+    public boolean isVersionAtLeast(String versionPrefix) {
+        return version.compareTo(versionPrefix) >= 0;
     }
 
     public String getVersion() {

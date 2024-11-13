@@ -2,7 +2,6 @@ package com.ordwen.odailyquests.files;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.tools.PluginLogger;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -12,24 +11,24 @@ import java.io.IOException;
 
 public class HologramsFile {
 
+    private static File hologramsFile;
+    private static FileConfiguration holograms;
     /**
      * Getting instance of main class.
      */
     private final ODailyQuests oDailyQuests;
-
     /**
      * Main class instance constructor.
+     *
      * @param oDailyQuests main class.
      */
     public HologramsFile(ODailyQuests oDailyQuests) {
         this.oDailyQuests = oDailyQuests;
     }
 
-    private static File hologramsFile;
-    private static FileConfiguration holograms;
-
     /**
      * Get the configuration file.
+     *
      * @return config file.
      */
     public static FileConfiguration getHologramsFileConfiguration() {
@@ -38,9 +37,12 @@ public class HologramsFile {
 
     /**
      * Get the file.
+     *
      * @return file.
      */
-    public static File getHologramsFile() { return hologramsFile; }
+    public static File getHologramsFile() {
+        return hologramsFile;
+    }
 
     /**
      * Init progression file.

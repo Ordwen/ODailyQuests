@@ -38,6 +38,7 @@ public class ResetCommand extends ACommandHandler {
 
     /**
      * Resets the current active quests of the player.
+     *
      * @param target the player to reset
      */
     public void quests(Player target) {
@@ -52,6 +53,7 @@ public class ResetCommand extends ACommandHandler {
 
     /**
      * Resets the total amount of quests achieved by the player.
+     *
      * @param target the player to reset
      */
     public void total(Player target) {

@@ -4,24 +4,17 @@ import com.ordwen.odailyquests.files.ConfigurationFiles;
 
 public class Modes {
 
-    private final ConfigurationFiles configurationFiles;
-
-    public Modes(ConfigurationFiles configurationFiles) {
-        this.configurationFiles = configurationFiles;
-    }
-
     private static int questsMode;
     private static int timestampMode;
     private static String storageMode;
-
-    public void loadPluginModes() {
-        questsMode = configurationFiles.getConfigFile().getInt("quests_mode");
-        timestampMode = configurationFiles.getConfigFile().getInt("timestamp_mode");
-        storageMode = configurationFiles.getConfigFile().getString("storage_mode");
+    private final ConfigurationFiles configurationFiles;
+    public Modes(final ConfigurationFiles configurationFiles) {
+        this.configurationFiles = configurationFiles;
     }
 
     /**
      * Get quests mode.
+     *
      * @return plugin mode.
      */
     public static int getQuestsMode() {
@@ -30,6 +23,7 @@ public class Modes {
 
     /**
      * Get timestamp mode.
+     *
      * @return plugin mode.
      */
     public static int getTimestampMode() {
@@ -38,10 +32,17 @@ public class Modes {
 
     /**
      * Get storage mode.
+     *
      * @return plugin mode.
      */
     public static String getStorageMode() {
         return storageMode;
+    }
+
+    public void loadPluginModes() {
+        questsMode = configurationFiles.getConfigFile().getInt("quests_mode");
+        timestampMode = configurationFiles.getConfigFile().getInt("timestamp_mode");
+        storageMode = configurationFiles.getConfigFile().getString("storage_mode");
     }
 
 }

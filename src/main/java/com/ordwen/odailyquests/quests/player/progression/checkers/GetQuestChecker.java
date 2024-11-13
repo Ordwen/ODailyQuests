@@ -6,9 +6,7 @@ import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.types.shared.ItemQuest;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
@@ -70,8 +68,7 @@ public class GetQuestChecker {
                             if (msg != null) player.sendMessage(msg);
                             return;
                         }
-                    }
-                    else removeItem(player.getInventory(), toRemove, removeAmount);
+                    } else removeItem(player.getInventory(), toRemove, removeAmount);
 
                     totalRemoved += current;
                 }

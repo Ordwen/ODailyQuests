@@ -19,6 +19,7 @@ public class CoinsEngineHook {
 
     /**
      * Check if CoinsEngineAPI is hooked.
+     *
      * @return true if CoinsEngineAPI is hooked - false if not.
      */
     public static boolean isCoinsEngineHooked() {

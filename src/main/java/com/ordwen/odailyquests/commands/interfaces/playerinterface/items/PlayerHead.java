@@ -21,6 +21,38 @@ public class PlayerHead {
     private static boolean usePlaceholders = false;
 
     /**
+     * Get player head.
+     *
+     * @return player head.
+     */
+    public static ItemStack getPlayerHead(final Player player) {
+
+        final SkullMeta meta = PlayerHead.skullMeta.clone();
+        if (usePlaceholders) meta.setDisplayName(PAPIHook.getPlaceholders(player, meta.getDisplayName()));
+
+        meta.setOwningPlayer(player);
+        final List<String> itemDesc = meta.getLore();
+
+        for (String string : itemDesc) {
+
+            final int index = itemDesc.indexOf(string);
+
+            if (usePlaceholders) {
+                string = PAPIHook.getPlaceholders(player, string);
+            }
+
+            final PlayerQuests playerQuests = QuestsManager.getActiveQuests().get(player.getName());
+            itemDesc.set(index, ColorConvert.convertColorCode(string)
+                    .replace("%achieved%", String.valueOf(playerQuests.getAchievedQuests()))
+                    .replace("%drawIn%", TimeRemain.timeRemain(player.getName())));
+        }
+
+        meta.setLore(itemDesc);
+        playerHead.setItemMeta(meta);
+        return playerHead;
+    }
+
+    /**
      * Init player head.
      */
     public void initPlayerHead() {
@@ -37,37 +69,6 @@ public class PlayerHead {
 
         if (playerHeadSection.isBoolean(".use_placeholders"))
             usePlaceholders = playerHeadSection.getBoolean(".use_placeholders");
-    }
-
-    /**
-     * Get player head.
-     * @return player head.
-     */
-    public static ItemStack getPlayerHead(Player player) {
-
-        SkullMeta meta = PlayerHead.skullMeta.clone();
-        if (usePlaceholders) meta.setDisplayName(PAPIHook.getPlaceholders(player, meta.getDisplayName()));
-
-        meta.setOwningPlayer(player);
-        List<String> itemDesc = meta.getLore();
-
-        for (String string : itemDesc) {
-
-            int index = itemDesc.indexOf(string);
-
-            if (usePlaceholders) {
-                string = PAPIHook.getPlaceholders(player, string);
-            }
-
-            final PlayerQuests playerQuests = QuestsManager.getActiveQuests().get(player.getName());
-            itemDesc.set(index, ColorConvert.convertColorCode(string)
-                    .replace("%achieved%", String.valueOf(playerQuests.getAchievedQuests()))
-                    .replace("%drawIn%", TimeRemain.timeRemain(player.getName())));
-        }
-
-        meta.setLore(itemDesc);
-        playerHead.setItemMeta(meta);
-        return playerHead;
     }
 
 }

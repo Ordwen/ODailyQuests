@@ -1,9 +1,9 @@
 package com.ordwen.odailyquests.quests.player.progression.listeners;
 
+import com.ordwen.odailyquests.api.events.QuestCompletedEvent;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.externs.hooks.placeholders.PAPIHook;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
-import com.ordwen.odailyquests.api.events.QuestCompletedEvent;
 import com.ordwen.odailyquests.rewards.RewardManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

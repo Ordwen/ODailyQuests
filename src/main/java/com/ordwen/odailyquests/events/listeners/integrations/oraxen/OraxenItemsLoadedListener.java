@@ -1,7 +1,6 @@
 package com.ordwen.odailyquests.events.listeners.integrations.oraxen;
 
 import com.ordwen.odailyquests.ODailyQuests;
-import com.ordwen.odailyquests.configuration.integrations.ItemsAdderEnabled;
 import com.ordwen.odailyquests.configuration.integrations.OraxenEnabled;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import io.th0rgal.oraxen.api.events.OraxenItemsLoadedEvent;

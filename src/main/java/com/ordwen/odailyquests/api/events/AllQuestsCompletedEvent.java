@@ -9,16 +9,18 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Called when a player completes all his quests.
  * If defined, this method sends the global reward to the player.
+ *
  * @since 2.1.0
  */
 public class AllQuestsCompletedEvent extends Event implements Cancellable {
 
-    private final Player player;
     private static final HandlerList HANDLERS = new HandlerList();
+    private final Player player;
     private boolean isCancelled;
 
     /**
      * Constructor for the AllQuestsCompletedEvent.
+     *
      * @param player player who completed all his quests
      */
     public AllQuestsCompletedEvent(Player player) {
@@ -26,13 +28,13 @@ public class AllQuestsCompletedEvent extends Event implements Cancellable {
         this.isCancelled = false;
     }
 
-    @NotNull
-    @Override
-    public HandlerList getHandlers() {
+    public static HandlerList getHandlerList() {
         return HANDLERS;
     }
 
-    public static HandlerList getHandlerList() {
+    @NotNull
+    @Override
+    public HandlerList getHandlers() {
         return HANDLERS;
     }
 
@@ -48,6 +50,7 @@ public class AllQuestsCompletedEvent extends Event implements Cancellable {
 
     /**
      * Get the player who completed all his quests.
+     *
      * @return Player object
      */
     public Player getPlayer() {

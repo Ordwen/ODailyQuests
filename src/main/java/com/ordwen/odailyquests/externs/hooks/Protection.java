@@ -28,19 +28,6 @@ public class Protection {
     private static boolean isWorldguardEnabled = false;
     private static WorldGuardPlatform wgPlatform = null;
 
-    public void load() {
-        if (Bukkit.getPluginManager().isPluginEnabled("Towny")) {
-            setTownyEnabled();
-            PluginLogger.info("Towny detected, hook enabled.");
-        }
-
-        if (Bukkit.getPluginManager().isPluginEnabled("WorldGuard")) {
-            setWorldGuardPlatform(WorldGuard.getInstance().getPlatform());
-            setWorldGuardEnabled();
-            PluginLogger.info("WorldGuard detected, hook enabled.");
-        }
-    }
-
     /**
      * Check if Towny is enabled.
      *
@@ -159,7 +146,7 @@ public class Protection {
     /**
      * Check if the player is in the required region to progress the quest.
      *
-     * @param player         involved player
+     * @param player          involved player
      * @param requiredRegions required regions
      * @return true if the player is in the required region, false otherwise
      */
@@ -186,5 +173,18 @@ public class Protection {
         }
 
         return true;
+    }
+
+    public void load() {
+        if (Bukkit.getPluginManager().isPluginEnabled("Towny")) {
+            setTownyEnabled();
+            PluginLogger.info("Towny detected, hook enabled.");
+        }
+
+        if (Bukkit.getPluginManager().isPluginEnabled("WorldGuard")) {
+            setWorldGuardPlatform(WorldGuard.getInstance().getPlatform());
+            setWorldGuardEnabled();
+            PluginLogger.info("WorldGuard detected, hook enabled.");
+        }
     }
 }

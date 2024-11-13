@@ -2,31 +2,32 @@ package com.ordwen.odailyquests;
 
 import com.ordwen.odailyquests.api.ODailyQuestsAPI;
 import com.ordwen.odailyquests.api.quests.QuestTypeRegistry;
-import com.ordwen.odailyquests.configuration.essentials.CustomTypes;
-import com.ordwen.odailyquests.events.restart.RestartHandler;
-import com.ordwen.odailyquests.externs.IntegrationsManager;
 import com.ordwen.odailyquests.commands.admin.AdminCommands;
-import com.ordwen.odailyquests.commands.player.PlayerCommands;
-import com.ordwen.odailyquests.commands.admin.ReloadService;
 import com.ordwen.odailyquests.commands.admin.AdminCompleter;
-import com.ordwen.odailyquests.commands.player.PlayerCompleter;
+import com.ordwen.odailyquests.commands.admin.ReloadService;
 import com.ordwen.odailyquests.commands.interfaces.InterfacesManager;
 import com.ordwen.odailyquests.commands.interfaces.InventoryClickListener;
+import com.ordwen.odailyquests.commands.player.PlayerCommands;
+import com.ordwen.odailyquests.commands.player.PlayerCompleter;
 import com.ordwen.odailyquests.configuration.ConfigurationManager;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.configuration.essentials.Temporality;
 import com.ordwen.odailyquests.events.EventsManager;
-import com.ordwen.odailyquests.files.*;
+import com.ordwen.odailyquests.events.restart.RestartHandler;
+import com.ordwen.odailyquests.externs.IntegrationsManager;
+import com.ordwen.odailyquests.files.ConfigurationFiles;
+import com.ordwen.odailyquests.files.FilesManager;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
+import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.listeners.AllCategoryQuestsCompletedListener;
 import com.ordwen.odailyquests.quests.player.progression.listeners.AllQuestsCompletedListener;
 import com.ordwen.odailyquests.quests.player.progression.listeners.QuestCompletedListener;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.h2.H2Manager;
+import com.ordwen.odailyquests.quests.player.progression.storage.sql.mysql.MySQLManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.yaml.YamlManager;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
-import com.ordwen.odailyquests.quests.types.custom.items.PyroFishQuest;
 import com.ordwen.odailyquests.quests.types.custom.mobs.EliteMobsQuest;
 import com.ordwen.odailyquests.quests.types.custom.mobs.MythicMobsQuest;
 import com.ordwen.odailyquests.quests.types.custom.vote.NuVotifierQuest;
@@ -34,15 +35,31 @@ import com.ordwen.odailyquests.quests.types.entity.BreedQuest;
 import com.ordwen.odailyquests.quests.types.entity.KillQuest;
 import com.ordwen.odailyquests.quests.types.entity.ShearQuest;
 import com.ordwen.odailyquests.quests.types.entity.TameQuest;
-import com.ordwen.odailyquests.quests.types.global.*;
+import com.ordwen.odailyquests.quests.types.global.CarveQuest;
+import com.ordwen.odailyquests.quests.types.global.ExpLevelQuest;
+import com.ordwen.odailyquests.quests.types.global.ExpPointsQuest;
+import com.ordwen.odailyquests.quests.types.global.FireballReflectQuest;
+import com.ordwen.odailyquests.quests.types.global.MilkingQuest;
+import com.ordwen.odailyquests.quests.types.global.PlayerDeathQuest;
 import com.ordwen.odailyquests.quests.types.inventory.GetQuest;
 import com.ordwen.odailyquests.quests.types.inventory.LocationQuest;
 import com.ordwen.odailyquests.quests.types.inventory.PlaceholderQuest;
+import com.ordwen.odailyquests.quests.types.item.BreakQuest;
+import com.ordwen.odailyquests.quests.types.item.ConsumeQuest;
+import com.ordwen.odailyquests.quests.types.item.CookQuest;
+import com.ordwen.odailyquests.quests.types.item.CraftQuest;
+import com.ordwen.odailyquests.quests.types.item.EnchantQuest;
+import com.ordwen.odailyquests.quests.types.item.FarmingQuest;
+import com.ordwen.odailyquests.quests.types.item.FishQuest;
+import com.ordwen.odailyquests.quests.types.item.LaunchQuest;
+import com.ordwen.odailyquests.quests.types.item.PickupQuest;
+import com.ordwen.odailyquests.quests.types.item.PlaceQuest;
 import com.ordwen.odailyquests.quests.types.item.VillagerQuest;
-import com.ordwen.odailyquests.quests.types.item.*;
-import com.ordwen.odailyquests.tools.*;
-import com.ordwen.odailyquests.quests.player.QuestsManager;
-import com.ordwen.odailyquests.quests.player.progression.storage.sql.mysql.MySQLManager;
+import com.ordwen.odailyquests.tools.AutoUpdater;
+import com.ordwen.odailyquests.tools.Metrics;
+import com.ordwen.odailyquests.tools.PluginLogger;
+import com.ordwen.odailyquests.tools.TimerTask;
+import com.ordwen.odailyquests.tools.UpdateChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -55,8 +72,8 @@ public final class ODailyQuests extends JavaPlugin {
 
     public static ODailyQuests INSTANCE;
     public static MorePaperLib morePaperLib;
+    boolean isServerStopping = false;
     private ODailyQuestsAPI API;
-
     /**
      * Getting instance of files classes.
      */
@@ -69,8 +86,6 @@ public final class ODailyQuests extends JavaPlugin {
     private TimerTask timerTask;
     private ReloadService reloadService;
     private CategoriesLoader categoriesLoader;
-
-    boolean isServerStopping = false;
 
     @Override
     public void onLoad() {
@@ -86,7 +101,7 @@ public final class ODailyQuests extends JavaPlugin {
 
         /* Load Metrics */
         // https://bstats.org/plugin/bukkit/ODailyQuests/14277
-        int pluginId = 14277;
+        final int pluginId = 14277;
         final Metrics metrics = new Metrics(this, pluginId);
 
         /* Load files */
@@ -158,12 +173,11 @@ public final class ODailyQuests extends JavaPlugin {
         questTypeRegistry.registerQuestType("FIREBALL_REFLECT", FireballReflectQuest.class);
 
         /* other plugins */
-        questTypeRegistry.registerQuestType("PYRO_FISH", PyroFishQuest.class);
         questTypeRegistry.registerQuestType("NU_VOTIFIER", NuVotifierQuest.class);
 
         /* register addons types */
         final Map<String, Class<? extends AbstractQuest>> externalTypes = ODailyQuestsAPI.getExternalTypes();
-        for (Map.Entry<String, Class<? extends AbstractQuest>> entry : externalTypes.entrySet()) {
+        for (final Map.Entry<String, Class<? extends AbstractQuest>> entry : externalTypes.entrySet()) {
             questTypeRegistry.registerQuestType(entry.getKey(), entry.getValue());
             PluginLogger.info("Registered external quest type: " + entry.getKey());
         }
@@ -215,7 +229,7 @@ public final class ODailyQuests extends JavaPlugin {
      * @param name       name of the quest type
      * @param questClass class of the quest type
      */
-    public void registerQuestType(String name, Class<? extends AbstractQuest> questClass) {
+    public void registerQuestType(final String name, final Class<? extends AbstractQuest> questClass) {
         API.getQuestTypeRegistry().registerQuestType(name, questClass);
     }
 
@@ -262,7 +276,7 @@ public final class ODailyQuests extends JavaPlugin {
      *
      * @param isServerStopping true if the server is stopping.
      */
-    public void setServerStopping(boolean isServerStopping) {
+    public void setServerStopping(final boolean isServerStopping) {
         this.isServerStopping = isServerStopping;
     }
 

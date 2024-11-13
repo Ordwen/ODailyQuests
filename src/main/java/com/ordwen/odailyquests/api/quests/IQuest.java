@@ -7,6 +7,8 @@ import org.jetbrains.annotations.Nullable;
 public interface IQuest {
 
     String getType();
+
     boolean canProgress(@Nullable Event provided);
+
     boolean loadParameters(ConfigurationSection section, String file, String index);
 }

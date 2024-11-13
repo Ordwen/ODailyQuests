@@ -83,9 +83,9 @@ public enum QuestsMessages {
     CANNOT_REROLL_IF_ACHIEVED("cannot_reroll_if_achieved", "&cYou can't reroll a quest that you have already achieved!"),
     ;
 
+    private static FileConfiguration LANG;
     private final String path;
     private final String defaultMessage;
-    private static FileConfiguration LANG;
 
     /**
      * Message constructor.

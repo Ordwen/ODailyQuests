@@ -6,7 +6,8 @@ import org.bukkit.Material;
 import org.bukkit.event.Event;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.SmithItemEvent;
-import org.bukkit.inventory.*;
+import org.bukkit.inventory.ComplexRecipe;
+import org.bukkit.inventory.ItemStack;
 
 public class CraftQuest extends ItemQuest {
 

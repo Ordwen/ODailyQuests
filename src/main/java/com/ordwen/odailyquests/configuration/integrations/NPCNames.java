@@ -5,31 +5,19 @@ import org.bukkit.ChatColor;
 
 public class NPCNames {
 
-    private final ConfigurationFiles configurationFiles;
-
-    public NPCNames(ConfigurationFiles configurationFiles) {
-        this.configurationFiles = configurationFiles;
-    }
-
     private static String playerNPCName;
     private static String globalNPCName;
     private static String easyNPCName;
     private static String mediumNPCName;
     private static String hardNPCName;
-
-    /**
-     * Load all NPC names.
-     */
-    public void loadNPCNames() {
-        playerNPCName = ChatColor.translateAlternateColorCodes( '&', configurationFiles.getConfigFile().getConfigurationSection("npcs").getString(".name_player"));
-        globalNPCName = ChatColor.translateAlternateColorCodes( '&', configurationFiles.getConfigFile().getConfigurationSection("npcs").getString(".name_global"));
-        easyNPCName = ChatColor.translateAlternateColorCodes( '&', configurationFiles.getConfigFile().getConfigurationSection("npcs").getString(".name_easy"));
-        mediumNPCName = ChatColor.translateAlternateColorCodes( '&', configurationFiles.getConfigFile().getConfigurationSection("npcs").getString(".name_medium"));
-        hardNPCName = ChatColor.translateAlternateColorCodes( '&', configurationFiles.getConfigFile().getConfigurationSection("npcs").getString(".name_hard"));
+    private final ConfigurationFiles configurationFiles;
+    public NPCNames(final ConfigurationFiles configurationFiles) {
+        this.configurationFiles = configurationFiles;
     }
 
     /**
      * Get player NPC name.
+     *
      * @return player NPC name.
      */
     public static String getPlayerNPCName() {
@@ -38,6 +26,7 @@ public class NPCNames {
 
     /**
      * Get global NPC name.
+     *
      * @return global NPC name.
      */
     public static String getGlobalNPCName() {
@@ -46,6 +35,7 @@ public class NPCNames {
 
     /**
      * Get easy NPC name.
+     *
      * @return easy NPC name.
      */
     public static String getEasyNPCName() {
@@ -54,6 +44,7 @@ public class NPCNames {
 
     /**
      * Get medium NPC name.
+     *
      * @return medium NPC name.
      */
     public static String getMediumNPCName() {
@@ -62,9 +53,21 @@ public class NPCNames {
 
     /**
      * Get hard NPC name.
+     *
      * @return hard NPC name.
      */
     public static String getHardNPCName() {
         return hardNPCName;
+    }
+
+    /**
+     * Load all NPC names.
+     */
+    public void loadNPCNames() {
+        playerNPCName = ChatColor.translateAlternateColorCodes('&', configurationFiles.getConfigFile().getConfigurationSection("npcs").getString(".name_player"));
+        globalNPCName = ChatColor.translateAlternateColorCodes('&', configurationFiles.getConfigFile().getConfigurationSection("npcs").getString(".name_global"));
+        easyNPCName = ChatColor.translateAlternateColorCodes('&', configurationFiles.getConfigFile().getConfigurationSection("npcs").getString(".name_easy"));
+        mediumNPCName = ChatColor.translateAlternateColorCodes('&', configurationFiles.getConfigFile().getConfigurationSection("npcs").getString(".name_medium"));
+        hardNPCName = ChatColor.translateAlternateColorCodes('&', configurationFiles.getConfigFile().getConfigurationSection("npcs").getString(".name_hard"));
     }
 }

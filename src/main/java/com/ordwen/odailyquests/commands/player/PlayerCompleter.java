@@ -20,14 +20,15 @@ public class PlayerCompleter implements TabCompleter {
         if (args.length <= 1) {
             final List<String> allCompletions = new ArrayList<>(Arrays.asList("show", "me", "help"));
             final List<String> completions = new ArrayList<>();
-            if (sender.hasPermission("odailyquests.reroll")) { allCompletions.add("reroll"); }
+            if (sender.hasPermission("odailyquests.reroll")) {
+                allCompletions.add("reroll");
+            }
 
             StringUtil.copyPartialMatches(args[0], allCompletions, completions);
             Collections.sort(completions);
 
             return completions;
-        }
-        else if (args.length == 2) {
+        } else if (args.length == 2) {
             switch (args[0]) {
                 case "reroll" -> {
                     final List<String> allCompletions = new ArrayList<>();

@@ -11,24 +11,24 @@ import java.io.IOException;
 
 public class ProgressionFile {
 
+    private static File progressionFile;
+    private static FileConfiguration progression;
     /**
      * Getting instance of main class.
      */
     private final ODailyQuests oDailyQuests;
-
     /**
      * Main class instance constructor.
+     *
      * @param oDailyQuests main class.
      */
     public ProgressionFile(ODailyQuests oDailyQuests) {
         this.oDailyQuests = oDailyQuests;
     }
 
-    private static File progressionFile;
-    private static FileConfiguration progression;
-
     /**
      * Get the configuration file.
+     *
      * @return config file.
      */
     public static FileConfiguration getProgressionFileConfiguration() {
@@ -37,9 +37,12 @@ public class ProgressionFile {
 
     /**
      * Get the file.
+     *
      * @return file.
      */
-    public static File getProgressionFile() { return progressionFile; }
+    public static File getProgressionFile() {
+        return progressionFile;
+    }
 
     /**
      * Init progression file.

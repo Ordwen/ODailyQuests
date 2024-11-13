@@ -2,7 +2,6 @@ package com.ordwen.odailyquests.events.listeners.item;
 
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.essentials.UseCustomFurnaceResults;
-
 import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

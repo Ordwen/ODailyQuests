@@ -22,6 +22,7 @@ public class KGeneratorsHook {
 
     /**
      * Check if location is a KGenerators generator.
+     *
      * @param location - location to check.
      * @return true if location is a KGenerators generator - false if not.
      */

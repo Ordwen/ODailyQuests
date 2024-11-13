@@ -4,6 +4,6 @@ public enum ProgressionMessageType {
 
     ACTIONBAR,
     CHAT,
-    BOSSBAR;
+    BOSSBAR
 
 }

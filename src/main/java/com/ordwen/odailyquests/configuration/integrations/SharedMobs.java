@@ -4,20 +4,19 @@ import com.ordwen.odailyquests.files.ConfigurationFiles;
 
 public class SharedMobs {
 
+    private static boolean isEnabled;
     private final ConfigurationFiles configurationFiles;
 
-    public SharedMobs(ConfigurationFiles configurationFiles) {
+
+    public SharedMobs(final ConfigurationFiles configurationFiles) {
         this.configurationFiles = configurationFiles;
     }
-
-
-    private static boolean isEnabled;
 
     public static boolean isEnabled() {
         return isEnabled;
     }
 
-    private static void setEnabled(boolean enabled) {
+    private static void setEnabled(final boolean enabled) {
         isEnabled = enabled;
     }
 

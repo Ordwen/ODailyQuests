@@ -13,14 +13,32 @@ import org.bukkit.entity.Player;
 
 public class GlobalReward extends RewardLoader {
 
+    private static Reward globalReward;
+    private static boolean isEnabled;
     private final ConfigurationFiles configurationFiles;
-
-    public GlobalReward(ConfigurationFiles configurationFiles) {
+    public GlobalReward(final ConfigurationFiles configurationFiles) {
         this.configurationFiles = configurationFiles;
     }
 
-    private static Reward globalReward;
-    private static boolean isEnabled;
+    /**
+     * Give reward when players have completed all their quests.
+     *
+     * @param playerName player name.
+     */
+    public static void sendGlobalReward(final String playerName) {
+        if (isEnabled) {
+            final Player player = Bukkit.getPlayer(playerName);
+            if (player == null) {
+                PluginLogger.warn("Impossible to send global reward to " + playerName + " because he is offline.");
+                return;
+            }
+
+            final String msg = QuestsMessages.ALL_QUESTS_ACHIEVED.getMessage(playerName);
+            if (msg != null) player.sendMessage(msg);
+
+            RewardManager.sendQuestReward(Bukkit.getPlayer(playerName), globalReward);
+        }
+    }
 
     /**
      * Load global reward.
@@ -54,24 +72,5 @@ public class GlobalReward extends RewardLoader {
 
             PluginLogger.fine("Global reward successfully loaded.");
         } else PluginLogger.fine("Global reward is disabled.");
-    }
-
-    /**
-     * Give reward when players have completed all their quests.
-     * @param playerName player name.
-     */
-    public static void sendGlobalReward(String playerName) {
-        if (isEnabled) {
-            final Player player = Bukkit.getPlayer(playerName);
-            if (player == null) {
-                PluginLogger.warn("Impossible to send global reward to " + playerName + " because he is offline.");
-                return;
-            }
-
-            final String msg = QuestsMessages.ALL_QUESTS_ACHIEVED.getMessage(playerName);
-            if (msg != null) player.sendMessage(msg);
-
-            RewardManager.sendQuestReward(Bukkit.getPlayer(playerName), globalReward);
-        }
     }
 }

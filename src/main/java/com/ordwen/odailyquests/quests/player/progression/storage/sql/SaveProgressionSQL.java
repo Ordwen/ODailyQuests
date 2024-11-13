@@ -4,11 +4,10 @@ import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.essentials.Logs;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
-import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
+import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.tools.PluginLogger;
-import org.bukkit.Bukkit;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -19,16 +18,6 @@ public class SaveProgressionSQL {
 
     /* instance of SQLManager */
     private final SQLManager sqlManager;
-
-    /**
-     * Constructor.
-     *
-     * @param sqlManager instance of MySQLManager.
-     */
-    public SaveProgressionSQL(SQLManager sqlManager) {
-        this.sqlManager = sqlManager;
-    }
-
     /* requests */
     private final String MYSQL_PLAYER_QUERY =
             "INSERT INTO PLAYER (PLAYERNAME, PLAYERTIMESTAMP, ACHIEVEDQUESTS, TOTALACHIEVEDQUESTS) " +
@@ -36,7 +25,6 @@ public class SaveProgressionSQL {
                     "PLAYERTIMESTAMP = " + "VALUES(PLAYERTIMESTAMP), " +
                     "ACHIEVEDQUESTS = VALUES(ACHIEVEDQUESTS), " +
                     "TOTALACHIEVEDQUESTS = VALUES(TOTALACHIEVEDQUESTS)";
-
     private final String H2_PLAYER_QUERY =
             "MERGE INTO PLAYER (PLAYERNAME, PLAYERTIMESTAMP, ACHIEVEDQUESTS, TOTALACHIEVEDQUESTS) " +
                     "KEY (PLAYERNAME) VALUES (?, ?, ?, ?)";
@@ -46,10 +34,18 @@ public class SaveProgressionSQL {
                     "QUESTINDEX = VALUES(QUESTINDEX), " +
                     "ADVANCEMENT = VALUES(ADVANCEMENT), " +
                     "ISACHIEVED = VALUES(ISACHIEVED)";
-
     private final String H2_PROGRESS_UPDATE =
             "MERGE INTO PROGRESSION (PLAYERNAME, PLAYERQUESTID, QUESTINDEX, ADVANCEMENT, ISACHIEVED) " +
                     "KEY (PLAYERNAME, PLAYERQUESTID) VALUES (?, ?, ?, ?, ?)";
+
+    /**
+     * Constructor.
+     *
+     * @param sqlManager instance of MySQLManager.
+     */
+    public SaveProgressionSQL(SQLManager sqlManager) {
+        this.sqlManager = sqlManager;
+    }
 
     /**
      * Save player quests progression.
@@ -101,7 +97,8 @@ public class SaveProgressionSQL {
 
         try {
             PreparedStatement playerStatement;
-            if (Modes.getStorageMode().equalsIgnoreCase("mysql")) playerStatement = connection.prepareStatement(MYSQL_PLAYER_QUERY);
+            if (Modes.getStorageMode().equalsIgnoreCase("mysql"))
+                playerStatement = connection.prepareStatement(MYSQL_PLAYER_QUERY);
             else playerStatement = connection.prepareStatement(H2_PLAYER_QUERY);
 
             playerStatement.setString(1, playerName);
@@ -116,7 +113,8 @@ public class SaveProgressionSQL {
             int index = 0;
             for (AbstractQuest quest : quests.keySet()) {
                 PreparedStatement progressionStatement;
-                if (Modes.getStorageMode().equalsIgnoreCase("mysql")) progressionStatement = connection.prepareStatement(MYSQL_PROGRESS_UPDATE);
+                if (Modes.getStorageMode().equalsIgnoreCase("mysql"))
+                    progressionStatement = connection.prepareStatement(MYSQL_PROGRESS_UPDATE);
                 else progressionStatement = connection.prepareStatement(H2_PROGRESS_UPDATE);
 
                 progressionStatement.setString(1, playerName);

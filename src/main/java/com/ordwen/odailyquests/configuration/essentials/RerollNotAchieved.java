@@ -4,11 +4,15 @@ import com.ordwen.odailyquests.files.ConfigurationFiles;
 
 public class RerollNotAchieved {
 
-    private final ConfigurationFiles configurationFiles;
     private static boolean rerollIfNotAchieved;
+    private final ConfigurationFiles configurationFiles;
 
-    public RerollNotAchieved(ConfigurationFiles configurationFiles) {
+    public RerollNotAchieved(final ConfigurationFiles configurationFiles) {
         this.configurationFiles = configurationFiles;
+    }
+
+    public static boolean isRerollIfNotAchieved() {
+        return rerollIfNotAchieved;
     }
 
     /**
@@ -17,9 +21,5 @@ public class RerollNotAchieved {
     public void load() {
         final String path = "reroll_only_if_not_achieved";
         rerollIfNotAchieved = configurationFiles.getConfigFile().getBoolean(path);
-    }
-
-    public static boolean isRerollIfNotAchieved() {
-        return rerollIfNotAchieved;
     }
 }

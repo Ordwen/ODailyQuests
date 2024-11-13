@@ -22,9 +22,7 @@ public class KillQuest extends EntityQuest {
     public boolean canProgress(Event provided) {
         if (provided instanceof EntityDeathEvent event) {
             return super.isRequiredEntity(event.getEntity().getType());
-        }
-
-        else if (WildStackerEnabled.isEnabled() && provided instanceof EntityUnstackEvent event) {
+        } else if (WildStackerEnabled.isEnabled() && provided instanceof EntityUnstackEvent event) {
             return super.isRequiredEntity(event.getEntity().getType());
         }
 

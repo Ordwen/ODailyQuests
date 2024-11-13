@@ -8,9 +8,7 @@ import com.ordwen.odailyquests.tools.PluginLogger;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
-import java.sql.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.sql.SQLException;
 
 public class H2Manager extends SQLManager {
 

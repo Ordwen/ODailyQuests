@@ -12,6 +12,7 @@ public class YamlManager {
 
     /**
      * Get LoadProgressionYAML instance.
+     *
      * @return LoadProgressionYAML instance.
      */
     public LoadProgressionYAML getLoadProgressionYAML() {
@@ -20,6 +21,7 @@ public class YamlManager {
 
     /**
      * Get SaveProgressionYAML instance.
+     *
      * @return SaveProgressionYAML instance.
      */
     public SaveProgressionYAML getSaveProgressionYAML() {

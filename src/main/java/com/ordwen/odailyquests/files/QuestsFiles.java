@@ -1,42 +1,40 @@
 package com.ordwen.odailyquests.files;
 
 import com.ordwen.odailyquests.ODailyQuests;
-import org.bukkit.ChatColor;
+import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import com.ordwen.odailyquests.tools.PluginLogger;
 
 import java.io.File;
 import java.io.IOException;
 
 public class QuestsFiles {
 
+    private static File globalQuestsFile;
+    private static File easyQuestsFile;
+    private static File mediumQuestsFile;
+    private static File hardQuestsFile;
+    private static FileConfiguration globalQuestsConfiguration;
+    private static FileConfiguration easyQuestsConfiguration;
+    private static FileConfiguration mediumQuestsConfiguration;
+    private static FileConfiguration hardQuestsConfiguration;
     /**
      * Getting instance of main class.
      */
     private final ODailyQuests oDailyQuests;
-
     /**
      * Main class instance constructor.
+     *
      * @param oDailyQuests main class.
      */
     public QuestsFiles(ODailyQuests oDailyQuests) {
         this.oDailyQuests = oDailyQuests;
     }
 
-    private static File globalQuestsFile;
-    private static File easyQuestsFile;
-    private static File mediumQuestsFile;
-    private static File hardQuestsFile;
-
-    private static FileConfiguration globalQuestsConfiguration;
-    private static FileConfiguration easyQuestsConfiguration;
-    private static FileConfiguration mediumQuestsConfiguration;
-    private static FileConfiguration hardQuestsConfiguration;
-
     /**
      * Get the global quests file.
+     *
      * @return global quests file.
      */
     public static File getGlobalQuestsFile() {
@@ -45,6 +43,7 @@ public class QuestsFiles {
 
     /**
      * Get the easy quests file.
+     *
      * @return easy quests file.
      */
     public static File getEasyQuestsFile() {
@@ -53,6 +52,7 @@ public class QuestsFiles {
 
     /**
      * Get the medium quests file.
+     *
      * @return medium quests file.
      */
     public static File getMediumQuestsFile() {
@@ -61,6 +61,7 @@ public class QuestsFiles {
 
     /**
      * Get the hard quests file.
+     *
      * @return hard quests file.
      */
     public static File getHardQuestsFile() {
@@ -69,6 +70,7 @@ public class QuestsFiles {
 
     /**
      * Get the global quests configuration.
+     *
      * @return global quests configuration.
      */
     public static FileConfiguration getGlobalQuestsConfiguration() {
@@ -77,6 +79,7 @@ public class QuestsFiles {
 
     /**
      * Get the easy quests configuration.
+     *
      * @return easy quests configuration.
      */
     public static FileConfiguration getEasyQuestsConfiguration() {
@@ -85,6 +88,7 @@ public class QuestsFiles {
 
     /**
      * Get the medium quests configuration.
+     *
      * @return medium quests configuration.
      */
     public static FileConfiguration getMediumQuestsConfiguration() {
@@ -93,6 +97,7 @@ public class QuestsFiles {
 
     /**
      * Get the hard quests configuration.
+     *
      * @return hard quests configuration.
      */
     public static FileConfiguration getHardQuestsConfiguration() {

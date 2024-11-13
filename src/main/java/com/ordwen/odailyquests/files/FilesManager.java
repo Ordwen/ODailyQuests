@@ -1,7 +1,6 @@
 package com.ordwen.odailyquests.files;
 
 import com.ordwen.odailyquests.ODailyQuests;
-import com.ordwen.odailyquests.configuration.essentials.Debugger;
 
 public class FilesManager {
 

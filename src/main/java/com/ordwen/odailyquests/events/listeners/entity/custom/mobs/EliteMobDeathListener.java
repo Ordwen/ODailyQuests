@@ -1,7 +1,6 @@
 package com.ordwen.odailyquests.events.listeners.entity.custom.mobs;
 
 import com.magmaguy.elitemobs.api.EliteMobDeathEvent;
-
 import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

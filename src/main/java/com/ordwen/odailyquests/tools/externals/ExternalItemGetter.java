@@ -16,6 +16,7 @@ public abstract class ExternalItemGetter implements IExternalItemGetter {
 
     /**
      * Get an Oraxen item by its namespace.
+     *
      * @param namespace the namespace of the item
      * @return the ItemStack or null if it does not exist
      */
@@ -34,6 +35,7 @@ public abstract class ExternalItemGetter implements IExternalItemGetter {
 
     /**
      * Get an ItemsAdder item by its namespace.
+     *
      * @param namespace the namespace of the item
      * @return the ItemStack or null if it does not exist
      */
@@ -56,6 +58,7 @@ public abstract class ExternalItemGetter implements IExternalItemGetter {
 
     /**
      * Get an MMOItems item by its namespace.
+     *
      * @param namespace the namespace of the item
      * @return the ItemStack or null if it does not exist
      */
@@ -86,6 +89,7 @@ public abstract class ExternalItemGetter implements IExternalItemGetter {
 
     /**
      * Get a custom head by its texture.
+     *
      * @param texture the texture of the head
      * @return the ItemStack textured or not
      */

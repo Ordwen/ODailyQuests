@@ -3,16 +3,16 @@ package com.ordwen.odailyquests.quests;
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.api.quests.QuestTypeRegistry;
 import com.ordwen.odailyquests.quests.getters.QuestItemGetter;
-import com.ordwen.odailyquests.quests.types.*;
+import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
 import com.ordwen.odailyquests.rewards.Reward;
 import com.ordwen.odailyquests.rewards.RewardLoader;
 import com.ordwen.odailyquests.rewards.RewardType;
 import com.ordwen.odailyquests.tools.ColorConvert;
+import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
-import com.ordwen.odailyquests.tools.PluginLogger;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;

@@ -11,15 +11,17 @@ public class OpenedRecipes {
 
     /**
      * Add recipes to the map when a villager is clicked
+     *
      * @param recipe recipe to add to the map
-     * @param i quantity of uses of the recipe
+     * @param i      quantity of uses of the recipe
      */
     public static void put(MerchantRecipe recipe, int i) {
         openRecipes.put(recipe, i);
     }
-    
+
     /**
      * Remove recipes from the map when villager menu is closed
+     *
      * @param recipe recipe to remove from the map
      */
     public static void remove(MerchantRecipe recipe) {
@@ -28,6 +30,7 @@ public class OpenedRecipes {
 
     /**
      * Get the current uses of a recipe
+     *
      * @param recipe recipe to get the uses of
      * @return current uses of the recipe
      */

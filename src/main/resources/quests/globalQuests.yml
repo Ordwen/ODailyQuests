@@ -360,8 +360,8 @@ quests:
     name: "&aSpeeeed..."
     menu_item: POTION
     description:
-        - "&eGet a speed potion level 1."
-        - "&eWin &b5 EXP levels&e."
+      - "&eGet a speed potion level 1."
+      - "&eWin &b5 EXP levels&e."
     quest_type: GET
     required_item: POTION
     potion:
@@ -405,7 +405,7 @@ quests:
     required_entity: WITHER
     required_amount: 1
     required_worlds:
-        - world_nether
+      - world_nether
     reward:
       reward_type: MONEY
       amount: 50000
@@ -450,14 +450,14 @@ quests:
     name: "Get some Thanos dust"
     menu_item: "itemsadder:thanos_namespace:thanos_dust"
     description:
-          - "&6Get some Thanos dust."
-          - "&6Win &b50 000 &6$."
+      - "&6Get some Thanos dust."
+      - "&6Win &b50 000 &6$."
     quest_type: GET
     required_item: "itemsadder:thanos_namespace:thanos_dust"
     required_amount: 1
     reward:
-        reward_type: MONEY
-        amount: 50000
+      reward_type: MONEY
+      amount: 50000
 
   # example quest that is using Oraxen
   28:

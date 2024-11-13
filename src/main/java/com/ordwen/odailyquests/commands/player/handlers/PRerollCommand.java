@@ -40,6 +40,7 @@ public class PRerollCommand extends PCommandHandler {
 
     /**
      * Rerolls a specific quest for a player.
+     *
      * @param index the index of the quest to reroll
      */
     private void reroll(int index) {

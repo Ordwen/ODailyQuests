@@ -17,6 +17,7 @@ public class TokenManagerHook {
 
     /**
      * Get TokenManager api.
+     *
      * @return api.
      */
     public static TokenManager getTokenManagerAPI() {

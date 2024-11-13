@@ -18,6 +18,10 @@ public class FarmingQuest extends ItemQuest {
         super(base);
     }
 
+    public static void setCurrent(ItemStack current) {
+        FarmingQuest.current = current;
+    }
+
     @Override
     public String getType() {
         return "FARMING";
@@ -46,9 +50,5 @@ public class FarmingQuest extends ItemQuest {
         }
 
         return false;
-    }
-
-    public static void setCurrent(ItemStack current) {
-        FarmingQuest.current = current;
     }
 }

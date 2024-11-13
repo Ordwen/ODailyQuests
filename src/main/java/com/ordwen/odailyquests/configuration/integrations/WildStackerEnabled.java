@@ -6,16 +6,19 @@ import org.bukkit.Bukkit;
 
 public class WildStackerEnabled {
 
+    private static boolean isEnabled;
     private final ConfigurationFiles configurationFiles;
 
-    public WildStackerEnabled(ConfigurationFiles configurationFiles) {
+    public WildStackerEnabled(final ConfigurationFiles configurationFiles) {
         this.configurationFiles = configurationFiles;
     }
 
-    private static boolean isEnabled;
-
     public static boolean isEnabled() {
         return isEnabled;
+    }
+
+    private static void setEnabled(final boolean enabled) {
+        isEnabled = enabled;
     }
 
     /**
@@ -30,9 +33,5 @@ public class WildStackerEnabled {
             PluginLogger.error("Disabling WildStacker integration, otherwise KILL quests will not work properly.");
             setEnabled(false);
         }
-    }
-
-    private static void setEnabled(boolean enabled) {
-        isEnabled = enabled;
     }
 }

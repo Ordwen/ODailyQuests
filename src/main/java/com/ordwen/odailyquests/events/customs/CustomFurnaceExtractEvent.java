@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class CustomFurnaceExtractEvent extends Event {
 
+    private static final HandlerList HANDLERS = new HandlerList();
     private final Player player;
     private final ItemStack result;
     private final int amount;
@@ -18,15 +19,13 @@ public class CustomFurnaceExtractEvent extends Event {
         this.amount = amount;
     }
 
-    private static final HandlerList HANDLERS = new HandlerList();
+    public static HandlerList getHandlerList() {
+        return HANDLERS;
+    }
 
     @NotNull
     @Override
     public HandlerList getHandlers() {
-        return HANDLERS;
-    }
-
-    public static HandlerList getHandlerList() {
         return HANDLERS;
     }
 

@@ -2,10 +2,10 @@ package com.ordwen.odailyquests.quests.player.progression.checkers;
 
 import com.ordwen.odailyquests.configuration.essentials.Synchronization;
 import com.ordwen.odailyquests.configuration.functionalities.DisabledWorlds;
-import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
-import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
+import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
+import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.entity.Player;
 

@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.quests.categories;
 
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
+
 import java.util.ArrayList;
 
 public class Category extends ArrayList<AbstractQuest> {
@@ -13,6 +14,7 @@ public class Category extends ArrayList<AbstractQuest> {
 
     /**
      * Get the name of the category.
+     *
      * @return name of the category.
      */
     public String getName() {

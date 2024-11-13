@@ -10,12 +10,14 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.bukkit.configuration.ConfigurationSection;
 
-import java.sql.*;
+import java.sql.SQLException;
 
 public class MySQLManager extends SQLManager {
 
     /* init variables */
 
+    // instances
+    private final ConfigurationFiles configurationFiles;
     // database settings
     private String host;
     private String dbName;
@@ -23,11 +25,9 @@ public class MySQLManager extends SQLManager {
     private String user;
     private String port;
 
-    // instances
-    private final ConfigurationFiles configurationFiles;
-
     /**
      * Constructor.
+     *
      * @param oDailyQuests main class instance.
      */
     public MySQLManager(ODailyQuests oDailyQuests) {
@@ -44,7 +44,7 @@ public class MySQLManager extends SQLManager {
      */
     public void initCredentials() {
 
-        ConfigurationSection sqlSection= configurationFiles.getConfigFile().getConfigurationSection("database");
+        ConfigurationSection sqlSection = configurationFiles.getConfigFile().getConfigurationSection("database");
 
         host = sqlSection.getString("host");
         dbName = sqlSection.getString("name");
@@ -56,7 +56,7 @@ public class MySQLManager extends SQLManager {
     /**
      * Connect to database.
      */
-    public void initHikariCP(){
+    public void initHikariCP() {
 
         HikariConfig hikariConfig = new HikariConfig();
 
@@ -89,9 +89,10 @@ public class MySQLManager extends SQLManager {
 
     /**
      * Setup JdbcUrl.
+     *
      * @return JdbcUrl.
      */
-    private String toUri(){
+    private String toUri() {
         return "jdbc:mysql://" + this.host + ":" + this.port + "/" + this.dbName;
     }
 

@@ -2,34 +2,39 @@ package com.ordwen.odailyquests.quests.player;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.api.events.AllCategoryQuestsCompletedEvent;
+import com.ordwen.odailyquests.api.events.AllQuestsCompletedEvent;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
-import com.ordwen.odailyquests.api.events.AllQuestsCompletedEvent;
 import com.ordwen.odailyquests.configuration.essentials.RerollNotAchieved;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.categories.Category;
-import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
+import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Represents the quests of a player and its data.
  */
 public class PlayerQuests {
 
-    /* Timestamp of last quests renew */
-    private Long timestamp;
-
-    private int achievedQuests;
-    private int totalAchievedQuests;
     private final LinkedHashMap<AbstractQuest, Progression> playerQuests;
     private final Map<String, Integer> achievedQuestsByCategory = new HashMap<>();
     private final Set<String> claimedRewards = new HashSet<>();
+    /* Timestamp of last quests renew */
+    private Long timestamp;
+    private int achievedQuests;
+    private int totalAchievedQuests;
 
     public PlayerQuests(Long timestamp, LinkedHashMap<AbstractQuest, Progression> playerQuests) {
         this.timestamp = timestamp;
@@ -63,6 +68,15 @@ public class PlayerQuests {
      */
     public Long getTimestamp() {
         return this.timestamp;
+    }
+
+    /**
+     * Set player timestamp.
+     *
+     * @param timestamp timestamp to set.
+     */
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 
     /**
@@ -111,24 +125,6 @@ public class PlayerQuests {
     }
 
     /**
-     * Set number of achieved quests.
-     *
-     * @param i number of achieved quests to set.
-     */
-    public void setAchievedQuests(int i) {
-        this.achievedQuests = i;
-    }
-
-    /**
-     * Set total number of achieved quests.
-     *
-     * @param i total number of achieved quests to set.
-     */
-    public void setTotalAchievedQuests(int i) {
-        this.totalAchievedQuests = i;
-    }
-
-    /**
      * Add number of achieved quests.
      *
      * @param i number of achieved quests to add.
@@ -145,10 +141,28 @@ public class PlayerQuests {
     }
 
     /**
+     * Set number of achieved quests.
+     *
+     * @param i number of achieved quests to set.
+     */
+    public void setAchievedQuests(int i) {
+        this.achievedQuests = i;
+    }
+
+    /**
      * Get total number of achieved quests.
      */
     public int getTotalAchievedQuests() {
         return this.totalAchievedQuests;
+    }
+
+    /**
+     * Set total number of achieved quests.
+     *
+     * @param i total number of achieved quests to set.
+     */
+    public void setTotalAchievedQuests(int i) {
+        this.totalAchievedQuests = i;
     }
 
     /**
@@ -158,15 +172,6 @@ public class PlayerQuests {
      */
     public LinkedHashMap<AbstractQuest, Progression> getPlayerQuests() {
         return this.playerQuests;
-    }
-
-    /**
-     * Set player timestamp.
-     *
-     * @param timestamp timestamp to set.
-     */
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
     }
 
     /**

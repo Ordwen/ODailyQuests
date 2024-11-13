@@ -1,15 +1,29 @@
 package com.ordwen.odailyquests.configuration;
 
 import com.ordwen.odailyquests.ODailyQuests;
-import com.ordwen.odailyquests.configuration.essentials.*;
-import com.ordwen.odailyquests.configuration.functionalities.*;
+import com.ordwen.odailyquests.configuration.essentials.Antiglitch;
+import com.ordwen.odailyquests.configuration.essentials.CustomTypes;
+import com.ordwen.odailyquests.configuration.essentials.Logs;
+import com.ordwen.odailyquests.configuration.essentials.Modes;
+import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
+import com.ordwen.odailyquests.configuration.essentials.RerollNotAchieved;
+import com.ordwen.odailyquests.configuration.essentials.Synchronization;
+import com.ordwen.odailyquests.configuration.essentials.Temporality;
+import com.ordwen.odailyquests.configuration.essentials.UseCustomFurnaceResults;
+import com.ordwen.odailyquests.configuration.functionalities.DisabledWorlds;
+import com.ordwen.odailyquests.configuration.functionalities.SpawnersProgression;
+import com.ordwen.odailyquests.configuration.functionalities.TakeItems;
 import com.ordwen.odailyquests.configuration.functionalities.progression.ActionBar;
 import com.ordwen.odailyquests.configuration.functionalities.progression.ProgressBar;
 import com.ordwen.odailyquests.configuration.functionalities.progression.ProgressionMessage;
 import com.ordwen.odailyquests.configuration.functionalities.progression.Title;
 import com.ordwen.odailyquests.configuration.functionalities.rewards.CategoriesRewards;
 import com.ordwen.odailyquests.configuration.functionalities.rewards.GlobalReward;
-import com.ordwen.odailyquests.configuration.integrations.*;
+import com.ordwen.odailyquests.configuration.integrations.ItemsAdderEnabled;
+import com.ordwen.odailyquests.configuration.integrations.NPCNames;
+import com.ordwen.odailyquests.configuration.integrations.OraxenEnabled;
+import com.ordwen.odailyquests.configuration.integrations.SharedMobs;
+import com.ordwen.odailyquests.configuration.integrations.WildStackerEnabled;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.tools.AddDefault;
 import com.ordwen.odailyquests.tools.TimeRemain;
@@ -26,8 +40,8 @@ public class ConfigurationManager {
      *
      * @param oDailyQuests main class instance.
      */
-    public ConfigurationManager(ODailyQuests oDailyQuests) {
-        this.configurationFiles =  oDailyQuests.getConfigurationFiles();
+    public ConfigurationManager(final ODailyQuests oDailyQuests) {
+        this.configurationFiles = oDailyQuests.getConfigurationFiles();
     }
 
     /**
@@ -69,9 +83,12 @@ public class ConfigurationManager {
         new RerollNotAchieved(configurationFiles).load();
 
         // anti-glitch
-        if (!configFile.contains("store_placed_blocks")) AddDefault.addDefaultConfigItem("store_placed_blocks", "true", configFile, file);
-        if (!configFile.contains("store_broken_blocks")) AddDefault.addDefaultConfigItem("store_broken_blocks", "false", configFile, file);
-        if (!configFile.contains("store_dropped_items")) AddDefault.addDefaultConfigItem("store_dropped_items", "false", configFile, file);
+        if (!configFile.contains("store_placed_blocks"))
+            AddDefault.addDefaultConfigItem("store_placed_blocks", "true", configFile, file);
+        if (!configFile.contains("store_broken_blocks"))
+            AddDefault.addDefaultConfigItem("store_broken_blocks", "false", configFile, file);
+        if (!configFile.contains("store_dropped_items"))
+            AddDefault.addDefaultConfigItem("store_dropped_items", "false", configFile, file);
 
         final boolean storePlacedBlocks = configurationFiles.getConfigFile().getBoolean("store_placed_blocks");
         final boolean storeBrokenBlocks = configurationFiles.getConfigFile().getBoolean("store_broken_blocks");

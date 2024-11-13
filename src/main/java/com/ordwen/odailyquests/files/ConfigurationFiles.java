@@ -2,10 +2,10 @@ package com.ordwen.odailyquests.files;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.enums.QuestsMessages;
+import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import com.ordwen.odailyquests.tools.PluginLogger;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,20 +16,20 @@ public class ConfigurationFiles {
      * Getting instance of main class.
      */
     private final ODailyQuests oDailyQuests;
-
+    private FileConfiguration config;
+    private File configFile;
     /**
      * Main class instance constructor.
+     *
      * @param oDailyQuests main class.
      */
     public ConfigurationFiles(ODailyQuests oDailyQuests) {
         this.oDailyQuests = oDailyQuests;
     }
 
-    private FileConfiguration config;
-    private File configFile;
-
     /**
      * Get the configuration file.
+     *
      * @return config file.
      */
     public FileConfiguration getConfigFile() {
@@ -38,6 +38,7 @@ public class ConfigurationFiles {
 
     /**
      * Get the original file.
+     *
      * @return file
      */
     public File getFile() {
@@ -103,7 +104,7 @@ public class ConfigurationFiles {
 
         try {
             messages.save(messagesFile);
-        } catch(IOException e) {
+        } catch (IOException e) {
             PluginLogger.error("An error happened on the save of the messages file.");
             PluginLogger.error("If the problem persists, contact the developer.");
             PluginLogger.error(e.getMessage());

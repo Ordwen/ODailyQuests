@@ -1,7 +1,6 @@
 package com.ordwen.odailyquests.events.listeners.item;
 
 import com.ordwen.odailyquests.configuration.essentials.Antiglitch;
-
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
 import com.ordwen.odailyquests.quests.types.item.FarmingQuest;

@@ -1,8 +1,15 @@
 package com.ordwen.odailyquests.commands.admin;
 
 import com.ordwen.odailyquests.ODailyQuests;
-import com.ordwen.odailyquests.commands.admin.handlers.*;
 import com.ordwen.odailyquests.commands.admin.convert.ConverterManager;
+import com.ordwen.odailyquests.commands.admin.handlers.ARerollCommand;
+import com.ordwen.odailyquests.commands.admin.handlers.AddCommand;
+import com.ordwen.odailyquests.commands.admin.handlers.CompleteCommand;
+import com.ordwen.odailyquests.commands.admin.handlers.CustomCompleteCommand;
+import com.ordwen.odailyquests.commands.admin.handlers.HoloCommand;
+import com.ordwen.odailyquests.commands.admin.handlers.OpenCommand;
+import com.ordwen.odailyquests.commands.admin.handlers.ResetCommand;
+import com.ordwen.odailyquests.commands.admin.handlers.ShowCommand;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.enums.QuestsPermissions;
 import org.bukkit.ChatColor;
@@ -51,6 +58,7 @@ public class AdminCommands implements CommandExecutor {
 
     /**
      * Sends the admin help message to the sender.
+     *
      * @param sender the command sender.
      */
     private void help(CommandSender sender) {

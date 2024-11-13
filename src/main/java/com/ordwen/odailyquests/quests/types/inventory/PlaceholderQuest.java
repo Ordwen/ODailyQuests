@@ -82,6 +82,7 @@ public class PlaceholderQuest extends AbstractQuest {
 
     /**
      * Get the placeholder required by the quest.
+     *
      * @return quest required placeholder.
      */
     public String getPlaceholder() {
@@ -90,6 +91,7 @@ public class PlaceholderQuest extends AbstractQuest {
 
     /**
      * Get the condition type required by the quest.
+     *
      * @return ConditionType object.
      */
     public ConditionType getConditionType() {
@@ -98,6 +100,7 @@ public class PlaceholderQuest extends AbstractQuest {
 
     /**
      * Get the expected value required by the quest.
+     *
      * @return quest expected value.
      */
     public String getExpectedValue() {

@@ -31,6 +31,7 @@ public class TimerTask {
 
     /**
      * Set a runnable to reload quests at midnight.
+     *
      * @param start date and time to start the task.
      */
     public TimerTask(LocalDateTime start) {

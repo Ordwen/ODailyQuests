@@ -2,7 +2,6 @@ package com.ordwen.odailyquests.files;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.tools.PluginLogger;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -11,23 +10,24 @@ import java.io.File;
 import java.io.IOException;
 
 public class PlayerInterfaceFile {
+    private static FileConfiguration playerInterface;
+    private static File playerInterfaceFile;
     /**
      * Getting instance of main class.
      */
     private final ODailyQuests oDailyQuests;
-
     /**
      * Main class instance constructor.
+     *
      * @param oDailyQuests main class.
      */
     public PlayerInterfaceFile(ODailyQuests oDailyQuests) {
         this.oDailyQuests = oDailyQuests;
     }
 
-    private static FileConfiguration playerInterface;
-    private static File playerInterfaceFile;
     /**
      * Get the player interface file configuration.
+     *
      * @return player interface file config
      */
     public static FileConfiguration getPlayerInterfaceFileConfiguration() {
@@ -36,11 +36,13 @@ public class PlayerInterfaceFile {
 
     /**
      * Get the player interface file.
+     *
      * @return player interface file
      */
     public static File getPlayerInterfaceFile() {
         return playerInterfaceFile;
     }
+
     /**
      * Init progression file.
      */

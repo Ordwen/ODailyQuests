@@ -1,9 +1,9 @@
 package com.ordwen.odailyquests.commands.interfaces;
 
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.Buttons;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.PlayerHead;
-import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.tools.ColorConvert;
 import com.ordwen.odailyquests.tools.PluginLogger;
@@ -18,31 +18,67 @@ import java.util.List;
 
 public class InterfacesManager implements Listener {
 
-    /**
-     * Getting instance of classes.
-     */
-    private final ConfigurationFiles configurationFiles;
     private static QuestsInterfaces questsInterfaces;
-
     private static String nextPageItemName;
     private static String previousPageItemName;
-
-
-    /**
-     * Class instance constructor.
-     *
-     * @param oDailyQuests main class instance.
-     */
-    public InterfacesManager(ODailyQuests oDailyQuests) {
-        this.configurationFiles = oDailyQuests.getConfigurationFiles();
-    }
-
     /* variables */
     private static List<ItemStack> emptyCaseItems;
     private static String globalQuestsInventoryName;
     private static String easyQuestsInventoryName;
     private static String mediumQuestsInventoryName;
     private static String hardQuestsInventoryName;
+    /**
+     * Getting instance of classes.
+     */
+    private final ConfigurationFiles configurationFiles;
+    /**
+     * Class instance constructor.
+     *
+     * @param oDailyQuests main class instance.
+     */
+    public InterfacesManager(final ODailyQuests oDailyQuests) {
+        this.configurationFiles = oDailyQuests.getConfigurationFiles();
+    }
+
+    public static String getGlobalQuestsInventoryName() {
+        return globalQuestsInventoryName;
+    }
+
+    public static String getEasyQuestsInventoryName() {
+        return easyQuestsInventoryName;
+    }
+
+    public static String getMediumQuestsInventoryName() {
+        return mediumQuestsInventoryName;
+    }
+
+    public static String getHardQuestsInventoryName() {
+        return hardQuestsInventoryName;
+    }
+
+    public static List<ItemStack> getEmptyCaseItems() {
+        return emptyCaseItems;
+    }
+
+    public static String getNextPageItemName() {
+        return nextPageItemName;
+    }
+
+    public static String getPreviousPageItemName() {
+        return previousPageItemName;
+    }
+
+    public static Inventory getInterfaceFirstPage(final String category, final Player player) {
+        return questsInterfaces.getInterfacePage(category, 0, player);
+    }
+
+    public static Inventory getInterfaceNextPage(final String category, final int page, final Player player) {
+        return questsInterfaces.getInterfacePage(category, page + 1, player);
+    }
+
+    public static Inventory getInterfacePreviousPage(final String category, final int page, final Player player) {
+        return questsInterfaces.getInterfacePage(category, page - 1, player);
+    }
 
     /**
      * Load all interfaces objects.
@@ -81,9 +117,9 @@ public class InterfacesManager implements Listener {
 
         if (configurationFiles.getConfigFile().getInt("quests_mode") == 2) {
             questsInterfaces.loadCategorizedInterfaces();
-        }
-        else questsInterfaces.loadGlobalInterface();
+        } else questsInterfaces.loadGlobalInterface();
     }
+
     /**
      * Init variables.
      */
@@ -113,37 +149,6 @@ public class InterfacesManager implements Listener {
     public void initPaginationItemNames() {
         nextPageItemName = ColorConvert.convertColorCode(configurationFiles.getConfigFile().getConfigurationSection("interfaces").getString(".next_item_name"));
         previousPageItemName = ColorConvert.convertColorCode(configurationFiles.getConfigFile().getConfigurationSection("interfaces").getString(".previous_item_name"));
-    }
-
-    public static String getGlobalQuestsInventoryName() {
-        return globalQuestsInventoryName;
-    }
-
-    public static String getEasyQuestsInventoryName() {
-        return easyQuestsInventoryName;
-    }
-
-    public static String getMediumQuestsInventoryName() {
-        return mediumQuestsInventoryName;
-    }
-
-    public static String getHardQuestsInventoryName() {
-        return hardQuestsInventoryName;
-    }
-    public static List<ItemStack> getEmptyCaseItems() { return emptyCaseItems; }
-    public static String getNextPageItemName() { return nextPageItemName; }
-    public static String getPreviousPageItemName() { return previousPageItemName; }
-
-    public static Inventory getInterfaceFirstPage(String category, Player player) {
-        return questsInterfaces.getInterfacePage(category, 0, player);
-    }
-
-    public static Inventory getInterfaceNextPage(String category, int page, Player player) {
-        return questsInterfaces.getInterfacePage(category, page + 1, player);
-    }
-
-    public static Inventory getInterfacePreviousPage(String category, int page, Player player) {
-        return questsInterfaces.getInterfacePage(category, page - 1, player);
     }
 }
 

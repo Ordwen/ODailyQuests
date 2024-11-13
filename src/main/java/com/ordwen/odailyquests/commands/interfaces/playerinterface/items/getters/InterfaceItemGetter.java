@@ -9,13 +9,14 @@ public class InterfaceItemGetter extends ItemGetter implements IInterfaceItem {
 
     /**
      * Get an item from a string.
-     * @param material the material of the item
+     *
+     * @param material  the material of the item
      * @param itemIndex the index of the item in the file
      * @param parameter the parameter involved
      * @return the ItemStack or null if the item cannot be loaded
      */
     @Override
-    public ItemStack getItem(String material, String itemIndex, String parameter) {
+    public ItemStack getItem(final String material, final String itemIndex, final String parameter) {
         final String[] split = material.split(":", 2);
         return switch (split[0]) {
             case "oraxen" -> this.getOraxenItem(split[1], itemIndex, parameter);
@@ -29,13 +30,14 @@ public class InterfaceItemGetter extends ItemGetter implements IInterfaceItem {
 
     /**
      * Get an item from Oraxen.
+     *
      * @param namespace the namespace of the item
      * @param itemIndex the index of the item in the file
      * @param parameter the parameter involved
      * @return the ItemStack or null if the item cannot be loaded
      */
     @Override
-    public ItemStack getOraxenItem(String namespace, String itemIndex, String parameter) {
+    public ItemStack getOraxenItem(final String namespace, final String itemIndex, final String parameter) {
         final Pair<String, ItemStack> result = super.getOraxenItem(namespace);
         if (!result.first().isEmpty()) {
             configurationError(itemIndex, parameter, result.first());
@@ -47,13 +49,14 @@ public class InterfaceItemGetter extends ItemGetter implements IInterfaceItem {
 
     /**
      * Get an item from ItemsAdder.
+     *
      * @param namespace the namespace of the item
      * @param itemIndex the index of the item in the file
      * @param parameter the parameter involved
      * @return the ItemStack or null if the item cannot be loaded
      */
     @Override
-    public ItemStack getItemsAdderItem(String namespace, String itemIndex, String parameter) {
+    public ItemStack getItemsAdderItem(final String namespace, final String itemIndex, final String parameter) {
         final Pair<String, ItemStack> result = super.getItemsAdderItem(namespace);
         if (!result.first().isEmpty()) {
             configurationError(itemIndex, parameter, result.first());
@@ -65,13 +68,14 @@ public class InterfaceItemGetter extends ItemGetter implements IInterfaceItem {
 
     /**
      * Get an item from MMOItems.
+     *
      * @param namespace the namespace of the item
      * @param itemIndex the index of the item in the file
      * @param parameter the parameter involved
      * @return the ItemStack or null if the item cannot be loaded
      */
     @Override
-    public ItemStack getMMOItemsItem(String namespace, String itemIndex, String parameter) {
+    public ItemStack getMMOItemsItem(final String namespace, final String itemIndex, final String parameter) {
         final Pair<String, ItemStack> result = super.getMMOItemsItem(namespace);
         if (!result.first().isEmpty()) {
             configurationError(itemIndex, parameter, result.first());
@@ -83,13 +87,14 @@ public class InterfaceItemGetter extends ItemGetter implements IInterfaceItem {
 
     /**
      * Get a custom head.
-     * @param texture the texture of the head
+     *
+     * @param texture    the texture of the head
      * @param questIndex the index of the quest in the file
-     * @param parameter the parameter involved
+     * @param parameter  the parameter involved
      * @return the ItemStack or null if the item cannot be loaded
      */
     @Override
-    public ItemStack getCustomHead(String texture, String questIndex, String parameter) {
+    public ItemStack getCustomHead(final String texture, final String questIndex, final String parameter) {
         final Pair<String, ItemStack> result = super.getCustomHead(texture);
         if (!result.first().isEmpty()) {
             configurationError(questIndex, parameter, result.first());
@@ -101,13 +106,14 @@ public class InterfaceItemGetter extends ItemGetter implements IInterfaceItem {
 
     /**
      * Get an item with custom model data.
+     *
      * @param customModelData the custom model data of the item
-     * @param questIndex the index of the quest in the file
-     * @param parameter the parameter involved
+     * @param questIndex      the index of the quest in the file
+     * @param parameter       the parameter involved
      * @return the ItemStack or null if the item cannot be loaded
      */
     @Override
-    public ItemStack getCustomModelDataItem(String customModelData, String questIndex, String parameter) {
+    public ItemStack getCustomModelDataItem(final String customModelData, final String questIndex, final String parameter) {
 
         final String[] split = customModelData.split(":");
         if (split.length != 2) {
@@ -121,10 +127,10 @@ public class InterfaceItemGetter extends ItemGetter implements IInterfaceItem {
             return null;
         }
 
-        int cmd;
+        final int cmd;
         try {
             cmd = Integer.parseInt(split[1]);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             configurationError(questIndex, parameter, split[1] + " is not a number!");
             return null;
         }
@@ -142,10 +148,10 @@ public class InterfaceItemGetter extends ItemGetter implements IInterfaceItem {
      * Display an error message in the console when an interface item cannot be loaded.
      *
      * @param itemIndex the index of the item in the file
-     * @param parameter  the parameter that caused the error
-     * @param reason     the reason of the error
+     * @param parameter the parameter that caused the error
+     * @param reason    the reason of the error
      */
-    public void configurationError(String itemIndex, String parameter, String reason) {
+    public void configurationError(final String itemIndex, final String parameter, final String reason) {
         PluginLogger.error("-----------------------------------");
         PluginLogger.error("Invalid player interface configuration detected.");
         PluginLogger.error("Item index : " + itemIndex);

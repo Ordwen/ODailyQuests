@@ -11,5 +11,4 @@ public enum RewardType {
     POINTS,
     NONE,
     COINS_ENGINE
-    ;
 }

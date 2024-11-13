@@ -14,16 +14,6 @@ public class TimeRemain {
     private static String fewSeconds;
 
     /**
-     * Setup initials.
-     */
-    public void setupInitials() {
-        d = Temporality.getDayInitial();
-        h = Temporality.getHourInitial();
-        m = Temporality.getMinuteInitial();
-        fewSeconds = Temporality.getFewSeconds();
-    }
-
-    /**
      * Get the time remain before the next quests draw.
      *
      * @param playerName player to consider.
@@ -82,10 +72,11 @@ public class TimeRemain {
 
     /**
      * Get a text from remaining time.
+     *
      * @param rest remaining time in milliseconds.
-     * @param d day initial.
-     * @param h hour initial.
-     * @param m minute initial.
+     * @param d    day initial.
+     * @param h    hour initial.
+     * @param m    minute initial.
      * @return formatted text with remaining time.
      */
     private static String getTimeRemainString(long rest, String d, String h, String m) {
@@ -109,5 +100,15 @@ public class TimeRemain {
         }
 
         return timeRemain;
+    }
+
+    /**
+     * Setup initials.
+     */
+    public void setupInitials() {
+        d = Temporality.getDayInitial();
+        h = Temporality.getHourInitial();
+        m = Temporality.getMinuteInitial();
+        fewSeconds = Temporality.getFewSeconds();
     }
 }

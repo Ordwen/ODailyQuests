@@ -11,6 +11,7 @@ public class VaultHook {
 
     /**
      * Setup economy.
+     *
      * @return true if economy is properly setup - false if not.
      */
     public static boolean setupEconomy() {
@@ -28,6 +29,7 @@ public class VaultHook {
 
     /**
      * Get Vault economy.
+     *
      * @return economy.
      */
     public static Economy getEconomy() {

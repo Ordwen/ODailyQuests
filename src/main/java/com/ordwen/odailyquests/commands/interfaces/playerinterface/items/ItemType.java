@@ -6,5 +6,4 @@ public enum ItemType {
     PLAYER_COMMAND,
     CONSOLE_COMMAND,
     CLOSE,
-    ;
 }

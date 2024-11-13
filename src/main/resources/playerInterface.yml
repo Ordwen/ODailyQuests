@@ -40,7 +40,7 @@ player_interface:
       item:
         material: REDSTONE_BLOCK
         name: "&cClose"
-        lore: []
+        lore: [ ]
         slot: 27
     1:
       type: PLAYER_COMMAND
@@ -51,7 +51,7 @@ player_interface:
           - "&eGo back to menu."
         slot: 19
       commands:
-          - "menu"
+        - "menu"
     2:
       type: FILL
       item:

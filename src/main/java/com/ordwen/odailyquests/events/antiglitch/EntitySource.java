@@ -11,6 +11,7 @@ public class EntitySource {
 
     /**
      * Adds an entity from a spawner.
+     *
      * @param entity the entity to add.
      */
     public static void addEntityFromSpawner(Entity entity) {
@@ -20,6 +21,7 @@ public class EntitySource {
 
     /**
      * Removes an entity from a spawner.
+     *
      * @param entity the entity to remove.
      */
     public static void removeEntityFromSpawner(Entity entity) {
@@ -29,6 +31,7 @@ public class EntitySource {
 
     /**
      * Checks if an entity is from a spawner.
+     *
      * @param entity the entity to check.
      * @return true if the entity is from a spawner.
      */

@@ -1,37 +1,56 @@
 package com.ordwen.odailyquests.commands.interfaces.playerinterface.items;
 
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.nms.NMSHandler;
 import com.ordwen.odailyquests.tools.ColorConvert;
-import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.*;
-
 public class Buttons {
 
     /* instance */
     private static ConfigurationFiles configurationFiles;
-
+    /* init items */
+    private static ItemStack previous;
+    private static ItemStack next;
     /**
      * Constructor.
      *
      * @param configurationFiles configuration files class.
      */
-    public Buttons(ConfigurationFiles configurationFiles) {
+    public Buttons(final ConfigurationFiles configurationFiles) {
         Buttons.configurationFiles = configurationFiles;
     }
 
-    /* init items */
-    private static ItemStack previous;
-    private static ItemStack next;
+    public static ItemStack getCustomHead(final String texture) {
+        final ItemStack itemStack = new ItemStack(Material.PLAYER_HEAD, 1);
+
+        SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
+        skullMeta = NMSHandler.applySkullTexture(skullMeta, texture);
+
+        itemStack.setItemMeta(skullMeta);
+        return itemStack;
+    }
+
+    /**
+     * Get previous button.
+     *
+     * @return previous button.
+     */
+    public static ItemStack getPreviousButton() {
+        return previous;
+    }
+
+    /**
+     * Get next button.
+     *
+     * @return next button.
+     */
+    public static ItemStack getNextButton() {
+        return next;
+    }
 
     /**
      * Load all items.
@@ -59,34 +78,6 @@ public class Buttons {
         final ItemMeta nextMeta = next.getItemMeta();
         nextMeta.setDisplayName(ColorConvert.convertColorCode(configurationFiles.getConfigFile().getConfigurationSection("interfaces").getString(".next_item_name")));
         next.setItemMeta(nextMeta);
-    }
-
-    public static ItemStack getCustomHead(String texture) {
-        final ItemStack itemStack = new ItemStack(Material.PLAYER_HEAD, 1);
-
-        SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
-        skullMeta = NMSHandler.applySkullTexture(skullMeta, texture);
-
-        itemStack.setItemMeta(skullMeta);
-        return itemStack;
-    }
-
-    /**
-     * Get previous button.
-     *
-     * @return previous button.
-     */
-    public static ItemStack getPreviousButton() {
-        return previous;
-    }
-
-    /**
-     * Get next button.
-     *
-     * @return next button.
-     */
-    public static ItemStack getNextButton() {
-        return next;
     }
 
 }

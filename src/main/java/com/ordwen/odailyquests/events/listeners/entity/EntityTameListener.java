@@ -1,7 +1,6 @@
 package com.ordwen.odailyquests.events.listeners.entity;
 
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
-
 import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

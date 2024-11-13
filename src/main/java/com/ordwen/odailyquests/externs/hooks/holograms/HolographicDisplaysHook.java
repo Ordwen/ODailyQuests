@@ -19,6 +19,7 @@ public class HolographicDisplaysHook {
 
     /**
      * Check if HolographicDisplays is enabled.
+     *
      * @return true if HolographicDisplays is enabled.
      */
     public static boolean isHolographicDisplaysSetup() {
@@ -27,8 +28,9 @@ public class HolographicDisplaysHook {
 
     /**
      * Create a hologram from a quest.
-     * @param index of the quest
-     * @param list where to find the quest
+     *
+     * @param index  of the quest
+     * @param list   where to find the quest
      * @param player sender
      */
     public static void createHologram(int index, ArrayList<AbstractQuest> list, Player player) {
@@ -61,9 +63,10 @@ public class HolographicDisplaysHook {
 
     /**
      * Display the hologram.
+     *
      * @param location of the hologram
-     * @param lines of the hologram
-     * @param item of the linked quest
+     * @param lines    of the hologram
+     * @param item     of the linked quest
      */
     public static void displayHologram(Location location, List<String> lines, ItemStack item) {
         Hologram hologram = HologramsAPI.createHologram(Bukkit.getPluginManager().getPlugin("ODailyQuests"), location);
@@ -77,18 +80,20 @@ public class HolographicDisplaysHook {
 
     /**
      * Get quest by index & list.
-     * @param index of the quest
+     *
+     * @param index  of the quest
      * @param quests list where find the quest
      * @return the quest
      */
     private static AbstractQuest getQuest(int index, ArrayList<AbstractQuest> quests) {
-        if (index >= 0 && quests.size()-1 >= index) {
+        if (index >= 0 && quests.size() - 1 >= index) {
             return quests.get(index);
         } else return null;
     }
 
     /**
      * Get the holograms list.
+     *
      * @return list
      */
     public static List<Hologram> getAllHolograms() {

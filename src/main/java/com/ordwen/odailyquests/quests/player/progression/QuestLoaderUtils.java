@@ -6,15 +6,18 @@ import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
 import com.ordwen.odailyquests.configuration.essentials.Temporality;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
-import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
+import com.ordwen.odailyquests.quests.types.AbstractQuest;
+import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class QuestLoaderUtils {
@@ -118,7 +121,7 @@ public class QuestLoaderUtils {
     /**
      * Check if it's time to renew quests. If so, renew them.
      *
-     * @param player    player.
+     * @param player       player.
      * @param activeQuests all active quests.
      * @return true if it's time to renew quests.
      */

@@ -1,7 +1,7 @@
 package com.ordwen.odailyquests.commands.interfaces.playerinterface.items.getters;
 
-import com.ordwen.odailyquests.tools.externals.ExternalItemGetter;
 import com.ordwen.odailyquests.tools.Pair;
+import com.ordwen.odailyquests.tools.externals.ExternalItemGetter;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -9,7 +9,8 @@ public class ItemGetter extends ExternalItemGetter implements IItemGetter {
 
     /**
      * Add custom model data to an item.
-     * @param material the material of the item
+     *
+     * @param material        the material of the item
      * @param customModelData the custom model data of the item
      * @return the ItemStack with the custom model data
      */

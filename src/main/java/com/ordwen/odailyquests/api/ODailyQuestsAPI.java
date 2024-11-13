@@ -14,29 +14,9 @@ import java.util.Map;
  */
 public class ODailyQuestsAPI {
 
-    private static boolean canRegister = true;
     private static final Map<String, Class<? extends AbstractQuest>> externalTypes = new HashMap<>();
-
+    private static boolean canRegister = true;
     private final QuestTypeRegistry questTypeRegistry = new QuestTypeRegistry();
-
-    /**
-     * Get the QuestTypeRegistry object.
-     *
-     * @return QuestTypeRegistry object
-     */
-    public QuestTypeRegistry getQuestTypeRegistry() {
-        return questTypeRegistry;
-    }
-
-    /**
-     * Get the PlayerQuests object of a player.
-     *
-     * @param playerName name of the player
-     * @return PlayerQuests object
-     */
-    public PlayerQuests getPlayerQuests(String playerName) {
-        return QuestsManager.getActiveQuests().get(playerName);
-    }
 
     /**
      * Register a new quest type.
@@ -66,5 +46,24 @@ public class ODailyQuestsAPI {
      */
     public static Map<String, Class<? extends AbstractQuest>> getExternalTypes() {
         return externalTypes;
+    }
+
+    /**
+     * Get the QuestTypeRegistry object.
+     *
+     * @return QuestTypeRegistry object
+     */
+    public QuestTypeRegistry getQuestTypeRegistry() {
+        return questTypeRegistry;
+    }
+
+    /**
+     * Get the PlayerQuests object of a player.
+     *
+     * @param playerName name of the player
+     * @return PlayerQuests object
+     */
+    public PlayerQuests getPlayerQuests(String playerName) {
+        return QuestsManager.getActiveQuests().get(playerName);
     }
 }

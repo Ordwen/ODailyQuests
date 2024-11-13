@@ -17,6 +17,7 @@ public enum QuestsPermissions {
 
     /**
      * Permission constructor.
+     *
      * @param permission permission (String).
      */
     QuestsPermissions(String permission) {
@@ -25,6 +26,7 @@ public enum QuestsPermissions {
 
     /**
      * Get permission.
+     *
      * @return permission.
      */
     public String getPermission() {

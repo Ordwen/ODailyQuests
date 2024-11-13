@@ -2,12 +2,12 @@ package com.ordwen.odailyquests.quests.player.progression.storage.yaml;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
-import com.ordwen.odailyquests.quests.types.AbstractQuest;
+import com.ordwen.odailyquests.enums.QuestsMessages;
+import com.ordwen.odailyquests.files.ProgressionFile;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.player.progression.QuestLoaderUtils;
-import com.ordwen.odailyquests.enums.QuestsMessages;
-import com.ordwen.odailyquests.files.ProgressionFile;
+import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -62,8 +62,7 @@ public class LoadProgressionYAML {
 
                             quests.put(quest, progression);
                             i++;
-                        }
-                        else {
+                        } else {
                             PluginLogger.warn("Player " + playerName + " has more quests than the configuration.");
                             PluginLogger.warn("Only the first " + QuestsAmount.getQuestsAmount() + " quests will be loaded.");
                             PluginLogger.warn("After changing the number of quests, we recommend that you reset the progressions to avoid any problems.");

@@ -7,24 +7,22 @@ import org.bukkit.Bukkit;
 
 public class OraxenEnabled {
 
-    private final ConfigurationFiles configurationFiles;
-
-    public OraxenEnabled(ConfigurationFiles configurationFiles) {
-        this.configurationFiles = configurationFiles;
-    }
-
-
     private static boolean isEnabled;
     private static boolean isLoaded;
+    private final ConfigurationFiles configurationFiles;
+    public OraxenEnabled(final ConfigurationFiles configurationFiles) {
+        this.configurationFiles = configurationFiles;
+    }
 
     public static boolean isEnabled() {
         return isEnabled;
     }
+
     public static boolean isLoaded() {
         return isEnabled && isLoaded;
     }
 
-    public static void setLoaded(boolean isLoaded) {
+    public static void setLoaded(final boolean isLoaded) {
         OraxenEnabled.isLoaded = isLoaded;
     }
 

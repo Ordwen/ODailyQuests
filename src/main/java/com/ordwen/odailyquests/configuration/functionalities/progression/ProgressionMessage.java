@@ -18,23 +18,70 @@ import java.util.Map;
 
 public class ProgressionMessage {
 
-    private final ConfigurationFiles configurationFiles;
-
-    public ProgressionMessage(ConfigurationFiles configurationFiles) {
-        this.configurationFiles = configurationFiles;
-    }
-
+    private static final Map<Player, BossBar> currentBossBars = new HashMap<>();
     /**
      * Init variables
      */
     private static boolean isEnabled;
     private static String message;
     private static ProgressionMessageType progressionMessageType;
-
     private static BarColor barColor;
     private static BarStyle barStyle;
+    private final ConfigurationFiles configurationFiles;
 
-    private static final Map<Player, BossBar> currentBossBars = new HashMap<>();
+    public ProgressionMessage(final ConfigurationFiles configurationFiles) {
+        this.configurationFiles = configurationFiles;
+    }
+
+    /**
+     * Send progression message.
+     *
+     * @param player      to send.
+     * @param questName   name of the achieved quest.
+     * @param progression progression of the quest.
+     * @param required    required progression of the quest.
+     */
+    public static void sendProgressionMessage(final Player player, final String questName, final int progression, final int required) {
+        if (isEnabled) {
+            final String toSend = ColorConvert.convertColorCode(message
+                    .replace("%player%", player.getDisplayName())
+                    .replace("%questName%", questName)
+                    .replace("%progress%", String.valueOf(progression))
+                    .replace("%required%", String.valueOf(required))
+                    .replace("%progressBar%", ProgressBar.getProgressBar(progression, required))
+            );
+
+            switch (progressionMessageType) {
+                case ACTIONBAR ->
+                        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(toSend));
+                case CHAT -> player.sendMessage(toSend);
+                case BOSSBAR -> {
+                    if (currentBossBars.containsKey(player)) {
+                        currentBossBars.get(player).setTitle(toSend);
+                        return;
+                    }
+
+                    final BossBar bossBar = Bukkit.getServer().createBossBar(toSend, barColor, barStyle);
+                    bossBar.addPlayer(player);
+                    currentBossBars.put(player, bossBar);
+
+                    ODailyQuests.morePaperLib.scheduling().entitySpecificScheduler(player).runDelayed(() -> removeBossBar(player), null, 100L);
+                }
+            }
+        }
+    }
+
+    /**
+     * Remove boss bar from player.
+     *
+     * @param player to remove boss bar from.
+     */
+    private static void removeBossBar(final Player player) {
+        if (currentBossBars.containsKey(player)) {
+            currentBossBars.get(player).removePlayer(player);
+            currentBossBars.remove(player);
+        }
+    }
 
     /**
      * Load configuration section.
@@ -64,7 +111,7 @@ public class ProgressionMessage {
 
         try {
             progressionMessageType = ProgressionMessageType.valueOf(type.toUpperCase());
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
             PluginLogger.warn("Progression message type is invalid, defaulting to CHAT.");
             progressionMessageType = ProgressionMessageType.CHAT;
         }
@@ -79,7 +126,7 @@ public class ProgressionMessage {
             } else {
                 try {
                     barColor = BarColor.valueOf(color.toUpperCase());
-                } catch (IllegalArgumentException e) {
+                } catch (final IllegalArgumentException e) {
                     PluginLogger.warn("Progression message bossbar color is invalid, defaulting to BLUE.");
                     barColor = BarColor.BLUE;
                 }
@@ -91,58 +138,11 @@ public class ProgressionMessage {
             } else {
                 try {
                     barStyle = BarStyle.valueOf(style.toUpperCase());
-                } catch (IllegalArgumentException e) {
+                } catch (final IllegalArgumentException e) {
                     PluginLogger.warn("Progression message bossbar style is invalid, defaulting to SOLID.");
                     barStyle = BarStyle.SOLID;
                 }
             }
-        }
-    }
-
-    /**
-     * Send progression message.
-     * @param player to send.
-     * @param questName name of the achieved quest.
-     * @param progression progression of the quest.
-     * @param required required progression of the quest.
-     */
-    public static void sendProgressionMessage(Player player, String questName, int progression, int required) {
-        if (isEnabled) {
-            final String toSend = ColorConvert.convertColorCode(message
-                    .replace("%player%", player.getDisplayName())
-                    .replace("%questName%", questName)
-                    .replace("%progress%", String.valueOf(progression))
-                    .replace("%required%", String.valueOf(required))
-                    .replace("%progressBar%", ProgressBar.getProgressBar(progression, required))
-            );
-
-            switch (progressionMessageType) {
-                case ACTIONBAR -> player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(toSend));
-                case CHAT -> player.sendMessage(toSend);
-                case BOSSBAR -> {
-                    if (currentBossBars.containsKey(player)) {
-                        currentBossBars.get(player).setTitle(toSend);
-                        return;
-                    }
-
-                    final BossBar bossBar = Bukkit.getServer().createBossBar(toSend, barColor, barStyle);
-                    bossBar.addPlayer(player);
-                    currentBossBars.put(player, bossBar);
-
-                    ODailyQuests.morePaperLib.scheduling().entitySpecificScheduler(player).runDelayed(() -> removeBossBar(player), null, 100L);
-                }
-            }
-        }
-    }
-
-    /**
-     * Remove boss bar from player.
-     * @param player to remove boss bar from.
-     */
-    private static void removeBossBar(Player player) {
-        if (currentBossBars.containsKey(player)) {
-            currentBossBars.get(player).removePlayer(player);
-            currentBossBars.remove(player);
         }
     }
 }

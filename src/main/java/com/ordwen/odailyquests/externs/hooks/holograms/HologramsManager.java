@@ -3,7 +3,6 @@ package com.ordwen.odailyquests.externs.hooks.holograms;
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.files.HologramsFile;
 import com.ordwen.odailyquests.tools.PluginLogger;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;

@@ -5,10 +5,10 @@ import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
-import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
-import com.ordwen.odailyquests.quests.types.AbstractQuest;
-import com.ordwen.odailyquests.quests.player.progression.storage.yaml.YamlManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
+import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
+import com.ordwen.odailyquests.quests.player.progression.storage.yaml.YamlManager;
+import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
@@ -16,10 +16,16 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 public class QuestsManager implements Listener {
 
+    private static final HashMap<String, PlayerQuests> activeQuests = new HashMap<>();
     /**
      * Getting instance of classes.
      */
@@ -44,7 +50,84 @@ public class QuestsManager implements Listener {
         }
     }
 
-    private static final HashMap<String, PlayerQuests> activeQuests = new HashMap<>();
+    /**
+     * Select random quests.
+     */
+    public static LinkedHashMap<AbstractQuest, Progression> selectRandomQuests() {
+
+        LinkedHashMap<AbstractQuest, Progression> quests = new LinkedHashMap<>();
+
+        if (Modes.getQuestsMode() == 1) {
+            ArrayList<AbstractQuest> globalQuests = CategoriesLoader.getGlobalQuests();
+
+            for (int i = 0; i < QuestsAmount.getQuestsAmount(); i++) {
+                final AbstractQuest quest = getRandomQuestForPlayer(quests.keySet(), globalQuests);
+                final Progression progression = new Progression(0, false);
+                quests.put(quest, progression);
+            }
+        } else if (Modes.getQuestsMode() == 2) {
+
+            final ArrayList<AbstractQuest> easyQuests = CategoriesLoader.getEasyQuests();
+            final ArrayList<AbstractQuest> mediumQuests = CategoriesLoader.getMediumQuests();
+            final ArrayList<AbstractQuest> hardQuests = CategoriesLoader.getHardQuests();
+
+            for (int i = 0; i < QuestsAmount.getEasyQuestsAmount(); i++) {
+                final AbstractQuest quest = getRandomQuestForPlayer(quests.keySet(), easyQuests);
+                final Progression progression = new Progression(0, false);
+                quests.put(quest, progression);
+            }
+
+            for (int i = 0; i < QuestsAmount.getMediumQuestsAmount(); i++) {
+                final AbstractQuest quest = getRandomQuestForPlayer(quests.keySet(), mediumQuests);
+                final Progression progression = new Progression(0, false);
+                quests.put(quest, progression);
+            }
+
+            for (int i = 0; i < QuestsAmount.getHardQuestsAmount(); i++) {
+                final AbstractQuest quest = getRandomQuestForPlayer(quests.keySet(), hardQuests);
+                final Progression progression = new Progression(0, false);
+                quests.put(quest, progression);
+            }
+        } else
+            PluginLogger.error(ChatColor.RED + "Impossible to select quests for player. The selected mode is incorrect.");
+
+        return quests;
+    }
+
+    /**
+     * Get a random quest that is not already in the player's quests.
+     *
+     * @param currentQuests   the player's current quests
+     * @param availableQuests the available quests
+     * @return a quest
+     */
+    public static AbstractQuest getRandomQuestForPlayer(Set<AbstractQuest> currentQuests, List<AbstractQuest> availableQuests) {
+        AbstractQuest quest;
+        do {
+            quest = getRandomQuestInCategory(availableQuests);
+        } while (currentQuests.contains(quest));
+        return quest;
+    }
+
+    /**
+     * Get random quest.
+     *
+     * @param quests array of quests
+     * @return a quest.
+     */
+    public static AbstractQuest getRandomQuestInCategory(List<AbstractQuest> quests) {
+        int questNumber = new Random().nextInt(quests.size());
+        return quests.get(questNumber);
+    }
+
+    /**
+     * Get active quests map.
+     *
+     * @return quests map.
+     */
+    public static HashMap<String, PlayerQuests> getActiveQuests() {
+        return activeQuests;
+    }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
@@ -98,9 +181,12 @@ public class QuestsManager implements Listener {
         }
 
         switch (Modes.getStorageMode()) {
-            case "YAML" -> yamlManager.getSaveProgressionYAML().saveProgression(playerName, playerQuests, !plugin.isServerStopping());
-            case "MySQL", "H2" -> sqlManager.getSaveProgressionSQL().saveProgression(playerName, playerQuests, !plugin.isServerStopping());
-            default -> PluginLogger.error("Impossible to save player quests : the selected storage mode is incorrect !");
+            case "YAML" ->
+                    yamlManager.getSaveProgressionYAML().saveProgression(playerName, playerQuests, !plugin.isServerStopping());
+            case "MySQL", "H2" ->
+                    sqlManager.getSaveProgressionSQL().saveProgression(playerName, playerQuests, !plugin.isServerStopping());
+            default ->
+                    PluginLogger.error("Impossible to save player quests : the selected storage mode is incorrect !");
         }
 
         activeQuests.remove(playerName);
@@ -108,84 +194,6 @@ public class QuestsManager implements Listener {
         Debugger.addDebug("Player " + playerName + " removed from the array.");
         Debugger.addDebug("[EVENT END]");
 
-    }
-
-    /**
-     * Select random quests.
-     */
-    public static LinkedHashMap<AbstractQuest, Progression> selectRandomQuests() {
-
-        LinkedHashMap<AbstractQuest, Progression> quests = new LinkedHashMap<>();
-
-        if (Modes.getQuestsMode() == 1) {
-            ArrayList<AbstractQuest> globalQuests = CategoriesLoader.getGlobalQuests();
-
-            for (int i = 0; i < QuestsAmount.getQuestsAmount(); i++) {
-                final AbstractQuest quest = getRandomQuestForPlayer(quests.keySet(), globalQuests);
-                final Progression progression = new Progression(0, false);
-                quests.put(quest, progression);
-            }
-        } else if (Modes.getQuestsMode() == 2) {
-
-            final ArrayList<AbstractQuest> easyQuests = CategoriesLoader.getEasyQuests();
-            final ArrayList<AbstractQuest> mediumQuests = CategoriesLoader.getMediumQuests();
-            final ArrayList<AbstractQuest> hardQuests = CategoriesLoader.getHardQuests();
-
-            for (int i = 0; i < QuestsAmount.getEasyQuestsAmount(); i++) {
-                final AbstractQuest quest = getRandomQuestForPlayer(quests.keySet(), easyQuests);
-                final Progression progression = new Progression(0, false);
-                quests.put(quest, progression);
-            }
-
-            for (int i = 0; i < QuestsAmount.getMediumQuestsAmount(); i++) {
-                final AbstractQuest quest = getRandomQuestForPlayer(quests.keySet(), mediumQuests);
-                final Progression progression = new Progression(0, false);
-                quests.put(quest, progression);
-            }
-
-            for (int i = 0; i < QuestsAmount.getHardQuestsAmount(); i++) {
-                final AbstractQuest quest = getRandomQuestForPlayer(quests.keySet(), hardQuests);
-                final Progression progression = new Progression(0, false);
-                quests.put(quest, progression);
-            }
-        } else
-            PluginLogger.error(ChatColor.RED + "Impossible to select quests for player. The selected mode is incorrect.");
-
-        return quests;
-    }
-
-    /**
-     * Get a random quest that is not already in the player's quests.
-     * @param currentQuests the player's current quests
-     * @param availableQuests the available quests
-     * @return a quest
-     */
-    public static AbstractQuest getRandomQuestForPlayer(Set<AbstractQuest> currentQuests, List<AbstractQuest> availableQuests) {
-        AbstractQuest quest;
-        do {
-            quest = getRandomQuestInCategory(availableQuests);
-        } while (currentQuests.contains(quest));
-        return quest;
-    }
-
-    /**
-     * Get random quest.
-     *
-     * @param quests array of quests
-     * @return a quest.
-     */
-    public static AbstractQuest getRandomQuestInCategory(List<AbstractQuest> quests) {
-        int questNumber = new Random().nextInt(quests.size());
-        return quests.get(questNumber);
-    }
-
-    /**
-     * Get active quests map.
-     *
-     * @return quests map.
-     */
-    public static HashMap<String, PlayerQuests> getActiveQuests() {
-        return activeQuests;
     }
 
 }
