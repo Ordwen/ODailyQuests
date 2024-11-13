@@ -5,29 +5,51 @@ import com.ordwen.odailyquests.configuration.essentials.UseCustomFurnaceResults;
 import com.ordwen.odailyquests.configuration.integrations.ItemsAdderEnabled;
 import com.ordwen.odailyquests.configuration.integrations.OraxenEnabled;
 import com.ordwen.odailyquests.events.listeners.customs.CustomFurnaceExtractListener;
+import com.ordwen.odailyquests.events.listeners.entity.EntityBreedListener;
+import com.ordwen.odailyquests.events.listeners.entity.EntityDeathListener;
+import com.ordwen.odailyquests.events.listeners.entity.EntityTameListener;
+import com.ordwen.odailyquests.events.listeners.entity.PlayerInteractEntityListener;
+import com.ordwen.odailyquests.events.listeners.entity.ShearEntityListener;
+import com.ordwen.odailyquests.events.listeners.entity.SpawnerSpawnListener;
+import com.ordwen.odailyquests.events.listeners.entity.custom.mobs.EliteMobDeathListener;
+import com.ordwen.odailyquests.events.listeners.entity.custom.mobs.MythicMobDeathListener;
+import com.ordwen.odailyquests.events.listeners.entity.custom.stackers.EntityUnstackListener;
+import com.ordwen.odailyquests.events.listeners.global.BucketFillListener;
+import com.ordwen.odailyquests.events.listeners.global.PlayerDeathListener;
+import com.ordwen.odailyquests.events.listeners.global.PlayerExpChangeListener;
+import com.ordwen.odailyquests.events.listeners.global.PlayerInteractListener;
+import com.ordwen.odailyquests.events.listeners.global.PlayerLevelChangeListener;
+import com.ordwen.odailyquests.events.listeners.global.PlayerRespawnListener;
 import com.ordwen.odailyquests.events.listeners.integrations.itemsadder.CustomBlockBreakListener;
 import com.ordwen.odailyquests.events.listeners.integrations.itemsadder.ItemsAdderLoadDataListener;
 import com.ordwen.odailyquests.events.listeners.integrations.oraxen.OraxenItemsLoadedListener;
-import com.ordwen.odailyquests.events.listeners.item.custom.PyroFishCatchListener;
+import com.ordwen.odailyquests.events.listeners.inventory.InventoryClickListener;
+import com.ordwen.odailyquests.events.listeners.inventory.InventoryCloseListener;
+import com.ordwen.odailyquests.events.listeners.item.BlockBreakListener;
+import com.ordwen.odailyquests.events.listeners.item.BlockDropItemListener;
+import com.ordwen.odailyquests.events.listeners.item.BlockPlaceListener;
+import com.ordwen.odailyquests.events.listeners.item.CraftItemListener;
+import com.ordwen.odailyquests.events.listeners.item.EnchantItemListener;
+import com.ordwen.odailyquests.events.listeners.item.FurnaceExtractListener;
+import com.ordwen.odailyquests.events.listeners.item.PickupItemListener;
+import com.ordwen.odailyquests.events.listeners.item.PlayerDropItemListener;
+import com.ordwen.odailyquests.events.listeners.item.PlayerFishListener;
+import com.ordwen.odailyquests.events.listeners.item.PlayerHarvestBlockListener;
+import com.ordwen.odailyquests.events.listeners.item.PlayerItemConsumeListener;
+import com.ordwen.odailyquests.events.listeners.item.ProjectileLaunchListener;
+import com.ordwen.odailyquests.events.listeners.item.SmithItemListener;
+import com.ordwen.odailyquests.events.listeners.item.StructureGrowListener;
 import com.ordwen.odailyquests.events.listeners.vote.VotifierListener;
 import com.ordwen.odailyquests.externs.hooks.mobs.EliteMobsHook;
 import com.ordwen.odailyquests.externs.hooks.mobs.MythicMobsHook;
 import com.ordwen.odailyquests.externs.hooks.stackers.WildStackerHook;
-import com.ordwen.odailyquests.events.listeners.entity.*;
-import com.ordwen.odailyquests.events.listeners.entity.custom.mobs.EliteMobDeathListener;
-import com.ordwen.odailyquests.events.listeners.entity.custom.stackers.EntityUnstackListener;
-import com.ordwen.odailyquests.events.listeners.entity.custom.mobs.MythicMobDeathListener;
-import com.ordwen.odailyquests.events.listeners.global.*;
-import com.ordwen.odailyquests.events.listeners.inventory.InventoryClickListener;
-import com.ordwen.odailyquests.events.listeners.inventory.InventoryCloseListener;
-import com.ordwen.odailyquests.events.listeners.item.*;
 import org.bukkit.Bukkit;
 
 public class EventsManager {
 
     private final ODailyQuests oDailyQuests;
 
-    public EventsManager(ODailyQuests oDailyQuests) {
+    public EventsManager(final ODailyQuests oDailyQuests) {
         this.oDailyQuests = oDailyQuests;
     }
 
@@ -81,10 +103,6 @@ public class EventsManager {
         Bukkit.getPluginManager().registerEvents(new PlayerHarvestBlockListener(), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new PlayerDropItemListener(), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new StructureGrowListener(), oDailyQuests);
-
-        if (Bukkit.getServer().getPluginManager().isPluginEnabled("PyroFishingPro")) {
-            Bukkit.getPluginManager().registerEvents(new PyroFishCatchListener(), oDailyQuests);
-        }
 
         if (Bukkit.getServer().getPluginManager().isPluginEnabled("Votifier")) {
             Bukkit.getPluginManager().registerEvents(new VotifierListener(), oDailyQuests);
