@@ -6,9 +6,9 @@ prefix: "O'DailyQuests"
 authors: [ Ordwen ]
 description: Add more objectives and dynamize your server !
 website: https://www.spigotmc.org/resources/odailyquests-daily-quests-plugin-1-16-1-18.100990/
-softdepend: [Vault, TokenManager, Citizens, PlaceholderAPI, PlayerPoints, MythicMobs, EliteMobs, HolographicDisplays, WildStacker, RoseStacker, Multiverse-Core, MyWorlds, HeadDatabase, Oraxen, ItemsAdder, CoinsEngine, Towny, PyroFishingPro, NuVotifier, KGenerators ]
+softdepend: [ Vault, TokenManager, Citizens, PlaceholderAPI, PlayerPoints, MythicMobs, EliteMobs, HolographicDisplays, WildStacker, RoseStacker, Multiverse-Core, MyWorlds, HeadDatabase, Oraxen, ItemsAdder, CoinsEngine, Towny, PyroFishingPro, NuVotifier, KGenerators ]
 libraries:
-  - com.zaxxer:HikariCP:5.0.1
+  - com.zaxxer:HikariCP:6.1.0
   - com.h2database:h2:2.1.214
 commands:
   dquests:
