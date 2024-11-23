@@ -16,7 +16,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.inventory.ClickType;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
@@ -149,20 +148,6 @@ public class PlayerProgressor {
         }
 
         return result;
-    }
-
-    /**
-     * Checks if the item fits in the offhand.
-     *
-     * @param stack   the item to check.
-     * @param offHand the offhand item.
-     * @return the amount of items that can be added to the offhand.
-     */
-    public int fitsInOffHand(ItemStack stack, ItemStack offHand) {
-        if (offHand == null) {
-            return stack.getMaxStackSize();
-        }
-        return Math.max(stack.getMaxStackSize() - offHand.getAmount(), 0);
     }
 
     /**
