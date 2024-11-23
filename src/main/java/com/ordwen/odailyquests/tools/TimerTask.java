@@ -17,27 +17,29 @@ public class TimerTask {
 
     final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-    final Runnable runnable = () -> {
-        PluginLogger.fine("It's a new day. The player quests are being reloaded.");
-        for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+    /**
+     * Set a runnable to reload quests at midnight.
+     * @param start date and time to start the task.
+     */
+    public TimerTask(LocalDateTime start) {
+        final LocalDateTime nextDay = start.plusDays(1).truncatedTo(ChronoUnit.DAYS).plusSeconds(2);
+        final long initialDelay = Duration.between(start, nextDay).toNanos();
 
+        scheduler.schedule(this::executeAndReschedule, initialDelay, TimeUnit.NANOSECONDS);
+    }
+
+    private void executeAndReschedule() {
+        PluginLogger.info("It's a new day. The player quests are being reloaded.");
+        for (Player player : Bukkit.getServer().getOnlinePlayers()) {
             final String msg = QuestsMessages.NEW_DAY.toString();
             if (msg != null) player.sendMessage(msg);
 
             int totalAchievedQuests = QuestsManager.getActiveQuests().get(player.getName()).getTotalAchievedQuests();
             QuestLoaderUtils.loadNewPlayerQuests(player.getName(), QuestsManager.getActiveQuests(), totalAchievedQuests);
         }
-    };
 
-    /**
-     * Set a runnable to reload quests at midnight.
-     * @param start date and time to start the task.
-     */
-    public TimerTask(LocalDateTime start) {
-        final LocalDateTime end = start.plusDays(1).truncatedTo(ChronoUnit.DAYS);
-        final Duration duration = Duration.between(start, end);
-
-        scheduler.scheduleAtFixedRate(runnable, duration.toMillis(), 86400000, TimeUnit.MILLISECONDS);
+        final long delayUntilNextRun = Duration.ofDays(1).toNanos();
+        scheduler.schedule(this::executeAndReschedule, delayUntilNextRun, TimeUnit.NANOSECONDS);
     }
 
     public void stop() {
