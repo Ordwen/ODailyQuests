@@ -29,7 +29,7 @@ public class PlayerQuests {
     private int totalAchievedQuests;
     private final LinkedHashMap<AbstractQuest, Progression> playerQuests;
     private final Map<String, Integer> achievedQuestsByCategory = new HashMap<>();
-    private final Set<String> claimedRewards = new HashSet<>();
+    //private final Set<String> claimedRewards = new HashSet<>();
 
     public PlayerQuests(Long timestamp, LinkedHashMap<AbstractQuest, Progression> playerQuests) {
         this.timestamp = timestamp;
