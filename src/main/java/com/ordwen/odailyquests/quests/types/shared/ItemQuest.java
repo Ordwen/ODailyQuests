@@ -38,6 +38,36 @@ public abstract class ItemQuest extends AbstractQuest {
 
             if (ignoreNbt && item.getType() == provided.getType()) {
                 Debugger.addDebug("ItemQuest:isRequiredItem: Ignoring NBT data.");
+
+                // check if potion
+                if (POTIONS_TYPES.contains(item.getType())) {
+                    Debugger.addDebug("ItemQuest:isRequiredItem: Required item is a potion.");
+                    boolean canProgress = true;
+
+                    final PotionMeta potionMeta = (PotionMeta) item.getItemMeta();
+                    final PotionMeta providedPotionMeta = (PotionMeta) provided.getItemMeta();
+
+                    // check potion type
+                    if (potionMeta.getBasePotionData().getType() != providedPotionMeta.getBasePotionData().getType()) {
+                        Debugger.addDebug("ItemQuest:isRequiredItem: Potion type is different.");
+                        canProgress = false;
+                    }
+
+                    // check upgraded
+                    if (potionMeta.getBasePotionData().isUpgraded() != providedPotionMeta.getBasePotionData().isUpgraded()) {
+                        Debugger.addDebug("ItemQuest:isRequiredItem: Potion is upgraded.");
+                        canProgress = false;
+                    }
+
+                    // check extended
+                    if (potionMeta.getBasePotionData().isExtended() != providedPotionMeta.getBasePotionData().isExtended()) {
+                        Debugger.addDebug("ItemQuest:isRequiredItem: Potion is extended.");
+                        canProgress = false;
+                    }
+
+                    if (!canProgress) continue;
+                }
+
                 return true;
             }
 

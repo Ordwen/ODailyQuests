@@ -6,12 +6,11 @@ import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.types.shared.ItemQuest;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class GetQuestChecker {
@@ -24,138 +23,103 @@ public class GetQuestChecker {
      * @param quest       quest to validate.
      */
     public static void makeQuestProgress(Player player, Progression progression, ItemQuest quest) {
-        final boolean ignoreNbt = quest.isIgnoreNbt();
-        boolean hasRequiredAmount = false;
-        int amount = 0;
+        PlayerInventory inventory = player.getInventory();
+        int totalAmount = calculateTotalAmount(inventory, quest);
 
-        for (ItemStack item : quest.getRequiredItems()) {
-            /* TEMPORARY FIX TO DUPE EXPLOIT */
-            int result = getAmount(player.getInventory(), item, ignoreNbt);
-            if (result == -1) {
-                final String msg = QuestsMessages.CANNOT_COMPLETE_QUEST_WITH_OFF_HAND.getMessage(player);
-                if (msg != null) player.sendMessage(msg);
-
-                return;
-            }
-
-            amount += result;
-            /* END OF TEMPORARY FIX */
+        if (totalAmount == -1) {
+            // Dupe exploit detected
+            sendMessage(player, QuestsMessages.CANNOT_COMPLETE_QUEST_WITH_OFF_HAND);
+            return;
         }
 
-        if (amount >= quest.getAmountRequired()) {
-            hasRequiredAmount = true;
-        }
-
-        if (hasRequiredAmount) {
+        if (totalAmount >= quest.getAmountRequired()) {
             if (TakeItems.isTakeItemsEnabled()) {
-                int totalRemoved = 0;
-                for (ItemStack item : quest.getRequiredItems()) {
-                    if (totalRemoved > quest.getAmountRequired()) break;
-
-                    final ItemStack toRemove = item.clone();
-
-                    int current = getAmount(player.getInventory(), item, ignoreNbt);
-                    int removeAmount = Math.min(current, quest.getAmountRequired() - totalRemoved);
-
-                    toRemove.setAmount(removeAmount);
-
-                    final ItemStack[] copy = player.getInventory().getContents();
-
-                    if (!ignoreNbt) {
-                        final Map<Integer, ItemStack> notRemoved = player.getInventory().removeItem(toRemove);
-                        if (!notRemoved.isEmpty()) {
-                            player.getInventory().setContents(copy);
-
-                            final String msg = QuestsMessages.NOT_ENOUGH_ITEM.getMessage(player);
-                            if (msg != null) player.sendMessage(msg);
-                            return;
-                        }
-                    }
-                    else removeItem(player.getInventory(), toRemove, removeAmount);
-
-                    totalRemoved += current;
+                boolean success = removeRequiredItems(inventory, quest, quest.getAmountRequired());
+                if (!success) {
+                    sendMessage(player, QuestsMessages.NOT_ENOUGH_ITEM);
+                    return;
                 }
             }
 
-            final QuestCompletedEvent event = new QuestCompletedEvent(player, progression, quest);
-            Bukkit.getPluginManager().callEvent(event);
-
+            // Quest completed
+            Bukkit.getPluginManager().callEvent(new QuestCompletedEvent(player, progression, quest));
             player.closeInventory();
         } else {
-            final String msg = QuestsMessages.NOT_ENOUGH_ITEM.getMessage(player);
-            if (msg != null) player.sendMessage(msg);
+            sendMessage(player, QuestsMessages.NOT_ENOUGH_ITEM);
         }
     }
 
     /**
-     * Remove item from player inventory by checking its type and amount, but ignoring NBT.
+     * Calculate the total amount of required items in the inventory.
      *
-     * @param inventory    player inventory to remove item from.
-     * @param toRemove     item to remove.
-     * @param removeAmount amount to remove.
+     * @param inventory the player's inventory.
+     * @param quest     the quest to validate.
+     * @return total amount of required items, or -1 if offhand exploit is detected.
      */
-    private static void removeItem(PlayerInventory inventory, ItemStack toRemove, int removeAmount) {
-        for (int i = 0; i < inventory.getSize(); i++) {
-            ItemStack item = inventory.getItem(i);
+    private static int calculateTotalAmount(PlayerInventory inventory, ItemQuest quest) {
+        int totalAmount = 0;
+
+        for (ItemStack item : inventory.getContents()) {
             if (item == null) continue;
 
-            if (item.getType() == toRemove.getType()) {
-                if (item.getAmount() > removeAmount) {
-                    item.setAmount(item.getAmount() - removeAmount);
-                    break;
-                } else {
-                    removeAmount -= item.getAmount();
-                    inventory.setItem(i, null);
+            if (quest.isRequiredItem(item)) {
+                if (inventory.getItemInOffHand().equals(item)) {
+                    return -1; // Dupe exploit
                 }
+                totalAmount += item.getAmount();
             }
         }
+
+        return totalAmount;
     }
 
     /**
-     * Count amount of an item in player inventory.
+     * Remove the required items from the player's inventory.
      *
-     * @param playerInventory player inventory to check.
-     * @param item            material to check.
-     * @return amount of material.
+     * @param inventory     the player's inventory.
+     * @param quest         the quest containing required item validation.
+     * @param amountToRemove the total amount to remove.
+     * @return true if the removal was successful, false otherwise.
      */
-    private static int getAmount(PlayerInventory playerInventory, ItemStack item, boolean ignoreNbt) {
-        int amount = 0;
-        for (ItemStack itemStack : playerInventory.getContents()) {
-            if (itemStack == null) continue;
+    private static boolean removeRequiredItems(PlayerInventory inventory, ItemQuest quest, int amountToRemove) {
+        Map<Integer, ItemStack> backup = new HashMap<>();
+        int removedAmount = 0;
 
-            if (ignoreNbt && item.getType() == itemStack.getType()) {
-                amount += itemStack.getAmount();
-                continue;
+        for (int i = 0; i < inventory.getSize(); i++) {
+            ItemStack item = inventory.getItem(i);
+            if (item == null || !quest.isRequiredItem(item)) continue;
+
+            int removable = Math.min(item.getAmount(), amountToRemove - removedAmount);
+            backup.put(i, item.clone()); // Backup the item
+
+            if (removable == item.getAmount()) {
+                inventory.setItem(i, null); // Remove the entire stack
+            } else {
+                item.setAmount(item.getAmount() - removable); // Reduce stack size
             }
 
-            if (itemStack.isSimilar(item)) {
-
-                // check if item have CustomModelData
-                if (item.hasItemMeta() && item.getItemMeta().hasCustomModelData()) {
-                    if (itemStack.hasItemMeta() && itemStack.getItemMeta().hasCustomModelData()) {
-                        if (itemStack.getItemMeta().getCustomModelData() == item.getItemMeta().getCustomModelData()) {
-
-                            /* TEMPORARY FIX TO DUPE EXPLOIT */
-                            if (playerInventory.getItemInOffHand().equals(itemStack)) {
-                                return -1;
-                            }
-                            /* END OF TEMPORARY FIX */
-
-                            amount += itemStack.getAmount();
-                        }
-                    }
-                } else {
-                    /* TEMPORARY FIX TO DUPE EXPLOIT */
-                    if (playerInventory.getItemInOffHand().equals(itemStack)) {
-                        return -1;
-                    }
-                    /* END OF TEMPORARY FIX */
-
-                    amount += itemStack.getAmount();
-                }
-            }
+            removedAmount += removable;
+            if (removedAmount >= amountToRemove) break;
         }
 
-        return amount;
+        // Check if removal was successful
+        if (removedAmount < amountToRemove) {
+            // Restore inventory if removal fails
+            backup.forEach(inventory::setItem);
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Send a message to the player if the message is defined.
+     *
+     * @param player the player to send the message to.
+     * @param message the message enum.
+     */
+    private static void sendMessage(Player player, QuestsMessages message) {
+        String msg = message.getMessage(player);
+        if (msg != null) player.sendMessage(msg);
     }
 }
