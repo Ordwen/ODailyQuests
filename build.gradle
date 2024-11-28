@@ -131,7 +131,7 @@ dependencies {
     compileOnly 'com.github.NuVotifier:NuVotifier:2.7.2'
 }
 
-def targetJavaVersion = 16
+def targetJavaVersion = 17
 java {
     def javaVersion = JavaVersion.toVersion(targetJavaVersion)
     if (JavaVersion.current() < javaVersion) {
