@@ -36,7 +36,10 @@ public class BlockDropItemListener extends PlayerProgressor implements Listener 
         final Material dataMaterial = data.getMaterial();
 
         final List<Item> drops = event.getItems();
-        if (drops.isEmpty()) return;
+        if (drops.isEmpty()) {
+            Debugger.addDebug("BlockDropItemListener: onBlockDropItemEvent no drops.");
+            return;
+        }
 
         // check if the dropped item is a crop
         if (data instanceof Ageable ageable) {
@@ -44,6 +47,7 @@ public class BlockDropItemListener extends PlayerProgressor implements Listener 
             if (ageable.getAge() == ageable.getMaximumAge()) {
                 Debugger.addDebug("BlockDropItemListener: onBlockDropItemEvent ageable block is mature.");
                 handleDrops(event, player, drops);
+
                 return;
             }
         }
@@ -58,7 +62,7 @@ public class BlockDropItemListener extends PlayerProgressor implements Listener 
             }
         }
 
-        handleDrops(event, player, drops);
+        //handleDrops(event, player, drops); ????
 
         // check if the dropped item is a block that can be posed
         if (dataMaterial.isBlock()) {
@@ -91,6 +95,7 @@ public class BlockDropItemListener extends PlayerProgressor implements Listener 
             Debugger.addDebug("BlockDropItemListener: handling drop: " + item.getItemStack().getType() + ".");
             final ItemStack droppedItem = item.getItemStack();
             final Material droppedMaterial = droppedItem.getType();
+
             FarmingQuest.setCurrent(new ItemStack(droppedMaterial));
             setPlayerQuestProgression(event, player, droppedItem.getAmount(), "FARMING");
         }

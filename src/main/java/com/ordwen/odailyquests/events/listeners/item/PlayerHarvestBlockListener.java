@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.events.listeners.item;
 
 
+import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
 import com.ordwen.odailyquests.quests.types.item.FarmingQuest;
 import org.bukkit.entity.Player;
@@ -15,8 +16,12 @@ public class PlayerHarvestBlockListener extends PlayerProgressor implements List
 
     @EventHandler
     public void onPlayerHarvestBlock(PlayerHarvestBlockEvent event) {
+        Debugger.addDebug("PlayerHarvestBlockListener: onPlayerHarvestBlockEvent summoned.");
 
-        if (event.isCancelled()) return;
+        if (event.isCancelled()) {
+            Debugger.addDebug("PlayerHarvestBlockListener: onPlayerHarvestBlockEvent is cancelled.");
+            return;
+        }
 
         final Player player = event.getPlayer();
         final List<ItemStack> drops = event.getItemsHarvested();

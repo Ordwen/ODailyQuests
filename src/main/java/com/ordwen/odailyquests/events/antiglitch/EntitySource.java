@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.events.antiglitch;
 
+import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import org.bukkit.entity.Entity;
 
 import java.util.HashSet;
@@ -13,6 +14,7 @@ public class EntitySource {
      * @param entity the entity to add.
      */
     public static void addEntityFromSpawner(Entity entity) {
+        Debugger.addDebug("Adding entity from spawner.");
         entitiesFromSpawners.add(entity);
     }
 
@@ -21,6 +23,7 @@ public class EntitySource {
      * @param entity the entity to remove.
      */
     public static void removeEntityFromSpawner(Entity entity) {
+        Debugger.addDebug("Removing entity from spawner.");
         entitiesFromSpawners.remove(entity);
     }
 

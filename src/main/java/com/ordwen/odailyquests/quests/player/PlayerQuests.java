@@ -29,7 +29,7 @@ public class PlayerQuests {
     private int totalAchievedQuests;
     private final LinkedHashMap<AbstractQuest, Progression> playerQuests;
     private final Map<String, Integer> achievedQuestsByCategory = new HashMap<>();
-    private final Set<String> claimedRewards = new HashSet<>();
+    //private final Set<String> claimedRewards = new HashSet<>();
 
     public PlayerQuests(Long timestamp, LinkedHashMap<AbstractQuest, Progression> playerQuests) {
         this.timestamp = timestamp;
@@ -86,6 +86,8 @@ public class PlayerQuests {
         Debugger.addDebug("PlayerQuests: increaseAchievedQuests: " + player.getName() + " has completed " + this.achievedQuestsByCategory.get(category) + " quests in category " + category + ".");
 
         /* check if the player have completed all quests from a category */
+
+        /*
         if (Modes.getQuestsMode() == 2) {
             for (Map.Entry<String, Integer> entry : this.achievedQuestsByCategory.entrySet()) {
                 if (claimedRewards.contains(entry.getKey())) continue;
@@ -94,6 +96,16 @@ public class PlayerQuests {
                     ODailyQuests.INSTANCE.getServer().getPluginManager().callEvent(event);
                     claimedRewards.add(entry.getKey());
                 }
+            }
+        }
+        */
+
+        if (Modes.getQuestsMode() == 2) {
+            if (this.achievedQuestsByCategory.get(category) == QuestsAmount.getQuestsAmountByCategory(category)) {
+                Debugger.addDebug("PlayerQuests: AllCategoryQuestsCompletedEvent is called.");
+
+                final AllCategoryQuestsCompletedEvent event = new AllCategoryQuestsCompletedEvent(player, category);
+                ODailyQuests.INSTANCE.getServer().getPluginManager().callEvent(event);
             }
         }
 
