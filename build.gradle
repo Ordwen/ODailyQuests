@@ -4,42 +4,21 @@ plugins {
 }
 
 group = 'com.ordwen'
+version="2.3.0"
 
-// Read the initial version from the project properties or use a default value
-def initialVersion = project.hasProperty('version') ? project.version : '2.3.0-SNAPSHOT-1'
+// get the initial version from the project properties
+def initialVersion = project.hasProperty('version') ? project.version : '1.0.0'
 
-// Function to increment the version for dev branches
-static def incrementVersion(String version) {
-    def baseVersion = version.replaceFirst(/-SNAPSHOT-\d+$/, "").replace("-SNAPSHOT", "").replace("-dev-\\d+", "")
-    def snapshotMatcher = version =~ /-SNAPSHOT-(\d+)$/
-    def devMatcher = version =~ /-dev-(\d+)$/
-    def versionNumber = 1
-
-    // Check if the version is SNAPSHOT or DEV
-    if (snapshotMatcher) {
-        versionNumber = snapshotMatcher[0][1 as String].toInteger() + 1
-    } else if (devMatcher) {
-        versionNumber = devMatcher[0][1 as String].toInteger() + 1
-    }
-
-    // If it's a dev branch, use `-dev-X` format
-    return "${baseVersion}-dev-${versionNumber}"
-}
-// Get the branch name from the environment variables or use a default value
+// get the current branch name
 def branchName = 'git rev-parse --abbrev-ref HEAD'.execute().text.trim() ?: 'local'
 println "Branch: ${branchName}"
 
-// Determine the version based on the branch name
 if (branchName.contains('master')) {
-    if (initialVersion.contains("SNAPSHOT")) {
-        throw new GradleException("Master branch should not use SNAPSHOT versions!")
-    }
-    version = initialVersion.replaceFirst(/-SNAPSHOT-\d+$/, "").replace("-SNAPSHOT", "")
+    version = initialVersion // stable release
 } else if (branchName.contains('dev')) {
-    // For dev branches, increment version as `-dev-X`
-    version = incrementVersion(initialVersion.toString()) // Increment the dev version
+    version = "${initialVersion}-SNAPSHOT"  // snapshot release
 } else {
-    version = "${initialVersion}-SNAPSHOT"
+    version = "${initialVersion}-${branchName}"  // feature branch
 }
 println "Current version: ${version}"
 
@@ -118,21 +97,6 @@ dependencies {
     compileOnly 'com.github.NuVotifier:NuVotifier:2.7.2'
 }
 
-tasks.register('updateVersion') {
-    doLast {
-        def propertiesFile = file("gradle.properties")
-        def props = new Properties()
-        propertiesFile.withInputStream {
-            props.load(it)
-        }
-        props.setProperty("version", version.toString())
-        propertiesFile.withOutputStream {
-            props.store(it, null)
-        }
-        println "Updated version to: ${version}"
-    }
-}
-
 def targetJavaVersion = 17
 java {
     def javaVersion = JavaVersion.toVersion(targetJavaVersion)
@@ -163,6 +127,5 @@ processResources {
 }
 
 tasks.build {
-    dependsOn updateVersion
     dependsOn shadowJar
 }
