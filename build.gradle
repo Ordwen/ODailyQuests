@@ -4,80 +4,66 @@ plugins {
 }
 
 group = 'com.ordwen'
-version = '2.3.0-SNAPSHOT-19'
+
+// read the initial version from the project properties or use a default value
+def initialVersion = project.hasProperty('version') ? project.version : '2.3.0-SNAPSHOT-1'
+
+// increment the snapshot version for dev branches
+static def incrementVersion(String version) {
+    def baseVersion = version.replaceFirst(/-SNAPSHOT-\\d+$/, "").replace("-SNAPSHOT", "").replace("-dev-\\d+", "")
+    def snapshotMatcher = version =~ /-SNAPSHOT-(\\d+)$/
+    def devMatcher = version =~ /-dev-(\\d+)$/
+    def versionNumber = 1
+
+    // increment SNAPSHOT or DEV version numbers
+    if (snapshotMatcher) {
+        versionNumber = snapshotMatcher[0][1 as String].toInteger() + 1
+    } else if (devMatcher) {
+        versionNumber = devMatcher[0][1 as String].toInteger() + 1
+    }
+
+    return "${baseVersion}-SNAPSHOT-${versionNumber}"
+}
+
+// Get the branch name from the environment variables or use a default value
+def branchName = 'git rev-parse --abbrev-ref HEAD'.execute().text.trim() ?: 'local'
+println "Branch: ${branchName}"
+
+// Determine the version based on the branch name
+if (branchName.contains('master')) {
+    if (initialVersion.contains("SNAPSHOT")) {
+        throw new GradleException("Master branch should not use SNAPSHOT versions!")
+    }
+    version = initialVersion.replaceFirst(/-SNAPSHOT-\d+$/, "").replace("-SNAPSHOT", "")
+} else if (branchName.contains('dev')) {
+    version = incrementVersion(initialVersion.toString()) // Increment the dev version
+} else {
+    version = "${initialVersion}-SNAPSHOT"
+}
+println "Current version: ${version}"
 
 repositories {
     mavenCentral()
-    maven {
-        name 'papermc'
-        url 'https://repo.papermc.io/repository/maven-public/'
-    }
-    maven {
-        name = 'spigotmc-repo'
-        url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
-    }
-    maven {
-        name = 'sonatype'
-        url = 'https://oss.sonatype.org/content/groups/public/'
-    }
-    maven {
-        url = 'https://repo.rosewooddev.io/repository/public/'
-    }
-    maven {
-        name = 'jitpack-repo'
-        url = 'https://jitpack.io'
-    }
-    maven {
-        name = 'citizens-repo'
-        url = 'https://maven.citizensnpcs.co/repo'
-    }
-    maven {
-        name = ' Lumine Releases'
-        url = 'https://mvn.lumine.io/repository/maven-public/'
-    }
-    maven {
-        name = 'minecraft-repo'
-        url = 'https://libraries.minecraft.net/'
-    }
-    maven {
-        url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'
-    }
-    maven {
-        url = "https://repo.codemc.org/repository/maven-public/"
-    }
-    maven {
-        name = 'bg-repo'
-        url = 'https://repo.bg-software.com/repository/api/'
-    }
-    maven {
-        name 'arim-mvn-lgpl3'
-        url 'https://mvn-repo.arim.space/lesser-gpl3/'
-    }
-    maven {
-        url = 'https://repo.rosewooddev.io/repository/public/'
-    }
-    maven {
-        name = "phoenix"
-        url = "https://nexus.phoenixdevt.fr/repository/maven-public/"
-    }
-    maven {
-        name = "enginehub"
-        url = "https://maven.enginehub.org/repo/"
-    }
-    maven {
-        name = 'glaremasters repo'
-        url = 'https://repo.glaremasters.me/repository/towny/'
-    }
-    flatDir {
-        dirs 'libs'
-    }
+    maven { url = 'https://repo.papermc.io/repository/maven-public/' }
+    maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+    maven { url = 'https://oss.sonatype.org/content/groups/public/' }
+    maven { url = 'https://repo.rosewooddev.io/repository/public/' }
+    maven { url = 'https://jitpack.io' }
+    maven { url = 'https://maven.citizensnpcs.co/repo' }
+    maven { url = 'https://mvn.lumine.io/repository/maven-public/' }
+    maven { url = 'https://libraries.minecraft.net/' }
+    maven { url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
+    maven { url = "https://repo.codemc.org/repository/maven-public/" }
+    maven { url = 'https://repo.bg-software.com/repository/api/' }
+    maven { url = 'https://mvn-repo.arim.space/lesser-gpl3/' }
+    maven { url = 'https://repo.rosewooddev.io/repository/public/' }
+    maven { url = "https://nexus.phoenixdevt.fr/repository/maven-public/" }
+    maven { url = "https://maven.enginehub.org/repo/"}
+    maven { url = 'https://repo.glaremasters.me/repository/towny/'}
+    flatDir { dirs 'libs' }
 }
 
 dependencies {
-
-    //implementation "net.kyori:adventure-text-minimessage:4.14.0"
-    //implementation "net.kyori:adventure-platform-bukkit:4.3.0"
-
     /* database management */
     compileOnly 'com.zaxxer:HikariCP:5.0.1'
     compileOnly 'com.h2database:h2:2.2.220'
@@ -86,7 +72,6 @@ dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.18.1-R0.1-SNAPSHOT'
 
     /* Folia */
-    //implementation 'io.papermc:paperlib:1.0.7'
     implementation 'space.arim.morepaperlib:morepaperlib:0.4.3'
 
     /* Mojang auth API for heads */
@@ -96,12 +81,11 @@ dependencies {
     compileOnly 'com.github.MilkBowl:VaultAPI:1.7'
     compileOnly 'org.black_ixx:playerpoints:3.2.2'
     compileOnly files('libs/CoinsEngine-2.3.4.jar')
-    compileOnly ('com.github.Realizedd:TokenManager:3.2.4') { transitive = false }
+    compileOnly('com.github.Realizedd:TokenManager:3.2.4') { transitive = false }
 
     /* npcs */
-    compileOnly('net.citizensnpcs:citizens-main:2.0.35-SNAPSHOT') {
-        exclude group: '*', module: '*'
-    }
+    compileOnly('net.citizensnpcs:citizens-main:2.0.35-SNAPSHOT') { exclude group: '*', module: '*' }
+
     /* mobs */
     compileOnly 'io.lumine:Mythic-Dist:5.0.3-SNAPSHOT'
     compileOnly files('libs/EliteMobs-9.1.11.jar')
@@ -119,9 +103,7 @@ dependencies {
     compileOnly 'com.github.LoneDev6:API-ItemsAdder:3.6.3-beta-14'
     compileOnly 'net.Indyuce:MMOItems-API:6.9.2-SNAPSHOT'
     compileOnly 'io.lumine:MythicLib-dist:1.5.2-SNAPSHOT'
-    compileOnly ('me.kryniowesegryderiusz:kgenerators-core:7.3') {
-        exclude group: '*', module: '*'
-    }
+    compileOnly('me.kryniowesegryderiusz:kgenerators-core:7.3') { exclude group: '*', module: '*' }
     compileOnly files('libs/PyroFishingPro-4.9.12.jar')
 
     /* auto restart */
@@ -133,6 +115,21 @@ dependencies {
 
     /* vote */
     compileOnly 'com.github.NuVotifier:NuVotifier:2.7.2'
+}
+
+tasks.register('updateVersion') {
+    doLast {
+        def propertiesFile = file("gradle.properties")
+        def props = new Properties()
+        propertiesFile.withInputStream {
+            props.load(it)
+        }
+        props.setProperty("version", version.toString())
+        propertiesFile.withOutputStream {
+            props.store(it, null)
+        }
+        println "Updated version to: ${version}"
+    }
 }
 
 def targetJavaVersion = 17
@@ -165,5 +162,6 @@ processResources {
 }
 
 tasks.build {
+    dependsOn updateVersion
     dependsOn shadowJar
 }
