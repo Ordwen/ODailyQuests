@@ -5,26 +5,26 @@ plugins {
 
 group = 'com.ordwen'
 
-// read the initial version from the project properties or use a default value
+// Read the initial version from the project properties or use a default value
 def initialVersion = project.hasProperty('version') ? project.version : '2.3.0-SNAPSHOT-1'
 
-// increment the snapshot version for dev branches
+// Function to increment the version for dev branches
 static def incrementVersion(String version) {
-    def baseVersion = version.replaceFirst(/-SNAPSHOT-\\d+$/, "").replace("-SNAPSHOT", "").replace("-dev-\\d+", "")
-    def snapshotMatcher = version =~ /-SNAPSHOT-(\\d+)$/
-    def devMatcher = version =~ /-dev-(\\d+)$/
+    def baseVersion = version.replaceFirst(/-SNAPSHOT-\d+$/, "").replace("-SNAPSHOT", "").replace("-dev-\\d+", "")
+    def snapshotMatcher = version =~ /-SNAPSHOT-(\d+)$/
+    def devMatcher = version =~ /-dev-(\d+)$/
     def versionNumber = 1
 
-    // increment SNAPSHOT or DEV version numbers
+    // Check if the version is SNAPSHOT or DEV
     if (snapshotMatcher) {
         versionNumber = snapshotMatcher[0][1 as String].toInteger() + 1
     } else if (devMatcher) {
         versionNumber = devMatcher[0][1 as String].toInteger() + 1
     }
 
-    return "${baseVersion}-SNAPSHOT-${versionNumber}"
+    // If it's a dev branch, use `-dev-X` format
+    return "${baseVersion}-dev-${versionNumber}"
 }
-
 // Get the branch name from the environment variables or use a default value
 def branchName = 'git rev-parse --abbrev-ref HEAD'.execute().text.trim() ?: 'local'
 println "Branch: ${branchName}"
@@ -36,6 +36,7 @@ if (branchName.contains('master')) {
     }
     version = initialVersion.replaceFirst(/-SNAPSHOT-\d+$/, "").replace("-SNAPSHOT", "")
 } else if (branchName.contains('dev')) {
+    // For dev branches, increment version as `-dev-X`
     version = incrementVersion(initialVersion.toString()) // Increment the dev version
 } else {
     version = "${initialVersion}-SNAPSHOT"
