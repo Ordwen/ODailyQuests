@@ -10,7 +10,7 @@ version="2.3.0"
 def initialVersion = project.hasProperty('version') ? project.version : '1.0.0'
 
 // get the current branch name
-def branchName = 'git rev-parse --abbrev-ref HEAD'.execute().text.trim() ?: 'local'
+def branchName = 'git symbolic-ref --short HEAD'.execute().text.trim() ?: 'local'
 println "Branch: ${branchName}"
 
 // get Jenkins build number (if available)
