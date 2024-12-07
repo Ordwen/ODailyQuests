@@ -13,6 +13,9 @@ def initialVersion = project.hasProperty('version') ? project.version : '1.0.0'
 def branchName = 'git rev-parse --abbrev-ref HEAD'.execute().text.trim() ?: 'local'
 println "Branch: ${branchName}"
 
+// get Jenkins build number (if available)
+def buildNumber = System.getenv("BUILD_NUMBER") ?: "local"
+
 if (branchName.contains('master')) {
     version = initialVersion // stable release
 } else if (branchName.contains('dev')) {
@@ -20,6 +23,13 @@ if (branchName.contains('master')) {
 } else {
     version = "${initialVersion}-${branchName}"  // feature branch
 }
+
+// append build number for SNAPSHOT versions
+if (version.contains("SNAPSHOT") && buildNumber != "local") {
+    version = "${version}-b${buildNumber}"
+}
+
+
 println "Current version: ${version}"
 
 repositories {
