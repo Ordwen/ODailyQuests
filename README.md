@@ -10,3 +10,5 @@ Wiki : https://ordwenplugins.gitbook.io/odailyquests/
 <br>Spigot : https://www.spigotmc.org/resources/odailyquests-daily-quests-plugin-1-16-1-19.100990/
 
 You can download the latest build of the plugin on the [Jenkins](https://jenkins.ordwen-dev.com/job/build-odailyquests/) page.
+
+### testing jenkins
