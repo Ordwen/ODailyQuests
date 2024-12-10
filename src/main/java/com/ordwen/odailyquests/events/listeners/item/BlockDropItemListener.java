@@ -15,6 +15,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.metadata.MetadataValue;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -44,6 +45,11 @@ public class BlockDropItemListener extends PlayerProgressor implements Listener 
         // check if the dropped item is a crop
         if (data instanceof Ageable ageable) {
             Debugger.addDebug("BlockDropItemListener: onBlockDropItemEvent ageable block: " + dataMaterial + ".");
+
+            System.out.println("age: " + ageable.getAge());
+            System.out.println("max age: " + ageable.getMaximumAge());
+            System.out.println("dropped amount: " + drops.size());
+
             if (ageable.getAge() == ageable.getMaximumAge()) {
                 Debugger.addDebug("BlockDropItemListener: onBlockDropItemEvent ageable block is mature.");
                 handleDrops(event, player, drops);
@@ -56,13 +62,21 @@ public class BlockDropItemListener extends PlayerProgressor implements Listener 
         if (dataMaterial.isBlock()) {
             if (Antiglitch.isStorePlacedBlocks()) {
                 if (!event.getBlock().getMetadata("odailyquests:placed").isEmpty()) {
-                    Debugger.addDebug("BlockDropItemListener: onBlockDropItemEvent cancelled due to placed block.");
-                    return;
+                    // check if type has changed
+                    final MetadataValue previousType = event.getBlock().getMetadata("odailyquests:type").stream().findFirst().orElse(null);
+                    if (previousType != null) {
+                        if (previousType.asString().equals(dataMaterial.name())) {
+                            Debugger.addDebug("BlockDropItemListener: onBlockDropItemEvent cancelled due to placed block.");
+                            return;
+                        } else {
+                            Debugger.addDebug("BlockDropItemListener: onBlockDropItemEvent block type has changed (" + previousType.asString() + " -> " + dataMaterial.name() + ").");
+                        }
+                    }
                 }
             }
         }
 
-        //handleDrops(event, player, drops); ????
+        handleDrops(event, player, drops);
 
         // check if the dropped item is a block that can be posed
         if (dataMaterial.isBlock()) {

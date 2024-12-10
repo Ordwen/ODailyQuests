@@ -52,6 +52,7 @@ public class BlockPlaceListener extends PlayerProgressor implements Listener {
         if (Antiglitch.isStorePlacedBlocks()) {
             Debugger.addDebug("BlockPlaceListener: onBlockPlaceEvent storing placed block.");
             block.setMetadata("odailyquests:placed", new FixedMetadataValue(ODailyQuests.INSTANCE, player.getUniqueId().toString()));
+            block.setMetadata("odailyquests:type", new FixedMetadataValue(ODailyQuests.INSTANCE, block.getType().name()));
         }
     }
 }
