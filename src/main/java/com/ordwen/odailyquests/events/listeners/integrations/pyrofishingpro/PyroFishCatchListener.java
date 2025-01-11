@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.events.listeners.item.custom;
+package com.ordwen.odailyquests.events.listeners.integrations.pyrofishingpro;
 
 import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
 import me.arsmagica.API.PyroFishCatchEvent;

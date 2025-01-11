@@ -23,7 +23,7 @@ public class GetQuestChecker {
      * @param quest       quest to validate.
      */
     public static void makeQuestProgress(Player player, Progression progression, ItemQuest quest) {
-        PlayerInventory inventory = player.getInventory();
+        final PlayerInventory inventory = player.getInventory();
         int totalAmount = calculateTotalAmount(inventory, quest);
 
         if (totalAmount == -1) {
