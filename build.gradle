@@ -94,6 +94,7 @@ dependencies {
     compileOnly 'com.github.LoneDev6:API-ItemsAdder:3.6.3-beta-14'
     compileOnly 'net.Indyuce:MMOItems-API:6.9.2-SNAPSHOT'
     compileOnly 'io.lumine:MythicLib-dist:1.5.2-SNAPSHOT'
+    compileOnly 'com.github.Xiao-MoMi:Custom-Crops:3.6.22'
     compileOnly('me.kryniowesegryderiusz:kgenerators-core:7.3') { exclude group: '*', module: '*' }
     compileOnly files('libs/PyroFishingPro-4.9.12.jar')
 

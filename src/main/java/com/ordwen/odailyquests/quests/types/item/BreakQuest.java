@@ -1,10 +1,16 @@
 package com.ordwen.odailyquests.quests.types.item;
 
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
+import com.ordwen.odailyquests.configuration.integrations.ItemsAdderEnabled;
+import com.ordwen.odailyquests.configuration.integrations.OraxenEnabled;
 import com.ordwen.odailyquests.externs.hooks.Protection;
 import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
 import com.ordwen.odailyquests.quests.types.shared.ItemQuest;
+import dev.lone.itemsadder.api.CustomStack;
 import dev.lone.itemsadder.api.Events.CustomBlockBreakEvent;
+import io.th0rgal.oraxen.api.OraxenItems;
+import io.th0rgal.oraxen.items.ItemBuilder;
+import net.momirealms.customcrops.api.event.CropBreakEvent;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.Event;
@@ -54,6 +60,33 @@ public class BreakQuest extends ItemQuest {
 
         if (provided instanceof CustomBlockBreakEvent event) {
             return super.isRequiredItem(event.getCustomBlockItem());
+        }
+
+        if (provided instanceof CropBreakEvent event) {
+            final String cropNamespace = event.cropStageItemID();
+
+            ItemStack cropItem = null;
+
+            if (ItemsAdderEnabled.isEnabled()) {
+                final CustomStack customStack = CustomStack.getInstance(cropNamespace);
+                if (customStack != null) {
+                    cropItem = customStack.getItemStack().clone();
+                }
+            }
+
+            if (OraxenEnabled.isEnabled()) {
+                final ItemBuilder itemBuilder = OraxenItems.getItemById(cropNamespace);
+                if (itemBuilder != null) {
+                    cropItem = itemBuilder.build();
+                }
+            }
+
+            if (cropItem == null) {
+                Debugger.addDebug("CropBreakListener: onCropBreak: The crop item " + cropNamespace + " does not exist.");
+                return false;
+            }
+
+            return super.isRequiredItem(cropItem);
         }
 
         return false;
