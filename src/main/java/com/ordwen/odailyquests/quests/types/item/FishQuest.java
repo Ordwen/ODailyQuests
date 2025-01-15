@@ -2,6 +2,7 @@ package com.ordwen.odailyquests.quests.types.item;
 
 import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
 import com.ordwen.odailyquests.quests.types.shared.ItemQuest;
+import net.momirealms.customfishing.api.event.FishingLootSpawnEvent;
 import org.bukkit.entity.Item;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerFishEvent;
@@ -23,6 +24,14 @@ public class FishQuest extends ItemQuest {
             final Item item = (Item) event.getCaught();
             if (item == null) return false;
             return super.isRequiredItem(item.getItemStack());
+        }
+
+        if (provided instanceof FishingLootSpawnEvent event) {
+            if (event.getEntity() instanceof Item item) {
+                return super.isRequiredItem(item.getItemStack());
+            } else {
+                return false;
+            }
         }
 
         return false;
