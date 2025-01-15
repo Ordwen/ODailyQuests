@@ -6,6 +6,7 @@ import com.ordwen.odailyquests.configuration.integrations.ItemsAdderEnabled;
 import com.ordwen.odailyquests.configuration.integrations.OraxenEnabled;
 import com.ordwen.odailyquests.events.listeners.customs.CustomFurnaceExtractListener;
 import com.ordwen.odailyquests.events.listeners.integrations.customsuite.CropBreakListener;
+import com.ordwen.odailyquests.events.listeners.integrations.customsuite.FishingLootSpawnListener;
 import com.ordwen.odailyquests.events.listeners.integrations.itemsadder.CustomBlockBreakListener;
 import com.ordwen.odailyquests.events.listeners.integrations.itemsadder.ItemsAdderLoadDataListener;
 import com.ordwen.odailyquests.events.listeners.integrations.oraxen.OraxenItemsLoadedListener;
@@ -113,6 +114,10 @@ public class EventsManager {
 
         if (Bukkit.getPluginManager().isPluginEnabled("CustomCrops")) {
             Bukkit.getPluginManager().registerEvents(new CropBreakListener(), oDailyQuests);
+        }
+
+        if (Bukkit.getPluginManager().isPluginEnabled("CustomFishing")) {
+            Bukkit.getPluginManager().registerEvents(new FishingLootSpawnListener(), oDailyQuests);
         }
     }
 }
