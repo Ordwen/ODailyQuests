@@ -84,14 +84,6 @@ public class EventsManager {
         Bukkit.getPluginManager().registerEvents(new PlayerDropItemListener(), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new StructureGrowListener(), oDailyQuests);
 
-        if (Bukkit.getServer().getPluginManager().isPluginEnabled("PyroFishingPro")) {
-            Bukkit.getPluginManager().registerEvents(new PyroFishCatchListener(), oDailyQuests);
-        }
-
-        if (Bukkit.getServer().getPluginManager().isPluginEnabled("Votifier")) {
-            Bukkit.getPluginManager().registerEvents(new VotifierListener(), oDailyQuests);
-        }
-
         // inventory events
         Bukkit.getPluginManager().registerEvents(new InventoryCloseListener(), oDailyQuests);
 
@@ -118,6 +110,14 @@ public class EventsManager {
 
         if (Bukkit.getPluginManager().isPluginEnabled("CustomFishing")) {
             Bukkit.getPluginManager().registerEvents(new FishingLootSpawnListener(), oDailyQuests);
+        }
+
+        if (Bukkit.getServer().getPluginManager().isPluginEnabled("PyroFishingPro")) {
+            Bukkit.getPluginManager().registerEvents(new PyroFishCatchListener(), oDailyQuests);
+        }
+
+        if (Bukkit.getServer().getPluginManager().isPluginEnabled("Votifier")) {
+            Bukkit.getPluginManager().registerEvents(new VotifierListener(), oDailyQuests);
         }
     }
 }

@@ -24,17 +24,14 @@ public class EntityDeathListener extends PlayerProgressor implements Listener {
             if (mythicMob != null) return;
         }
 
-        final boolean isEntityFromSpawner = EntitySource.isEntityFromSpawner(entity);
-        EntitySource.removeEntityFromSpawner(entity);
-
-        if (WildStackerEnabled.isEnabled()) return;
-        if (entity.getKiller() == null) return;
-        if (isEntityFromSpawner) {
-            Debugger.addDebug("Entity is from spawner, cancelling progression.");
+        if (EntitySource.isEntityFromSpawner(entity)) {
+            Debugger.addDebug("[EntityDeathEvent] Entity is from spawner, cancelling progression.");
             return;
         }
 
-        Debugger.addDebug("=========================================================================================");
+        if (WildStackerEnabled.isEnabled()) return;
+        if (entity.getKiller() == null) return;
+
         Debugger.addDebug("EntityDeathListener: onEntityDeathEvent summoned by " + entity.getKiller().getName() + " for " + entity.getType() + ".");
 
         setPlayerQuestProgression(event, entity.getKiller(), 1, "KILL");
