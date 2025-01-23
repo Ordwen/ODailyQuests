@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.events.listeners.entity;
 
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
+import com.ordwen.odailyquests.configuration.functionalities.SpawnersProgression;
 import com.ordwen.odailyquests.events.antiglitch.EntitySource;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -13,6 +14,8 @@ public class SpawnerSpawnListener implements Listener {
         if (event.isCancelled()) return;
 
         Debugger.addDebug("Spawner spawn event: " + event.getEntity().getType());
-        EntitySource.addEntityFromSpawner(event.getEntity());
+        if (SpawnersProgression.isSpawnersProgressionDisabled()) {
+            EntitySource.addEntityFromSpawner(event.getEntity());
+        }
     }
 }
