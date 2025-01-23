@@ -4,6 +4,7 @@ import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
 import com.ordwen.odailyquests.configuration.essentials.UseCustomFurnaceResults;
 import com.ordwen.odailyquests.events.customs.CustomFurnaceExtractEvent;
+import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractClickableChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -21,18 +22,18 @@ public class InventoryClickListener extends AbstractClickableChecker implements 
 
     @EventHandler
     public void onInventoryClickEvent(InventoryClickEvent event) {
+        final Player player = (Player) event.getWhoClicked();
+        if (!QuestsManager.getActiveQuests().containsKey(player.getName())) {
+            return;
+        }
 
         final ItemStack clickedItem = event.getCurrentItem();
-
         final InventoryAction action = event.getAction();
         if (action == InventoryAction.NOTHING) return;
-
         final int slot = event.getRawSlot();
 
         if (event.getClickedInventory() == null) return;
         if (clickedItem == null || clickedItem.getType() == Material.AIR) return;
-
-        final Player player = (Player) event.getWhoClicked();
 
         // check if player is trading
         if (event.getInventory().getType() == InventoryType.MERCHANT && event.getSlotType() == InventoryType.SlotType.RESULT) {
@@ -47,7 +48,7 @@ public class InventoryClickListener extends AbstractClickableChecker implements 
                     case SHIFT_RIGHT, SHIFT_LEFT -> {
                         if (clickedItem.getAmount() == 0) break;
                         int maxTradable = getMaxTradeAmount(merchantInventory);
-                        int capacity = fits(clickedItem, event.getView().getBottomInventory());
+                        int capacity = fits(clickedItem, event.getView().getBottomInventory().getStorageContents());
                         if (capacity < maxTradable) {
                             maxTradable = ((capacity + clickedItem.getAmount() - 1) / clickedItem.getAmount()) * clickedItem.getAmount();
                         }
@@ -86,7 +87,7 @@ public class InventoryClickListener extends AbstractClickableChecker implements 
                     case PICKUP_ONE, DROP_ONE_SLOT -> amount = 1;
                     case MOVE_TO_OTHER_INVENTORY -> {
                         int max = clickedItem.getAmount();
-                        amount = Math.min(max, fits(clickedItem, player.getInventory()));
+                        amount = Math.min(max, fits(clickedItem, player.getInventory().getStorageContents()));
                     }
                     default -> amount = clickedItem.getAmount();
                 }
@@ -106,9 +107,7 @@ public class InventoryClickListener extends AbstractClickableChecker implements 
             event.setCancelled(true);
 
             if (event.getAction() == InventoryAction.HOTBAR_SWAP) return;
-
             if (PlayerQuestsInterface.getFillItems().contains(clickedItem)) return;
-
             if (PlayerQuestsInterface.getCloseItems().contains(clickedItem)) {
                 event.getWhoClicked().closeInventory();
                 return;
@@ -128,23 +127,9 @@ public class InventoryClickListener extends AbstractClickableChecker implements 
                 return;
             }
 
-            // complete quest for types that requires a click ( GET - LOCATION - PLACEHOLDER)
+            // complete quest for types that requires a click in player interface (GET - LOCATION - PLACEHOLDER)
             setPlayerQuestProgression(player, clickedItem);
         }
-    }
-
-    private int fits(ItemStack expected, Inventory inv) {
-        int result = 0;
-
-        for (ItemStack compared : inv.getStorageContents()) {
-            if (compared == null) {
-                result += expected.getMaxStackSize();
-            } else if (compared.isSimilar(expected)) {
-                result += Math.max(expected.getMaxStackSize() - compared.getAmount(), 0);
-            }
-        }
-
-        return result;
     }
 
     private int getMaxTradeAmount(MerchantInventory inv) {

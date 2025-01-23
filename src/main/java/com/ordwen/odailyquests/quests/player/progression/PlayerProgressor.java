@@ -50,7 +50,7 @@ public class PlayerProgressor {
      * @param amount    the amount of progression
      * @param questType the quest type to check for
      */
-    private static void checkForProgress(Event event, Player player, int amount, String questType) {
+    private void checkForProgress(Event event, Player player, int amount, String questType) {
         final HashMap<AbstractQuest, Progression> playerQuests = QuestsManager.getActiveQuests().get(player.getName()).getPlayerQuests();
         for (Map.Entry<AbstractQuest, Progression> entry : playerQuests.entrySet()) {
             final AbstractQuest quest = entry.getKey();
@@ -72,7 +72,7 @@ public class PlayerProgressor {
      * @param quest       quest to be progressed
      * @param amount      amount of progression
      */
-    public static void actionQuest(Player player, Progression progression, AbstractQuest quest, int amount) {
+    public void actionQuest(Player player, Progression progression, AbstractQuest quest, int amount) {
 
         Debugger.addDebug("QuestProgressUtils: actionQuest summoned by " + player.getName() + " for " + quest.getQuestName() + " with amount " + amount + ".");
 
@@ -93,24 +93,9 @@ public class PlayerProgressor {
      * @param quest       quest to be progressed
      * @param amount      amount of progression
      */
-    private static void runProgress(Player player, Progression progression, AbstractQuest quest, int amount) {
+    private void runProgress(Player player, Progression progression, AbstractQuest quest, int amount) {
         if (QuestLoaderUtils.isTimeToRenew(player, QuestsManager.getActiveQuests())) return;
-
-        /* check if player is in the required world */
-        if (!quest.getRequiredWorlds().isEmpty() && !quest.getRequiredWorlds().contains(player.getWorld().getName())) {
-            final String msg = QuestsMessages.NOT_REQUIRED_WORLD.getMessage(player);
-            if (msg != null) player.sendMessage(msg);
-
-            return;
-        }
-
-        /* check if player is in the required region */
-        if (!quest.getRequiredRegions().isEmpty() && !Protection.checkRegion(player, quest.getRequiredRegions())) {
-            final String msg = QuestsMessages.NOT_REQUIRED_REGION.getMessage(player);
-            if (msg != null) player.sendMessage(msg);
-
-            return;
-        }
+        if (!isAllowedToProgress(player, quest)) return;
 
         for (int i = 0; i < amount; i++) {
             Debugger.addDebug("QuestProgressUtils: increasing progression for " + quest.getQuestName() + " by " + amount + ".");
@@ -129,6 +114,36 @@ public class PlayerProgressor {
         }
 
         ProgressionMessage.sendProgressionMessage(player, quest.getQuestName(), progression.getProgression(), quest.getAmountRequired());
+    }
+
+    /**
+     * Execute all the checks to determine if the player is allowed to progress in the quest. This includes checking if the player is in the required world and region.
+     *
+     * @param player the player to check.
+     * @param quest  the quest to check.
+     * @return true if the player is allowed to progress.
+     */
+    public boolean isAllowedToProgress(Player player, AbstractQuest quest) {
+        if (DisabledWorlds.isWorldDisabled(player.getWorld().getName())) {
+            Debugger.addDebug("PlayerProgressor: isAllowedToProgress cancelled due to disabled world.");
+            return false;
+        }
+
+        /* check if player is in the required world */
+        if (!quest.getRequiredWorlds().isEmpty() && !quest.getRequiredWorlds().contains(player.getWorld().getName())) {
+            final String msg = QuestsMessages.NOT_REQUIRED_WORLD.getMessage(player);
+            if (msg != null) player.sendMessage(msg);
+            return false;
+        }
+
+        /* check if player is in the required region */
+        if (!quest.getRequiredRegions().isEmpty() && !Protection.checkRegion(player, quest.getRequiredRegions())) {
+            final String msg = QuestsMessages.NOT_REQUIRED_REGION.getMessage(player);
+            if (msg != null) player.sendMessage(msg);
+            return false;
+        }
+
+        return true;
     }
 
     /**
