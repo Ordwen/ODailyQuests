@@ -5,7 +5,8 @@ import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsI
 import com.ordwen.odailyquests.configuration.essentials.UseCustomFurnaceResults;
 import com.ordwen.odailyquests.events.customs.CustomFurnaceExtractEvent;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
-import com.ordwen.odailyquests.quests.player.progression.checkers.AbstractClickableChecker;
+import com.ordwen.odailyquests.quests.player.progression.clickable.ClickableChecker;
+import com.ordwen.odailyquests.quests.player.progression.clickable.QuestContext;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -18,7 +19,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.*;
 
-public class InventoryClickListener extends AbstractClickableChecker implements Listener {
+public class InventoryClickListener extends ClickableChecker implements Listener {
 
     @EventHandler
     public void onInventoryClickEvent(InventoryClickEvent event) {
@@ -28,49 +29,86 @@ public class InventoryClickListener extends AbstractClickableChecker implements 
         }
 
         final ItemStack clickedItem = event.getCurrentItem();
+        final QuestContext.Builder contextBuilder = new QuestContext.Builder(player).clickedItem(clickedItem);
+
         final InventoryAction action = event.getAction();
         if (action == InventoryAction.NOTHING) return;
-        final int slot = event.getRawSlot();
 
         if (event.getClickedInventory() == null) return;
         if (clickedItem == null || clickedItem.getType() == Material.AIR) return;
 
-        // check if player is trading
+        if (handleVillagerTrading(event, clickedItem, contextBuilder)) return;
+        if (handleCustomFurnaceResult(event, action, clickedItem, player)) return;
+
+        // do action related to the clicked item
+        final String inventoryName = event.getView().getTitle();
+        if (inventoryName.startsWith(PlayerQuestsInterface.getInterfaceName(player))) {
+            event.setCancelled(true);
+            if (handlePlayerInterfaceClick(event, clickedItem, player)) return;
+            processQuestCompletion(contextBuilder.build());
+        }
+    }
+
+    /**
+     * Handle player interface click events.
+     *
+     * @param event       the inventory click event.
+     * @param clickedItem the clicked item.
+     * @param player      the player who clicked the item.
+     * @return true if the event is handled, false otherwise.
+     */
+    private boolean handlePlayerInterfaceClick(InventoryClickEvent event, ItemStack clickedItem, Player player) {
+        if (event.getAction() == InventoryAction.HOTBAR_SWAP) return true;
+        if (PlayerQuestsInterface.getFillItems().contains(clickedItem)) return true;
+
+        final int slot = event.getRawSlot();
+        if (handlePlayerCommandItem(player, slot)) return true;
+        if (handleConsoleCommandItem(player, slot)) return true;
+        return handleCloseItem(clickedItem, player);
+    }
+
+    /**
+     * If the clicked item is a villager trade result, handle the trade event.
+     *
+     * @param event          the inventory click event.
+     * @param clickedItem    the clicked item.
+     * @param contextBuilder the quest context builder.
+     * @return true if the item is a villager trade result, false otherwise.
+     */
+    private boolean handleVillagerTrading(InventoryClickEvent event, ItemStack clickedItem, QuestContext.Builder contextBuilder) {
         if (event.getInventory().getType() == InventoryType.MERCHANT && event.getSlotType() == InventoryType.SlotType.RESULT) {
 
             final MerchantInventory merchantInventory = (MerchantInventory) event.getClickedInventory();
+            if (merchantInventory == null) return false;
+
             if (event.getClickedInventory().getHolder() instanceof Villager villager) {
 
-                int amount = clickedItem.getAmount();
+                int amount = getTradeAmount(event, clickedItem, merchantInventory);
+                if (amount == 0) return true;
 
-                final ClickType click = event.getClick();
-                switch (click) {
-                    case SHIFT_RIGHT, SHIFT_LEFT -> {
-                        if (clickedItem.getAmount() == 0) break;
-                        int maxTradable = getMaxTradeAmount(merchantInventory);
-                        int capacity = fits(clickedItem, event.getView().getBottomInventory().getStorageContents());
-                        if (capacity < maxTradable) {
-                            maxTradable = ((capacity + clickedItem.getAmount() - 1) / clickedItem.getAmount()) * clickedItem.getAmount();
-                        }
-                        amount = maxTradable;
-                    }
-                }
-
-                if (amount == 0) return;
-
-                if (merchantInventory.getSelectedRecipe() != null) {
-                    validateTradeQuestType(
-                            player,
-                            villager,
-                            merchantInventory.getSelectedRecipe(),
-                            amount);
+                final MerchantRecipe selectedRecipe = merchantInventory.getSelectedRecipe();
+                if (selectedRecipe != null) {
+                    contextBuilder.villagerTrade(villager, selectedRecipe, amount);
+                    processQuestCompletion(contextBuilder.build());
                 }
             }
 
-            return;
+            return true;
         }
+        return false;
+    }
 
-        // check if player is extracting from furnace
+    /**
+     * If the clicked item is a custom furnace result, handle the extraction event.
+     * The associated configuration must be enabled.
+     *
+     * @param event       the inventory click event.
+     * @param action      the inventory action.
+     * @param clickedItem the clicked item.
+     * @param player      the player who clicked the item.
+     * @return true if the item is a custom furnace result, false otherwise.
+     */
+    private boolean handleCustomFurnaceResult(InventoryClickEvent event, InventoryAction action, ItemStack clickedItem, Player player) {
         if (UseCustomFurnaceResults.isEnabled()) {
 
             final InventoryType inventoryType = event.getInventory().getType();
@@ -79,7 +117,7 @@ public class InventoryClickListener extends AbstractClickableChecker implements 
                     || inventoryType == InventoryType.BLAST_FURNACE
                     || inventoryType == InventoryType.SMOKER) {
 
-                if (event.getSlotType() != InventoryType.SlotType.RESULT) return;
+                if (event.getSlotType() != InventoryType.SlotType.RESULT) return true;
 
                 int amount;
                 switch (action) {
@@ -92,46 +130,46 @@ public class InventoryClickListener extends AbstractClickableChecker implements 
                     default -> amount = clickedItem.getAmount();
                 }
 
-                if (amount == 0) return;
+                if (amount == 0) return true;
 
                 final CustomFurnaceExtractEvent customFurnaceExtractEvent = new CustomFurnaceExtractEvent(player, clickedItem, amount);
                 Bukkit.getServer().getPluginManager().callEvent(customFurnaceExtractEvent);
 
-                return;
+                return true;
             }
         }
-
-        // do action related to the clicked item
-        final String inventoryName = event.getView().getTitle();
-        if (inventoryName.startsWith(PlayerQuestsInterface.getInterfaceName(player))) {
-            event.setCancelled(true);
-
-            if (event.getAction() == InventoryAction.HOTBAR_SWAP) return;
-            if (PlayerQuestsInterface.getFillItems().contains(clickedItem)) return;
-            if (PlayerQuestsInterface.getCloseItems().contains(clickedItem)) {
-                event.getWhoClicked().closeInventory();
-                return;
-            }
-
-            if (PlayerQuestsInterface.getPlayerCommandsItems().containsKey(slot)) {
-                for (String cmd : PlayerQuestsInterface.getPlayerCommandsItems().get(slot)) {
-                    Bukkit.getServer().dispatchCommand(event.getWhoClicked(), cmd);
-                }
-                return;
-            }
-
-            if (PlayerQuestsInterface.getConsoleCommandsItems().containsKey(slot)) {
-                for (String cmd : PlayerQuestsInterface.getConsoleCommandsItems().get(slot)) {
-                    ODailyQuests.morePaperLib.scheduling().globalRegionalScheduler().run(() -> Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd.replace("%player%", event.getWhoClicked().getName())));
-                }
-                return;
-            }
-
-            // complete quest for types that requires a click in player interface (GET - LOCATION - PLACEHOLDER)
-            setPlayerQuestProgression(player, clickedItem);
-        }
+        return false;
     }
 
+    /**
+     * Get the amount of traded items based on the click type.
+     *
+     * @param event             the inventory click event.
+     * @param clickedItem       the clicked item.
+     * @param merchantInventory the merchant inventory.
+     * @return the amount of traded items.
+     */
+    private int getTradeAmount(InventoryClickEvent event, ItemStack clickedItem, MerchantInventory merchantInventory) {
+        int amount = clickedItem.getAmount();
+
+        final ClickType click = event.getClick();
+        if ((click == ClickType.SHIFT_RIGHT || click == ClickType.SHIFT_LEFT) && amount != 0) {
+            int maxTradable = getMaxTradeAmount(merchantInventory);
+            int capacity = fits(clickedItem, event.getView().getBottomInventory().getStorageContents());
+            if (capacity < maxTradable) {
+                maxTradable = ((capacity + amount - 1) / amount) * amount;
+            }
+            amount = maxTradable;
+        }
+        return amount;
+    }
+
+    /**
+     * Get the maximum amount of items that can be traded in the current trade.
+     *
+     * @param inv the merchant inventory.
+     * @return the maximum amount of items that can be traded.
+     */
     private int getMaxTradeAmount(MerchantInventory inv) {
         if (inv.getSelectedRecipe() == null) return 0;
 
@@ -142,5 +180,54 @@ public class InventoryClickListener extends AbstractClickableChecker implements 
             if (is != null && is.getAmount() < materialCount) materialCount = is.getAmount();
 
         return resultCount * materialCount;
+    }
+
+    /**
+     * Check if the clicked item is a close item. If so, close the player's inventory.
+     *
+     * @param clickedItem the clicked item.
+     * @param player      the player who clicked the item.
+     * @return true if the item is a close item, false otherwise.
+     */
+    private boolean handleCloseItem(ItemStack clickedItem, Player player) {
+        if (PlayerQuestsInterface.getCloseItems().contains(clickedItem)) {
+            player.closeInventory();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Check if the clicked item is a player command item. If so, execute associated commands as player.
+     *
+     * @param player the player who clicked the item.
+     * @param slot   the slot of the clicked item.
+     * @return true if the item is a player command item, false otherwise.
+     */
+    private boolean handlePlayerCommandItem(Player player, int slot) {
+        if (PlayerQuestsInterface.getPlayerCommandsItems().containsKey(slot)) {
+            for (String cmd : PlayerQuestsInterface.getPlayerCommandsItems().get(slot)) {
+                Bukkit.getServer().dispatchCommand(player, cmd);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Check if the clicked item is a console command item. If so, execute associated commands.
+     *
+     * @param player the player who clicked the item.
+     * @param slot   the slot of the clicked item.
+     * @return true if the item is a console command item, false otherwise.
+     */
+    private boolean handleConsoleCommandItem(Player player, int slot) {
+        if (PlayerQuestsInterface.getConsoleCommandsItems().containsKey(slot)) {
+            for (String cmd : PlayerQuestsInterface.getConsoleCommandsItems().get(slot)) {
+                ODailyQuests.morePaperLib.scheduling().globalRegionalScheduler().run(() -> Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd.replace("%player%", player.getName())));
+            }
+            return true;
+        }
+        return false;
     }
 }

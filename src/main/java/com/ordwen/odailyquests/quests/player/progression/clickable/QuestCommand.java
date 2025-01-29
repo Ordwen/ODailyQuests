@@ -1,19 +1,18 @@
-package com.ordwen.odailyquests.quests.player.progression.checkers;
+package com.ordwen.odailyquests.quests.player.progression.clickable;
 
 import com.ordwen.odailyquests.api.events.QuestCompletedEvent;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
-public abstract class QuestChecker<Q extends AbstractQuest> {
-    protected final Player player;
+public abstract class QuestCommand<Q extends AbstractQuest> {
+    protected final QuestContext context;
     protected final Progression progression;
     protected final Q quest;
 
-    protected QuestChecker(Player player, Progression progression, Q quest) {
-        this.player = player;
+    protected QuestCommand(QuestContext context, Progression progression, Q quest) {
+        this.context = context;
         this.progression = progression;
         this.quest = quest;
     }
@@ -21,7 +20,7 @@ public abstract class QuestChecker<Q extends AbstractQuest> {
     /**
      * Validate and complete the quest.
      */
-    public abstract void validateAndComplete();
+    public abstract void execute();
 
     /**
      * Send a message to the player if the message is defined.
@@ -29,15 +28,15 @@ public abstract class QuestChecker<Q extends AbstractQuest> {
      * @param message the message enum.
      */
     protected void sendMessage(QuestsMessages message) {
-        String msg = message.getMessage(player);
-        if (msg != null) player.sendMessage(msg);
+        String msg = message.getMessage(context.getPlayer());
+        if (msg != null) context.getPlayer().sendMessage(msg);
     }
 
     /**
      * Call the quest completion event.
      */
     protected void completeQuest() {
-        Bukkit.getPluginManager().callEvent(new QuestCompletedEvent(player, progression, quest));
-        player.closeInventory();
+        Bukkit.getPluginManager().callEvent(new QuestCompletedEvent(context.getPlayer(), progression, quest));
+        context.getPlayer().closeInventory();
     }
 }

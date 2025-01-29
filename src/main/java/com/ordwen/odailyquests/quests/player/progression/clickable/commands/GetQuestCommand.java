@@ -1,31 +1,32 @@
-package com.ordwen.odailyquests.quests.player.progression.checkers;
+package com.ordwen.odailyquests.quests.player.progression.clickable.commands;
 
 import com.ordwen.odailyquests.configuration.functionalities.TakeItems;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
+import com.ordwen.odailyquests.quests.player.progression.clickable.QuestCommand;
+import com.ordwen.odailyquests.quests.player.progression.clickable.QuestContext;
 import com.ordwen.odailyquests.quests.types.inventory.GetQuest;
 import com.ordwen.odailyquests.quests.types.shared.ItemQuest;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class GetQuestChecker extends QuestChecker<GetQuest> {
+public class GetQuestCommand extends QuestCommand<GetQuest> {
 
-    public GetQuestChecker(Player player, Progression progression, GetQuest quest) {
-        super(player, progression, quest);
+    public GetQuestCommand(QuestContext context, Progression progression, GetQuest quest) {
+        super(context, progression, quest);
     }
 
     /**
      * Validate GET quest type.
      */
     @Override
-    public void validateAndComplete() {
-        if (!quest.isAllowedToProgress(player, quest)) return;
+    public void execute() {
+        if (!quest.isAllowedToProgress(context.getPlayer(), quest)) return;
 
-        final PlayerInventory inventory = player.getInventory();
+        final PlayerInventory inventory = context.getPlayer().getInventory();
         int totalAmount = calculateTotalAmount(inventory, quest);
 
         if (totalAmount == -1) {
@@ -86,7 +87,7 @@ public class GetQuestChecker extends QuestChecker<GetQuest> {
         int removedAmount = 0;
 
         for (int i = 0; i < inventory.getSize(); i++) {
-            ItemStack item = inventory.getItem(i);
+            final ItemStack item = inventory.getItem(i);
             if (item == null || !quest.isRequiredItem(item)) continue;
 
             int removable = Math.min(item.getAmount(), amountToRemove - removedAmount);

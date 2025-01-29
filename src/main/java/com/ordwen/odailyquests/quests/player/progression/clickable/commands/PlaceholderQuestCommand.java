@@ -1,25 +1,28 @@
-package com.ordwen.odailyquests.quests.player.progression.checkers;
+package com.ordwen.odailyquests.quests.player.progression.clickable.commands;
 
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.externs.hooks.placeholders.PAPIHook;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
+import com.ordwen.odailyquests.quests.player.progression.clickable.QuestCommand;
+import com.ordwen.odailyquests.quests.player.progression.clickable.QuestContext;
 import com.ordwen.odailyquests.quests.types.inventory.PlaceholderQuest;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 
 import java.time.Duration;
 
-public class PlaceholderQuestChecker extends QuestChecker<PlaceholderQuest> {
+public class PlaceholderQuestCommand extends QuestCommand<PlaceholderQuest> {
 
-    public PlaceholderQuestChecker(Player player, Progression progression, PlaceholderQuest quest) {
-        super(player, progression, quest);
+    public PlaceholderQuestCommand(QuestContext context, Progression progression, PlaceholderQuest quest) {
+        super(context, progression, quest);
     }
 
     /**
      * Validate PLACEHOLDER quest type.
      */
     @Override
-    public void validateAndComplete() {
+    public void execute() {
+        final var player = context.getPlayer();
+
         if (!quest.isAllowedToProgress(player, quest)) return;
 
         if (!PAPIHook.isPlaceholderAPIHooked()) {
@@ -91,7 +94,7 @@ public class PlaceholderQuestChecker extends QuestChecker<PlaceholderQuest> {
         String message = QuestsMessages.PLACEHOLDER_NOT_NUMBER.toString();
         if (message != null) {
             message = message.replace("%placeholder%", placeholder);
-            player.sendMessage(message);
+            context.getPlayer().sendMessage(message);
         }
     }
 }

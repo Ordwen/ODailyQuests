@@ -1,25 +1,27 @@
-package com.ordwen.odailyquests.quests.player.progression.checkers;
+package com.ordwen.odailyquests.quests.player.progression.clickable.commands;
 
 import com.ordwen.odailyquests.api.events.QuestCompletedEvent;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
+import com.ordwen.odailyquests.quests.player.progression.clickable.QuestCommand;
+import com.ordwen.odailyquests.quests.player.progression.clickable.QuestContext;
 import com.ordwen.odailyquests.quests.types.inventory.LocationQuest;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
 
-public class LocationQuestChecker extends QuestChecker<LocationQuest> {
+public class LocationQuestCommand extends QuestCommand<LocationQuest> {
 
-    public LocationQuestChecker(Player player, Progression progression, LocationQuest quest) {
-        super(player, progression, quest);
+    public LocationQuestCommand(QuestContext context, Progression progression, LocationQuest quest) {
+        super(context, progression, quest);
     }
 
     /**
      * Validate LOCATION quest type.
      */
     @Override
-    public void validateAndComplete() {
+    public void execute() {
+        final var player = context.getPlayer();
         if (!quest.isAllowedToProgress(player, quest)) return;
 
         final Location requiredLocation = quest.getRequiredLocation();
