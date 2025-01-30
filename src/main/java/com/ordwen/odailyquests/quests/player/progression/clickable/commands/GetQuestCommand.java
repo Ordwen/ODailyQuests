@@ -1,34 +1,37 @@
-package com.ordwen.odailyquests.quests.player.progression.checkers;
+package com.ordwen.odailyquests.quests.player.progression.clickable.commands;
 
-import com.ordwen.odailyquests.api.events.QuestCompletedEvent;
 import com.ordwen.odailyquests.configuration.functionalities.TakeItems;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
+import com.ordwen.odailyquests.quests.player.progression.clickable.QuestCommand;
+import com.ordwen.odailyquests.quests.player.progression.clickable.QuestContext;
+import com.ordwen.odailyquests.quests.types.inventory.GetQuest;
 import com.ordwen.odailyquests.quests.types.shared.ItemQuest;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class GetQuestChecker {
+public class GetQuestCommand extends QuestCommand<GetQuest> {
+
+    public GetQuestCommand(QuestContext context, Progression progression, GetQuest quest) {
+        super(context, progression, quest);
+    }
 
     /**
      * Validate GET quest type.
-     *
-     * @param player      player who is getting the item.
-     * @param progression progression of the quest.
-     * @param quest       quest to validate.
      */
-    public static void makeQuestProgress(Player player, Progression progression, ItemQuest quest) {
-        final PlayerInventory inventory = player.getInventory();
+    @Override
+    public void execute() {
+        if (!quest.isAllowedToProgress(context.getPlayer(), quest)) return;
+
+        final PlayerInventory inventory = context.getPlayer().getInventory();
         int totalAmount = calculateTotalAmount(inventory, quest);
 
         if (totalAmount == -1) {
             // Dupe exploit detected
-            sendMessage(player, QuestsMessages.CANNOT_COMPLETE_QUEST_WITH_OFF_HAND);
+            sendMessage(QuestsMessages.CANNOT_COMPLETE_QUEST_WITH_OFF_HAND);
             return;
         }
 
@@ -36,16 +39,14 @@ public class GetQuestChecker {
             if (TakeItems.isTakeItemsEnabled()) {
                 boolean success = removeRequiredItems(inventory, quest, quest.getAmountRequired());
                 if (!success) {
-                    sendMessage(player, QuestsMessages.NOT_ENOUGH_ITEM);
+                    sendMessage(QuestsMessages.NOT_ENOUGH_ITEM);
                     return;
                 }
             }
 
-            // Quest completed
-            Bukkit.getPluginManager().callEvent(new QuestCompletedEvent(player, progression, quest));
-            player.closeInventory();
+            completeQuest();
         } else {
-            sendMessage(player, QuestsMessages.NOT_ENOUGH_ITEM);
+            sendMessage(QuestsMessages.NOT_ENOUGH_ITEM);
         }
     }
 
@@ -56,7 +57,7 @@ public class GetQuestChecker {
      * @param quest     the quest to validate.
      * @return total amount of required items, or -1 if offhand exploit is detected.
      */
-    private static int calculateTotalAmount(PlayerInventory inventory, ItemQuest quest) {
+    private int calculateTotalAmount(PlayerInventory inventory, ItemQuest quest) {
         int totalAmount = 0;
 
         for (ItemStack item : inventory.getContents()) {
@@ -81,12 +82,12 @@ public class GetQuestChecker {
      * @param amountToRemove the total amount to remove.
      * @return true if the removal was successful, false otherwise.
      */
-    private static boolean removeRequiredItems(PlayerInventory inventory, ItemQuest quest, int amountToRemove) {
+    private boolean removeRequiredItems(PlayerInventory inventory, ItemQuest quest, int amountToRemove) {
         Map<Integer, ItemStack> backup = new HashMap<>();
         int removedAmount = 0;
 
         for (int i = 0; i < inventory.getSize(); i++) {
-            ItemStack item = inventory.getItem(i);
+            final ItemStack item = inventory.getItem(i);
             if (item == null || !quest.isRequiredItem(item)) continue;
 
             int removable = Math.min(item.getAmount(), amountToRemove - removedAmount);
@@ -110,16 +111,5 @@ public class GetQuestChecker {
         }
 
         return true;
-    }
-
-    /**
-     * Send a message to the player if the message is defined.
-     *
-     * @param player the player to send the message to.
-     * @param message the message enum.
-     */
-    private static void sendMessage(Player player, QuestsMessages message) {
-        String msg = message.getMessage(player);
-        if (msg != null) player.sendMessage(msg);
     }
 }

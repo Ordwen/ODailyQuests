@@ -18,6 +18,8 @@ import com.ordwen.odailyquests.tools.TimeRemain;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -183,6 +185,15 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
                     }
                 }
             }
+
+            // fix for flags not working on Paper +1.21
+            AttributeModifier dummyModifier = new AttributeModifier(
+                    UUID.randomUUID(),
+                    "dummy",
+                    0,
+                    AttributeModifier.Operation.ADD_NUMBER
+            );
+            itemMeta.addAttributeModifier(Attribute.GENERIC_MAX_HEALTH, dummyModifier);
 
             itemMeta.addItemFlags(
                     ItemFlag.HIDE_ATTRIBUTES,
