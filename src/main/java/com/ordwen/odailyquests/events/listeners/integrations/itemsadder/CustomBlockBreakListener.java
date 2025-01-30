@@ -2,6 +2,7 @@ package com.ordwen.odailyquests.events.listeners.integrations.itemsadder;
 
 import com.ordwen.odailyquests.configuration.essentials.Antiglitch;
 
+import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
 import dev.lone.itemsadder.api.Events.CustomBlockBreakEvent;
 import org.bukkit.block.Block;
@@ -15,7 +16,12 @@ public class CustomBlockBreakListener extends PlayerProgressor implements Listen
 
     @EventHandler
     public void onCustomBlockBreakEvent(CustomBlockBreakEvent event) {
-        if (event.isCancelled()) return;
+        Debugger.addDebug("CustomBlockBreakListener: onCustomBlockBreakEvent summoned.");
+
+        if (event.isCancelled()) {
+            Debugger.addDebug("CustomBlockBreakListener: onCustomBlockBreakEvent is cancelled.");
+            return;
+        }
 
         final Player player = event.getPlayer();
         final Block block = event.getBlock();

@@ -32,12 +32,6 @@ public class CraftItemListener extends PlayerProgressor implements Listener {
         final ClickType click = event.getClick();
         int recipeAmount = test.getAmount();
 
-        /*
-        if (movingItem(test, recipeAmount, player, click)) {
-            return;
-        }
-        */
-
         switch (click) {
             case NUMBER_KEY -> {
                 if (event.getWhoClicked().getInventory().getItem(event.getHotbarButton()) != null)
@@ -65,14 +59,11 @@ public class CraftItemListener extends PlayerProgressor implements Listener {
             }
         }
 
-        if (recipeAmount == 0)
-            return;
+        if (recipeAmount == 0) return;
 
         test.setAmount(recipeAmount);
 
-        Debugger.addDebug("=========================================================================================");
         Debugger.addDebug("CraftItemListener: onCraftItemEvent summoned by " + player.getName() + " for " + test.getType() + " x" + test.getAmount() + ".");
-
         setPlayerQuestProgression(event, player, test.getAmount(), "CRAFT");
     }
 

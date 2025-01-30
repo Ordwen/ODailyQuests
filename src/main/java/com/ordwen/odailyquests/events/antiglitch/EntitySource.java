@@ -1,38 +1,42 @@
 package com.ordwen.odailyquests.events.antiglitch;
 
+import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
+import com.ordwen.odailyquests.configuration.functionalities.SpawnersProgression;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
-
-import java.util.HashSet;
+import org.bukkit.persistence.PersistentDataType;
 
 public class EntitySource {
 
-    private final static HashSet<Entity> entitiesFromSpawners = new HashSet<>();
+    private EntitySource() {
+    }
+
+    public static final NamespacedKey FROM_SPAWNER = new NamespacedKey(ODailyQuests.INSTANCE, "from_spawner");
 
     /**
      * Adds an entity from a spawner.
+     *
      * @param entity the entity to add.
      */
     public static void addEntityFromSpawner(Entity entity) {
-        Debugger.addDebug("Adding entity from spawner.");
-        entitiesFromSpawners.add(entity);
-    }
+        entity.getPersistentDataContainer().set(
+                FROM_SPAWNER,
+                PersistentDataType.BYTE,
+                (byte) 1
+        );
 
-    /**
-     * Removes an entity from a spawner.
-     * @param entity the entity to remove.
-     */
-    public static void removeEntityFromSpawner(Entity entity) {
-        Debugger.addDebug("Removing entity from spawner.");
-        entitiesFromSpawners.remove(entity);
+        Debugger.addDebug("EntitySource: addEntityFromSpawner added entity from spawner.");
     }
 
     /**
      * Checks if an entity is from a spawner.
+     *
      * @param entity the entity to check.
      * @return true if the entity is from a spawner.
      */
     public static boolean isEntityFromSpawner(Entity entity) {
-        return entitiesFromSpawners.contains(entity);
+        Debugger.addDebug("EntitySource: isEntityFromSpawner checking if entity is from spawner.");
+        return SpawnersProgression.isSpawnersProgressionDisabled() && entity.getPersistentDataContainer().has(FROM_SPAWNER, PersistentDataType.BYTE);
     }
 }

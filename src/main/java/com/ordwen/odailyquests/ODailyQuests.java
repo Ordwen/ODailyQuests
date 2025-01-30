@@ -2,7 +2,6 @@ package com.ordwen.odailyquests;
 
 import com.ordwen.odailyquests.api.ODailyQuestsAPI;
 import com.ordwen.odailyquests.api.quests.QuestTypeRegistry;
-import com.ordwen.odailyquests.configuration.essentials.CustomTypes;
 import com.ordwen.odailyquests.events.restart.RestartHandler;
 import com.ordwen.odailyquests.externs.IntegrationsManager;
 import com.ordwen.odailyquests.commands.admin.AdminCommands;
@@ -30,6 +29,7 @@ import com.ordwen.odailyquests.quests.types.custom.items.PyroFishQuest;
 import com.ordwen.odailyquests.quests.types.custom.mobs.EliteMobsQuest;
 import com.ordwen.odailyquests.quests.types.custom.mobs.MythicMobsQuest;
 import com.ordwen.odailyquests.quests.types.custom.vote.NuVotifierQuest;
+import com.ordwen.odailyquests.quests.types.custom.vote.VotifierPlusQuest;
 import com.ordwen.odailyquests.quests.types.entity.BreedQuest;
 import com.ordwen.odailyquests.quests.types.entity.KillQuest;
 import com.ordwen.odailyquests.quests.types.entity.ShearQuest;
@@ -160,6 +160,7 @@ public final class ODailyQuests extends JavaPlugin {
         /* other plugins */
         questTypeRegistry.registerQuestType("PYRO_FISH", PyroFishQuest.class);
         questTypeRegistry.registerQuestType("NU_VOTIFIER", NuVotifierQuest.class);
+        questTypeRegistry.registerQuestType("VOTIFIER_PLUS", VotifierPlusQuest.class);
 
         /* register addons types */
         final Map<String, Class<? extends AbstractQuest>> externalTypes = ODailyQuestsAPI.getExternalTypes();

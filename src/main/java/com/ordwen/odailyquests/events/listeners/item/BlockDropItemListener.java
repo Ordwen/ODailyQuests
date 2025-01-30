@@ -46,10 +46,6 @@ public class BlockDropItemListener extends PlayerProgressor implements Listener 
         if (data instanceof Ageable ageable) {
             Debugger.addDebug("BlockDropItemListener: onBlockDropItemEvent ageable block: " + dataMaterial + ".");
 
-            System.out.println("age: " + ageable.getAge());
-            System.out.println("max age: " + ageable.getMaximumAge());
-            System.out.println("dropped amount: " + drops.size());
-
             if (ageable.getAge() == ageable.getMaximumAge()) {
                 Debugger.addDebug("BlockDropItemListener: onBlockDropItemEvent ageable block is mature.");
                 handleDrops(event, player, drops);
