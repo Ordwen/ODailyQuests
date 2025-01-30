@@ -33,9 +33,8 @@ public class BreakQuest extends ItemQuest {
         if (provided instanceof BlockBreakEvent event) {
             final Block block = event.getBlock();
 
-            if (!this.isProtectionBypass()) {
-                if (!Protection.canBuild(event.getPlayer(), block, "BLOCK_BREAK")) return false;
-            }
+            if (!this.isProtectionBypass() && !Protection.canBuild(event.getPlayer(), block, "BLOCK_BREAK"))
+                return false;
 
             Debugger.addDebug("BlockBreakListener: onBlockBreakEvent summoned by " + event.getPlayer().getName() + " for " + block.getType() + ".");
 
@@ -65,22 +64,7 @@ public class BreakQuest extends ItemQuest {
         if (provided instanceof CropBreakEvent event) {
             final String cropNamespace = event.cropStageItemID();
 
-            ItemStack cropItem = null;
-
-            if (ItemsAdderEnabled.isEnabled()) {
-                final CustomStack customStack = CustomStack.getInstance(cropNamespace);
-                if (customStack != null) {
-                    cropItem = customStack.getItemStack().clone();
-                }
-            }
-
-            if (OraxenEnabled.isEnabled()) {
-                final ItemBuilder itemBuilder = OraxenItems.getItemById(cropNamespace);
-                if (itemBuilder != null) {
-                    cropItem = itemBuilder.build();
-                }
-            }
-
+            final ItemStack cropItem = getCustomItemStack(cropNamespace);
             if (cropItem == null) {
                 Debugger.addDebug("CropBreakListener: onCropBreak: The crop item " + cropNamespace + " does not exist.");
                 return false;
@@ -90,5 +74,29 @@ public class BreakQuest extends ItemQuest {
         }
 
         return false;
+    }
+
+    /**
+     * Get the custom item stack from ItemsAdder or Oraxen, corresponding to the crop namespace.
+     *
+     * @param cropNamespace the namespace of the crop.
+     * @return the custom item stack, or null if it does not exist.
+     */
+    private static ItemStack getCustomItemStack(String cropNamespace) {
+        if (ItemsAdderEnabled.isEnabled()) {
+            final CustomStack customStack = CustomStack.getInstance(cropNamespace);
+            if (customStack != null) {
+                return customStack.getItemStack().clone();
+            }
+        }
+
+        if (OraxenEnabled.isEnabled()) {
+            final ItemBuilder itemBuilder = OraxenItems.getItemById(cropNamespace);
+            if (itemBuilder != null) {
+                return itemBuilder.build();
+            }
+        }
+
+        return null;
     }
 }
