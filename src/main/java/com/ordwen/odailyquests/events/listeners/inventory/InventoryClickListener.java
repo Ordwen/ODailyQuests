@@ -23,27 +23,33 @@ public class InventoryClickListener extends ClickableChecker implements Listener
 
     @EventHandler
     public void onInventoryClickEvent(InventoryClickEvent event) {
+        if (event.getClickedInventory() == null) return;
+
+        final InventoryAction action = event.getAction();
+        if (action == InventoryAction.NOTHING) return;
+
         final Player player = (Player) event.getWhoClicked();
         if (!QuestsManager.getActiveQuests().containsKey(player.getName())) {
             return;
         }
 
-        final ItemStack clickedItem = event.getCurrentItem();
-        final QuestContext.Builder contextBuilder = new QuestContext.Builder(player).clickedItem(clickedItem);
-
-        final InventoryAction action = event.getAction();
-        if (action == InventoryAction.NOTHING) return;
-
-        if (event.getClickedInventory() == null) return;
-        if (clickedItem == null || clickedItem.getType() == Material.AIR) return;
-
-        if (handleVillagerTrading(event, clickedItem, contextBuilder)) return;
-        if (handleCustomFurnaceResult(event, action, clickedItem, player)) return;
-
-        // do action related to the clicked item
+        boolean isPlayerInterface = false;
         final String inventoryName = event.getView().getTitle();
         if (inventoryName.startsWith(PlayerQuestsInterface.getInterfaceName(player))) {
+            isPlayerInterface = true;
             event.setCancelled(true);
+        }
+
+        final ItemStack clickedItem = event.getCurrentItem();
+        if (clickedItem == null || clickedItem.getType() == Material.AIR) return;
+
+        if (handleCustomFurnaceResult(event, action, clickedItem, player)) return;
+
+        final QuestContext.Builder contextBuilder = new QuestContext.Builder(player).clickedItem(clickedItem);
+        if (handleVillagerTrading(event, clickedItem, contextBuilder)) return;
+
+        // do action related to the clicked item
+        if (isPlayerInterface) {
             if (handlePlayerInterfaceClick(event, clickedItem, player)) return;
             processQuestCompletion(contextBuilder.build());
         }
