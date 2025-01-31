@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'com.ordwen'
-version="2.3.0"
+version="2.3.1"
 
 // get the initial version from the project properties
 def initialVersion = project.hasProperty('version') ? project.version : '1.0.0'
