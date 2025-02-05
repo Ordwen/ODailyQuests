@@ -80,7 +80,7 @@ public class QuestLoaderUtils {
      * @param activeQuests all active quests.
      */
     public static void loadNewPlayerQuests(String playerName, Map<String, PlayerQuests> activeQuests, int totalAchievedQuests) {
-
+        Debugger.addDebug("Entering loadNewPlayerQuests method for player " + playerName + ".");
         activeQuests.remove(playerName);
 
         LinkedHashMap<AbstractQuest, Progression> quests = QuestsManager.selectRandomQuests();
@@ -95,7 +95,9 @@ public class QuestLoaderUtils {
         playerQuests.setTotalAchievedQuests(totalAchievedQuests);
 
         final Player player = Bukkit.getPlayer(playerName);
+        Debugger.addDebug("Attempting to renew quests for player " + playerName + ".");
         if (player == null) {
+            Debugger.addDebug("Player " + playerName + " is null. Impossible to renew quests.");
             PluginLogger.warn("It seems that " + playerName + " disconnected before the end of the quest renewal.");
             return;
         }
@@ -108,6 +110,7 @@ public class QuestLoaderUtils {
             PluginLogger.fine(playerName + " inserted into the array.");
             PluginLogger.info(playerName + "'s quests have been renewed.");
         } else {
+            Debugger.addDebug("Player " + playerName + " is null. Impossible to load quests.");
             PluginLogger.warn("It looks like " + playerName + " has disconnected before his quests were loaded.");
             return;
         }

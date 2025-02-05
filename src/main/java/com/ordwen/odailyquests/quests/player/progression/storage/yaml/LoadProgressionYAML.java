@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.quests.player.progression.storage.yaml;
 
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
@@ -24,8 +25,10 @@ public class LoadProgressionYAML {
      * @param activeQuests list of active players.
      */
     public void loadPlayerQuests(String playerName, HashMap<String, PlayerQuests> activeQuests) {
+        Debugger.addDebug("Entering loadPlayerQuests (YAML) method for player " + playerName + ".");
 
         ODailyQuests.morePaperLib.scheduling().asyncScheduler().run(() -> {
+            Debugger.addDebug("Running async task to load progression of " + playerName + " from YAML file.");
             final FileConfiguration progressionFile = ProgressionFile.getProgressionFileConfiguration();
 
             /* init variables */
@@ -38,6 +41,7 @@ public class LoadProgressionYAML {
 
             /* check if player has data */
             if (progressionFile.getString(playerName) != null) {
+                Debugger.addDebug("Player " + playerName + " has data in progression file.");
 
                 timestamp = progressionFile.getConfigurationSection(playerName).getLong(".timestamp");
                 achievedQuests = progressionFile.getConfigurationSection(playerName).getInt(".achievedQuests");
@@ -79,6 +83,7 @@ public class LoadProgressionYAML {
                         activeQuests.put(playerName, playerQuests);
                         PluginLogger.info(playerName + "'s quests have been loaded.");
                     } else {
+                        Debugger.addDebug("Player " + playerName + " is null. Impossible to load quests.");
                         PluginLogger.warn("It looks like " + playerName + " has disconnected before his quests were loaded.");
                         return;
                     }

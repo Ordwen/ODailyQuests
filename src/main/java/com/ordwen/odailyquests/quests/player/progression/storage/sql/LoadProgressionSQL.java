@@ -41,13 +41,10 @@ public class LoadProgressionSQL {
      * @param playerName name of the player.
      */
     public void loadProgression(String playerName, HashMap<String, PlayerQuests> activeQuests) {
-
-        Debugger.addDebug("Entering loadProgression method for player " + playerName + ".");
-
-        LinkedHashMap<AbstractQuest, Progression> quests = new LinkedHashMap<>();
+        Debugger.addDebug("Entering loadProgression (SQL) method for player " + playerName + ".");
+        final LinkedHashMap<AbstractQuest, Progression> quests = new LinkedHashMap<>();
 
         ODailyQuests.morePaperLib.scheduling().asyncScheduler().runDelayed(() -> {
-
             Debugger.addDebug("Running async task to load progression of " + playerName + " from SQL database.");
 
             boolean hasStoredData = false;
@@ -65,7 +62,6 @@ public class LoadProgressionSQL {
                 final ResultSet resultSet = preparedStatement.executeQuery();
 
                 Debugger.addDebug("Executing query for player " + playerName + ": " + timestampQuery);
-
 
                 if (resultSet.next()) {
                     hasStoredData = true;
@@ -96,6 +92,8 @@ public class LoadProgressionSQL {
             }
 
             if (hasStoredData) {
+                Debugger.addDebug("Player " + playerName + " has data in the database.");
+
                 if (QuestLoaderUtils.checkTimestamp(timestamp)) {
                     QuestLoaderUtils.loadNewPlayerQuests(playerName, activeQuests, totalAchievedQuests);
                 } else {
@@ -107,6 +105,7 @@ public class LoadProgressionSQL {
 
                     final Player target = Bukkit.getPlayer(playerName);
                     if (target == null) {
+                        Debugger.addDebug("Player " + playerName + " is null. Impossible to load quests.");
                         PluginLogger.warn("It looks like " + playerName + " has disconnected before his quests were loaded.");
                         return;
                     }
