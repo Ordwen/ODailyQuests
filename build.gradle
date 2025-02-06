@@ -50,7 +50,8 @@ repositories {
     maven { url = 'https://repo.rosewooddev.io/repository/public/' }
     maven { url = "https://nexus.phoenixdevt.fr/repository/maven-public/" }
     maven { url = "https://maven.enginehub.org/repo/"}
-    maven { url = 'https://repo.glaremasters.me/repository/towny/'}
+    maven { url = 'https://repo.glaremasters.me/repository/towny/' }
+    maven { url = 'https://repo.nightexpressdev.com/releases' }
     flatDir { dirs 'libs' }
 }
 
@@ -108,6 +109,9 @@ dependencies {
 
     /* vote */
     compileOnly 'com.github.NuVotifier:NuVotifier:2.7.2'
+
+    /* crates */
+    compileOnly 'su.nightexpress.excellentcrates:ExcellentCrates:6.0.0'
 }
 
 def targetJavaVersion = 17

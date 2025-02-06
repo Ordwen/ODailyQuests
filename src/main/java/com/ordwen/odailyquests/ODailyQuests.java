@@ -25,6 +25,7 @@ import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.h2.H2Manager;
 import com.ordwen.odailyquests.quests.player.progression.storage.yaml.YamlManager;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
+import com.ordwen.odailyquests.quests.types.custom.crate.CrateOpenQuest;
 import com.ordwen.odailyquests.quests.types.custom.items.PyroFishQuest;
 import com.ordwen.odailyquests.quests.types.custom.mobs.EliteMobsQuest;
 import com.ordwen.odailyquests.quests.types.custom.mobs.MythicMobsQuest;
@@ -161,6 +162,7 @@ public final class ODailyQuests extends JavaPlugin {
         questTypeRegistry.registerQuestType("PYRO_FISH", PyroFishQuest.class);
         questTypeRegistry.registerQuestType("NU_VOTIFIER", NuVotifierQuest.class);
         questTypeRegistry.registerQuestType("VOTIFIER_PLUS", VotifierPlusQuest.class);
+        questTypeRegistry.registerQuestType("CRATE_OPEN", CrateOpenQuest.class);
 
         /* register addons types */
         final Map<String, Class<? extends AbstractQuest>> externalTypes = ODailyQuestsAPI.getExternalTypes();

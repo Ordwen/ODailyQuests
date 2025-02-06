@@ -4,6 +4,7 @@ import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.UseCustomFurnaceResults;
 import com.ordwen.odailyquests.configuration.integrations.ItemsAdderEnabled;
 import com.ordwen.odailyquests.configuration.integrations.OraxenEnabled;
+import com.ordwen.odailyquests.events.listeners.crate.CrateOpenListener;
 import com.ordwen.odailyquests.events.listeners.customs.CustomFurnaceExtractListener;
 import com.ordwen.odailyquests.events.listeners.integrations.customsuite.CropBreakListener;
 import com.ordwen.odailyquests.events.listeners.integrations.customsuite.FishingLootSpawnListener;
@@ -44,7 +45,6 @@ public class EventsManager {
         Bukkit.getPluginManager().registerEvents(new ShearEntityListener(), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new EntityDeathListener(), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new SpawnerSpawnListener(), oDailyQuests);
-        //Bukkit.getPluginManager().registerEvents(new ProjectileHitListener(), oDailyQuests);
 
         if (EliteMobsHook.isEliteMobsSetup()) {
             Bukkit.getPluginManager().registerEvents(new EliteMobDeathListener(), oDailyQuests);
@@ -118,6 +118,10 @@ public class EventsManager {
 
         if (Bukkit.getServer().getPluginManager().isPluginEnabled("Votifier")) {
             Bukkit.getPluginManager().registerEvents(new VotifierListener(), oDailyQuests);
+        }
+
+        if (Bukkit.getServer().getPluginManager().isPluginEnabled("ExcellentCrates")) {
+            Bukkit.getPluginManager().registerEvents(new CrateOpenListener(), oDailyQuests);
         }
     }
 }
