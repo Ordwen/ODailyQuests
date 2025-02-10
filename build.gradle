@@ -52,6 +52,7 @@ repositories {
     maven { url = "https://nexus.phoenixdevt.fr/repository/maven-public/" }
     maven { url = "https://maven.enginehub.org/repo/"}
     maven { url = 'https://repo.glaremasters.me/repository/towny/'}
+    maven { url = 'https://repo.magmaguy.com/releases/' }
     flatDir { dirs 'libs' }
 
     maven { url = 'https://jitpack.io' }
@@ -82,7 +83,7 @@ dependencies {
 
     /* mobs */
     compileOnly 'io.lumine:Mythic-Dist:5.0.3-SNAPSHOT'
-    compileOnly files('libs/EliteMobs-9.1.11.jar')
+    compileOnly 'com.magmaguy:EliteMobs:9.1.11'
 
     /* stackers */
     compileOnly 'dev.rosewood:rosestacker:1.4.13'
