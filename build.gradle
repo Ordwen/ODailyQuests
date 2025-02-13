@@ -53,6 +53,7 @@ repositories {
     maven { url = "https://maven.enginehub.org/repo/"}
     maven { url = 'https://repo.glaremasters.me/repository/towny/'}
     maven { url = 'https://repo.magmaguy.com/releases/' }
+    maven { url = 'https://repo.nightexpressdev.com/releases/' }
     flatDir { dirs 'libs' }
 
     maven { url = 'https://jitpack.io' }
@@ -75,7 +76,7 @@ dependencies {
     /* economy & points */
     compileOnly 'com.github.MilkBowl:VaultAPI:1.7'
     compileOnly 'org.black_ixx:playerpoints:3.2.2'
-    compileOnly files('libs/CoinsEngine-2.3.4.jar')
+    compileOnly 'su.nightexpress.coinsengine:CoinsEngine:2.4.1'
     compileOnly('com.github.Realizedd:TokenManager:3.2.4') { transitive = false }
 
     /* npcs */
@@ -114,7 +115,7 @@ dependencies {
     compileOnly 'com.github.NuVotifier:NuVotifier:2.7.2'
 }
 
-def targetJavaVersion = 17
+def targetJavaVersion = 21
 java {
     def javaVersion = JavaVersion.toVersion(targetJavaVersion)
     if (JavaVersion.current() < javaVersion) {
