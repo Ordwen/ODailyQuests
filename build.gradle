@@ -54,8 +54,6 @@ repositories {
     maven { url = 'https://repo.glaremasters.me/repository/towny/'}
     maven { url = 'https://repo.magmaguy.com/releases/' }
     maven { url = 'https://repo.nightexpressdev.com/releases/' }
-    flatDir { dirs 'libs' }
-
     maven { url = 'https://jitpack.io' }
 }
 
@@ -102,7 +100,6 @@ dependencies {
     compileOnly 'net.momirealms:custom-crops:3.6.29'
     compileOnly 'net.momirealms:custom-fishing:2.3.4'
     compileOnly('me.kryniowesegryderiusz:kgenerators-core:7.3') { exclude group: '*', module: '*' }
-    compileOnly files('libs/PyroFishingPro-4.9.12.jar')
 
     /* auto restart */
     compileOnly 'com.github.N0RSKA:UltimateAutoRestartAPI:2023.12'

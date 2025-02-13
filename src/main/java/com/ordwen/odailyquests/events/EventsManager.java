@@ -10,7 +10,6 @@ import com.ordwen.odailyquests.events.listeners.integrations.customsuite.Fishing
 import com.ordwen.odailyquests.events.listeners.integrations.itemsadder.CustomBlockBreakListener;
 import com.ordwen.odailyquests.events.listeners.integrations.itemsadder.ItemsAdderLoadDataListener;
 import com.ordwen.odailyquests.events.listeners.integrations.oraxen.OraxenItemsLoadedListener;
-import com.ordwen.odailyquests.events.listeners.integrations.pyrofishingpro.PyroFishCatchListener;
 import com.ordwen.odailyquests.events.listeners.vote.VotifierListener;
 import com.ordwen.odailyquests.externs.hooks.mobs.EliteMobsHook;
 import com.ordwen.odailyquests.externs.hooks.mobs.MythicMobsHook;
@@ -110,10 +109,6 @@ public class EventsManager {
 
         if (Bukkit.getPluginManager().isPluginEnabled("CustomFishing")) {
             Bukkit.getPluginManager().registerEvents(new FishingLootSpawnListener(), oDailyQuests);
-        }
-
-        if (Bukkit.getServer().getPluginManager().isPluginEnabled("PyroFishingPro")) {
-            Bukkit.getPluginManager().registerEvents(new PyroFishCatchListener(), oDailyQuests);
         }
 
         if (Bukkit.getServer().getPluginManager().isPluginEnabled("Votifier")) {
