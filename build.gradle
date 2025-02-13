@@ -126,7 +126,7 @@ tasks.withType(JavaCompile).configureEach {
     }
 }
 
-shadowJar {
+tasks.shadowJar {
     archiveFileName.set("${project.name}-${project.version}.jar")
     relocate 'io.papermc.lib', 'com.ordwen.odailyquests.lib.paperlib'
     relocate 'space.arim.morepaperlib', 'com.ordwen.odailyquests.lib.morepaperlib'
