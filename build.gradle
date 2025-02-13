@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'io.github.goooler.shadow' version "8.1.7"
+    id 'com.gradleup.shadow' version '8.3.6'
     id 'maven-publish'
 }
 
@@ -127,6 +127,7 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 tasks.shadowJar {
+    archiveClassifier.set("")
     archiveFileName.set("${project.name}-${project.version}.jar")
     relocate 'io.papermc.lib', 'com.ordwen.odailyquests.lib.paperlib'
     relocate 'space.arim.morepaperlib', 'com.ordwen.odailyquests.lib.morepaperlib'
@@ -145,11 +146,15 @@ tasks.build {
     dependsOn shadowJar
 }
 
+tasks.jar {
+    enabled = false
+}
+
 publishing {
     publications {
-        maven(MavenPublication) {
-            from components.java
-            artifact tasks.shadowJar
+        shadow(MavenPublication) {
+            from(components.shadow)
+            version = project.version.replace("-local", "")
         }
     }
 }
