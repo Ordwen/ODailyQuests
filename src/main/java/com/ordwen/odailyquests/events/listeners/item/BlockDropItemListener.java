@@ -1,5 +1,7 @@
 package com.ordwen.odailyquests.events.listeners.item;
 
+import com.jeff_media.customblockdata.CustomBlockData;
+import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.Antiglitch;
 
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
@@ -15,7 +17,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.metadata.MetadataValue;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -55,39 +56,53 @@ public class BlockDropItemListener extends PlayerProgressor implements Listener 
         }
 
         // check if the block have been placed by the player
-        if (dataMaterial.isBlock()) {
-            if (Antiglitch.isStorePlacedBlocks()) {
-                if (!event.getBlock().getMetadata("odailyquests:placed").isEmpty()) {
-                    // check if type has changed
-                    final MetadataValue previousType = event.getBlock().getMetadata("odailyquests:type").stream().findFirst().orElse(null);
-                    if (previousType != null) {
-                        if (previousType.asString().equals(dataMaterial.name())) {
-                            Debugger.addDebug("BlockDropItemListener: onBlockDropItemEvent cancelled due to placed block.");
-                            return;
-                        } else {
-                            Debugger.addDebug("BlockDropItemListener: onBlockDropItemEvent block type has changed (" + previousType.asString() + " -> " + dataMaterial.name() + ").");
-                        }
-                    }
-                }
-            }
-        }
+        if (isPlayerPlacedBlock(event, dataMaterial)) return;
 
         handleDrops(event, player, drops);
 
         // check if the dropped item is a block that can be posed
-        if (dataMaterial.isBlock()) {
-            if (Antiglitch.isStoreBrokenBlocks()) {
-                Debugger.addDebug("BlockDropItemListener: onBlockDropItemEvent storing broken block.");
-                for (Item item : event.getItems()) {
-                    final ItemStack drop = item.getItemStack();
-                    Debugger.addDebug("BlockDropItemListener: onBlockDropItemEvent storing broken block: " + drop.getType());
-                    final ItemMeta dropMeta = drop.getItemMeta();
-                    if (dropMeta == null) continue;
+        handleStoreBrokenBlocks(dataMaterial, event);
+    }
 
-                    final PersistentDataContainer pdc = dropMeta.getPersistentDataContainer();
-                    pdc.set(Antiglitch.BROKEN_KEY, PersistentDataType.STRING, event.getPlayer().getUniqueId().toString());
-                    drop.setItemMeta(dropMeta);
-                }
+    /**
+     * Check if the block has been placed by the player.
+     *
+     * @param event    the event that triggered the listener
+     * @param material the material of the block
+     * @return true if the block has been placed by the player
+     */
+    private static boolean isPlayerPlacedBlock(BlockDropItemEvent event, Material material) {
+        if (material.isBlock() && Antiglitch.isStorePlacedBlocks()) {
+            final PersistentDataContainer pdc = new CustomBlockData(event.getBlock(), ODailyQuests.INSTANCE);
+            // check if type has changed
+            final String previousType = pdc.getOrDefault(Antiglitch.PLACED_KEY, PersistentDataType.STRING, material.name());
+            if (previousType.equals(material.name())) {
+                Debugger.addDebug("BlockDropItemListener: onBlockDropItemEvent cancelled due to placed block.");
+                return true;
+            } else {
+                Debugger.addDebug("BlockDropItemListener: onBlockDropItemEvent block type has changed (" + previousType + " -> " + material.name() + ").");
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Store the broken blocks by the player by adding a unique identifier to the dropped item.
+     *
+     * @param event the event that triggered the listener
+     */
+    private static void handleStoreBrokenBlocks(Material material, BlockDropItemEvent event) {
+        if (material.isBlock() && Antiglitch.isStoreBrokenBlocks()) {
+            Debugger.addDebug("BlockDropItemListener: onBlockDropItemEvent storing broken block.");
+            for (Item item : event.getItems()) {
+                final ItemStack drop = item.getItemStack();
+                Debugger.addDebug("BlockDropItemListener: onBlockDropItemEvent storing broken block: " + drop.getType());
+                final ItemMeta dropMeta = drop.getItemMeta();
+                if (dropMeta == null) continue;
+
+                final PersistentDataContainer pdc = dropMeta.getPersistentDataContainer();
+                pdc.set(Antiglitch.BROKEN_KEY, PersistentDataType.STRING, event.getPlayer().getUniqueId().toString());
+                drop.setItemMeta(dropMeta);
             }
         }
     }

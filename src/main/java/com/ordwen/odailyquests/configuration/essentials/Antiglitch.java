@@ -5,12 +5,15 @@ import org.bukkit.NamespacedKey;
 
 public class Antiglitch {
 
+    private Antiglitch() {}
+
     private static boolean storePlacedBlocks = false;
     private static boolean storeBrokenBlocks = false;
     private static boolean storeDroppedItems = false;
 
-    public static NamespacedKey BROKEN_KEY = new NamespacedKey(ODailyQuests.INSTANCE, "broken");
-    public static NamespacedKey DROPPED_BY = new NamespacedKey(ODailyQuests.INSTANCE, "dropped");
+    public static final NamespacedKey BROKEN_KEY = new NamespacedKey(ODailyQuests.INSTANCE, "odq_broken");
+    public static final NamespacedKey PLACED_KEY = new NamespacedKey(ODailyQuests.INSTANCE, "odq_placed");
+    public static final NamespacedKey DROPPED_KEY = new NamespacedKey(ODailyQuests.INSTANCE, "odq_dropped");
 
     /**
      * Set the configuration values for the anti-glitch system

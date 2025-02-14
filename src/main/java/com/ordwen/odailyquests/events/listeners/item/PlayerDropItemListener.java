@@ -21,7 +21,7 @@ public class PlayerDropItemListener implements Listener {
 
             if (itemMeta != null) {
                 final PersistentDataContainer pdc = itemMeta.getPersistentDataContainer();
-                pdc.set(Antiglitch.DROPPED_BY, PersistentDataType.STRING, event.getPlayer().getUniqueId().toString());
+                pdc.set(Antiglitch.DROPPED_KEY, PersistentDataType.STRING, event.getPlayer().getUniqueId().toString());
                 item.setItemMeta(itemMeta);
             }
         }

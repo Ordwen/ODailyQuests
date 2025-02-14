@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.events.listeners.item;
 
+import com.jeff_media.customblockdata.CustomBlockData;
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.Antiglitch;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
@@ -12,7 +13,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -51,8 +51,8 @@ public class BlockPlaceListener extends PlayerProgressor implements Listener {
 
         if (Antiglitch.isStorePlacedBlocks()) {
             Debugger.addDebug("BlockPlaceListener: onBlockPlaceEvent storing placed block.");
-            block.setMetadata("odailyquests:placed", new FixedMetadataValue(ODailyQuests.INSTANCE, player.getUniqueId().toString()));
-            block.setMetadata("odailyquests:type", new FixedMetadataValue(ODailyQuests.INSTANCE, block.getType().name()));
+            final PersistentDataContainer pdc = new CustomBlockData(block, ODailyQuests.INSTANCE);
+            pdc.set(Antiglitch.PLACED_KEY, PersistentDataType.STRING, block.getType().name());
         }
     }
 }

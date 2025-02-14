@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests;
 
+import com.jeff_media.customblockdata.CustomBlockData;
 import com.ordwen.odailyquests.api.ODailyQuestsAPI;
 import com.ordwen.odailyquests.api.quests.QuestTypeRegistry;
 import com.ordwen.odailyquests.events.restart.RestartHandler;
@@ -117,6 +118,9 @@ public final class ODailyQuests extends JavaPlugin {
 
         /* Load debugger */
         new Debugger(this).loadDebugMode();
+
+        /* Hook CustomBlockData */
+        CustomBlockData.registerListener(this); // maybe not needed
 
         /* Register quest types */
         final QuestTypeRegistry questTypeRegistry = API.getQuestTypeRegistry();
