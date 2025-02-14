@@ -7,7 +7,7 @@ public class SQLQueries {
     private SQLQueries() {
     }
 
-    public final static String CREATE_PLAYER_TABLE = "CREATE TABLE `" + ConfigurationHolder.DatabaseConfig.PLAYER_TABLE_NAME + "` (\n" +
+    public static final String CREATE_PLAYER_TABLE = "CREATE TABLE `" + ConfigurationHolder.DatabaseConfig.PLAYER_TABLE_NAME + "` (\n" +
                 "    `player_name` char(32) NOT NULL,\n" +
                 "    `player_timestamp` bigint NOT NULL,\n" +
                 "    `achieved_quests` tinyint NOT NULL,\n" +
