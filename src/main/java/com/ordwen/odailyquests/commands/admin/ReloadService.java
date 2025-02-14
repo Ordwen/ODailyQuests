@@ -4,7 +4,6 @@ import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.configuration.integrations.ItemsAdderEnabled;
 import com.ordwen.odailyquests.configuration.integrations.OraxenEnabled;
-import com.ordwen.odailyquests.externs.hooks.holograms.HologramsManager;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
@@ -114,9 +113,6 @@ public class ReloadService {
      */
     public void reload() {
         oDailyQuests.getFilesManager().loadAllFiles();
-
-        /* Load holograms */
-        HologramsManager.loadHolograms();
 
         /* Load specific settings */
         oDailyQuests.getConfigurationManager().loadConfiguration();
