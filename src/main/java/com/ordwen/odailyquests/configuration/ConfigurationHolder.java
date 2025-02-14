@@ -9,12 +9,17 @@ import com.ordwen.odailyquests.ODailyQuests;
  */
 public class ConfigurationHolder {
 
+    private ConfigurationHolder(){}
+
     private static final FileConfiguration cfg = ODailyQuests.INSTANCE.getConfigurationFiles().getConfigFile();
 
     public static class DatabaseConfig {
-        public static final String prefix = cfg.getString("database.table_prefix");
-        public static String playerTableName = prefix + "player";
-        public static String progressionTableName = prefix + "progression";
+
+        private DatabaseConfig() {}
+
+        public static final String PREFIX = cfg.getString("database.table_prefix");
+        public static final String PLAYER_TABLE_NAME = PREFIX + "player";
+        public static final String PROGRESSION_TABLE_NAME = PREFIX + "progression";
         
         
 

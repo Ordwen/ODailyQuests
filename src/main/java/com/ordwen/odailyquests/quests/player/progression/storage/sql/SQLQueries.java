@@ -3,8 +3,11 @@ package com.ordwen.odailyquests.quests.player.progression.storage.sql;
 import com.ordwen.odailyquests.configuration.ConfigurationHolder;
 
 public class SQLQueries {
-    
-    public static String createPlayerTable = "CREATE TABLE `" + ConfigurationHolder.DatabaseConfig.playerTableName + "` (\n" +
+
+    private SQLQueries() {
+    }
+
+    public final static String CREATE_PLAYER_TABLE = "CREATE TABLE `" + ConfigurationHolder.DatabaseConfig.PLAYER_TABLE_NAME + "` (\n" +
                 "    `player_name` char(32) NOT NULL,\n" +
                 "    `player_timestamp` bigint NOT NULL,\n" +
                 "    `achieved_quests` tinyint NOT NULL,\n" +
@@ -13,7 +16,7 @@ public class SQLQueries {
                 ");";
 
 
-    public static final String createProgressionTable = "CREATE TABLE `" + ConfigurationHolder.DatabaseConfig.progressionTableName + "` (\n" +
+    public static final String CREATE_PROGRESSION_TABLE = "CREATE TABLE `" + ConfigurationHolder.DatabaseConfig.PROGRESSION_TABLE_NAME + "` (\n" +
                 "    `primary_key` int auto_increment,\n" +
                 "    `player_name` char(32) NOT NULL,\n" +
                 "    `player_quest_id` smallint NOT NULL,\n" +
@@ -24,21 +27,21 @@ public class SQLQueries {
                 "    constraint `unique_player_quest` unique (`player_name`, `player_quest_id`)\n" +
                 ");";
 
-    public static final String TIMESTAMP_QUERY = "SELECT player_timestamp, achieved_quests, total_achieved_quests FROM " + ConfigurationHolder.DatabaseConfig.playerTableName + " WHERE player_name = ?";
+    public static final String TIMESTAMP_QUERY = "SELECT player_timestamp, achieved_quests, total_achieved_quests FROM " + ConfigurationHolder.DatabaseConfig.PLAYER_TABLE_NAME + " WHERE player_name = ?";
     
     public static final String MYSQL_PLAYER_QUERY =
-            "INSERT INTO `" + ConfigurationHolder.DatabaseConfig.playerTableName + "` (`player_name`, `player_timestamp`, `achieved_quests`, `total_achieved_quests`) " +
+            "INSERT INTO `" + ConfigurationHolder.DatabaseConfig.PLAYER_TABLE_NAME + "` (`player_name`, `player_timestamp`, `achieved_quests`, `total_achieved_quests`) " +
                     "VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE " +
                     "`player_timestamp` = VALUES(`player_timestamp`), " +
                     "`achieved_quests` = VALUES(`achieved_quests`), " +
                     "`total_achieved_quests` = VALUES(`total_achieved_quests`)";
 
-    public static final String H2_PLAYER_QUERY = "MERGE INTO `" + ConfigurationHolder.DatabaseConfig.playerTableName + "` (`player_name`, `player_timestamp`, `achieved_quests`, `total_achieved_quests`) " + "KEY (`player_name`) VALUES (?, ?, ?, ?)";
+    public static final String H2_PLAYER_QUERY = "MERGE INTO `" + ConfigurationHolder.DatabaseConfig.PLAYER_TABLE_NAME + "` (`player_name`, `player_timestamp`, `achieved_quests`, `total_achieved_quests`) " + "KEY (`player_name`) VALUES (?, ?, ?, ?)";
 
     public static final String MYSQL_PROGRESS_UPDATE =
-    "INSERT INTO `" + ConfigurationHolder.DatabaseConfig.progressionTableName + "` (`player_name`, `player_quest_id`, `quest_index`, `advancement`, `is_achieved`) " + "VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE " + "`quest_index` = VALUES(`quest_index`), " + "`advancement` = VALUES(`advancement`), " + "`is_achieved` = VALUES(`is_achieved`)";
-    public static final String H2_PROGRESS_UPDATE = "MERGE INTO `" + ConfigurationHolder.DatabaseConfig.progressionTableName + "` (`player_name`, `player_quest_id`, `quest_index`, `advancement`, `is_achieved`) " + "KEY (`player_name`, `player_quest_id`) VALUES (?, ?, ?, ?, ?)";
+    "INSERT INTO `" + ConfigurationHolder.DatabaseConfig.PROGRESSION_TABLE_NAME + "` (`player_name`, `player_quest_id`, `quest_index`, `advancement`, `is_achieved`) " + "VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE " + "`quest_index` = VALUES(`quest_index`), " + "`advancement` = VALUES(`advancement`), " + "`is_achieved` = VALUES(`is_achieved`)";
+    public static final String H2_PROGRESS_UPDATE = "MERGE INTO `" + ConfigurationHolder.DatabaseConfig.PROGRESSION_TABLE_NAME + "` (`player_name`, `player_quest_id`, `quest_index`, `advancement`, `is_achieved`) " + "KEY (`player_name`, `player_quest_id`) VALUES (?, ?, ?, ?, ?)";
 
-    public static final String QUEST_PROGRESSION_QUERY = "SELECT * FROM " + ConfigurationHolder.DatabaseConfig.progressionTableName + "WHERE player_name = ?";
+    public static final String QUEST_PROGRESSION_QUERY = "SELECT * FROM " + ConfigurationHolder.DatabaseConfig.PROGRESSION_TABLE_NAME + "WHERE player_name = ?";
 
 }

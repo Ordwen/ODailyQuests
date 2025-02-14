@@ -13,21 +13,21 @@ public abstract class SQLManager {
     protected LoadProgressionSQL loadProgressionSQL;
     protected SaveProgressionSQL saveProgressionSQL;
 
-    private static final String playerTable = ConfigurationHolder.DatabaseConfig.playerTableName;
-    private static final String progressionTable = ConfigurationHolder.DatabaseConfig.progressionTableName;
+    private static final String PLAYER_TABLE = ConfigurationHolder.DatabaseConfig.PLAYER_TABLE_NAME;
+    private static final String PROGRESSION_TABLE = ConfigurationHolder.DatabaseConfig.PROGRESSION_TABLE_NAME;
 
     public void setupTables() {
         final Connection connection = getConnection();
         try {
-            if (!tableExists(connection, playerTable)) {
-                PreparedStatement preparedStatement = connection.prepareStatement(SQLQueries.createPlayerTable);
+            if (!tableExists(connection, PLAYER_TABLE)) {
+                PreparedStatement preparedStatement = connection.prepareStatement(SQLQueries.CREATE_PLAYER_TABLE);
                 preparedStatement.execute();
 
                 preparedStatement.close();
                 PluginLogger.info("Table 'Player' created in database.");
             }
-            if (!tableExists(connection, progressionTable)) {
-                PreparedStatement preparedStatement = connection.prepareStatement(SQLQueries.createProgressionTable);
+            if (!tableExists(connection, PROGRESSION_TABLE)) {
+                PreparedStatement preparedStatement = connection.prepareStatement(SQLQueries.CREATE_PROGRESSION_TABLE);
                 preparedStatement.execute();
 
                 preparedStatement.close();
