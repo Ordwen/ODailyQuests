@@ -10,7 +10,7 @@ softdepend: [ Vault, TokenManager, Citizens, PlaceholderAPI, PlayerPoints, Mythi
 libraries:
   - com.zaxxer:HikariCP:5.0.1
   - com.h2database:h2:2.1.214
-  - com.jeff_media:custom-block-data:2.2.3
+  - com.jeff-media:custom-block-data:2.2.3
 commands:
   dquests:
     description: default player command

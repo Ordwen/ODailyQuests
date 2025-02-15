@@ -120,7 +120,7 @@ public final class ODailyQuests extends JavaPlugin {
         new Debugger(this).loadDebugMode();
 
         /* Hook CustomBlockData */
-        CustomBlockData.registerListener(this); // maybe not needed
+        CustomBlockData.registerListener(this);
 
         /* Register quest types */
         final QuestTypeRegistry questTypeRegistry = API.getQuestTypeRegistry();
