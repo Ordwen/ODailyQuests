@@ -87,7 +87,7 @@ public final class ODailyQuests extends JavaPlugin {
         /* Load Metrics */
         // https://bstats.org/plugin/bukkit/ODailyQuests/14277
         int pluginId = 14277;
-        final Metrics metrics = new Metrics(this, pluginId);
+        new Metrics(this, pluginId);
 
         /* Load files */
         this.configurationFiles = new ConfigurationFiles(this);

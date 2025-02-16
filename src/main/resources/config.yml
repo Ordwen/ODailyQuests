@@ -23,6 +23,7 @@ database:
   user: "admin"        # Database user
   password: "1234"     # Database password
   port: "3306"         # Database port
+  table_prefix: "odq_" # Table prefix
 
 # Select the mode of the quests.
 # ==========================================================

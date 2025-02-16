@@ -38,12 +38,6 @@ public enum QuestsMessages {
     CATEGORIZED_DISABLED("categorized_disabled", "&cCategorized quests are disabled, only the global menu is available."),
     GLOBAL_DISABLED("global_disabled", "&cGlobal quests are disabled, only the categorized menus are available."),
     QUEST_ALREADY_ACHIEVED("already_achieved", "&cThis quest is already achieved."),
-
-    HOLO_CATEGORIZED_ENABLED("hologram_categorized_enabled", "&cCategorized quests are enabled, impossible to create the global hologram."),
-    HOLO_CATEGORIZED_DISABLED("hologram_categorized_disabled", "&cCategorized quests are disabled, impossible to create the categorized holograms."),
-    HOLO_DELETED("hologram_deleted", "&aHologram successfully deleted."),
-    HOLO_INVALID_INDEX("hologram_invalid_index", "&cInvalid index for the hologram."),
-
     QUESTS_IN_PROGRESS("quests_in_progress", "&eYou still have daily quests to complete !"),
     ALL_QUESTS_ACHIEVED_CONNECT("all_quests_achieved_connect", "&aYou have completed all your daily quests !"),
     QUESTS_RENEWED("quests_renewed", "&aYou have new daily quests to complete !"),

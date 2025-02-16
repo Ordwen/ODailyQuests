@@ -93,7 +93,6 @@ dependencies {
 
     /* guis */
     compileOnly 'me.clip:placeholderapi:2.11.6'
-    compileOnly 'com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.4.9'
 
     /* custom items */
     compileOnly 'com.github.oraxen:oraxen:1.157.0'

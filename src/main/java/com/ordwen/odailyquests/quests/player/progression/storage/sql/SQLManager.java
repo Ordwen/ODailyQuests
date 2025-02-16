@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.quests.player.progression.storage.sql;
 
+import com.ordwen.odailyquests.configuration.ConfigurationHolder;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -12,41 +13,21 @@ public abstract class SQLManager {
     protected LoadProgressionSQL loadProgressionSQL;
     protected SaveProgressionSQL saveProgressionSQL;
 
+    private static final String PLAYER_TABLE = ConfigurationHolder.DatabaseConfig.PLAYER_TABLE_NAME;
+    private static final String PROGRESSION_TABLE = ConfigurationHolder.DatabaseConfig.PROGRESSION_TABLE_NAME;
+
     public void setupTables() {
         final Connection connection = getConnection();
         try {
-            if (!tableExists(connection, "PLAYER")) {
-
-                String str = "create table PLAYER\n" +
-                        "  (\n" +
-                        "     PLAYERNAME char(32)  not null  ,\n" +
-                        "     PLAYERTIMESTAMP bigint not null,  \n" +
-                        "     ACHIEVEDQUESTS tinyint not null, \n" +
-                        "     TOTALACHIEVEDQUESTS int not null, \n" +
-                        "     constraint PK_PLAYER primary key (PLAYERNAME)\n" +
-                        "  );";
-
-                PreparedStatement preparedStatement = connection.prepareStatement(str);
+            if (!tableExists(connection, PLAYER_TABLE)) {
+                PreparedStatement preparedStatement = connection.prepareStatement(SQLQueries.CREATE_PLAYER_TABLE);
                 preparedStatement.execute();
 
                 preparedStatement.close();
                 PluginLogger.info("Table 'Player' created in database.");
             }
-            if (!tableExists(connection, "PROGRESSION")) {
-
-                String str = "create table PROGRESSION\n" +
-                        "  (\n" +
-                        "     PRIMARYKEY int auto_increment  ,\n" +
-                        "     PLAYERNAME char(32)  not null  ,\n" +
-                        "     PLAYERQUESTID smallint  not null  ,\n" +
-                        "     QUESTINDEX int  not null  ,\n" +
-                        "     ADVANCEMENT int  not null  ,\n" +
-                        "     ISACHIEVED bit  not null  ,\n" +
-                        "     primary key (PRIMARYKEY) ,\n" +
-                        "     constraint UNIQUE_PLAYERNAME_PLAYERQUESTID unique (PLAYERNAME, PLAYERQUESTID)" +
-                        "  ); ";
-
-                PreparedStatement preparedStatement = connection.prepareStatement(str);
+            if (!tableExists(connection, PROGRESSION_TABLE)) {
+                PreparedStatement preparedStatement = connection.prepareStatement(SQLQueries.CREATE_PROGRESSION_TABLE);
                 preparedStatement.execute();
 
                 preparedStatement.close();

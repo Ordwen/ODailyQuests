@@ -21,7 +21,6 @@ public class FilesManager {
 
         new QuestsFiles(oDailyQuests).loadQuestsFiles();
         new ProgressionFile(oDailyQuests).loadProgressionFile();
-        new HologramsFile(oDailyQuests).loadHologramsFile();
         new PlayerInterfaceFile(oDailyQuests).loadPlayerInterfaceFile();
     }
 }

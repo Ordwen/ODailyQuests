@@ -54,20 +54,19 @@ public class LoadProgressionSQL {
 
             try {
                 final Connection connection = sqlManager.getConnection();
-                final String timestampQuery = "SELECT PLAYERTIMESTAMP,ACHIEVEDQUESTS,TOTALACHIEVEDQUESTS FROM PLAYER WHERE PLAYERNAME = ?";
 
-                final PreparedStatement preparedStatement = connection.prepareStatement(timestampQuery);
+                final PreparedStatement preparedStatement = connection.prepareStatement(SQLQueries.TIMESTAMP_QUERY);
                 preparedStatement.setString(1, playerName);
 
                 final ResultSet resultSet = preparedStatement.executeQuery();
 
-                Debugger.addDebug("Executing query for player " + playerName + ": " + timestampQuery);
+                Debugger.addDebug("Executing query for player " + playerName + ": " + SQLQueries.TIMESTAMP_QUERY);
 
                 if (resultSet.next()) {
                     hasStoredData = true;
-                    timestamp = resultSet.getLong("PLAYERTIMESTAMP");
-                    achievedQuests = resultSet.getInt("ACHIEVEDQUESTS");
-                    totalAchievedQuests = resultSet.getInt("TOTALACHIEVEDQUESTS");
+                    timestamp = resultSet.getLong("player_timestamp");
+                    achievedQuests = resultSet.getInt("achieved_quests");
+                    totalAchievedQuests = resultSet.getInt("total_achieved_quests");
 
                     Debugger.addDebug("Player " + playerName + " has stored data.");
 
@@ -140,9 +139,8 @@ public class LoadProgressionSQL {
 
         try {
             final Connection connection = sqlManager.getConnection();
-            final String getQuestProgressionQuery = "SELECT * FROM PROGRESSION WHERE PLAYERNAME = ?";
 
-            final PreparedStatement preparedStatement = connection.prepareStatement(getQuestProgressionQuery);
+            final PreparedStatement preparedStatement = connection.prepareStatement(SQLQueries.QUEST_PROGRESSION_QUERY);
             preparedStatement.setString(1, playerName);
 
             final ResultSet resultSet = preparedStatement.executeQuery();
@@ -151,9 +149,9 @@ public class LoadProgressionSQL {
 
             resultSet.next();
             do {
-                int questIndex = resultSet.getInt("QUESTINDEX");
-                int advancement = resultSet.getInt("ADVANCEMENT");
-                boolean isAchieved = resultSet.getBoolean("ISACHIEVED");
+                int questIndex = resultSet.getInt("quest_index");
+                int advancement = resultSet.getInt("advancement");
+                boolean isAchieved = resultSet.getBoolean("is_achieved");
 
                 Progression progression = new Progression(advancement, isAchieved);
                 AbstractQuest quest = QuestLoaderUtils.findQuest(playerName, questIndex, id);
