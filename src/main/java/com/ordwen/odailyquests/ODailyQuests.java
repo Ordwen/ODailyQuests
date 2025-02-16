@@ -12,7 +12,6 @@ import com.ordwen.odailyquests.commands.admin.AdminCompleter;
 import com.ordwen.odailyquests.commands.player.PlayerCompleter;
 import com.ordwen.odailyquests.commands.interfaces.InterfacesManager;
 import com.ordwen.odailyquests.commands.interfaces.InventoryClickListener;
-import com.ordwen.odailyquests.configuration.ConfigurationManager;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.configuration.essentials.Temporality;
@@ -61,7 +60,6 @@ public final class ODailyQuests extends JavaPlugin {
      * Getting instance of files classes.
      */
     private ConfigurationFiles configurationFiles;
-    private ConfigurationManager configurationManager;
     private InterfacesManager interfacesManager;
     private FilesManager filesManager;
     private SQLManager sqlManager;
@@ -110,7 +108,6 @@ public final class ODailyQuests extends JavaPlugin {
 
         /* Load class instances */
         this.interfacesManager = new InterfacesManager(this);
-        this.configurationManager = new ConfigurationManager(this);
         this.reloadService = new ReloadService(this, sqlManager != null);
 
         /* Load dependencies */
@@ -314,14 +311,6 @@ public final class ODailyQuests extends JavaPlugin {
         return interfacesManager;
     }
 
-    /**
-     * Get ConfigurationManager instance.
-     *
-     * @return ConfigurationManager instance.
-     */
-    public ConfigurationManager getConfigurationManager() {
-        return configurationManager;
-    }
 
     /**
      * Get YamlManager instance.

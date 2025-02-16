@@ -2,7 +2,7 @@ package com.ordwen.odailyquests.events.antiglitch;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
-import com.ordwen.odailyquests.configuration.functionalities.SpawnersProgression;
+import com.ordwen.odailyquests.configuration.functionalities.SpawnerProgression;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
 import org.bukkit.persistence.PersistentDataType;
@@ -37,6 +37,6 @@ public class EntitySource {
      */
     public static boolean isEntityFromSpawner(Entity entity) {
         Debugger.addDebug("EntitySource: isEntityFromSpawner checking if entity is from spawner.");
-        return SpawnersProgression.isSpawnersProgressionDisabled() && entity.getPersistentDataContainer().has(FROM_SPAWNER, PersistentDataType.BYTE);
+        return SpawnerProgression.isSpawnersProgressionDisabled() && entity.getPersistentDataContainer().has(FROM_SPAWNER, PersistentDataType.BYTE);
     }
 }

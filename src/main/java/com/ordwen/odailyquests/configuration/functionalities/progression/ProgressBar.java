@@ -1,17 +1,19 @@
 package com.ordwen.odailyquests.configuration.functionalities.progression;
 
+import com.ordwen.odailyquests.configuration.ConfigFactory;
+import com.ordwen.odailyquests.configuration.IConfigurable;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.tools.ColorConvert;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 
-public class ProgressBar {
+public class ProgressBar implements IConfigurable {
 
-    private static String symbol;
-    private static String completedColor;
-    private static String remainingColor;
-    private static int amountOfSymbols;
+    private String symbol;
+    private String completedColor;
+    private String remainingColor;
+    private int amountOfSymbols;
 
     private final ConfigurationFiles configurationFiles;
 
@@ -22,24 +24,26 @@ public class ProgressBar {
     /**
      * Load the progress bar configuration.
      */
-    public void loadProgressBar() {
+    @Override
+    public void load() {
         final ConfigurationSection section = configurationFiles.getConfigFile().getConfigurationSection("progress_bar");
+
         if (section == null) {
             PluginLogger.warn("Progress bar section is missing in the configuration file.");
             PluginLogger.warn("Using default progress bar.");
 
-            setSymbol("|");
-            setCompletedColor(ChatColor.GREEN.toString());
-            setRemainingColor(ChatColor.GRAY.toString());
-            setAmountOfSymbols(20);
+            symbol = "|";
+            completedColor = ChatColor.GREEN.toString();
+            remainingColor = ChatColor.GRAY.toString();
+            amountOfSymbols = 20;
 
             return;
         }
 
-        setSymbol(section.contains("symbol") ? section.getString("symbol") : "|");
-        setCompletedColor(section.contains("completed_color") ? ColorConvert.convertColorCode(section.getString("completed_color")) : ChatColor.GREEN.toString());
-        setRemainingColor(section.contains("remaining_color") ? ColorConvert.convertColorCode(section.getString("remaining_color")) : ChatColor.GRAY.toString());
-        setAmountOfSymbols(section.contains("amount_of_symbols") ? section.getInt("amount_of_symbols") : 20);
+        symbol = section.getString("symbol", "|");
+        completedColor = ColorConvert.convertColorCode(section.getString("completed_color", ChatColor.GREEN.toString()));
+        remainingColor = ColorConvert.convertColorCode(section.getString("remaining_color", ChatColor.GRAY.toString()));
+        amountOfSymbols = section.getInt("amount_of_symbols", 20);
     }
 
     /**
@@ -49,7 +53,7 @@ public class ProgressBar {
      * @param required required amount.
      * @return progress bar.
      */
-    public static String getProgressBar(int amount, int required) {
+    public String getProgressBarInternal(int amount, int required) {
         final StringBuilder builder = new StringBuilder();
 
         final int amountOfCompleted = amount * amountOfSymbols / required;
@@ -66,19 +70,23 @@ public class ProgressBar {
         return builder.toString();
     }
 
-    private static void setSymbol(String symbol) {
-        ProgressBar.symbol = symbol;
+    /**
+     * Get loaded instance of class.
+     *
+     * @return ProgressBar instance.
+     */
+    public static ProgressBar getInstance() {
+        return ConfigFactory.getConfig(ProgressBar.class);
     }
 
-    private static void setCompletedColor(String completedColor) {
-        ProgressBar.completedColor = completedColor;
-    }
-
-    private static void setRemainingColor(String remainingColor) {
-        ProgressBar.remainingColor = remainingColor;
-    }
-
-    private static void setAmountOfSymbols(int amountOfSymbols) {
-        ProgressBar.amountOfSymbols = amountOfSymbols;
+    /**
+     * Get a progress bar, with a specified amount and required amount. Method is static.
+     *
+     * @param amount   progress amount.
+     * @param required required amount.
+     * @return progress bar.
+     */
+    public static String getProgressBar(int amount, int required) {
+        return getInstance().getProgressBarInternal(amount, required);
     }
 }

@@ -1,7 +1,7 @@
 package com.ordwen.odailyquests.events;
 
 import com.ordwen.odailyquests.ODailyQuests;
-import com.ordwen.odailyquests.configuration.essentials.UseCustomFurnaceResults;
+import com.ordwen.odailyquests.configuration.essentials.CustomFurnaceResults;
 import com.ordwen.odailyquests.configuration.integrations.ItemsAdderEnabled;
 import com.ordwen.odailyquests.configuration.integrations.OraxenEnabled;
 import com.ordwen.odailyquests.events.listeners.customs.CustomFurnaceExtractListener;
@@ -89,7 +89,7 @@ public class EventsManager {
         // custom events
         if (ItemsAdderEnabled.isEnabled()
                 || OraxenEnabled.isEnabled()
-                || UseCustomFurnaceResults.isEnabled()) {
+                || CustomFurnaceResults.isEnabled()) {
             Bukkit.getPluginManager().registerEvents(new CustomFurnaceExtractListener(), oDailyQuests);
         }
 

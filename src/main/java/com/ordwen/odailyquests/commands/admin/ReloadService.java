@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.commands.admin;
 
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.configuration.ConfigFactory;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.configuration.integrations.ItemsAdderEnabled;
 import com.ordwen.odailyquests.configuration.integrations.OraxenEnabled;
@@ -114,10 +115,10 @@ public class ReloadService {
     public void reload() {
         oDailyQuests.getFilesManager().loadAllFiles();
 
-        /* Load specific settings */
-        oDailyQuests.getConfigurationManager().loadConfiguration();
+        /* load configurations */
+        ConfigFactory.registerConfigs(oDailyQuests.getConfigurationFiles());
 
-        /* Load quests & interface */
+        /* load quests & interface */
         if ((!ItemsAdderEnabled.isEnabled() || ItemsAdderEnabled.isLoaded())
                 && (!OraxenEnabled.isEnabled() || OraxenEnabled.isLoaded())) {
             categoriesLoader.loadCategories();

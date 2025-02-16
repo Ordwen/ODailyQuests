@@ -1,29 +1,33 @@
 package com.ordwen.odailyquests.configuration.essentials;
 
+import com.ordwen.odailyquests.configuration.ConfigFactory;
+import com.ordwen.odailyquests.configuration.IConfigurable;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 
-public class Logs {
+public class Logs implements IConfigurable {
 
     private final ConfigurationFiles configurationFiles;
 
-    private static boolean isEnabled;
+    private boolean isEnabled;
 
     public Logs(ConfigurationFiles configurationFiles) {
         this.configurationFiles = configurationFiles;
     }
 
-    /**
-     * Check if the logs are disabled.
-     */
-    public void loadLogs() {
+    @Override
+    public void load() {
         isEnabled = !configurationFiles.getConfigFile().getBoolean("disable_logs");
     }
 
-    /**
-     * Check if the logs are enabled.
-     * @return true if enabled.
-     */
-    public static boolean isEnabled() {
+    public boolean isEnabledInternal() {
         return isEnabled;
+    }
+
+    public static Logs getInstance() {
+        return ConfigFactory.getConfig(Logs.class);
+    }
+
+    public static boolean isEnabled() {
+        return getInstance().isEnabledInternal();
     }
 }

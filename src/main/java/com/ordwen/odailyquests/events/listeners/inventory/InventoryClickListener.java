@@ -2,7 +2,7 @@ package com.ordwen.odailyquests.events.listeners.inventory;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
-import com.ordwen.odailyquests.configuration.essentials.UseCustomFurnaceResults;
+import com.ordwen.odailyquests.configuration.essentials.CustomFurnaceResults;
 import com.ordwen.odailyquests.events.customs.CustomFurnaceExtractEvent;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.clickable.ClickableChecker;
@@ -115,7 +115,7 @@ public class InventoryClickListener extends ClickableChecker implements Listener
      * @return true if the item is a custom furnace result, false otherwise.
      */
     private boolean handleCustomFurnaceResult(InventoryClickEvent event, InventoryAction action, ItemStack clickedItem, Player player) {
-        if (UseCustomFurnaceResults.isEnabled()) {
+        if (CustomFurnaceResults.isEnabled()) {
 
             final InventoryType inventoryType = event.getInventory().getType();
 

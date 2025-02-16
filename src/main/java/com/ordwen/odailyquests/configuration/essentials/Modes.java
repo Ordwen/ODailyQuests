@@ -1,8 +1,10 @@
 package com.ordwen.odailyquests.configuration.essentials;
 
+import com.ordwen.odailyquests.configuration.ConfigFactory;
+import com.ordwen.odailyquests.configuration.IConfigurable;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 
-public class Modes {
+public class Modes implements IConfigurable {
 
     private final ConfigurationFiles configurationFiles;
 
@@ -10,39 +12,31 @@ public class Modes {
         this.configurationFiles = configurationFiles;
     }
 
-    private static int questsMode;
-    private static int timestampMode;
-    private static String storageMode;
+    private int questsMode;
+    private int timestampMode;
+    private String storageMode;
 
-    public void loadPluginModes() {
+    @Override
+    public void load() {
         questsMode = configurationFiles.getConfigFile().getInt("quests_mode");
         timestampMode = configurationFiles.getConfigFile().getInt("timestamp_mode");
         storageMode = configurationFiles.getConfigFile().getString("storage_mode");
     }
 
-    /**
-     * Get quests mode.
-     * @return plugin mode.
-     */
+    public static Modes getInstance() {
+        return ConfigFactory.getConfig(Modes.class);
+    }
+
     public static int getQuestsMode() {
-        return questsMode;
+        return getInstance().questsMode;
     }
 
-    /**
-     * Get timestamp mode.
-     * @return plugin mode.
-     */
     public static int getTimestampMode() {
-        return timestampMode;
+        return getInstance().timestampMode;
     }
 
-    /**
-     * Get storage mode.
-     * @return plugin mode.
-     */
     public static String getStorageMode() {
-        return storageMode;
+        return getInstance().storageMode;
     }
-
 }
 

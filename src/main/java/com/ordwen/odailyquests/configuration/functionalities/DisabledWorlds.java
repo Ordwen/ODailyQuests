@@ -1,10 +1,13 @@
 package com.ordwen.odailyquests.configuration.functionalities;
 
+import com.ordwen.odailyquests.configuration.ConfigFactory;
+import com.ordwen.odailyquests.configuration.IConfigurable;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 
 import java.util.HashSet;
+import java.util.Set;
 
-public class DisabledWorlds {
+public class DisabledWorlds implements IConfigurable {
 
     private final ConfigurationFiles configurationFiles;
 
@@ -12,25 +15,17 @@ public class DisabledWorlds {
         this.configurationFiles = configurationFiles;
     }
 
-    /* store disabled worlds */
-    private static HashSet<String> disabledWorlds;
+    private Set<String> disabledWorldNames;
 
-    /**
-     * Load disabled worlds.
-     */
-    public void loadDisabledWorlds() {
-        disabledWorlds = new HashSet<>();
-        disabledWorlds.addAll(configurationFiles.getConfigFile().getStringList("disabled_worlds"));
+    @Override
+    public void load() {
+        disabledWorldNames = new HashSet<>();
+        disabledWorldNames.addAll(configurationFiles.getConfigFile().getStringList("disabled_worlds"));
     }
 
-    /**
-     * Check if a world is disabled.
-     * @param world name of the world to check.
-     * @return true if the world is disabled.
-     */
-    public static boolean isWorldDisabled(String world) {
+    public boolean isWorldDisabledInternal(String world) {
         boolean isDisabled = false;
-        for (String disabledWorld : disabledWorlds) {
+        for (String disabledWorld : disabledWorldNames) {
             if (disabledWorld.startsWith("?")) {
                 final String worldLabel = disabledWorld.substring(1);
                 isDisabled = world.endsWith(worldLabel);
@@ -47,5 +42,13 @@ public class DisabledWorlds {
         }
 
         return isDisabled;
+    }
+
+    public static DisabledWorlds getInstance() {
+        return ConfigFactory.getConfig(DisabledWorlds.class);
+    }
+
+    public static boolean isWorldDisabled(String world) {
+        return getInstance().isWorldDisabledInternal(world);
     }
 }

@@ -1,9 +1,13 @@
 package com.ordwen.odailyquests.configuration.integrations;
 
+import com.ordwen.odailyquests.configuration.ConfigFactory;
+import com.ordwen.odailyquests.configuration.IConfigurable;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
-import org.bukkit.ChatColor;
+import com.ordwen.odailyquests.tools.ColorConvert;
+import com.ordwen.odailyquests.tools.PluginLogger;
+import org.bukkit.configuration.ConfigurationSection;
 
-public class NPCNames {
+public class NPCNames implements IConfigurable {
 
     private final ConfigurationFiles configurationFiles;
 
@@ -11,60 +15,49 @@ public class NPCNames {
         this.configurationFiles = configurationFiles;
     }
 
-    private static String playerNPCName;
-    private static String globalNPCName;
-    private static String easyNPCName;
-    private static String mediumNPCName;
-    private static String hardNPCName;
+    private String playerNPCName;
+    private String globalNPCName;
+    private String easyNPCName;
+    private String mediumNPCName;
+    private String hardNPCName;
 
-    /**
-     * Load all NPC names.
-     */
-    public void loadNPCNames() {
-        playerNPCName = ChatColor.translateAlternateColorCodes( '&', configurationFiles.getConfigFile().getConfigurationSection("npcs").getString(".name_player"));
-        globalNPCName = ChatColor.translateAlternateColorCodes( '&', configurationFiles.getConfigFile().getConfigurationSection("npcs").getString(".name_global"));
-        easyNPCName = ChatColor.translateAlternateColorCodes( '&', configurationFiles.getConfigFile().getConfigurationSection("npcs").getString(".name_easy"));
-        mediumNPCName = ChatColor.translateAlternateColorCodes( '&', configurationFiles.getConfigFile().getConfigurationSection("npcs").getString(".name_medium"));
-        hardNPCName = ChatColor.translateAlternateColorCodes( '&', configurationFiles.getConfigFile().getConfigurationSection("npcs").getString(".name_hard"));
+    @Override
+    public void load() {
+        final ConfigurationSection section = configurationFiles.getConfigFile().getConfigurationSection("npcs");
+
+        if (section == null) {
+            PluginLogger.error("NPCs names section not found in the config. NPCs names will not be loaded.");
+            return;
+        }
+
+        playerNPCName = ColorConvert.convertColorCode(section.getString(".name_player"));
+        globalNPCName = ColorConvert.convertColorCode(section.getString(".name_global"));
+        easyNPCName = ColorConvert.convertColorCode(section.getString(".name_easy"));
+        mediumNPCName = ColorConvert.convertColorCode(section.getString(".name_medium"));
+        hardNPCName = ColorConvert.convertColorCode(section.getString(".name_hard"));
     }
 
-    /**
-     * Get player NPC name.
-     * @return player NPC name.
-     */
+    public static NPCNames getInstance() {
+        return ConfigFactory.getConfig(NPCNames.class);
+    }
+
     public static String getPlayerNPCName() {
-        return playerNPCName;
+        return getInstance().playerNPCName;
     }
 
-    /**
-     * Get global NPC name.
-     * @return global NPC name.
-     */
     public static String getGlobalNPCName() {
-        return globalNPCName;
+        return getInstance().globalNPCName;
     }
 
-    /**
-     * Get easy NPC name.
-     * @return easy NPC name.
-     */
     public static String getEasyNPCName() {
-        return easyNPCName;
+        return getInstance().easyNPCName;
     }
 
-    /**
-     * Get medium NPC name.
-     * @return medium NPC name.
-     */
     public static String getMediumNPCName() {
-        return mediumNPCName;
+        return getInstance().mediumNPCName;
     }
 
-    /**
-     * Get hard NPC name.
-     * @return hard NPC name.
-     */
     public static String getHardNPCName() {
-        return hardNPCName;
+        return getInstance().hardNPCName;
     }
 }

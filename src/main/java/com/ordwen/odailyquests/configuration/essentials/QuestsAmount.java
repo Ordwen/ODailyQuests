@@ -1,9 +1,11 @@
 package com.ordwen.odailyquests.configuration.essentials;
 
+import com.ordwen.odailyquests.configuration.ConfigFactory;
+import com.ordwen.odailyquests.configuration.IConfigurable;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import org.bukkit.configuration.file.FileConfiguration;
 
-public class QuestsAmount {
+public class QuestsAmount implements IConfigurable {
 
     private final ConfigurationFiles configurationFiles;
 
@@ -11,61 +13,49 @@ public class QuestsAmount {
         this.configurationFiles = configurationFiles;
     }
 
-    private static int questsAmount;
+    private int totalQuestsAmount;
+    private int easyQuestsAmount;
+    private int mediumQuestsAmount;
+    private int hardQuestsAmount;
 
-    private static int easyQuestsAmount;
-    private static int mediumQuestsAmount;
-    private static int hardQuestsAmount;
-
-    public void loadQuestsAmount() {
-
+    @Override
+    public void load() {
         final FileConfiguration config = configurationFiles.getConfigFile();
 
         if (Modes.getQuestsMode() == 1) {
-            questsAmount = config.getInt("global_quests_amount");
+            totalQuestsAmount = config.getInt("global_quests_amount");
         } else if (Modes.getQuestsMode() == 2) {
             easyQuestsAmount = config.getInt("easy_quests_amount");
             mediumQuestsAmount = config.getInt("medium_quests_amount");
             hardQuestsAmount = config.getInt("hard_quests_amount");
 
-            questsAmount = easyQuestsAmount + mediumQuestsAmount + hardQuestsAmount;
+            totalQuestsAmount = easyQuestsAmount + mediumQuestsAmount + hardQuestsAmount;
         }
     }
 
-    /**
-     * Get the amount of quests by category.
-     * @param name category name.
-     * @return amount of quests by category.
-     */
     public static int getQuestsAmountByCategory(String name) {
-        switch (name) {
-            case "easyQuests" -> {
-                return easyQuestsAmount;
-            }
-            case "mediumQuests" -> {
-                return mediumQuestsAmount;
-            }
-            case "hardQuests" -> {
-                return hardQuestsAmount;
-            }
-        }
+        return switch (name) {
+            case "easyQuests" -> getInstance().easyQuestsAmount;
+            case "mediumQuests" -> getInstance().mediumQuestsAmount;
+            case "hardQuests" -> getInstance().hardQuestsAmount;
+            default -> -1;
+        };
+    }
 
-        return -1;
+    public static QuestsAmount getInstance() {
+        return ConfigFactory.getConfig(QuestsAmount.class);
     }
 
     public static int getQuestsAmount() {
-        return questsAmount;
+        return getInstance().totalQuestsAmount;
     }
-
     public static int getEasyQuestsAmount() {
-        return easyQuestsAmount;
+        return getInstance().easyQuestsAmount;
     }
-
     public static int getMediumQuestsAmount() {
-        return mediumQuestsAmount;
+        return getInstance().mediumQuestsAmount;
     }
-
     public static int getHardQuestsAmount() {
-        return hardQuestsAmount;
+        return getInstance().hardQuestsAmount;
     }
 }

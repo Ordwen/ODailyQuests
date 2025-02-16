@@ -1,5 +1,7 @@
 package com.ordwen.odailyquests.configuration.functionalities.rewards;
 
+import com.ordwen.odailyquests.configuration.ConfigFactory;
+import com.ordwen.odailyquests.configuration.IConfigurable;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.rewards.Reward;
@@ -9,15 +11,15 @@ import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-public class CategoriesRewards {
+public class CategoriesRewards implements IConfigurable {
 
-    private static boolean isEasyRewardEnabled;
-    private static boolean isMediumRewardEnabled;
-    private static boolean isHardRewardEnabled;
+    private boolean isEasyRewardEnabled;
+    private boolean isMediumRewardEnabled;
+    private boolean isHardRewardEnabled;
 
-    private static Reward easyReward;
-    private static Reward mediumReward;
-    private static Reward hardReward;
+    private Reward easyReward;
+    private Reward mediumReward;
+    private Reward hardReward;
 
     private final ConfigurationFiles configurationFiles;
     private final RewardLoader rewardLoader = new RewardLoader();
@@ -26,10 +28,8 @@ public class CategoriesRewards {
         this.configurationFiles = configurationFiles;
     }
 
-    /**
-     * Load categories rewards.
-     */
-    public void initCategoriesRewards() {
+    @Override
+    public void load() {
         final ConfigurationSection categoriesRewards = configurationFiles.getConfigFile().getConfigurationSection("categories_rewards");
         if (categoriesRewards == null) {
             isEasyRewardEnabled = false;
@@ -44,6 +44,8 @@ public class CategoriesRewards {
         isMediumRewardEnabled = categoriesRewards.getBoolean("medium.enabled");
         isHardRewardEnabled = categoriesRewards.getBoolean("hard.enabled");
 
+        final String file = "config.yml";
+
         if (isEasyRewardEnabled) {
             final ConfigurationSection easyRewardSection = categoriesRewards.getConfigurationSection("easy");
             if (easyRewardSection == null) {
@@ -52,7 +54,7 @@ public class CategoriesRewards {
                 return;
             }
 
-            easyReward = rewardLoader.getRewardFromSection(easyRewardSection, "config.yml", null);
+            easyReward = rewardLoader.getRewardFromSection(easyRewardSection, file, null);
         }
 
         if (isMediumRewardEnabled) {
@@ -63,7 +65,7 @@ public class CategoriesRewards {
                 return;
             }
 
-            mediumReward = rewardLoader.getRewardFromSection(mediumRewardSection, "config.yml", null);
+            mediumReward = rewardLoader.getRewardFromSection(mediumRewardSection, file, null);
         }
 
         if (isHardRewardEnabled) {
@@ -74,16 +76,17 @@ public class CategoriesRewards {
                 return;
             }
 
-            hardReward = rewardLoader.getRewardFromSection(hardRewardSection, "config.yml", null);
+            hardReward = rewardLoader.getRewardFromSection(hardRewardSection, file, null);
         }
     }
 
     /**
      * Send a reward to a player depending on the category.
-     * @param player player.
+     *
+     * @param player   player.
      * @param category category.
      */
-    public static void sendCategoryReward(Player player, String category) {
+    public void sendCategoryRewardInternal(Player player, String category) {
         switch (category) {
             case "easyQuests" -> sendEasyReward(player);
             case "mediumQuests" -> sendMediumReward(player);
@@ -94,9 +97,10 @@ public class CategoriesRewards {
 
     /**
      * Give reward when players have completed all their easy quests.
+     *
      * @param player player.
      */
-    private static void sendEasyReward(Player player) {
+    private void sendEasyReward(Player player) {
         if (isEasyRewardEnabled) {
             final String msg = QuestsMessages.EASY_QUESTS_ACHIEVED.getMessage(player);
             if (msg != null) player.sendMessage(msg);
@@ -107,9 +111,10 @@ public class CategoriesRewards {
 
     /**
      * Give reward when players have completed all their medium quests.
+     *
      * @param player player.
      */
-    private static void sendMediumReward(Player player) {
+    private void sendMediumReward(Player player) {
         if (isMediumRewardEnabled) {
             final String msg = QuestsMessages.MEDIUM_QUESTS_ACHIEVED.getMessage(player);
             if (msg != null) player.sendMessage(msg);
@@ -120,14 +125,23 @@ public class CategoriesRewards {
 
     /**
      * Give reward when players have completed all their hard quests.
+     *
      * @param player player.
      */
-    private static void sendHardReward(Player player) {
+    private void sendHardReward(Player player) {
         if (isHardRewardEnabled) {
             final String msg = QuestsMessages.HARD_QUESTS_ACHIEVED.getMessage(player);
             if (msg != null) player.sendMessage(msg);
 
             RewardManager.sendQuestReward(player, hardReward);
         }
+    }
+
+    public static CategoriesRewards getInstance() {
+        return ConfigFactory.getConfig(CategoriesRewards.class);
+    }
+
+    public static void sendCategoryReward(Player player, String category) {
+        getInstance().sendCategoryRewardInternal(player, category);
     }
 }

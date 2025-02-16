@@ -20,8 +20,5 @@ public class ConfigurationHolder {
         public static final String PREFIX = cfg.getString("database.table_prefix");
         public static final String PLAYER_TABLE_NAME = PREFIX + "player";
         public static final String PROGRESSION_TABLE_NAME = PREFIX + "progression";
-        
-        
-
     }
 }

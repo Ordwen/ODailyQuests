@@ -1,6 +1,8 @@
 package com.ordwen.odailyquests.configuration.functionalities.progression;
 
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.configuration.ConfigFactory;
+import com.ordwen.odailyquests.configuration.IConfigurable;
 import com.ordwen.odailyquests.enums.ProgressionMessageType;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.tools.ColorConvert;
@@ -16,7 +18,7 @@ import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ProgressionMessage {
+public class ProgressionMessage implements IConfigurable {
 
     private final ConfigurationFiles configurationFiles;
 
@@ -24,22 +26,17 @@ public class ProgressionMessage {
         this.configurationFiles = configurationFiles;
     }
 
-    /**
-     * Init variables
-     */
-    private static boolean isEnabled;
-    private static String message;
-    private static ProgressionMessageType progressionMessageType;
+    private boolean isEnabled;
+    private String message;
+    private ProgressionMessageType progressionMessageType;
 
-    private static BarColor barColor;
-    private static BarStyle barStyle;
+    private BarColor barColor;
+    private BarStyle barStyle;
 
-    private static final Map<Player, BossBar> currentBossBars = new HashMap<>();
+    private final Map<Player, BossBar> currentBossBars = new HashMap<>();
 
-    /**
-     * Load configuration section.
-     */
-    public void loadProgressionMessage() {
+    @Override
+    public void load() {
         isEnabled = configurationFiles.getConfigFile().getBoolean("progression_message.enabled");
 
         if (!isEnabled) {
@@ -70,43 +67,48 @@ public class ProgressionMessage {
         }
 
         if (progressionMessageType == ProgressionMessageType.BOSSBAR) {
-            final String color = configurationFiles.getConfigFile().getString("progression_message.bossbar.color");
-            final String style = configurationFiles.getConfigFile().getString("progression_message.bossbar.style");
+            loadBossBar();
+        }
+    }
 
-            if (color == null) {
-                PluginLogger.warn("Progression message bossbar color is null, defaulting to BLUE.");
+    private void loadBossBar() {
+        final String color = configurationFiles.getConfigFile().getString("progression_message.bossbar.color");
+        final String style = configurationFiles.getConfigFile().getString("progression_message.bossbar.style");
+
+        if (color == null) {
+            PluginLogger.warn("Progression message bossbar color is null, defaulting to BLUE.");
+            barColor = BarColor.BLUE;
+        } else {
+            try {
+                barColor = BarColor.valueOf(color.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                PluginLogger.warn("Progression message bossbar color is invalid, defaulting to BLUE.");
                 barColor = BarColor.BLUE;
-            } else {
-                try {
-                    barColor = BarColor.valueOf(color.toUpperCase());
-                } catch (IllegalArgumentException e) {
-                    PluginLogger.warn("Progression message bossbar color is invalid, defaulting to BLUE.");
-                    barColor = BarColor.BLUE;
-                }
             }
+        }
 
-            if (style == null) {
-                PluginLogger.warn("Progression message bossbar style is null, defaulting to SOLID.");
+        if (style == null) {
+            PluginLogger.warn("Progression message bossbar style is null, defaulting to SOLID.");
+            barStyle = BarStyle.SOLID;
+        } else {
+            try {
+                barStyle = BarStyle.valueOf(style.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                PluginLogger.warn("Progression message bossbar style is invalid, defaulting to SOLID.");
                 barStyle = BarStyle.SOLID;
-            } else {
-                try {
-                    barStyle = BarStyle.valueOf(style.toUpperCase());
-                } catch (IllegalArgumentException e) {
-                    PluginLogger.warn("Progression message bossbar style is invalid, defaulting to SOLID.");
-                    barStyle = BarStyle.SOLID;
-                }
             }
         }
     }
 
     /**
      * Send progression message.
-     * @param player to send.
-     * @param questName name of the achieved quest.
+     *
+     * @param player      to send.
+     * @param questName   name of the achieved quest.
      * @param progression progression of the quest.
-     * @param required required progression of the quest.
+     * @param required    required progression of the quest.
      */
-    public static void sendProgressionMessage(Player player, String questName, int progression, int required) {
+    public void sendProgressionMessageInternal(Player player, String questName, int progression, int required) {
         if (isEnabled) {
             final String toSend = ColorConvert.convertColorCode(message
                     .replace("%player%", player.getDisplayName())
@@ -119,30 +121,37 @@ public class ProgressionMessage {
             switch (progressionMessageType) {
                 case ACTIONBAR -> player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(toSend));
                 case CHAT -> player.sendMessage(toSend);
-                case BOSSBAR -> {
-                    if (currentBossBars.containsKey(player)) {
-                        currentBossBars.get(player).setTitle(toSend);
-                        return;
-                    }
-
+                case BOSSBAR -> currentBossBars.computeIfAbsent(player, p -> {
                     final BossBar bossBar = Bukkit.getServer().createBossBar(toSend, barColor, barStyle);
-                    bossBar.addPlayer(player);
-                    currentBossBars.put(player, bossBar);
-
-                    ODailyQuests.morePaperLib.scheduling().entitySpecificScheduler(player).runDelayed(() -> removeBossBar(player), null, 100L);
-                }
+                    bossBar.addPlayer(p);
+                    ODailyQuests.morePaperLib.scheduling().entitySpecificScheduler(p).runDelayed(() -> removeBossBar(p), null, 100L);
+                    return bossBar;
+                }).setTitle(toSend);
             }
         }
     }
 
     /**
      * Remove boss bar from player.
+     *
      * @param player to remove boss bar from.
      */
-    private static void removeBossBar(Player player) {
+    private void removeBossBarInternal(Player player) {
         if (currentBossBars.containsKey(player)) {
             currentBossBars.get(player).removePlayer(player);
             currentBossBars.remove(player);
         }
+    }
+
+    public static ProgressionMessage getInstance() {
+        return ConfigFactory.getConfig(ProgressionMessage.class);
+    }
+
+    public static void sendProgressionMessage(Player player, String questName, int progression, int required) {
+        getInstance().sendProgressionMessageInternal(player, questName, progression, required);
+    }
+
+    public static void removeBossBar(Player player) {
+        getInstance().removeBossBarInternal(player);
     }
 }

@@ -1,11 +1,13 @@
 package com.ordwen.odailyquests.configuration.integrations;
 
-import com.ordwen.odailyquests.configuration.essentials.UseCustomFurnaceResults;
+import com.ordwen.odailyquests.configuration.ConfigFactory;
+import com.ordwen.odailyquests.configuration.IConfigurable;
+import com.ordwen.odailyquests.configuration.essentials.CustomFurnaceResults;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
 
-public class ItemsAdderEnabled {
+public class ItemsAdderEnabled implements IConfigurable {
 
     private final ConfigurationFiles configurationFiles;
 
@@ -13,24 +15,11 @@ public class ItemsAdderEnabled {
         this.configurationFiles = configurationFiles;
     }
 
-    private static boolean isEnabled;
-    private static boolean isLoaded;
+    private boolean isEnabled;
+    private boolean isLoaded;
 
-    public static boolean isEnabled() {
-        return isEnabled;
-    }
-    public static boolean isLoaded() {
-        return isEnabled && isLoaded;
-    }
-
-    public static void setLoaded(boolean isLoaded) {
-        ItemsAdderEnabled.isLoaded = isLoaded;
-    }
-
-    /**
-     * Check if WildStacker option is enabled in config.
-     */
-    public void loadItemsAdderEnabled() {
+    @Override
+    public void load() {
         final String path = "use_itemsadder";
         isEnabled = configurationFiles.getConfigFile().getBoolean(path);
         if (isEnabled() && !Bukkit.getPluginManager().isPluginEnabled("ItemsAdder")) {
@@ -38,6 +27,22 @@ public class ItemsAdderEnabled {
             PluginLogger.warn("Disabling 'use_itemsadder' option, otherwise quests will not load.");
             isEnabled = false;
         }
-        if (isEnabled) UseCustomFurnaceResults.setEnabled(true);
+        if (isEnabled) CustomFurnaceResults.setEnabled(true);
+    }
+
+    public static ItemsAdderEnabled getInstance() {
+        return ConfigFactory.getConfig(ItemsAdderEnabled.class);
+    }
+
+    public static void setLoaded(boolean isLoaded) {
+        getInstance().isLoaded = isLoaded;
+    }
+
+    public static boolean isEnabled() {
+        return getInstance().isEnabled;
+    }
+
+    public static boolean isLoaded() {
+        return getInstance().isLoaded && getInstance().isEnabled;
     }
 }

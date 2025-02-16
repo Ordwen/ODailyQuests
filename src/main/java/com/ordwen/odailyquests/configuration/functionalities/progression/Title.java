@@ -1,13 +1,14 @@
 package com.ordwen.odailyquests.configuration.functionalities.progression;
 
+import com.ordwen.odailyquests.configuration.ConfigFactory;
+import com.ordwen.odailyquests.configuration.IConfigurable;
 import com.ordwen.odailyquests.files.ConfigurationFiles;
 import com.ordwen.odailyquests.tools.ColorConvert;
 import com.ordwen.odailyquests.tools.PluginLogger;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-public class Title {
+public class Title implements IConfigurable {
 
     private final ConfigurationFiles configurationFiles;
 
@@ -15,45 +16,50 @@ public class Title {
         this.configurationFiles = configurationFiles;
     }
 
-    /**
-     * Init variables
-     */
-    private static boolean isEnabled;
-    private static int fadeIn;
-    private static int fadeOut;
-    private static int stay;
-    private static String title;
-    private static String subtitle;
+    private boolean isEnabled;
+    private int fadeIn;
+    private int fadeOut;
+    private int stay;
+    private String mainTitle;
+    private String subTitle;
 
-    /**
-     * Load configuration section.
-     */
-    public void loadTitle() {
-        ConfigurationSection section = configurationFiles.getConfigFile().getConfigurationSection("title");
+    @Override
+    public void load() {
+        final ConfigurationSection section = configurationFiles.getConfigFile().getConfigurationSection("title");
+
+        if (section == null) {
+            PluginLogger.error("Title section is missing in the configuration file. Disabling.");
+            isEnabled = false;
+            return;
+        }
+
         isEnabled = section.getBoolean("enabled");
 
         if (isEnabled) {
             fadeIn = section.getInt("fadeIn");
             stay = section.getInt("stay");
             fadeOut = section.getInt("fadeOut");
-            title = ColorConvert.convertColorCode(ChatColor.translateAlternateColorCodes('&', section.getString( "text")));
-            subtitle = ColorConvert.convertColorCode(ChatColor.translateAlternateColorCodes('&', section.getString("subtitle")));
+            mainTitle = ColorConvert.convertColorCode(section.getString("text"));
+            subTitle = ColorConvert.convertColorCode(section.getString("subtitle"));
 
             PluginLogger.fine("Title successfully loaded.");
         } else PluginLogger.fine("Title is disabled.");
     }
 
-    /**
-     * Send title to player.
-     * @param player player to send the title.
-     * @param questName name of the achieved quest.
-     */
-    public static void sendTitle(Player player, String questName) {
+    public void sendTitleInternal(Player player, String questName) {
         if (isEnabled) {
             player.sendTitle(
-                    title.replace("%player%", player.getDisplayName()).replace("%questName%", questName),
-                    subtitle.replace("%player%", player.getDisplayName()).replace("%questName%", questName),
+                    mainTitle.replace("%player%", player.getDisplayName()).replace("%questName%", questName),
+                    subTitle.replace("%player%", player.getDisplayName()).replace("%questName%", questName),
                     fadeIn, stay, fadeOut);
         }
+    }
+
+    public static Title getInstance() {
+        return ConfigFactory.getConfig(Title.class);
+    }
+
+    public static void sendTitle(Player player, String questName) {
+        getInstance().sendTitleInternal(player, questName);
     }
 }
