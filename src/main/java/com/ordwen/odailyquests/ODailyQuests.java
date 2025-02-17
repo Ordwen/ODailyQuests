@@ -55,7 +55,7 @@ public final class ODailyQuests extends JavaPlugin {
     /**
      * Getting instance of files classes.
      */
-    private ConfigurationFiles configurationFiles;
+    private ConfigurationFile configurationFile;
     private InterfacesManager interfacesManager;
     private FilesManager filesManager;
     private TimerTask timerTask;
@@ -83,7 +83,8 @@ public final class ODailyQuests extends JavaPlugin {
         new Metrics(this, pluginId);
 
         /* Load files */
-        this.configurationFiles = new ConfigurationFiles(this);
+        System.out.println("INITIALIZING FILES");
+        this.configurationFile = new ConfigurationFile(this);
         this.filesManager = new FilesManager(this);
         this.filesManager.loadAllFiles();
 
@@ -261,8 +262,8 @@ public final class ODailyQuests extends JavaPlugin {
      *
      * @return ConfigurationManager instance.
      */
-    public ConfigurationFiles getConfigurationFiles() {
-        return configurationFiles;
+    public ConfigurationFile getConfigurationFile() {
+        return configurationFile;
     }
 
     /**

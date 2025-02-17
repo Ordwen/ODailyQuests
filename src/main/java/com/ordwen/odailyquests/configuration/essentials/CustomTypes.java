@@ -2,20 +2,20 @@ package com.ordwen.odailyquests.configuration.essentials;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.IConfigurable;
-import com.ordwen.odailyquests.files.ConfigurationFiles;
+import com.ordwen.odailyquests.files.ConfigurationFile;
 import com.ordwen.odailyquests.quests.types.global.CustomQuest;
 
 public class CustomTypes implements IConfigurable {
 
-    private final ConfigurationFiles configurationFiles;
+    private final ConfigurationFile configurationFile;
 
-    public CustomTypes(ConfigurationFiles configurationFiles) {
-        this.configurationFiles = configurationFiles;
+    public CustomTypes(ConfigurationFile configurationFile) {
+        this.configurationFile = configurationFile;
     }
 
     @Override
     public void load() {
-        for (String customType : configurationFiles.getConfigFile().getStringList("custom_types")) {
+        for (String customType : configurationFile.getConfigFile().getStringList("custom_types")) {
             ODailyQuests.INSTANCE.registerQuestType(customType, CustomQuest.class);
         }
     }

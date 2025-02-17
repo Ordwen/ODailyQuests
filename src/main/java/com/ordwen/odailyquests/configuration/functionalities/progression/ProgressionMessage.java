@@ -4,7 +4,7 @@ import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.ConfigFactory;
 import com.ordwen.odailyquests.configuration.IConfigurable;
 import com.ordwen.odailyquests.enums.ProgressionMessageType;
-import com.ordwen.odailyquests.files.ConfigurationFiles;
+import com.ordwen.odailyquests.files.ConfigurationFile;
 import com.ordwen.odailyquests.tools.ColorConvert;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import net.md_5.bungee.api.ChatMessageType;
@@ -20,10 +20,10 @@ import java.util.Map;
 
 public class ProgressionMessage implements IConfigurable {
 
-    private final ConfigurationFiles configurationFiles;
+    private final ConfigurationFile configurationFile;
 
-    public ProgressionMessage(ConfigurationFiles configurationFiles) {
-        this.configurationFiles = configurationFiles;
+    public ProgressionMessage(ConfigurationFile configurationFile) {
+        this.configurationFile = configurationFile;
     }
 
     private boolean isEnabled;
@@ -37,14 +37,14 @@ public class ProgressionMessage implements IConfigurable {
 
     @Override
     public void load() {
-        isEnabled = configurationFiles.getConfigFile().getBoolean("progression_message.enabled");
+        isEnabled = configurationFile.getConfigFile().getBoolean("progression_message.enabled");
 
         if (!isEnabled) {
             PluginLogger.info("Progression message is disabled.");
             return;
         }
 
-        message = configurationFiles.getConfigFile().getString("progression_message.text");
+        message = configurationFile.getConfigFile().getString("progression_message.text");
 
         if (message == null) {
             PluginLogger.error("Progression message is null, disabling progression message.");
@@ -52,7 +52,7 @@ public class ProgressionMessage implements IConfigurable {
             isEnabled = false;
         }
 
-        final String type = configurationFiles.getConfigFile().getString("progression_message.type");
+        final String type = configurationFile.getConfigFile().getString("progression_message.type");
         if (type == null) {
             PluginLogger.warn("Progression message type is null, defaulting to CHAT.");
             progressionMessageType = ProgressionMessageType.CHAT;
@@ -72,8 +72,8 @@ public class ProgressionMessage implements IConfigurable {
     }
 
     private void loadBossBar() {
-        final String color = configurationFiles.getConfigFile().getString("progression_message.bossbar.color");
-        final String style = configurationFiles.getConfigFile().getString("progression_message.bossbar.style");
+        final String color = configurationFile.getConfigFile().getString("progression_message.bossbar.color");
+        final String style = configurationFile.getConfigFile().getString("progression_message.bossbar.style");
 
         if (color == null) {
             PluginLogger.warn("Progression message bossbar color is null, defaulting to BLUE.");

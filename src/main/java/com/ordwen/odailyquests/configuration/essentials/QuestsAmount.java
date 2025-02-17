@@ -2,15 +2,15 @@ package com.ordwen.odailyquests.configuration.essentials;
 
 import com.ordwen.odailyquests.configuration.ConfigFactory;
 import com.ordwen.odailyquests.configuration.IConfigurable;
-import com.ordwen.odailyquests.files.ConfigurationFiles;
+import com.ordwen.odailyquests.files.ConfigurationFile;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class QuestsAmount implements IConfigurable {
 
-    private final ConfigurationFiles configurationFiles;
+    private final ConfigurationFile configurationFile;
 
-    public QuestsAmount(ConfigurationFiles configurationFiles) {
-        this.configurationFiles = configurationFiles;
+    public QuestsAmount(ConfigurationFile configurationFile) {
+        this.configurationFile = configurationFile;
     }
 
     private int totalQuestsAmount;
@@ -20,8 +20,7 @@ public class QuestsAmount implements IConfigurable {
 
     @Override
     public void load() {
-        System.out.println("LOAD LOAD LOAD");
-        final FileConfiguration config = configurationFiles.getConfigFile();
+        final FileConfiguration config = configurationFile.getConfigFile();
 
         if (Modes.getQuestsMode() == 1) {
             totalQuestsAmount = config.getInt("global_quests_amount");

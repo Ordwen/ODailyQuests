@@ -7,16 +7,16 @@ import com.ordwen.odailyquests.tools.PluginLogger;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 
-import com.ordwen.odailyquests.files.ConfigurationFiles;
+import com.ordwen.odailyquests.files.ConfigurationFile;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 public class ActionBar implements IConfigurable {
 
-    private final ConfigurationFiles configurationFiles;
+    private final ConfigurationFile configurationFile;
 
-    public ActionBar(ConfigurationFiles configurationFiles) {
-        this.configurationFiles = configurationFiles;
+    public ActionBar(ConfigurationFile configurationFile) {
+        this.configurationFile = configurationFile;
     }
 
     private boolean isEnabled;
@@ -24,7 +24,7 @@ public class ActionBar implements IConfigurable {
 
     @Override
     public void load() {
-        final ConfigurationSection section = configurationFiles.getConfigFile().getConfigurationSection("actionbar");
+        final ConfigurationSection section = configurationFile.getConfigFile().getConfigurationSection("actionbar");
 
         if (section == null) {
             PluginLogger.error("Actionbar section is missing in the configuration file. Disabling.");

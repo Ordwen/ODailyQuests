@@ -2,7 +2,7 @@ package com.ordwen.odailyquests.configuration.functionalities.progression;
 
 import com.ordwen.odailyquests.configuration.ConfigFactory;
 import com.ordwen.odailyquests.configuration.IConfigurable;
-import com.ordwen.odailyquests.files.ConfigurationFiles;
+import com.ordwen.odailyquests.files.ConfigurationFile;
 import com.ordwen.odailyquests.tools.ColorConvert;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.configuration.ConfigurationSection;
@@ -10,10 +10,10 @@ import org.bukkit.entity.Player;
 
 public class Title implements IConfigurable {
 
-    private final ConfigurationFiles configurationFiles;
+    private final ConfigurationFile configurationFile;
 
-    public Title(ConfigurationFiles configurationFiles) {
-        this.configurationFiles = configurationFiles;
+    public Title(ConfigurationFile configurationFile) {
+        this.configurationFile = configurationFile;
     }
 
     private boolean isEnabled;
@@ -25,7 +25,7 @@ public class Title implements IConfigurable {
 
     @Override
     public void load() {
-        final ConfigurationSection section = configurationFiles.getConfigFile().getConfigurationSection("title");
+        final ConfigurationSection section = configurationFile.getConfigFile().getConfigurationSection("title");
 
         if (section == null) {
             PluginLogger.error("Title section is missing in the configuration file. Disabling.");

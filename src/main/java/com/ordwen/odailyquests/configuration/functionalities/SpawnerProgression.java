@@ -2,14 +2,14 @@ package com.ordwen.odailyquests.configuration.functionalities;
 
 import com.ordwen.odailyquests.configuration.ConfigFactory;
 import com.ordwen.odailyquests.configuration.IConfigurable;
-import com.ordwen.odailyquests.files.ConfigurationFiles;
+import com.ordwen.odailyquests.files.ConfigurationFile;
 
 public class SpawnerProgression implements IConfigurable {
 
-    private final ConfigurationFiles configurationFiles;
+    private final ConfigurationFile configurationFile;
 
-    public SpawnerProgression(ConfigurationFiles configurationFiles) {
-        this.configurationFiles = configurationFiles;
+    public SpawnerProgression(ConfigurationFile configurationFile) {
+        this.configurationFile = configurationFile;
     }
 
     private boolean disabled = false;
@@ -17,7 +17,7 @@ public class SpawnerProgression implements IConfigurable {
     @Override
     public void load() {
         final String path = "disable_spawners_progression";
-        disabled = configurationFiles.getConfigFile().getBoolean(path);
+        disabled = configurationFile.getConfigFile().getBoolean(path);
     }
 
     private static SpawnerProgression getInstance() {

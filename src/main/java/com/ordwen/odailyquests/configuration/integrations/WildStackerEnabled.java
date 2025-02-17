@@ -2,16 +2,16 @@ package com.ordwen.odailyquests.configuration.integrations;
 
 import com.ordwen.odailyquests.configuration.ConfigFactory;
 import com.ordwen.odailyquests.configuration.IConfigurable;
-import com.ordwen.odailyquests.files.ConfigurationFiles;
+import com.ordwen.odailyquests.files.ConfigurationFile;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
 
 public class WildStackerEnabled implements IConfigurable {
 
-    private final ConfigurationFiles configurationFiles;
+    private final ConfigurationFile configurationFile;
 
-    public WildStackerEnabled(ConfigurationFiles configurationFiles) {
-        this.configurationFiles = configurationFiles;
+    public WildStackerEnabled(ConfigurationFile configurationFile) {
+        this.configurationFile = configurationFile;
     }
 
     private boolean isEnabled;
@@ -19,7 +19,7 @@ public class WildStackerEnabled implements IConfigurable {
     @Override
     public void load() {
         final String path = "use_wildstacker";
-        isEnabled = configurationFiles.getConfigFile().getBoolean(path);
+        isEnabled = configurationFile.getConfigFile().getBoolean(path);
 
         if (isEnabled && Bukkit.getPluginManager().getPlugin("WildStacker") == null) {
             PluginLogger.error("WildStacker is enabled in the config but the plugin is not installed.");

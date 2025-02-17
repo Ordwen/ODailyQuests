@@ -3,7 +3,7 @@ package com.ordwen.odailyquests.configuration.functionalities.rewards;
 import com.ordwen.odailyquests.configuration.ConfigFactory;
 import com.ordwen.odailyquests.configuration.IConfigurable;
 import com.ordwen.odailyquests.enums.QuestsMessages;
-import com.ordwen.odailyquests.files.ConfigurationFiles;
+import com.ordwen.odailyquests.files.ConfigurationFile;
 import com.ordwen.odailyquests.rewards.Reward;
 import com.ordwen.odailyquests.rewards.RewardLoader;
 import com.ordwen.odailyquests.rewards.RewardManager;
@@ -15,10 +15,10 @@ import org.bukkit.entity.Player;
 
 public class GlobalReward extends RewardLoader implements IConfigurable {
 
-    private final ConfigurationFiles configurationFiles;
+    private final ConfigurationFile configurationFile;
 
-    public GlobalReward(ConfigurationFiles configurationFiles) {
-        this.configurationFiles = configurationFiles;
+    public GlobalReward(ConfigurationFile configurationFile) {
+        this.configurationFile = configurationFile;
     }
 
     private boolean isEnabled;
@@ -26,7 +26,7 @@ public class GlobalReward extends RewardLoader implements IConfigurable {
 
     @Override
     public void load() {
-        final ConfigurationSection globalRewardSection = configurationFiles.getConfigFile().getConfigurationSection("global_reward");
+        final ConfigurationSection globalRewardSection = configurationFile.getConfigFile().getConfigurationSection("global_reward");
         if (globalRewardSection == null || !globalRewardSection.contains("enabled")) {
             PluginLogger.error("Global reward section is missing or incomplete in the configuration file. Disabling.");
             isEnabled = false;

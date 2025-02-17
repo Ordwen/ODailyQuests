@@ -1,7 +1,6 @@
 package com.ordwen.odailyquests.files;
 
 import com.ordwen.odailyquests.ODailyQuests;
-import com.ordwen.odailyquests.configuration.essentials.Debugger;
 
 public class FilesManager {
 
@@ -15,9 +14,8 @@ public class FilesManager {
      * Load all files.
      */
     public void loadAllFiles() {
-
-        oDailyQuests.getConfigurationFiles().loadConfigurationFiles();
-        oDailyQuests.getConfigurationFiles().loadMessagesFiles();
+        oDailyQuests.getConfigurationFile().loadConfigurationFile();
+        oDailyQuests.getConfigurationFile().loadMessagesFiles();
 
         new QuestsFiles(oDailyQuests).loadQuestsFiles();
         new ProgressionFile(oDailyQuests).loadProgressionFile();

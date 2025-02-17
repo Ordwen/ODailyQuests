@@ -57,15 +57,12 @@ public class ReloadService {
         /* load files */
         plugin.getFilesManager().loadAllFiles();
 
-        System.out.println("TEST 1");
         /* load configurations */
-        ConfigFactory.registerConfigs(plugin.getConfigurationFiles());
+        ConfigFactory.registerConfigs(plugin.getConfigurationFile());
 
-        System.out.println("TEST 2");
         /* load database */
         plugin.getDatabaseManager().load();
 
-        System.out.println("TEST 3");
         /* load quests & interface */
         if ((!ItemsAdderEnabled.isEnabled() || ItemsAdderEnabled.isLoaded())
                 && (!OraxenEnabled.isEnabled() || OraxenEnabled.isLoaded())) {
@@ -73,7 +70,6 @@ public class ReloadService {
             plugin.getInterfacesManager().initAllObjects();
         }
 
-        System.out.println("TEST 4");
         saveConnectedPlayerQuests();
         ODailyQuests.morePaperLib.scheduling().globalRegionalScheduler().runDelayed(this::loadConnectedPlayerQuests, 20L);
     }

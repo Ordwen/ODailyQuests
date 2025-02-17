@@ -2,22 +2,22 @@ package com.ordwen.odailyquests.configuration.essentials;
 
 import com.ordwen.odailyquests.configuration.ConfigFactory;
 import com.ordwen.odailyquests.configuration.IConfigurable;
-import com.ordwen.odailyquests.files.ConfigurationFiles;
+import com.ordwen.odailyquests.files.ConfigurationFile;
 
 public class CustomFurnaceResults implements IConfigurable {
 
     private boolean isEnabled;
 
-    private final ConfigurationFiles configurationFiles;
+    private final ConfigurationFile configurationFile;
 
-    public CustomFurnaceResults(ConfigurationFiles configurationFiles) {
-        this.configurationFiles = configurationFiles;
+    public CustomFurnaceResults(ConfigurationFile configurationFile) {
+        this.configurationFile = configurationFile;
     }
 
     @Override
     public void load() {
         final String path = "use_custom_furnace_results";
-        isEnabled = configurationFiles.getConfigFile().getBoolean(path);
+        isEnabled = configurationFile.getConfigFile().getBoolean(path);
     }
 
     private static CustomFurnaceResults getInstance() {

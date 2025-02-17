@@ -2,16 +2,16 @@ package com.ordwen.odailyquests.configuration.essentials;
 
 import com.ordwen.odailyquests.configuration.ConfigFactory;
 import com.ordwen.odailyquests.configuration.IConfigurable;
-import com.ordwen.odailyquests.files.ConfigurationFiles;
+import com.ordwen.odailyquests.files.ConfigurationFile;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.configuration.ConfigurationSection;
 
 public class Temporality implements IConfigurable {
 
-    private final ConfigurationFiles configurationFiles;
+    private final ConfigurationFile configurationFile;
 
-    public Temporality(ConfigurationFiles configurationFiles) {
-        this.configurationFiles = configurationFiles;
+    public Temporality(ConfigurationFile configurationFile) {
+        this.configurationFile = configurationFile;
     }
 
     private int temporalityMode;
@@ -25,7 +25,7 @@ public class Temporality implements IConfigurable {
      */
     @Override
     public void load() {
-        final ConfigurationSection config = configurationFiles.getConfigFile();
+        final ConfigurationSection config = configurationFile.getConfigFile();
         temporalityMode = config.getInt("temporality_mode");
 
         final ConfigurationSection initials = config.getConfigurationSection("temporality_initials");

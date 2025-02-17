@@ -2,7 +2,7 @@ package com.ordwen.odailyquests.configuration.functionalities.progression;
 
 import com.ordwen.odailyquests.configuration.ConfigFactory;
 import com.ordwen.odailyquests.configuration.IConfigurable;
-import com.ordwen.odailyquests.files.ConfigurationFiles;
+import com.ordwen.odailyquests.files.ConfigurationFile;
 import com.ordwen.odailyquests.tools.ColorConvert;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.ChatColor;
@@ -15,10 +15,10 @@ public class ProgressBar implements IConfigurable {
     private String remainingColor;
     private int amountOfSymbols;
 
-    private final ConfigurationFiles configurationFiles;
+    private final ConfigurationFile configurationFile;
 
-    public ProgressBar(ConfigurationFiles configurationFiles) {
-        this.configurationFiles = configurationFiles;
+    public ProgressBar(ConfigurationFile configurationFile) {
+        this.configurationFile = configurationFile;
     }
 
     /**
@@ -26,7 +26,7 @@ public class ProgressBar implements IConfigurable {
      */
     @Override
     public void load() {
-        final ConfigurationSection section = configurationFiles.getConfigFile().getConfigurationSection("progress_bar");
+        final ConfigurationSection section = configurationFile.getConfigFile().getConfigurationSection("progress_bar");
 
         if (section == null) {
             PluginLogger.warn("Progress bar section is missing in the configuration file.");

@@ -3,7 +3,7 @@ package com.ordwen.odailyquests.configuration.functionalities.rewards;
 import com.ordwen.odailyquests.configuration.ConfigFactory;
 import com.ordwen.odailyquests.configuration.IConfigurable;
 import com.ordwen.odailyquests.enums.QuestsMessages;
-import com.ordwen.odailyquests.files.ConfigurationFiles;
+import com.ordwen.odailyquests.files.ConfigurationFile;
 import com.ordwen.odailyquests.rewards.Reward;
 import com.ordwen.odailyquests.rewards.RewardLoader;
 import com.ordwen.odailyquests.rewards.RewardManager;
@@ -21,16 +21,16 @@ public class CategoriesRewards implements IConfigurable {
     private Reward mediumReward;
     private Reward hardReward;
 
-    private final ConfigurationFiles configurationFiles;
+    private final ConfigurationFile configurationFile;
     private final RewardLoader rewardLoader = new RewardLoader();
 
-    public CategoriesRewards(ConfigurationFiles configurationFiles) {
-        this.configurationFiles = configurationFiles;
+    public CategoriesRewards(ConfigurationFile configurationFile) {
+        this.configurationFile = configurationFile;
     }
 
     @Override
     public void load() {
-        final ConfigurationSection categoriesRewards = configurationFiles.getConfigFile().getConfigurationSection("categories_rewards");
+        final ConfigurationSection categoriesRewards = configurationFile.getConfigFile().getConfigurationSection("categories_rewards");
         if (categoriesRewards == null) {
             isEasyRewardEnabled = false;
             isMediumRewardEnabled = false;

@@ -10,7 +10,7 @@ import com.ordwen.odailyquests.tools.PluginLogger;
 import java.io.File;
 import java.io.IOException;
 
-public class ConfigurationFiles {
+public class ConfigurationFile {
 
     /**
      * Getting instance of main class.
@@ -21,7 +21,7 @@ public class ConfigurationFiles {
      * Main class instance constructor.
      * @param oDailyQuests main class.
      */
-    public ConfigurationFiles(ODailyQuests oDailyQuests) {
+    public ConfigurationFile(ODailyQuests oDailyQuests) {
         this.oDailyQuests = oDailyQuests;
     }
 
@@ -47,8 +47,7 @@ public class ConfigurationFiles {
     /**
      * Init configuration files.
      */
-    public void loadConfigurationFiles() {
-
+    public void loadConfigurationFile() {
         configFile = new File(oDailyQuests.getDataFolder(), "config.yml");
 
         /* Configuration file */

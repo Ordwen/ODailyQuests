@@ -2,14 +2,14 @@ package com.ordwen.odailyquests.configuration.functionalities;
 
 import com.ordwen.odailyquests.configuration.ConfigFactory;
 import com.ordwen.odailyquests.configuration.IConfigurable;
-import com.ordwen.odailyquests.files.ConfigurationFiles;
+import com.ordwen.odailyquests.files.ConfigurationFile;
 
 public class TakeItem implements IConfigurable {
 
-    private final ConfigurationFiles configurationFiles;
+    private final ConfigurationFile configurationFile;
 
-    public TakeItem(ConfigurationFiles configurationFiles) {
-        this.configurationFiles = configurationFiles;
+    public TakeItem(ConfigurationFile configurationFile) {
+        this.configurationFile = configurationFile;
     }
 
     private boolean enabled = false;
@@ -17,7 +17,7 @@ public class TakeItem implements IConfigurable {
     @Override
     public void load() {
         final String path = "take_items_for_get_quests";
-        enabled = configurationFiles.getConfigFile().getBoolean(path);
+        enabled = configurationFile.getConfigFile().getBoolean(path);
     }
 
     private static TakeItem getInstance() {

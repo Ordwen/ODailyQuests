@@ -2,17 +2,17 @@ package com.ordwen.odailyquests.configuration.integrations;
 
 import com.ordwen.odailyquests.configuration.ConfigFactory;
 import com.ordwen.odailyquests.configuration.IConfigurable;
-import com.ordwen.odailyquests.files.ConfigurationFiles;
+import com.ordwen.odailyquests.files.ConfigurationFile;
 import com.ordwen.odailyquests.tools.ColorConvert;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.configuration.ConfigurationSection;
 
 public class NPCNames implements IConfigurable {
 
-    private final ConfigurationFiles configurationFiles;
+    private final ConfigurationFile configurationFile;
 
-    public NPCNames(ConfigurationFiles configurationFiles) {
-        this.configurationFiles = configurationFiles;
+    public NPCNames(ConfigurationFile configurationFile) {
+        this.configurationFile = configurationFile;
     }
 
     private String playerNPCName;
@@ -23,7 +23,7 @@ public class NPCNames implements IConfigurable {
 
     @Override
     public void load() {
-        final ConfigurationSection section = configurationFiles.getConfigFile().getConfigurationSection("npcs");
+        final ConfigurationSection section = configurationFile.getConfigFile().getConfigurationSection("npcs");
 
         if (section == null) {
             PluginLogger.error("NPCs names section not found in the config. NPCs names will not be loaded.");

@@ -3,7 +3,7 @@ package com.ordwen.odailyquests.commands.interfaces;
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.Buttons;
 import com.ordwen.odailyquests.externs.hooks.placeholders.PAPIHook;
-import com.ordwen.odailyquests.files.ConfigurationFiles;
+import com.ordwen.odailyquests.files.ConfigurationFile;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.tools.Pair;
@@ -25,14 +25,14 @@ public class QuestsInterfaces {
     /**
      * Getting instance of classes.
      */
-    private final ConfigurationFiles configurationFiles;
+    private final ConfigurationFile configurationFile;
 
     /**
      * Class instance constructor.
-     * @param configurationFiles configuration files class.
+     * @param configurationFile configuration files class.
      */
-    public QuestsInterfaces(ConfigurationFiles configurationFiles) {
-        this.configurationFiles = configurationFiles;
+    public QuestsInterfaces(ConfigurationFile configurationFile) {
+        this.configurationFile = configurationFile;
     }
 
     /* init items */
@@ -50,7 +50,7 @@ public class QuestsInterfaces {
         categorizedInterfaces.clear();
 
         /* Init empty case items */
-        final ItemStack globalEmptyCaseItem = new ItemStack(Material.valueOf(configurationFiles.getConfigFile().getConfigurationSection("interfaces.global_quests").getString(".empty_item")));
+        final ItemStack globalEmptyCaseItem = new ItemStack(Material.valueOf(configurationFile.getConfigFile().getConfigurationSection("interfaces.global_quests").getString(".empty_item")));
         emptyCaseItems.add(globalEmptyCaseItem);
 
         /* Global quests inventory */
@@ -65,9 +65,9 @@ public class QuestsInterfaces {
         categorizedInterfaces.clear();
 
         /* Init empty case items */
-        final ItemStack easyEmptyCaseItem = new ItemStack(Material.valueOf(configurationFiles.getConfigFile().getConfigurationSection("interfaces.easy_quests").getString(".empty_item")));
-        final ItemStack mediumEmptyCaseItem = new ItemStack(Material.valueOf(configurationFiles.getConfigFile().getConfigurationSection("interfaces.medium_quests").getString(".empty_item")));
-        final ItemStack hardEmptyCaseItem = new ItemStack(Material.valueOf(configurationFiles.getConfigFile().getConfigurationSection("interfaces.hard_quests").getString(".empty_item")));
+        final ItemStack easyEmptyCaseItem = new ItemStack(Material.valueOf(configurationFile.getConfigFile().getConfigurationSection("interfaces.easy_quests").getString(".empty_item")));
+        final ItemStack mediumEmptyCaseItem = new ItemStack(Material.valueOf(configurationFile.getConfigFile().getConfigurationSection("interfaces.medium_quests").getString(".empty_item")));
+        final ItemStack hardEmptyCaseItem = new ItemStack(Material.valueOf(configurationFile.getConfigFile().getConfigurationSection("interfaces.hard_quests").getString(".empty_item")));
         emptyCaseItems.addAll(Arrays.asList(easyEmptyCaseItem, mediumEmptyCaseItem, hardEmptyCaseItem));
 
         /* Easy quests inventory */

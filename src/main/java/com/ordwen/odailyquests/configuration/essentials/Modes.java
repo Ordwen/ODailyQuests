@@ -2,14 +2,14 @@ package com.ordwen.odailyquests.configuration.essentials;
 
 import com.ordwen.odailyquests.configuration.ConfigFactory;
 import com.ordwen.odailyquests.configuration.IConfigurable;
-import com.ordwen.odailyquests.files.ConfigurationFiles;
+import com.ordwen.odailyquests.files.ConfigurationFile;
 
 public class Modes implements IConfigurable {
 
-    private final ConfigurationFiles configurationFiles;
+    private final ConfigurationFile configurationFile;
 
-    public Modes(ConfigurationFiles configurationFiles) {
-        this.configurationFiles = configurationFiles;
+    public Modes(ConfigurationFile configurationFile) {
+        this.configurationFile = configurationFile;
     }
 
     private int questsMode;
@@ -17,8 +17,8 @@ public class Modes implements IConfigurable {
 
     @Override
     public void load() {
-        questsMode = configurationFiles.getConfigFile().getInt("quests_mode");
-        timestampMode = configurationFiles.getConfigFile().getInt("timestamp_mode");
+        questsMode = configurationFile.getConfigFile().getInt("quests_mode");
+        timestampMode = configurationFile.getConfigFile().getInt("timestamp_mode");
     }
 
     private static Modes getInstance() {

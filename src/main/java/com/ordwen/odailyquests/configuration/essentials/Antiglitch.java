@@ -3,7 +3,7 @@ package com.ordwen.odailyquests.configuration.essentials;
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.ConfigFactory;
 import com.ordwen.odailyquests.configuration.IConfigurable;
-import com.ordwen.odailyquests.files.ConfigurationFiles;
+import com.ordwen.odailyquests.files.ConfigurationFile;
 import org.bukkit.NamespacedKey;
 
 public class Antiglitch implements IConfigurable {
@@ -12,21 +12,21 @@ public class Antiglitch implements IConfigurable {
     public static final NamespacedKey PLACED_KEY = new NamespacedKey(ODailyQuests.INSTANCE, "odq_placed");
     public static final NamespacedKey DROPPED_KEY = new NamespacedKey(ODailyQuests.INSTANCE, "odq_dropped");
 
-    private final ConfigurationFiles configurationFiles;
+    private final ConfigurationFile configurationFile;
 
     private boolean storePlacedBlocks;
     private boolean storeBrokenBlocks;
     private boolean storeDroppedItems;
 
-    public Antiglitch(ConfigurationFiles configurationFiles) {
-        this.configurationFiles = configurationFiles;
+    public Antiglitch(ConfigurationFile configurationFile) {
+        this.configurationFile = configurationFile;
     }
 
     @Override
     public void load() {
-        storePlacedBlocks = configurationFiles.getConfigFile().getBoolean("store_placed_blocks");
-        storeBrokenBlocks = configurationFiles.getConfigFile().getBoolean("store_broken_blocks");
-        storeDroppedItems = configurationFiles.getConfigFile().getBoolean("store_dropped_items");
+        storePlacedBlocks = configurationFile.getConfigFile().getBoolean("store_placed_blocks");
+        storeBrokenBlocks = configurationFile.getConfigFile().getBoolean("store_broken_blocks");
+        storeDroppedItems = configurationFile.getConfigFile().getBoolean("store_dropped_items");
     }
 
     private static Antiglitch getInstance() {

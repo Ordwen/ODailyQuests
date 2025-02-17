@@ -4,7 +4,7 @@ import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.Buttons;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.PlayerHead;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
-import com.ordwen.odailyquests.files.ConfigurationFiles;
+import com.ordwen.odailyquests.files.ConfigurationFile;
 import com.ordwen.odailyquests.tools.ColorConvert;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.configuration.ConfigurationSection;
@@ -21,7 +21,7 @@ public class InterfacesManager implements Listener {
     /**
      * Getting instance of classes.
      */
-    private final ConfigurationFiles configurationFiles;
+    private final ConfigurationFile configurationFile;
     private static QuestsInterfaces questsInterfaces;
 
     private static String nextPageItemName;
@@ -34,7 +34,7 @@ public class InterfacesManager implements Listener {
      * @param oDailyQuests main class instance.
      */
     public InterfacesManager(ODailyQuests oDailyQuests) {
-        this.configurationFiles = oDailyQuests.getConfigurationFiles();
+        this.configurationFile = oDailyQuests.getConfigurationFile();
     }
 
     /* variables */
@@ -48,7 +48,7 @@ public class InterfacesManager implements Listener {
      * Load all interfaces objects.
      */
     public void initAllObjects() {
-        new Buttons(configurationFiles).initItems();
+        new Buttons(configurationFile).initItems();
 
         initInventoryNames();
         loadInterfaces();
@@ -77,9 +77,9 @@ public class InterfacesManager implements Listener {
      */
     public void loadQuestsInterfaces() {
         initPaginationItemNames();
-        questsInterfaces = new QuestsInterfaces(configurationFiles);
+        questsInterfaces = new QuestsInterfaces(configurationFile);
 
-        if (configurationFiles.getConfigFile().getInt("quests_mode") == 2) {
+        if (configurationFile.getConfigFile().getInt("quests_mode") == 2) {
             questsInterfaces.loadCategorizedInterfaces();
         }
         else questsInterfaces.loadGlobalInterface();
@@ -88,7 +88,7 @@ public class InterfacesManager implements Listener {
      * Init variables.
      */
     public void initInventoryNames() {
-        final ConfigurationSection section = configurationFiles.getConfigFile().getConfigurationSection("interfaces");
+        final ConfigurationSection section = configurationFile.getConfigFile().getConfigurationSection("interfaces");
 
         globalQuestsInventoryName = ColorConvert.convertColorCode(section.getString(".global_quests.inventory_name"));
         easyQuestsInventoryName = ColorConvert.convertColorCode(section.getString(".easy_quests.inventory_name"));
@@ -111,8 +111,8 @@ public class InterfacesManager implements Listener {
      * Init pagination item names.
      */
     public void initPaginationItemNames() {
-        nextPageItemName = ColorConvert.convertColorCode(configurationFiles.getConfigFile().getConfigurationSection("interfaces").getString(".next_item_name"));
-        previousPageItemName = ColorConvert.convertColorCode(configurationFiles.getConfigFile().getConfigurationSection("interfaces").getString(".previous_item_name"));
+        nextPageItemName = ColorConvert.convertColorCode(configurationFile.getConfigFile().getConfigurationSection("interfaces").getString(".next_item_name"));
+        previousPageItemName = ColorConvert.convertColorCode(configurationFile.getConfigFile().getConfigurationSection("interfaces").getString(".previous_item_name"));
     }
 
     public static String getGlobalQuestsInventoryName() {

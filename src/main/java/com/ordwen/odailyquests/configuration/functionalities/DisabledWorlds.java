@@ -2,17 +2,17 @@ package com.ordwen.odailyquests.configuration.functionalities;
 
 import com.ordwen.odailyquests.configuration.ConfigFactory;
 import com.ordwen.odailyquests.configuration.IConfigurable;
-import com.ordwen.odailyquests.files.ConfigurationFiles;
+import com.ordwen.odailyquests.files.ConfigurationFile;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class DisabledWorlds implements IConfigurable {
 
-    private final ConfigurationFiles configurationFiles;
+    private final ConfigurationFile configurationFile;
 
-    public DisabledWorlds(ConfigurationFiles configurationFiles) {
-        this.configurationFiles = configurationFiles;
+    public DisabledWorlds(ConfigurationFile configurationFile) {
+        this.configurationFile = configurationFile;
     }
 
     private Set<String> disabledWorldNames;
@@ -20,7 +20,7 @@ public class DisabledWorlds implements IConfigurable {
     @Override
     public void load() {
         disabledWorldNames = new HashSet<>();
-        disabledWorldNames.addAll(configurationFiles.getConfigFile().getStringList("disabled_worlds"));
+        disabledWorldNames.addAll(configurationFile.getConfigFile().getStringList("disabled_worlds"));
     }
 
     public boolean isWorldDisabledInternal(String world) {

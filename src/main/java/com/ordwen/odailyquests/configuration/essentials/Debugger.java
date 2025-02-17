@@ -3,7 +3,7 @@ package com.ordwen.odailyquests.configuration.essentials;
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.ConfigFactory;
 import com.ordwen.odailyquests.configuration.IConfigurable;
-import com.ordwen.odailyquests.files.ConfigurationFiles;
+import com.ordwen.odailyquests.files.ConfigurationFile;
 import com.ordwen.odailyquests.tools.PluginLogger;
 
 import java.io.File;
@@ -13,17 +13,17 @@ import java.util.Date;
 
 public class Debugger implements IConfigurable {
 
-    private final ConfigurationFiles configurationFiles;
+    private final ConfigurationFile configurationFile;
     private boolean debugMode;
     private File debugFile;
 
-    public Debugger(ConfigurationFiles configurationFiles) {
-        this.configurationFiles = configurationFiles;
+    public Debugger(ConfigurationFile configurationFile) {
+        this.configurationFile = configurationFile;
     }
 
     @Override
     public void load() {
-        debugMode = configurationFiles.getConfigFile().getBoolean("debug");
+        debugMode = configurationFile.getConfigFile().getBoolean("debug");
         if (debugMode) {
             loadDebugFile();
             PluginLogger.warn("Debug mode is enabled. This may cause performance issues.");
