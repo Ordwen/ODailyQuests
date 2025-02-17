@@ -19,7 +19,7 @@ public class Synchronization implements IConfigurable {
         isEnabled = configurationFiles.getConfigFile().getBoolean(path);
     }
 
-    public static Synchronization getInstance() {
+    private static Synchronization getInstance() {
         return ConfigFactory.getConfig(Synchronization.class);
     }
 

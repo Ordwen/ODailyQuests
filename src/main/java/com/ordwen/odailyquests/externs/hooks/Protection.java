@@ -91,9 +91,9 @@ public class Protection {
      * @return true if the player can build, false otherwise.
      */
     public static boolean canBuild(Player player, Block block, String flag) {
-        Debugger.addDebug("Protection: canBuild summoned.");
+        Debugger.write("Protection: canBuild summoned.");
         if (!isTownyEnabled() && !isWorldGuardEnabled()) {
-            Debugger.addDebug("Protection: canBuild no hooks enabled.");
+            Debugger.write("Protection: canBuild no hooks enabled.");
             return true;
         }
 
@@ -110,11 +110,11 @@ public class Protection {
     private static boolean checkTowny(Player player, Block block) {
         if (!isTownyEnabled()) return true;
 
-        Debugger.addDebug("Protection: checkTowny summoned.");
+        Debugger.write("Protection: checkTowny summoned.");
 
         final Location location = block.getLocation();
         final boolean canBuild = PlayerCacheUtil.getCachePermission(player, location, block.getType(), TownyPermission.ActionType.BUILD);
-        Debugger.addDebug("Protection: checkTowny result: " + canBuild);
+        Debugger.write("Protection: checkTowny result: " + canBuild);
 
         return canBuild;
     }
@@ -129,7 +129,7 @@ public class Protection {
     public static boolean checkWg(Player player, Block block, String flag) {
         if (!isWorldGuardEnabled()) return true;
 
-        Debugger.addDebug("Protection: checkWg summoned.");
+        Debugger.write("Protection: checkWg summoned.");
 
         final Location location = block.getLocation();
         if (location.getWorld() == null) return true;
@@ -139,7 +139,7 @@ public class Protection {
         final LocalPlayer localPlayer = WorldGuardPlugin.inst().wrapPlayer(player);
 
         if (wgPlatform.getSessionManager().hasBypass(localPlayer, adaptedWorld)) {
-            Debugger.addDebug("Protection: checkWg bypassed.");
+            Debugger.write("Protection: checkWg bypassed.");
             return true;
         }
 
@@ -151,7 +151,7 @@ public class Protection {
         };
 
         final boolean canBuild = query.testBuild(adaptedLocation, localPlayer, stateFlag);
-        Debugger.addDebug("Protection: checkWg result: " + canBuild);
+        Debugger.write("Protection: checkWg result: " + canBuild);
 
         return canBuild;
     }
@@ -166,7 +166,7 @@ public class Protection {
     public static boolean checkRegion(Player player, List<String> requiredRegions) {
         if (!isWorldGuardEnabled()) return true;
 
-        Debugger.addDebug("Protection: checkRegion summoned.");
+        Debugger.write("Protection: checkRegion summoned.");
 
         final Location location = player.getLocation();
         if (location.getWorld() == null) return true;

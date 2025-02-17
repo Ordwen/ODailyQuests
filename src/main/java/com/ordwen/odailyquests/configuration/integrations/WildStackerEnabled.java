@@ -28,7 +28,7 @@ public class WildStackerEnabled implements IConfigurable {
         }
     }
 
-    public static WildStackerEnabled getInstance() {
+    private static WildStackerEnabled getInstance() {
         return ConfigFactory.getConfig(WildStackerEnabled.class);
     }
 

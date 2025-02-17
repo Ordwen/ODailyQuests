@@ -14,9 +14,9 @@ public class Antiglitch implements IConfigurable {
 
     private final ConfigurationFiles configurationFiles;
 
-    private boolean storePlacedBlocks = false;
-    private boolean storeBrokenBlocks = false;
-    private boolean storeDroppedItems = false;
+    private boolean storePlacedBlocks;
+    private boolean storeBrokenBlocks;
+    private boolean storeDroppedItems;
 
     public Antiglitch(ConfigurationFiles configurationFiles) {
         this.configurationFiles = configurationFiles;
@@ -29,7 +29,7 @@ public class Antiglitch implements IConfigurable {
         storeDroppedItems = configurationFiles.getConfigFile().getBoolean("store_dropped_items");
     }
 
-    public static Antiglitch getInstance() {
+    private static Antiglitch getInstance() {
         return ConfigFactory.getConfig(Antiglitch.class);
     }
 

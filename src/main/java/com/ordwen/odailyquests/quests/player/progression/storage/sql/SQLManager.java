@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.quests.player.progression.storage.sql;
 
-import com.ordwen.odailyquests.configuration.ConfigurationHolder;
+import com.ordwen.odailyquests.configuration.essentials.Database;
+import com.ordwen.odailyquests.enums.SQLQuery;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -13,25 +14,24 @@ public abstract class SQLManager {
     protected LoadProgressionSQL loadProgressionSQL;
     protected SaveProgressionSQL saveProgressionSQL;
 
-    private static final String PLAYER_TABLE = ConfigurationHolder.DatabaseConfig.PLAYER_TABLE_NAME;
-    private static final String PROGRESSION_TABLE = ConfigurationHolder.DatabaseConfig.PROGRESSION_TABLE_NAME;
-
     public void setupTables() {
         final Connection connection = getConnection();
         try {
-            if (!tableExists(connection, PLAYER_TABLE)) {
-                PreparedStatement preparedStatement = connection.prepareStatement(SQLQueries.CREATE_PLAYER_TABLE);
+            final String player_table = Database.getPrefix() + "player";
+            if (!tableExists(connection, player_table)) {
+                PreparedStatement preparedStatement = connection.prepareStatement(SQLQuery.CREATE_PLAYER_TABLE.getQuery());
                 preparedStatement.execute();
 
                 preparedStatement.close();
-                PluginLogger.info("Table 'Player' created in database.");
+                PluginLogger.info("Table " + player_table + " created in database.");
             }
-            if (!tableExists(connection, PROGRESSION_TABLE)) {
-                PreparedStatement preparedStatement = connection.prepareStatement(SQLQueries.CREATE_PROGRESSION_TABLE);
+            final String progression_table = Database.getPrefix() + "progression";
+            if (!tableExists(connection, progression_table)) {
+                PreparedStatement preparedStatement = connection.prepareStatement(SQLQuery.CREATE_PROGRESSION_TABLE.getQuery());
                 preparedStatement.execute();
 
                 preparedStatement.close();
-                PluginLogger.info("Table 'Progression' created in database.");
+                PluginLogger.info("Table " + progression_table + " created in database.");
             }
             connection.close();
         } catch (SQLException e) {

@@ -23,7 +23,7 @@ public class Logs implements IConfigurable {
         return isEnabled;
     }
 
-    public static Logs getInstance() {
+    private static Logs getInstance() {
         return ConfigFactory.getConfig(Logs.class);
     }
 

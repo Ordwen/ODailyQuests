@@ -20,7 +20,7 @@ public class CustomFurnaceResults implements IConfigurable {
         isEnabled = configurationFiles.getConfigFile().getBoolean(path);
     }
 
-    public static CustomFurnaceResults getInstance() {
+    private static CustomFurnaceResults getInstance() {
         return ConfigFactory.getConfig(CustomFurnaceResults.class);
     }
 

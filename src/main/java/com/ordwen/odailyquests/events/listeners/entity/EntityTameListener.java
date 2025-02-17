@@ -15,8 +15,8 @@ public class EntityTameListener extends PlayerProgressor implements Listener {
         if (event.isCancelled()) return;
 
         if (event.getOwner() instanceof Player player) {
-            Debugger.addDebug("=========================================================================================");
-            Debugger.addDebug("EntityTameEvent: onEntityTameEvent summoned by " + player.getName() + " for " + event.getEntityType() + ".");
+            Debugger.write("=========================================================================================");
+            Debugger.write("EntityTameEvent: onEntityTameEvent summoned by " + player.getName() + " for " + event.getEntityType() + ".");
 
             setPlayerQuestProgression(event, player, 1, "TAME");
         }

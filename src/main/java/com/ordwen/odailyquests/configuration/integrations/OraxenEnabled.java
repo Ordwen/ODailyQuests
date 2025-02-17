@@ -30,7 +30,7 @@ public class OraxenEnabled implements IConfigurable {
         if (isEnabled) CustomFurnaceResults.setEnabled(true);
     }
 
-    public static OraxenEnabled getInstance() {
+    private static OraxenEnabled getInstance() {
         return ConfigFactory.getConfig(OraxenEnabled.class);
     }
 

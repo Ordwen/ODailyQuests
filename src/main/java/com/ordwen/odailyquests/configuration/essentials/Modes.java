@@ -14,16 +14,14 @@ public class Modes implements IConfigurable {
 
     private int questsMode;
     private int timestampMode;
-    private String storageMode;
 
     @Override
     public void load() {
         questsMode = configurationFiles.getConfigFile().getInt("quests_mode");
         timestampMode = configurationFiles.getConfigFile().getInt("timestamp_mode");
-        storageMode = configurationFiles.getConfigFile().getString("storage_mode");
     }
 
-    public static Modes getInstance() {
+    private static Modes getInstance() {
         return ConfigFactory.getConfig(Modes.class);
     }
 
@@ -33,10 +31,6 @@ public class Modes implements IConfigurable {
 
     public static int getTimestampMode() {
         return getInstance().timestampMode;
-    }
-
-    public static String getStorageMode() {
-        return getInstance().storageMode;
     }
 }
 

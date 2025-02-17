@@ -22,7 +22,7 @@ public class RewardManager {
 
     public static void sendAllRewardItems(String questName, Player player, Reward reward) {
 
-        Debugger.addDebug("RewardManager: sendAllRewardItems summoned by " + player.getName() + " for " + questName + ".");
+        Debugger.write("RewardManager: sendAllRewardItems summoned by " + player.getName() + " for " + questName + ".");
 
         final String msg = QuestsMessages.QUEST_ACHIEVED.getMessage(player);
         if (msg != null) player.sendMessage(msg.replace("%questName%", questName));
@@ -41,7 +41,7 @@ public class RewardManager {
     public static void sendQuestReward(Player player, Reward reward) {
         if (reward.getRewardType() == RewardType.NONE) return;
 
-        Debugger.addDebug("RewardManager: sendQuestReward summoned by " + player.getName() + " for " + reward.getRewardType());
+        Debugger.write("RewardManager: sendQuestReward summoned by " + player.getName() + " for " + reward.getRewardType());
 
         String msg;
         switch (reward.getRewardType()) {

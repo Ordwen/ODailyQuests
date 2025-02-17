@@ -19,7 +19,7 @@ public class RerollNotAchieved implements IConfigurable {
         rerollIfNotAchieved = configurationFiles.getConfigFile().getBoolean(path);
     }
 
-    public static RerollNotAchieved getInstance() {
+    private static RerollNotAchieved getInstance() {
         return ConfigFactory.getConfig(RerollNotAchieved.class);
     }
 

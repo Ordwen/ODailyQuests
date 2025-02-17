@@ -15,7 +15,7 @@ public class YAMLtoMySQLConverter extends SQLConverter {
             ODailyQuests.morePaperLib.scheduling().asyncScheduler().run(() -> {
 
                 final FileConfiguration progressionFile = ProgressionFile.getProgressionFileConfiguration();
-                final SQLManager sqlManager = new MySQLManager(ODailyQuests.INSTANCE);
+                final SQLManager sqlManager = new MySQLManager();
 
                 convertData(progressionFile, sqlManager);
             });

@@ -13,8 +13,8 @@ public class EnchantItemListener extends PlayerProgressor implements Listener {
     public void onEnchantItemEvent(EnchantItemEvent event) {
         if (event.isCancelled()) return;
 
-        Debugger.addDebug("=========================================================================================");
-        Debugger.addDebug("EnchantItemListener: onEnchantItemEvent summoned by " + event.getEnchanter().getName() + " for " + event.getItem().getType() + ".");
+        Debugger.write("=========================================================================================");
+        Debugger.write("EnchantItemListener: onEnchantItemEvent summoned by " + event.getEnchanter().getName() + " for " + event.getItem().getType() + ".");
 
         setPlayerQuestProgression(event, event.getEnchanter(), 1, "ENCHANT");
     }

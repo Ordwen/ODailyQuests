@@ -1,6 +1,5 @@
 package com.ordwen.odailyquests.quests.player.progression.storage.sql.h2;
 
-import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.LoadProgressionSQL;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.SaveProgressionSQL;
@@ -9,16 +8,11 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 import java.sql.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class H2Manager extends SQLManager {
 
-    private final ODailyQuests oDailyQuests;
 
-    public H2Manager(ODailyQuests oDailyQuests) {
-        this.oDailyQuests = oDailyQuests;
-
+    public H2Manager() {
         super.loadProgressionSQL = new LoadProgressionSQL(this);
         super.saveProgressionSQL = new SaveProgressionSQL(this);
 

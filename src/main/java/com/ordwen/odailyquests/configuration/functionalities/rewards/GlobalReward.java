@@ -65,7 +65,7 @@ public class GlobalReward extends RewardLoader implements IConfigurable {
         }
     }
 
-    public static GlobalReward getInstance() {
+    private static GlobalReward getInstance() {
         return ConfigFactory.getConfig(GlobalReward.class);
     }
 

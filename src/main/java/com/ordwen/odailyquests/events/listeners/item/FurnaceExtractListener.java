@@ -13,12 +13,12 @@ public class FurnaceExtractListener extends PlayerProgressor implements Listener
     @EventHandler
     public void onFurnaceExtractEvent(FurnaceExtractEvent event) {
         if (CustomFurnaceResults.isEnabled()) {
-            Debugger.addDebug("CustomFurnaceExtractEvent is enabled. Skipping FurnaceExtractEvent.");
+            Debugger.write("CustomFurnaceExtractEvent is enabled. Skipping FurnaceExtractEvent.");
             return;
         }
 
-        Debugger.addDebug("=========================================================================================");
-        Debugger.addDebug("FurnaceExtractListener: onFurnaceExtractEvent summoned by " + event.getPlayer().getName() + " for " + event.getItemType() + ".");
+        Debugger.write("=========================================================================================");
+        Debugger.write("FurnaceExtractListener: onFurnaceExtractEvent summoned by " + event.getPlayer().getName() + " for " + event.getItemType() + ".");
 
         setPlayerQuestProgression(event, event.getPlayer(), event.getItemAmount(), "COOK");
     }

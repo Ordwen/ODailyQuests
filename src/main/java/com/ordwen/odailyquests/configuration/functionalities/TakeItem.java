@@ -20,7 +20,7 @@ public class TakeItem implements IConfigurable {
         enabled = configurationFiles.getConfigFile().getBoolean(path);
     }
 
-    public static TakeItem getInstance() {
+    private static TakeItem getInstance() {
         return ConfigFactory.getConfig(TakeItem.class);
     }
 

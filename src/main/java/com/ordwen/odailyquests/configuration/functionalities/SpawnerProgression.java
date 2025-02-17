@@ -20,7 +20,7 @@ public class SpawnerProgression implements IConfigurable {
         disabled = configurationFiles.getConfigFile().getBoolean(path);
     }
 
-    public static SpawnerProgression getInstance() {
+    private static SpawnerProgression getInstance() {
         return ConfigFactory.getConfig(SpawnerProgression.class);
     }
 

@@ -44,7 +44,7 @@ public class DisabledWorlds implements IConfigurable {
         return isDisabled;
     }
 
-    public static DisabledWorlds getInstance() {
+    private static DisabledWorlds getInstance() {
         return ConfigFactory.getConfig(DisabledWorlds.class);
     }
 

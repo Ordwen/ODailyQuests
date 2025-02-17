@@ -7,7 +7,7 @@ import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
+import java.util.Map;
 
 public class PRerollCommand extends PCommandHandler {
 
@@ -44,9 +44,9 @@ public class PRerollCommand extends PCommandHandler {
      */
     private void reroll(int index) {
         final String playerName = player.getName();
-        final HashMap<String, PlayerQuests> activeQuests = QuestsManager.getActiveQuests();
+        final Map<String, PlayerQuests> activeQuests = QuestsManager.getActiveQuests();
 
-        if (index < 1 || index > activeQuests.get(playerName).getPlayerQuests().size()) {
+        if (index < 1 || index > activeQuests.get(playerName).getQuests().size()) {
             invalidQuest();
             return;
         }

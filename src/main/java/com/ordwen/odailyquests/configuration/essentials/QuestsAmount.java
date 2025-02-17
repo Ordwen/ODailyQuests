@@ -42,7 +42,7 @@ public class QuestsAmount implements IConfigurable {
         };
     }
 
-    public static QuestsAmount getInstance() {
+    private static QuestsAmount getInstance() {
         return ConfigFactory.getConfig(QuestsAmount.class);
     }
 

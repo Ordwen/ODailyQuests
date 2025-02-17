@@ -55,7 +55,7 @@ public class Title implements IConfigurable {
         }
     }
 
-    public static Title getInstance() {
+    private static Title getInstance() {
         return ConfigFactory.getConfig(Title.class);
     }
 

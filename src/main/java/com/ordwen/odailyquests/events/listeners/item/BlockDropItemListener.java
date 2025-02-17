@@ -26,10 +26,10 @@ public class BlockDropItemListener extends PlayerProgressor implements Listener 
 
     @EventHandler
     public void onBlockDropItem(BlockDropItemEvent event) {
-        Debugger.addDebug("BlockDropItemListener: onBlockDropItemEvent summoned.");
+        Debugger.write("BlockDropItemListener: onBlockDropItemEvent summoned.");
 
         if (event.isCancelled()) {
-            Debugger.addDebug("BlockDropItemListener: onBlockDropItemEvent is cancelled.");
+            Debugger.write("BlockDropItemListener: onBlockDropItemEvent is cancelled.");
             return;
         }
 
@@ -39,16 +39,16 @@ public class BlockDropItemListener extends PlayerProgressor implements Listener 
 
         final List<Item> drops = event.getItems();
         if (drops.isEmpty()) {
-            Debugger.addDebug("BlockDropItemListener: onBlockDropItemEvent no drops.");
+            Debugger.write("BlockDropItemListener: onBlockDropItemEvent no drops.");
             return;
         }
 
         // check if the dropped item is a crop
         if (data instanceof Ageable ageable) {
-            Debugger.addDebug("BlockDropItemListener: onBlockDropItemEvent ageable block: " + dataMaterial + ".");
+            Debugger.write("BlockDropItemListener: onBlockDropItemEvent ageable block: " + dataMaterial + ".");
 
             if (ageable.getAge() == ageable.getMaximumAge()) {
-                Debugger.addDebug("BlockDropItemListener: onBlockDropItemEvent ageable block is mature.");
+                Debugger.write("BlockDropItemListener: onBlockDropItemEvent ageable block is mature.");
                 handleDrops(event, player, drops);
 
                 return;
@@ -77,10 +77,10 @@ public class BlockDropItemListener extends PlayerProgressor implements Listener 
             // check if type has changed
             final String previousType = pdc.getOrDefault(Antiglitch.PLACED_KEY, PersistentDataType.STRING, material.name());
             if (previousType.equals(material.name())) {
-                Debugger.addDebug("BlockDropItemListener: onBlockDropItemEvent cancelled due to placed block.");
+                Debugger.write("BlockDropItemListener: onBlockDropItemEvent cancelled due to placed block.");
                 return true;
             } else {
-                Debugger.addDebug("BlockDropItemListener: onBlockDropItemEvent block type has changed (" + previousType + " -> " + material.name() + ").");
+                Debugger.write("BlockDropItemListener: onBlockDropItemEvent block type has changed (" + previousType + " -> " + material.name() + ").");
             }
         }
         return false;
@@ -93,10 +93,10 @@ public class BlockDropItemListener extends PlayerProgressor implements Listener 
      */
     private static void handleStoreBrokenBlocks(Material material, BlockDropItemEvent event) {
         if (material.isBlock() && Antiglitch.isStoreBrokenBlocks()) {
-            Debugger.addDebug("BlockDropItemListener: onBlockDropItemEvent storing broken block.");
+            Debugger.write("BlockDropItemListener: onBlockDropItemEvent storing broken block.");
             for (Item item : event.getItems()) {
                 final ItemStack drop = item.getItemStack();
-                Debugger.addDebug("BlockDropItemListener: onBlockDropItemEvent storing broken block: " + drop.getType());
+                Debugger.write("BlockDropItemListener: onBlockDropItemEvent storing broken block: " + drop.getType());
                 final ItemMeta dropMeta = drop.getItemMeta();
                 if (dropMeta == null) continue;
 
@@ -115,9 +115,9 @@ public class BlockDropItemListener extends PlayerProgressor implements Listener 
      * @param drops  list of dropped items
      */
     private void handleDrops(BlockDropItemEvent event, Player player, List<Item> drops) {
-        Debugger.addDebug("BlockDropItemListener: handleDrops summoned.");
+        Debugger.write("BlockDropItemListener: handleDrops summoned.");
         for (Item item : drops) {
-            Debugger.addDebug("BlockDropItemListener: handling drop: " + item.getItemStack().getType() + ".");
+            Debugger.write("BlockDropItemListener: handling drop: " + item.getItemStack().getType() + ".");
             final ItemStack droppedItem = item.getItemStack();
             final Material droppedMaterial = droppedItem.getType();
 

@@ -8,7 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
+import java.util.Map;
 
 public class ARerollCommand extends ACommandHandler {
 
@@ -47,9 +47,9 @@ public class ARerollCommand extends ACommandHandler {
      */
     private void reroll(Player target, int index) {
         final String playerName = target.getName();
-        final HashMap<String, PlayerQuests> activeQuests = QuestsManager.getActiveQuests();
+        final Map<String, PlayerQuests> activeQuests = QuestsManager.getActiveQuests();
 
-        if (index < 1 || index > activeQuests.get(playerName).getPlayerQuests().size()) {
+        if (index < 1 || index > activeQuests.get(playerName).getQuests().size()) {
             invalidQuest();
             return;
         }

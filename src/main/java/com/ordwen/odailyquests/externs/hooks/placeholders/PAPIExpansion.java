@@ -143,9 +143,9 @@ public class PAPIExpansion extends PlaceholderExpansion {
         }
 
         int i = 0;
-        for (AbstractQuest quest : playerQuests.getPlayerQuests().keySet()) {
+        for (AbstractQuest quest : playerQuests.getQuests().keySet()) {
             if (i == index) {
-                return String.valueOf(playerQuests.getPlayerQuests().get(quest).isAchieved());
+                return String.valueOf(playerQuests.getQuests().get(quest).isAchieved());
             }
             i++;
         }
@@ -163,12 +163,12 @@ public class PAPIExpansion extends PlaceholderExpansion {
     private String getQuestStatus(int index, PlayerQuests playerQuests) {
 
         int i = 0;
-        for (AbstractQuest quest : playerQuests.getPlayerQuests().keySet()) {
+        for (AbstractQuest quest : playerQuests.getQuests().keySet()) {
             if (i == index) {
-                return (playerQuests.getPlayerQuests().get(quest).isAchieved() ? PlayerQuestsInterface.getAchieved() : PlayerQuestsInterface.getProgression())
-                        .replace("%progress%", String.valueOf(playerQuests.getPlayerQuests().get(quest).getProgression()))
+                return (playerQuests.getQuests().get(quest).isAchieved() ? PlayerQuestsInterface.getAchieved() : PlayerQuestsInterface.getProgression())
+                        .replace("%progress%", String.valueOf(playerQuests.getQuests().get(quest).getProgression()))
                         .replace("%required%", String.valueOf(quest.getAmountRequired()))
-                        .replace("%progressBar%", ProgressBar.getProgressBar(playerQuests.getPlayerQuests().get(quest).getProgression(), quest.getAmountRequired()));
+                        .replace("%progressBar%", ProgressBar.getProgressBar(playerQuests.getQuests().get(quest).getProgression(), quest.getAmountRequired()));
             }
             i++;
         }
@@ -192,7 +192,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
         }
 
         int i = 0;
-        for (AbstractQuest quest : playerQuests.getPlayerQuests().keySet()) {
+        for (AbstractQuest quest : playerQuests.getQuests().keySet()) {
             if (i == index) {
                 return quest.getQuestName();
             }
@@ -218,7 +218,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
         }
 
         int i = 0;
-        for (AbstractQuest quest : playerQuests.getPlayerQuests().keySet()) {
+        for (AbstractQuest quest : playerQuests.getQuests().keySet()) {
             if (i == index) {
                 return String.valueOf(quest.getAmountRequired());
             }
@@ -251,7 +251,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
         }
 
         int i = 0;
-        for (AbstractQuest quest : playerQuests.getPlayerQuests().keySet()) {
+        for (AbstractQuest quest : playerQuests.getQuests().keySet()) {
             if (i == index) {
                 if (line <= quest.getQuestDesc().size()) return quest.getQuestDesc().get(line);
                 else return ChatColor.RED + "Invalid line.";
@@ -278,9 +278,9 @@ public class PAPIExpansion extends PlaceholderExpansion {
         }
 
         int i = 0;
-        for (AbstractQuest quest : playerQuests.getPlayerQuests().keySet()) {
+        for (AbstractQuest quest : playerQuests.getQuests().keySet()) {
             if (i == index) {
-                return playerQuests.getPlayerQuests().get(quest).getProgression();
+                return playerQuests.getQuests().get(quest).getProgression();
             }
             i++;
         }
@@ -303,9 +303,9 @@ public class PAPIExpansion extends PlaceholderExpansion {
         }
 
         int i = 0;
-        for (AbstractQuest quest : playerQuests.getPlayerQuests().keySet()) {
+        for (AbstractQuest quest : playerQuests.getQuests().keySet()) {
             if (i == index) {
-                return ProgressBar.getProgressBar(playerQuests.getPlayerQuests().get(quest).getProgression(), quest.getAmountRequired());
+                return ProgressBar.getProgressBar(playerQuests.getQuests().get(quest).getProgression(), quest.getAmountRequired());
             }
             i++;
         }

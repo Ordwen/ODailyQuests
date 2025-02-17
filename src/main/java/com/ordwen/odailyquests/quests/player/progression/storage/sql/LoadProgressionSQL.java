@@ -4,6 +4,7 @@ import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
 import com.ordwen.odailyquests.enums.QuestsMessages;
+import com.ordwen.odailyquests.enums.SQLQuery;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.player.progression.QuestLoaderUtils;
@@ -18,8 +19,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Duration;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class LoadProgressionSQL {
 
@@ -40,12 +41,12 @@ public class LoadProgressionSQL {
      *
      * @param playerName name of the player.
      */
-    public void loadProgression(String playerName, HashMap<String, PlayerQuests> activeQuests) {
-        Debugger.addDebug("Entering loadProgression (SQL) method for player " + playerName + ".");
+    public void loadProgression(String playerName, Map<String, PlayerQuests> activeQuests) {
+        Debugger.write("Entering loadProgression (SQL) method for player " + playerName + ".");
         final LinkedHashMap<AbstractQuest, Progression> quests = new LinkedHashMap<>();
 
         ODailyQuests.morePaperLib.scheduling().asyncScheduler().runDelayed(() -> {
-            Debugger.addDebug("Running async task to load progression of " + playerName + " from SQL database.");
+            Debugger.write("Running async task to load progression of " + playerName + " from SQL database.");
 
             boolean hasStoredData = false;
             long timestamp = 0;
@@ -55,12 +56,12 @@ public class LoadProgressionSQL {
             try {
                 final Connection connection = sqlManager.getConnection();
 
-                final PreparedStatement preparedStatement = connection.prepareStatement(SQLQueries.TIMESTAMP_QUERY);
+                final PreparedStatement preparedStatement = connection.prepareStatement(SQLQuery.TIMESTAMP_QUERY.getQuery());
                 preparedStatement.setString(1, playerName);
 
                 final ResultSet resultSet = preparedStatement.executeQuery();
 
-                Debugger.addDebug("Executing query for player " + playerName + ": " + SQLQueries.TIMESTAMP_QUERY);
+                Debugger.write("Executing query for player " + playerName + ": " + SQLQuery.TIMESTAMP_QUERY.getQuery());
 
                 if (resultSet.next()) {
                     hasStoredData = true;
@@ -68,30 +69,30 @@ public class LoadProgressionSQL {
                     achievedQuests = resultSet.getInt("achieved_quests");
                     totalAchievedQuests = resultSet.getInt("total_achieved_quests");
 
-                    Debugger.addDebug("Player " + playerName + " has stored data.");
+                    Debugger.write("Player " + playerName + " has stored data.");
 
                 } else {
-                    Debugger.addDebug("Player " + playerName + " has no stored data.");
+                    Debugger.write("Player " + playerName + " has no stored data.");
                 }
 
                 resultSet.close();
                 preparedStatement.close();
                 connection.close();
 
-                Debugger.addDebug("Database connection closed.");
+                Debugger.write("Database connection closed.");
 
 
             } catch (SQLException e) {
                 PluginLogger.error(ChatColor.RED + "An error occurred while loading player " + playerName + "'s quests progression.");
 
-                Debugger.addDebug("An error occurred while loading player " + playerName + "'s quests progression.");
-                Debugger.addDebug(e.getMessage());
+                Debugger.write("An error occurred while loading player " + playerName + "'s quests progression.");
+                Debugger.write(e.getMessage());
 
                 PluginLogger.error(e.getMessage());
             }
 
             if (hasStoredData) {
-                Debugger.addDebug("Player " + playerName + " has data in the database.");
+                Debugger.write("Player " + playerName + " has data in the database.");
 
                 if (QuestLoaderUtils.checkTimestamp(timestamp)) {
                     QuestLoaderUtils.loadNewPlayerQuests(playerName, activeQuests, totalAchievedQuests);
@@ -104,7 +105,7 @@ public class LoadProgressionSQL {
 
                     final Player target = Bukkit.getPlayer(playerName);
                     if (target == null) {
-                        Debugger.addDebug("Player " + playerName + " is null. Impossible to load quests.");
+                        Debugger.write("Player " + playerName + " is null. Impossible to load quests.");
                         PluginLogger.warn("It looks like " + playerName + " has disconnected before his quests were loaded.");
                         return;
                     }
@@ -113,7 +114,7 @@ public class LoadProgressionSQL {
                     PluginLogger.info(playerName + "'s quests have been loaded.");
 
                     final String msg;
-                    if (achievedQuests == playerQuests.getPlayerQuests().size()) {
+                    if (achievedQuests == playerQuests.getQuests().size()) {
                         msg = QuestsMessages.ALL_QUESTS_ACHIEVED_CONNECT.getMessage(playerName);
                     } else {
                         msg = QuestsMessages.QUESTS_IN_PROGRESS.getMessage(playerName);
@@ -134,13 +135,13 @@ public class LoadProgressionSQL {
      */
     private void loadPlayerQuests(String playerName, LinkedHashMap<AbstractQuest, Progression> quests) {
 
-        Debugger.addDebug("Entering loadPlayerQuests method for player " + playerName + ".");
+        Debugger.write("Entering loadPlayerQuests method for player " + playerName + ".");
 
 
         try {
             final Connection connection = sqlManager.getConnection();
 
-            final PreparedStatement preparedStatement = connection.prepareStatement(SQLQueries.QUEST_PROGRESSION_QUERY);
+            final PreparedStatement preparedStatement = connection.prepareStatement(SQLQuery.QUEST_PROGRESSION_QUERY.getQuery());
             preparedStatement.setString(1, playerName);
 
             final ResultSet resultSet = preparedStatement.executeQuery();
@@ -173,13 +174,13 @@ public class LoadProgressionSQL {
         } catch (SQLException e) {
             PluginLogger.error(ChatColor.RED + "An error occurred while loading player " + playerName + "'s quests.");
 
-            Debugger.addDebug("An error occurred while loading player " + playerName + "'s quests.");
-            Debugger.addDebug(e.getMessage());
+            Debugger.write("An error occurred while loading player " + playerName + "'s quests.");
+            Debugger.write(e.getMessage());
 
 
             PluginLogger.error(e.getMessage());
         }
 
-        Debugger.addDebug("Quests of player " + playerName + " have been loaded.");
+        Debugger.write("Quests of player " + playerName + " have been loaded.");
     }
 }

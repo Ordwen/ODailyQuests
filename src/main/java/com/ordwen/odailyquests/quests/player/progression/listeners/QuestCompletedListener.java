@@ -16,7 +16,7 @@ public class QuestCompletedListener implements Listener {
         final var progression = event.getProgression();
         final var quest = event.getAbstractQuest();
 
-        Debugger.addDebug("QuestCompletedListener: QuestCompletedEvent summoned by " + player.getName() + " for " + quest.getQuestName() + ".");
+        Debugger.write("QuestCompletedListener: QuestCompletedEvent summoned by " + player.getName() + " for " + quest.getQuestName() + ".");
 
         /* prevention of excess progressions when mobs are killed with the sweeping edge enchantment */
         if (progression.isAchieved()) return;

@@ -12,7 +12,6 @@ import com.ordwen.odailyquests.commands.admin.AdminCompleter;
 import com.ordwen.odailyquests.commands.player.PlayerCompleter;
 import com.ordwen.odailyquests.commands.interfaces.InterfacesManager;
 import com.ordwen.odailyquests.commands.interfaces.InventoryClickListener;
-import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.configuration.essentials.Temporality;
 import com.ordwen.odailyquests.events.EventsManager;
@@ -21,9 +20,7 @@ import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.player.progression.listeners.AllCategoryQuestsCompletedListener;
 import com.ordwen.odailyquests.quests.player.progression.listeners.AllQuestsCompletedListener;
 import com.ordwen.odailyquests.quests.player.progression.listeners.QuestCompletedListener;
-import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
-import com.ordwen.odailyquests.quests.player.progression.storage.sql.h2.H2Manager;
-import com.ordwen.odailyquests.quests.player.progression.storage.yaml.YamlManager;
+import com.ordwen.odailyquests.quests.player.progression.storage.DatabaseManager;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.types.custom.mobs.EliteMobsQuest;
 import com.ordwen.odailyquests.quests.types.custom.mobs.MythicMobsQuest;
@@ -41,7 +38,6 @@ import com.ordwen.odailyquests.quests.types.item.VillagerQuest;
 import com.ordwen.odailyquests.quests.types.item.*;
 import com.ordwen.odailyquests.tools.*;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
-import com.ordwen.odailyquests.quests.player.progression.storage.sql.mysql.MySQLManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -62,11 +58,10 @@ public final class ODailyQuests extends JavaPlugin {
     private ConfigurationFiles configurationFiles;
     private InterfacesManager interfacesManager;
     private FilesManager filesManager;
-    private SQLManager sqlManager;
-    private YamlManager yamlManager;
     private TimerTask timerTask;
     private ReloadService reloadService;
     private CategoriesLoader categoriesLoader;
+    private DatabaseManager databaseManager;
 
     boolean isServerStopping = false;
 
@@ -96,29 +91,65 @@ public final class ODailyQuests extends JavaPlugin {
         new AutoUpdater(this).checkForUpdate();
         checkForSpigotUpdate();
 
-        /* Load SQL Support */
-        switch (configurationFiles.getConfigFile().getString("storage_mode")) {
-            case "MySQL" -> this.sqlManager = new MySQLManager(this);
-            case "H2" -> this.sqlManager = new H2Manager(this);
-            default -> this.yamlManager = new YamlManager();
-        }
-
         /* Init categories loader */
         this.categoriesLoader = new CategoriesLoader();
 
         /* Load class instances */
         this.interfacesManager = new InterfacesManager(this);
-        this.reloadService = new ReloadService(this, sqlManager != null);
+        this.databaseManager = new DatabaseManager(this);
 
         /* Load dependencies */
         new IntegrationsManager(this).loadAllDependencies();
 
-        /* Load debugger */
-        new Debugger(this).loadDebugMode();
-
         /* Hook CustomBlockData */
         CustomBlockData.registerListener(this);
 
+        /* Register all quest types, from main plugin or addons */
+        registerQuestTypes();
+
+        /* Load all config elements */
+        this.reloadService = new ReloadService(this);
+        reloadService.reload();
+
+        /* Load listeners */
+        new EventsManager(this).registerListeners();
+
+        /* Load commands */
+        getCommand("dquests").setExecutor(new PlayerCommands());
+        getCommand("dqadmin").setExecutor(new AdminCommands(this));
+
+        /* Load Tab Completers */
+        getCommand("dquests").setTabCompleter(new PlayerCompleter());
+        getCommand("dqadmin").setTabCompleter(new AdminCompleter());
+
+        /* Register plugin events */
+        getServer().getPluginManager().registerEvents(new InventoryClickListener(), this);
+        getServer().getPluginManager().registerEvents(new QuestsManager(this), this);
+        getServer().getPluginManager().registerEvents(new QuestCompletedListener(), this);
+        getServer().getPluginManager().registerEvents(new AllQuestsCompletedListener(), this);
+        getServer().getPluginManager().registerEvents(new AllCategoryQuestsCompletedListener(), this);
+
+        /* Register server restart related events */
+        new RestartHandler(this).registerSubClasses();
+
+        /* Avoid errors on reload */
+        if (!Bukkit.getServer().getOnlinePlayers().isEmpty()) {
+            reloadService.loadConnectedPlayerQuests();
+
+            PluginLogger.warn("It seems that you have reloaded the server.");
+            PluginLogger.warn("Think that this can cause problems, especially in the data backup.");
+            PluginLogger.warn("You should restart the server instead.");
+        }
+
+        /* Init delayed task to draw new quests */
+        if (Modes.getTimestampMode() == 1 && Temporality.getTemporalityMode() == 1) {
+            timerTask = new TimerTask(LocalDateTime.now());
+        }
+
+        PluginLogger.info("Plugin is started!");
+    }
+
+    private void registerQuestTypes() {
         /* Register quest types */
         final QuestTypeRegistry questTypeRegistry = API.getQuestTypeRegistry();
 
@@ -167,46 +198,6 @@ public final class ODailyQuests extends JavaPlugin {
             questTypeRegistry.registerQuestType(entry.getKey(), entry.getValue());
             PluginLogger.info("Registered external quest type: " + entry.getKey());
         }
-
-        /* Load all elements */
-        reloadService.reload();
-
-        /* Load listeners */
-        new EventsManager(this).registerListeners();
-
-        /* Load commands */
-        getCommand("dquests").setExecutor(new PlayerCommands());
-        getCommand("dqadmin").setExecutor(new AdminCommands(this));
-
-        /* Load Tab Completers */
-        getCommand("dquests").setTabCompleter(new PlayerCompleter());
-        getCommand("dqadmin").setTabCompleter(new AdminCompleter());
-
-        /* Register plugin events */
-        getServer().getPluginManager().registerEvents(new InventoryClickListener(), this);
-        getServer().getPluginManager().registerEvents(new QuestsManager(this, sqlManager != null), this);
-        getServer().getPluginManager().registerEvents(new QuestCompletedListener(), this);
-        getServer().getPluginManager().registerEvents(new AllQuestsCompletedListener(), this);
-        getServer().getPluginManager().registerEvents(new AllCategoryQuestsCompletedListener(), this);
-
-        /* Register server restart related events */
-        new RestartHandler(this).registerSubClasses();
-
-        /* Avoid errors on reload */
-        if (!Bukkit.getServer().getOnlinePlayers().isEmpty()) {
-            reloadService.loadConnectedPlayerQuests();
-
-            PluginLogger.error("It seems that you have reloaded the server.");
-            PluginLogger.error("Think that this can cause problems, especially in the data backup.");
-            PluginLogger.error("You should restart the server instead.");
-        }
-
-        /* Init delayed task to draw new quests */
-        if (Modes.getTimestampMode() == 1 && Temporality.getTemporalityMode() == 1) {
-            timerTask = new TimerTask(LocalDateTime.now());
-        }
-
-        PluginLogger.info("Plugin is started!");
     }
 
     /**
@@ -221,13 +212,12 @@ public final class ODailyQuests extends JavaPlugin {
 
     @Override
     public void onDisable() {
-
         if (timerTask != null) timerTask.stop();
 
         /* Avoid errors on reload */
-        reloadService.saveConnectedPlayerQuests(false);
+        reloadService.saveConnectedPlayerQuests();
 
-        if (sqlManager != null) sqlManager.close();
+        databaseManager.close();
         PluginLogger.info(ChatColor.RED + "Plugin is shutting down...");
     }
 
@@ -276,15 +266,6 @@ public final class ODailyQuests extends JavaPlugin {
     }
 
     /**
-     * Get MySQLManager instance.
-     *
-     * @return MySQLManager instance.
-     */
-    public SQLManager getSQLManager() {
-        return sqlManager;
-    }
-
-    /**
      * Get ReloadService instance.
      *
      * @return ReloadService instance.
@@ -311,16 +292,6 @@ public final class ODailyQuests extends JavaPlugin {
         return interfacesManager;
     }
 
-
-    /**
-     * Get YamlManager instance.
-     *
-     * @return YamlManager instance.
-     */
-    public YamlManager getYamlManager() {
-        return yamlManager;
-    }
-
     /**
      * Get QuestsLoader instance.
      *
@@ -328,6 +299,15 @@ public final class ODailyQuests extends JavaPlugin {
      */
     public CategoriesLoader getCategoriesLoader() {
         return categoriesLoader;
+    }
+
+    /**
+     * Get DatabaseManager instance.
+     *
+     * @return DatabaseManager instance.
+     */
+    public DatabaseManager getDatabaseManager() {
+        return databaseManager;
     }
 
     /**

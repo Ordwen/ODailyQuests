@@ -48,7 +48,7 @@ public class Temporality implements IConfigurable {
         fewSeconds = initials.getString("few_seconds");
     }
 
-    public static Temporality getInstance() {
+    private static Temporality getInstance() {
         return ConfigFactory.getConfig(Temporality.class);
     }
 

@@ -74,7 +74,7 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
 
         if (QuestLoaderUtils.isTimeToRenew(player, activeQuests)) return getPlayerQuestsInterface(player);
 
-        final Map<AbstractQuest, Progression> questsMap = playerQuests.getPlayerQuests();
+        final Map<AbstractQuest, Progression> questsMap = playerQuests.getQuests();
 
         final Inventory playerQuestsInventoryIndividual = Bukkit.createInventory(null, size, PAPIHook.getPlaceholders(player, interfaceName));
         playerQuestsInventoryIndividual.setContents(playerQuestsInventoryBase.getContents());

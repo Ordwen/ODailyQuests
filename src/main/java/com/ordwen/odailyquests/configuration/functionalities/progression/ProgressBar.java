@@ -75,7 +75,7 @@ public class ProgressBar implements IConfigurable {
      *
      * @return ProgressBar instance.
      */
-    public static ProgressBar getInstance() {
+    private static ProgressBar getInstance() {
         return ConfigFactory.getConfig(ProgressBar.class);
     }
 

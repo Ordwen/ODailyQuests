@@ -24,35 +24,35 @@ public class ConfigFactory {
 
     public static void registerConfigs(ConfigurationFiles configurationFiles) {
         // essentials
-        configs.put(Modes.class, new Modes(configurationFiles));
-        configs.put(Temporality.class, new Temporality(configurationFiles));
-        configs.put(QuestsAmount.class, new QuestsAmount(configurationFiles));
-        configs.put(CustomFurnaceResults.class, new CustomFurnaceResults(configurationFiles));
-        configs.put(Logs.class, new Logs(configurationFiles));
-        configs.put(CustomTypes.class, new CustomTypes(configurationFiles));
         configs.put(Antiglitch.class, new Antiglitch(configurationFiles));
+        configs.put(CustomFurnaceResults.class, new CustomFurnaceResults(configurationFiles));
+        configs.put(CustomTypes.class, new CustomTypes(configurationFiles));
+        configs.put(Database.class, new Database(configurationFiles));
+        configs.put(Debugger.class, new Debugger(configurationFiles));
+        configs.put(Logs.class, new Logs(configurationFiles));
+        configs.put(Modes.class, new Modes(configurationFiles));
+        configs.put(QuestsAmount.class, new QuestsAmount(configurationFiles));
+        configs.put(RerollNotAchieved.class, new RerollNotAchieved(configurationFiles));
+        configs.put(Synchronization.class, new Synchronization(configurationFiles));
+        configs.put(Temporality.class, new Temporality(configurationFiles));
 
         // functionalities
         configs.put(ActionBar.class, new ActionBar(configurationFiles));
+        configs.put(ProgressBar.class, new ProgressBar(configurationFiles));
+        configs.put(ProgressionMessage.class, new ProgressionMessage(configurationFiles));
         configs.put(Title.class, new Title(configurationFiles));
-        configs.put(DisabledWorlds.class, new DisabledWorlds(configurationFiles));
-        configs.put(GlobalReward.class, new GlobalReward(configurationFiles));
         configs.put(CategoriesRewards.class, new CategoriesRewards(configurationFiles));
+        configs.put(GlobalReward.class, new GlobalReward(configurationFiles));
+        configs.put(DisabledWorlds.class, new DisabledWorlds(configurationFiles));
         configs.put(SpawnerProgression.class, new SpawnerProgression(configurationFiles));
         configs.put(TakeItem.class, new TakeItem(configurationFiles));
-        configs.put(ProgressionMessage.class, new ProgressionMessage(configurationFiles));
-        configs.put(ProgressBar.class, new ProgressBar(configurationFiles));
 
         // integrations
-        configs.put(NPCNames.class, new NPCNames(configurationFiles));
-        configs.put(WildStackerEnabled.class, new WildStackerEnabled(configurationFiles));
         configs.put(ItemsAdderEnabled.class, new ItemsAdderEnabled(configurationFiles));
+        configs.put(NPCNames.class, new NPCNames(configurationFiles));
         configs.put(OraxenEnabled.class, new OraxenEnabled(configurationFiles));
         configs.put(SharedMobs.class, new SharedMobs(configurationFiles));
-
-        // utils
-        configs.put(Synchronization.class, new Synchronization(configurationFiles));
-        configs.put(RerollNotAchieved.class, new RerollNotAchieved(configurationFiles));
+        configs.put(WildStackerEnabled.class, new WildStackerEnabled(configurationFiles));
 
         // load all configs
         configs.values().forEach(IConfigurable::load);

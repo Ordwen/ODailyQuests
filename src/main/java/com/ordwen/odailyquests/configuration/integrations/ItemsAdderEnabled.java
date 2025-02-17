@@ -30,7 +30,7 @@ public class ItemsAdderEnabled implements IConfigurable {
         if (isEnabled) CustomFurnaceResults.setEnabled(true);
     }
 
-    public static ItemsAdderEnabled getInstance() {
+    private static ItemsAdderEnabled getInstance() {
         return ConfigFactory.getConfig(ItemsAdderEnabled.class);
     }
 

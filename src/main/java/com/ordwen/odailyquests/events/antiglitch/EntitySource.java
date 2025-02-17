@@ -26,7 +26,7 @@ public class EntitySource {
                 (byte) 1
         );
 
-        Debugger.addDebug("EntitySource: addEntityFromSpawner added entity from spawner.");
+        Debugger.write("EntitySource: addEntityFromSpawner added entity from spawner.");
     }
 
     /**
@@ -36,7 +36,7 @@ public class EntitySource {
      * @return true if the entity is from a spawner.
      */
     public static boolean isEntityFromSpawner(Entity entity) {
-        Debugger.addDebug("EntitySource: isEntityFromSpawner checking if entity is from spawner.");
+        Debugger.write("EntitySource: isEntityFromSpawner checking if entity is from spawner.");
         return SpawnerProgression.isSpawnersProgressionDisabled() && entity.getPersistentDataContainer().has(FROM_SPAWNER, PersistentDataType.BYTE);
     }
 }

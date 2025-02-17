@@ -46,7 +46,7 @@ public class ActionBar implements IConfigurable {
         }
     }
 
-    public static ActionBar getInstance() {
+    private static ActionBar getInstance() {
         return ConfigFactory.getConfig(ActionBar.class);
     }
 

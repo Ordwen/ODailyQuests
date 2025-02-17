@@ -13,8 +13,8 @@ public class PlayerLevelChangeListener extends PlayerProgressor implements Liste
     public void onPlayerLevelChangeEvent(PlayerLevelChangeEvent event) {
         final int diff = event.getNewLevel() - event.getOldLevel();
         if (diff > 0) {
-            Debugger.addDebug("=========================================================================================");
-            Debugger.addDebug("PlayerLevelChangeListener: onPlayerLevelChangeEvent summoned by " + event.getPlayer().getName());
+            Debugger.write("=========================================================================================");
+            Debugger.write("PlayerLevelChangeListener: onPlayerLevelChangeEvent summoned by " + event.getPlayer().getName());
 
             setPlayerQuestProgression(event, event.getPlayer(), diff, "EXP_LEVELS");
         }

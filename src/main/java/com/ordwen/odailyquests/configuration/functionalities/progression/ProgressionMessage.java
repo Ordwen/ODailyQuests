@@ -143,7 +143,7 @@ public class ProgressionMessage implements IConfigurable {
         }
     }
 
-    public static ProgressionMessage getInstance() {
+    private static ProgressionMessage getInstance() {
         return ConfigFactory.getConfig(ProgressionMessage.class);
     }
 

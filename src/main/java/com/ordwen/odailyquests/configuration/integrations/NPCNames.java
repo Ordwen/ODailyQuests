@@ -37,7 +37,7 @@ public class NPCNames implements IConfigurable {
         hardNPCName = ColorConvert.convertColorCode(section.getString(".name_hard"));
     }
 
-    public static NPCNames getInstance() {
+    private static NPCNames getInstance() {
         return ConfigFactory.getConfig(NPCNames.class);
     }
 

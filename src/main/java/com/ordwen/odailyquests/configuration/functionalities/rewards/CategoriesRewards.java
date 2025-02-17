@@ -137,7 +137,7 @@ public class CategoriesRewards implements IConfigurable {
         }
     }
 
-    public static CategoriesRewards getInstance() {
+    private static CategoriesRewards getInstance() {
         return ConfigFactory.getConfig(CategoriesRewards.class);
     }
 

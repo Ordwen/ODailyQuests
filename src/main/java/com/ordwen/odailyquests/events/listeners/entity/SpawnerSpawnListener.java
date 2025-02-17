@@ -13,7 +13,7 @@ public class SpawnerSpawnListener implements Listener {
     public void onSpawnerSpawnEvent(SpawnerSpawnEvent event) {
         if (event.isCancelled()) return;
 
-        Debugger.addDebug("Spawner spawn event: " + event.getEntity().getType());
+        Debugger.write("Spawner spawn event: " + event.getEntity().getType());
         if (SpawnerProgression.isSpawnersProgressionDisabled()) {
             EntitySource.addEntityFromSpawner(event.getEntity());
         }

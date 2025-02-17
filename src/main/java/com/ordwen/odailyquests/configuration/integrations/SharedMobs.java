@@ -19,7 +19,7 @@ public class SharedMobs implements IConfigurable {
         isEnabled = configurationFiles.getConfigFile().getBoolean(path);
     }
 
-    public static SharedMobs getInstance() {
+    private static SharedMobs getInstance() {
         return ConfigFactory.getConfig(SharedMobs.class);
     }
 
