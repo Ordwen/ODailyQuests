@@ -83,7 +83,6 @@ public final class ODailyQuests extends JavaPlugin {
         new Metrics(this, pluginId);
 
         /* Load files */
-        System.out.println("INITIALIZING FILES");
         this.configurationFile = new ConfigurationFile(this);
         this.filesManager = new FilesManager(this);
         this.filesManager.loadAllFiles();
