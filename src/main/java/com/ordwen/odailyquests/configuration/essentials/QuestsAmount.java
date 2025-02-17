@@ -20,6 +20,7 @@ public class QuestsAmount implements IConfigurable {
 
     @Override
     public void load() {
+        System.out.println("LOAD LOAD LOAD");
         final FileConfiguration config = configurationFiles.getConfigFile();
 
         if (Modes.getQuestsMode() == 1) {
@@ -49,12 +50,15 @@ public class QuestsAmount implements IConfigurable {
     public static int getQuestsAmount() {
         return getInstance().totalQuestsAmount;
     }
+
     public static int getEasyQuestsAmount() {
         return getInstance().easyQuestsAmount;
     }
+
     public static int getMediumQuestsAmount() {
         return getInstance().mediumQuestsAmount;
     }
+
     public static int getHardQuestsAmount() {
         return getInstance().hardQuestsAmount;
     }

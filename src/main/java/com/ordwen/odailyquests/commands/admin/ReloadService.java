@@ -2,20 +2,16 @@ package com.ordwen.odailyquests.commands.admin;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.ConfigFactory;
-import com.ordwen.odailyquests.configuration.essentials.Database;
 import com.ordwen.odailyquests.configuration.integrations.ItemsAdderEnabled;
 import com.ordwen.odailyquests.configuration.integrations.OraxenEnabled;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
-import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 public class ReloadService {
 
@@ -61,12 +57,15 @@ public class ReloadService {
         /* load files */
         plugin.getFilesManager().loadAllFiles();
 
+        System.out.println("TEST 1");
         /* load configurations */
         ConfigFactory.registerConfigs(plugin.getConfigurationFiles());
 
+        System.out.println("TEST 2");
         /* load database */
         plugin.getDatabaseManager().load();
 
+        System.out.println("TEST 3");
         /* load quests & interface */
         if ((!ItemsAdderEnabled.isEnabled() || ItemsAdderEnabled.isLoaded())
                 && (!OraxenEnabled.isEnabled() || OraxenEnabled.isLoaded())) {
@@ -74,6 +73,7 @@ public class ReloadService {
             plugin.getInterfacesManager().initAllObjects();
         }
 
+        System.out.println("TEST 4");
         saveConnectedPlayerQuests();
         ODailyQuests.morePaperLib.scheduling().globalRegionalScheduler().runDelayed(this::loadConnectedPlayerQuests, 20L);
     }

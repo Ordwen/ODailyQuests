@@ -149,6 +149,9 @@ public class LoadProgressionSQL {
             int id = 1;
 
             resultSet.next();
+            System.out.println("QuestsAmount.getQuestsAmount() = " + QuestsAmount.getQuestsAmount());
+            System.out.println("resultSet length = " + resultSet.getFetchSize());
+
             do {
                 int questIndex = resultSet.getInt("quest_index");
                 int advancement = resultSet.getInt("advancement");
