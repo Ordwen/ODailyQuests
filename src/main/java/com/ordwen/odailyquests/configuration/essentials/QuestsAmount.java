@@ -20,7 +20,7 @@ public class QuestsAmount implements IConfigurable {
 
     @Override
     public void load() {
-        final FileConfiguration config = configurationFile.getConfigFile();
+        final FileConfiguration config = configurationFile.getConfig();
 
         if (Modes.getQuestsMode() == 1) {
             totalQuestsAmount = config.getInt("global_quests_amount");

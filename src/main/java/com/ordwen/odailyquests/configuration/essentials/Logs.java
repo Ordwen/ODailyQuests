@@ -16,7 +16,7 @@ public class Logs implements IConfigurable {
 
     @Override
     public void load() {
-        isEnabled = !configurationFile.getConfigFile().getBoolean("disable_logs");
+        isEnabled = !configurationFile.getConfig().getBoolean("disable_logs");
     }
 
     public boolean isEnabledInternal() {

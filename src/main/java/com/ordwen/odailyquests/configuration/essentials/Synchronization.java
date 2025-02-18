@@ -16,7 +16,7 @@ public class Synchronization implements IConfigurable {
     @Override
     public void load() {
         final String path = "synchronised_progression";
-        isEnabled = configurationFile.getConfigFile().getBoolean(path);
+        isEnabled = configurationFile.getConfig().getBoolean(path);
     }
 
     private static Synchronization getInstance() {

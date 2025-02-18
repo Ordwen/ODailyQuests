@@ -16,7 +16,7 @@ public class RerollNotAchieved implements IConfigurable {
     @Override
     public void load() {
         final String path = "reroll_only_if_not_achieved";
-        rerollIfNotAchieved = configurationFile.getConfigFile().getBoolean(path);
+        rerollIfNotAchieved = configurationFile.getConfig().getBoolean(path);
     }
 
     private static RerollNotAchieved getInstance() {

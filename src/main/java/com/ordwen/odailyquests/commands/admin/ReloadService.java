@@ -55,10 +55,10 @@ public class ReloadService {
      */
     public void reload() {
         /* load files */
-        plugin.getFilesManager().loadAllFiles();
+        plugin.getFilesManager().load();
 
         /* load configurations */
-        ConfigFactory.registerConfigs(plugin.getConfigurationFile());
+        ConfigFactory.registerConfigs(plugin.getFilesManager().getConfigurationFile());
 
         /* load database */
         plugin.getDatabaseManager().load();

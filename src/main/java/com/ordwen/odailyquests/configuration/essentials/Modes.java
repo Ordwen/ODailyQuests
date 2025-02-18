@@ -17,8 +17,8 @@ public class Modes implements IConfigurable {
 
     @Override
     public void load() {
-        questsMode = configurationFile.getConfigFile().getInt("quests_mode");
-        timestampMode = configurationFile.getConfigFile().getInt("timestamp_mode");
+        questsMode = configurationFile.getConfig().getInt("quests_mode");
+        timestampMode = configurationFile.getConfig().getInt("timestamp_mode");
     }
 
     private static Modes getInstance() {

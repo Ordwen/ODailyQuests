@@ -26,7 +26,7 @@ public class ProgressBar implements IConfigurable {
      */
     @Override
     public void load() {
-        final ConfigurationSection section = configurationFile.getConfigFile().getConfigurationSection("progress_bar");
+        final ConfigurationSection section = configurationFile.getConfig().getConfigurationSection("progress_bar");
 
         if (section == null) {
             PluginLogger.warn("Progress bar section is missing in the configuration file.");

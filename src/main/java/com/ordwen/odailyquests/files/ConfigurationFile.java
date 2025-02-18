@@ -32,7 +32,7 @@ public class ConfigurationFile {
      * Get the configuration file.
      * @return config file.
      */
-    public FileConfiguration getConfigFile() {
+    public FileConfiguration getConfig() {
         return this.config;
     }
 

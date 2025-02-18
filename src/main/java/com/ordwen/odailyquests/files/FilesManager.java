@@ -6,19 +6,34 @@ public class FilesManager {
 
     private final ODailyQuests oDailyQuests;
 
+    private final ConfigurationFile configurationFile;
+    private final PlayerInterfaceFile playerInterfaceFile;
+
     public FilesManager(ODailyQuests oDailyQuests) {
         this.oDailyQuests = oDailyQuests;
+
+        this.configurationFile = new ConfigurationFile(oDailyQuests);
+        this.playerInterfaceFile = new PlayerInterfaceFile(oDailyQuests);
     }
 
     /**
      * Load all files.
      */
-    public void loadAllFiles() {
-        oDailyQuests.getConfigurationFile().loadConfigurationFile();
-        oDailyQuests.getConfigurationFile().loadMessagesFiles();
+    public void load() {
+        configurationFile.loadConfigurationFile();
+        configurationFile.loadMessagesFiles();
+
+        playerInterfaceFile.loadPlayerInterfaceFile();
 
         new QuestsFiles(oDailyQuests).loadQuestsFiles();
         new ProgressionFile(oDailyQuests).loadProgressionFile();
-        new PlayerInterfaceFile(oDailyQuests).loadPlayerInterfaceFile();
+    }
+
+    public ConfigurationFile getConfigurationFile() {
+        return configurationFile;
+    }
+
+    public PlayerInterfaceFile getPlayerInterfaceFile() {
+        return playerInterfaceFile;
     }
 }

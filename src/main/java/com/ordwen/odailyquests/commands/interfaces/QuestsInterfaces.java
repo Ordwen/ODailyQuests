@@ -50,7 +50,7 @@ public class QuestsInterfaces {
         categorizedInterfaces.clear();
 
         /* Init empty case items */
-        final ItemStack globalEmptyCaseItem = new ItemStack(Material.valueOf(configurationFile.getConfigFile().getConfigurationSection("interfaces.global_quests").getString(".empty_item")));
+        final ItemStack globalEmptyCaseItem = new ItemStack(Material.valueOf(configurationFile.getConfig().getConfigurationSection("interfaces.global_quests").getString(".empty_item")));
         emptyCaseItems.add(globalEmptyCaseItem);
 
         /* Global quests inventory */
@@ -65,9 +65,9 @@ public class QuestsInterfaces {
         categorizedInterfaces.clear();
 
         /* Init empty case items */
-        final ItemStack easyEmptyCaseItem = new ItemStack(Material.valueOf(configurationFile.getConfigFile().getConfigurationSection("interfaces.easy_quests").getString(".empty_item")));
-        final ItemStack mediumEmptyCaseItem = new ItemStack(Material.valueOf(configurationFile.getConfigFile().getConfigurationSection("interfaces.medium_quests").getString(".empty_item")));
-        final ItemStack hardEmptyCaseItem = new ItemStack(Material.valueOf(configurationFile.getConfigFile().getConfigurationSection("interfaces.hard_quests").getString(".empty_item")));
+        final ItemStack easyEmptyCaseItem = new ItemStack(Material.valueOf(configurationFile.getConfig().getConfigurationSection("interfaces.easy_quests").getString(".empty_item")));
+        final ItemStack mediumEmptyCaseItem = new ItemStack(Material.valueOf(configurationFile.getConfig().getConfigurationSection("interfaces.medium_quests").getString(".empty_item")));
+        final ItemStack hardEmptyCaseItem = new ItemStack(Material.valueOf(configurationFile.getConfig().getConfigurationSection("interfaces.hard_quests").getString(".empty_item")));
         emptyCaseItems.addAll(Arrays.asList(easyEmptyCaseItem, mediumEmptyCaseItem, hardEmptyCaseItem));
 
         /* Easy quests inventory */

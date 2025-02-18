@@ -21,7 +21,7 @@ public class OraxenEnabled implements IConfigurable {
     @Override
     public void load() {
         final String path = "use_oraxen";
-        isEnabled = configurationFile.getConfigFile().getBoolean(path);
+        isEnabled = configurationFile.getConfig().getBoolean(path);
         if (isEnabled && !Bukkit.getPluginManager().isPluginEnabled("Oraxen")) {
             PluginLogger.warn("Oraxen is not installed on the server but the option is enabled in the config.");
             PluginLogger.warn("Disabling 'use_oraxen' option, otherwise quests will not load.");

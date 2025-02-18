@@ -16,7 +16,7 @@ public class SharedMobs implements IConfigurable {
     @Override
     public void load() {
         final String path = "shared_mobs";
-        isEnabled = configurationFile.getConfigFile().getBoolean(path);
+        isEnabled = configurationFile.getConfig().getBoolean(path);
     }
 
     private static SharedMobs getInstance() {

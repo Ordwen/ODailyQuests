@@ -17,12 +17,12 @@ public class ConfigUpdateManager {
     public ConfigUpdateManager(ODailyQuests plugin) {
         this.plugin = plugin;
 
-        updaters.put("2.2.3", new Update223to224());
-        updaters.put("2.2.5", new Update225to230());
+        updaters.put("2.2.3", new Update223to224(plugin));
+        updaters.put("2.2.5", new Update225to230(plugin));
     }
 
     public void runUpdates() {
-        final FileConfiguration configFile = plugin.getConfig();
+        final FileConfiguration configFile = plugin.getFilesManager().getConfigurationFile().getConfig();
         final String currentVersion = plugin.getDescription().getVersion();
         final String configVersion = configFile.getString("version", "0.0.0");
 

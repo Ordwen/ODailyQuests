@@ -26,7 +26,7 @@ public class GlobalReward extends RewardLoader implements IConfigurable {
 
     @Override
     public void load() {
-        final ConfigurationSection globalRewardSection = configurationFile.getConfigFile().getConfigurationSection("global_reward");
+        final ConfigurationSection globalRewardSection = configurationFile.getConfig().getConfigurationSection("global_reward");
         if (globalRewardSection == null || !globalRewardSection.contains("enabled")) {
             PluginLogger.error("Global reward section is missing or incomplete in the configuration file. Disabling.");
             isEnabled = false;

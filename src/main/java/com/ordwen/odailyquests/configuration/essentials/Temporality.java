@@ -25,7 +25,7 @@ public class Temporality implements IConfigurable {
      */
     @Override
     public void load() {
-        final ConfigurationSection config = configurationFile.getConfigFile();
+        final ConfigurationSection config = configurationFile.getConfig();
         temporalityMode = config.getInt("temporality_mode");
 
         final ConfigurationSection initials = config.getConfigurationSection("temporality_initials");

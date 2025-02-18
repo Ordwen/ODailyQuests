@@ -34,7 +34,7 @@ public class InterfacesManager implements Listener {
      * @param oDailyQuests main class instance.
      */
     public InterfacesManager(ODailyQuests oDailyQuests) {
-        this.configurationFile = oDailyQuests.getConfigurationFile();
+        this.configurationFile = oDailyQuests.getFilesManager().getConfigurationFile();
     }
 
     /* variables */
@@ -79,7 +79,7 @@ public class InterfacesManager implements Listener {
         initPaginationItemNames();
         questsInterfaces = new QuestsInterfaces(configurationFile);
 
-        if (configurationFile.getConfigFile().getInt("quests_mode") == 2) {
+        if (configurationFile.getConfig().getInt("quests_mode") == 2) {
             questsInterfaces.loadCategorizedInterfaces();
         }
         else questsInterfaces.loadGlobalInterface();
@@ -88,7 +88,7 @@ public class InterfacesManager implements Listener {
      * Init variables.
      */
     public void initInventoryNames() {
-        final ConfigurationSection section = configurationFile.getConfigFile().getConfigurationSection("interfaces");
+        final ConfigurationSection section = configurationFile.getConfig().getConfigurationSection("interfaces");
 
         globalQuestsInventoryName = ColorConvert.convertColorCode(section.getString(".global_quests.inventory_name"));
         easyQuestsInventoryName = ColorConvert.convertColorCode(section.getString(".easy_quests.inventory_name"));
@@ -111,8 +111,8 @@ public class InterfacesManager implements Listener {
      * Init pagination item names.
      */
     public void initPaginationItemNames() {
-        nextPageItemName = ColorConvert.convertColorCode(configurationFile.getConfigFile().getConfigurationSection("interfaces").getString(".next_item_name"));
-        previousPageItemName = ColorConvert.convertColorCode(configurationFile.getConfigFile().getConfigurationSection("interfaces").getString(".previous_item_name"));
+        nextPageItemName = ColorConvert.convertColorCode(configurationFile.getConfig().getConfigurationSection("interfaces").getString(".next_item_name"));
+        previousPageItemName = ColorConvert.convertColorCode(configurationFile.getConfig().getConfigurationSection("interfaces").getString(".previous_item_name"));
     }
 
     public static String getGlobalQuestsInventoryName() {

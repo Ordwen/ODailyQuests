@@ -19,7 +19,7 @@ public class WildStackerEnabled implements IConfigurable {
     @Override
     public void load() {
         final String path = "use_wildstacker";
-        isEnabled = configurationFile.getConfigFile().getBoolean(path);
+        isEnabled = configurationFile.getConfig().getBoolean(path);
 
         if (isEnabled && Bukkit.getPluginManager().getPlugin("WildStacker") == null) {
             PluginLogger.error("WildStacker is enabled in the config but the plugin is not installed.");

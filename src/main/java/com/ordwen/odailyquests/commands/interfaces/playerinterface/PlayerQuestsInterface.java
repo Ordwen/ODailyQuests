@@ -325,7 +325,7 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
      */
     public void loadPlayerQuestsInterface() {
 
-        final ConfigurationSection interfaceConfig = PlayerInterfaceFile.getPlayerInterfaceFileConfiguration().getConfigurationSection("player_interface");
+        final ConfigurationSection interfaceConfig = PlayerInterfaceFile.getConfig().getConfigurationSection("player_interface");
         if (interfaceConfig == null) {
             PluginLogger.error("An error occurred when loading the player interface.");
             PluginLogger.error("The playerInterface file is not correctly configured.");

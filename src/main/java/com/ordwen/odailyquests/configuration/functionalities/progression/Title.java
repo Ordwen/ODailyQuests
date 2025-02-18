@@ -25,7 +25,7 @@ public class Title implements IConfigurable {
 
     @Override
     public void load() {
-        final ConfigurationSection section = configurationFile.getConfigFile().getConfigurationSection("title");
+        final ConfigurationSection section = configurationFile.getConfig().getConfigurationSection("title");
 
         if (section == null) {
             PluginLogger.error("Title section is missing in the configuration file. Disabling.");

@@ -40,7 +40,7 @@ public class Buttons {
     private void initPreviousButton() {
         previous = getCustomHead("a2f0425d64fdc8992928d608109810c1251fe243d60d175bed427c651cbe");
         final ItemMeta previousMeta = previous.getItemMeta();
-        previousMeta.setDisplayName(ColorConvert.convertColorCode(configurationFile.getConfigFile().getConfigurationSection("interfaces").getString(".previous_item_name")));
+        previousMeta.setDisplayName(ColorConvert.convertColorCode(configurationFile.getConfig().getConfigurationSection("interfaces").getString(".previous_item_name")));
         previous.setItemMeta(previousMeta);
     }
 
@@ -50,7 +50,7 @@ public class Buttons {
     private void initNextButton() {
         next = getCustomHead("6d865aae2746a9b8e9a4fe629fb08d18d0a9251e5ccbe5fa7051f53eab9b94");
         final ItemMeta nextMeta = next.getItemMeta();
-        nextMeta.setDisplayName(ColorConvert.convertColorCode(configurationFile.getConfigFile().getConfigurationSection("interfaces").getString(".next_item_name")));
+        nextMeta.setDisplayName(ColorConvert.convertColorCode(configurationFile.getConfig().getConfigurationSection("interfaces").getString(".next_item_name")));
         next.setItemMeta(nextMeta);
     }
 

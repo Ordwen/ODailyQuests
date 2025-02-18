@@ -24,7 +24,7 @@ public class ActionBar implements IConfigurable {
 
     @Override
     public void load() {
-        final ConfigurationSection section = configurationFile.getConfigFile().getConfigurationSection("actionbar");
+        final ConfigurationSection section = configurationFile.getConfig().getConfigurationSection("actionbar");
 
         if (section == null) {
             PluginLogger.error("Actionbar section is missing in the configuration file. Disabling.");

@@ -30,7 +30,7 @@ public class CategoriesRewards implements IConfigurable {
 
     @Override
     public void load() {
-        final ConfigurationSection categoriesRewards = configurationFile.getConfigFile().getConfigurationSection("categories_rewards");
+        final ConfigurationSection categoriesRewards = configurationFile.getConfig().getConfigurationSection("categories_rewards");
         if (categoriesRewards == null) {
             isEasyRewardEnabled = false;
             isMediumRewardEnabled = false;

@@ -21,7 +21,7 @@ public class ItemsAdderEnabled implements IConfigurable {
     @Override
     public void load() {
         final String path = "use_itemsadder";
-        isEnabled = configurationFile.getConfigFile().getBoolean(path);
+        isEnabled = configurationFile.getConfig().getBoolean(path);
         if (isEnabled() && !Bukkit.getPluginManager().isPluginEnabled("ItemsAdder")) {
             PluginLogger.warn("ItemsAdder is not installed on the server but the option is enabled in the config.");
             PluginLogger.warn("Disabling 'use_itemsadder' option, otherwise quests will not load.");

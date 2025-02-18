@@ -23,7 +23,7 @@ public class Debugger implements IConfigurable {
 
     @Override
     public void load() {
-        debugMode = configurationFile.getConfigFile().getBoolean("debug");
+        debugMode = configurationFile.getConfig().getBoolean("debug");
         if (debugMode) {
             loadDebugFile();
             PluginLogger.warn("Debug mode is enabled. This may cause performance issues.");

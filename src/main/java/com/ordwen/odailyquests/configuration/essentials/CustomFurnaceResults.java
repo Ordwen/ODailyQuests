@@ -17,7 +17,7 @@ public class CustomFurnaceResults implements IConfigurable {
     @Override
     public void load() {
         final String path = "use_custom_furnace_results";
-        isEnabled = configurationFile.getConfigFile().getBoolean(path);
+        isEnabled = configurationFile.getConfig().getBoolean(path);
     }
 
     private static CustomFurnaceResults getInstance() {

@@ -20,7 +20,7 @@ public class DisabledWorlds implements IConfigurable {
     @Override
     public void load() {
         disabledWorldNames = new HashSet<>();
-        disabledWorldNames.addAll(configurationFile.getConfigFile().getStringList("disabled_worlds"));
+        disabledWorldNames.addAll(configurationFile.getConfig().getStringList("disabled_worlds"));
     }
 
     public boolean isWorldDisabledInternal(String world) {

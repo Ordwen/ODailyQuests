@@ -37,14 +37,14 @@ public class ProgressionMessage implements IConfigurable {
 
     @Override
     public void load() {
-        isEnabled = configurationFile.getConfigFile().getBoolean("progression_message.enabled");
+        isEnabled = configurationFile.getConfig().getBoolean("progression_message.enabled");
 
         if (!isEnabled) {
             PluginLogger.info("Progression message is disabled.");
             return;
         }
 
-        message = configurationFile.getConfigFile().getString("progression_message.text");
+        message = configurationFile.getConfig().getString("progression_message.text");
 
         if (message == null) {
             PluginLogger.error("Progression message is null, disabling progression message.");
@@ -52,7 +52,7 @@ public class ProgressionMessage implements IConfigurable {
             isEnabled = false;
         }
 
-        final String type = configurationFile.getConfigFile().getString("progression_message.type");
+        final String type = configurationFile.getConfig().getString("progression_message.type");
         if (type == null) {
             PluginLogger.warn("Progression message type is null, defaulting to CHAT.");
             progressionMessageType = ProgressionMessageType.CHAT;
@@ -72,8 +72,8 @@ public class ProgressionMessage implements IConfigurable {
     }
 
     private void loadBossBar() {
-        final String color = configurationFile.getConfigFile().getString("progression_message.bossbar.color");
-        final String style = configurationFile.getConfigFile().getString("progression_message.bossbar.style");
+        final String color = configurationFile.getConfig().getString("progression_message.bossbar.color");
+        final String style = configurationFile.getConfig().getString("progression_message.bossbar.style");
 
         if (color == null) {
             PluginLogger.warn("Progression message bossbar color is null, defaulting to BLUE.");

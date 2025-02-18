@@ -24,9 +24,9 @@ public class Antiglitch implements IConfigurable {
 
     @Override
     public void load() {
-        storePlacedBlocks = configurationFile.getConfigFile().getBoolean("store_placed_blocks");
-        storeBrokenBlocks = configurationFile.getConfigFile().getBoolean("store_broken_blocks");
-        storeDroppedItems = configurationFile.getConfigFile().getBoolean("store_dropped_items");
+        storePlacedBlocks = configurationFile.getConfig().getBoolean("store_placed_blocks");
+        storeBrokenBlocks = configurationFile.getConfig().getBoolean("store_broken_blocks");
+        storeDroppedItems = configurationFile.getConfig().getBoolean("store_dropped_items");
     }
 
     private static Antiglitch getInstance() {

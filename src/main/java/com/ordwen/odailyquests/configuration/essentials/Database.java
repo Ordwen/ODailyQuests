@@ -25,7 +25,7 @@ public class Database implements IConfigurable {
 
     @Override
     public void load() {
-        final String expectedMode = configurationFile.getConfigFile().getString("storage_mode");
+        final String expectedMode = configurationFile.getConfig().getString("storage_mode");
         if (expectedMode == null) {
             PluginLogger.error("storage_mode is not defined in the configuration file.");
             throw new IllegalArgumentException("storage_mode is not defined in the configuration file.");
@@ -34,7 +34,7 @@ public class Database implements IConfigurable {
         mode = StorageMode.getStorageMode(expectedMode);
         if (mode.isLocal()) return;
 
-        final ConfigurationSection section = configurationFile.getConfigFile().getConfigurationSection("database");
+        final ConfigurationSection section = configurationFile.getConfig().getConfigurationSection("database");
         if (section == null) {
             PluginLogger.error("Database section is not defined in the configuration file.");
             throw new IllegalArgumentException("Database section is not defined in the configuration file.");

@@ -56,7 +56,6 @@ public final class ODailyQuests extends JavaPlugin {
     /**
      * Getting instance of files classes.
      */
-    private ConfigurationFile configurationFile;
     private InterfacesManager interfacesManager;
     private FilesManager filesManager;
     private TimerTask timerTask;
@@ -85,9 +84,8 @@ public final class ODailyQuests extends JavaPlugin {
 
 
         /* Load files */
-        this.configurationFile = new ConfigurationFile(this);
         this.filesManager = new FilesManager(this);
-        this.filesManager.loadAllFiles();
+        this.filesManager.load();
 
         /* Check for updates */
         new ConfigUpdateManager(this).runUpdates();
@@ -256,15 +254,6 @@ public final class ODailyQuests extends JavaPlugin {
      */
     public void setServerStopping(boolean isServerStopping) {
         this.isServerStopping = isServerStopping;
-    }
-
-    /**
-     * Get ConfigurationManager instance.
-     *
-     * @return ConfigurationManager instance.
-     */
-    public ConfigurationFile getConfigurationFile() {
-        return configurationFile;
     }
 
     /**

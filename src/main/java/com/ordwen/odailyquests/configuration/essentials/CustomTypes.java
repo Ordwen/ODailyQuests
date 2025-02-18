@@ -15,7 +15,7 @@ public class CustomTypes implements IConfigurable {
 
     @Override
     public void load() {
-        for (String customType : configurationFile.getConfigFile().getStringList("custom_types")) {
+        for (String customType : configurationFile.getConfig().getStringList("custom_types")) {
             ODailyQuests.INSTANCE.registerQuestType(customType, CustomQuest.class);
         }
     }

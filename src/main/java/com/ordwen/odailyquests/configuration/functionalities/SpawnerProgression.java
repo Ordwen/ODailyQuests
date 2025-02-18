@@ -17,7 +17,7 @@ public class SpawnerProgression implements IConfigurable {
     @Override
     public void load() {
         final String path = "disable_spawners_progression";
-        disabled = configurationFile.getConfigFile().getBoolean(path);
+        disabled = configurationFile.getConfig().getBoolean(path);
     }
 
     private static SpawnerProgression getInstance() {

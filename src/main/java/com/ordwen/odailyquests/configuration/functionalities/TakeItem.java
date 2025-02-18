@@ -17,7 +17,7 @@ public class TakeItem implements IConfigurable {
     @Override
     public void load() {
         final String path = "take_items_for_get_quests";
-        enabled = configurationFile.getConfigFile().getBoolean(path);
+        enabled = configurationFile.getConfig().getBoolean(path);
     }
 
     private static TakeItem getInstance() {

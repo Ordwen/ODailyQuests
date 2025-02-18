@@ -24,7 +24,7 @@ public class PlayerHead {
      * Init player head.
      */
     public void initPlayerHead() {
-        final ConfigurationSection playerHeadSection = PlayerInterfaceFile.getPlayerInterfaceFileConfiguration().getConfigurationSection("player_interface.player_head");
+        final ConfigurationSection playerHeadSection = PlayerInterfaceFile.getConfig().getConfigurationSection("player_interface.player_head");
 
         playerHead = new ItemStack(Material.PLAYER_HEAD, 1);
         skullMeta = (SkullMeta) playerHead.getItemMeta();

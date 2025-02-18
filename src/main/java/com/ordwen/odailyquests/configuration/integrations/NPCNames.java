@@ -23,7 +23,7 @@ public class NPCNames implements IConfigurable {
 
     @Override
     public void load() {
-        final ConfigurationSection section = configurationFile.getConfigFile().getConfigurationSection("npcs");
+        final ConfigurationSection section = configurationFile.getConfig().getConfigurationSection("npcs");
 
         if (section == null) {
             PluginLogger.error("NPCs names section not found in the config. NPCs names will not be loaded.");
