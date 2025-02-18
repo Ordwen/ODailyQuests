@@ -14,25 +14,32 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
 public class PAPIExpansion extends PlaceholderExpansion {
 
-    public PAPIExpansion() {
+    private final PlayerQuestsInterface playerQuestsInterface;
+
+    public PAPIExpansion(PlayerQuestsInterface playerQuestsInterface) {
         PAPIHook.setPlaceholderAPIHooked(true);
+        this.playerQuestsInterface = playerQuestsInterface;
     }
 
+    @NotNull
     @Override
     public String getIdentifier() {
         return "odailyquests";
     }
 
+    @NotNull
     @Override
     public String getAuthor() {
         return "Ordwen";
     }
 
+    @NotNull
     @Override
     public String getVersion() {
         return "1.0.4";
@@ -44,7 +51,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
     }
 
     @Override
-    public String onRequest(OfflinePlayer player, String params) {
+    public String onRequest(OfflinePlayer player, @NotNull String params) {
 
         if (!QuestsManager.getActiveQuests().containsKey(player.getName())) return null;
         if (QuestLoaderUtils.isTimeToRenew((Player) player, QuestsManager.getActiveQuests())) return null;
@@ -110,7 +117,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
      */
     private String getInterfaceMessage(String params, OfflinePlayer player, PlayerQuests playerQuests) {
         if (params.equals("interface_complete_get_type")) {
-            return ColorConvert.convertColorCode(PlaceholderAPI.setPlaceholders(player, PlayerQuestsInterface.getCompleteGetType()));
+            return ColorConvert.convertColorCode(PlaceholderAPI.setPlaceholders(player, playerQuestsInterface.getCompleteGetType()));
         } else if (params.startsWith("interface_status_")) {
             final String supposedIndex = params.substring("interface_status_".length());
             int index;
@@ -165,7 +172,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
         int i = 0;
         for (AbstractQuest quest : playerQuests.getQuests().keySet()) {
             if (i == index) {
-                return (playerQuests.getQuests().get(quest).isAchieved() ? PlayerQuestsInterface.getAchieved() : PlayerQuestsInterface.getProgression())
+                return (playerQuests.getQuests().get(quest).isAchieved() ? playerQuestsInterface.getAchieved() : playerQuestsInterface.getProgression())
                         .replace("%progress%", String.valueOf(playerQuests.getQuests().get(quest).getProgression()))
                         .replace("%required%", String.valueOf(quest.getAmountRequired()))
                         .replace("%progressBar%", ProgressBar.getProgressBar(playerQuests.getQuests().get(quest).getProgression(), quest.getAmountRequired()));

@@ -21,6 +21,12 @@ import org.bukkit.inventory.*;
 
 public class InventoryClickListener extends ClickableChecker implements Listener {
 
+    private final PlayerQuestsInterface playerQuestsInterface;
+
+    public InventoryClickListener(PlayerQuestsInterface playerQuestsInterface) {
+        this.playerQuestsInterface = playerQuestsInterface;
+    }
+
     @EventHandler
     public void onInventoryClickEvent(InventoryClickEvent event) {
         if (event.getClickedInventory() == null) return;
@@ -35,7 +41,7 @@ public class InventoryClickListener extends ClickableChecker implements Listener
 
         boolean isPlayerInterface = false;
         final String inventoryName = event.getView().getTitle();
-        if (inventoryName.startsWith(PlayerQuestsInterface.getInterfaceName(player))) {
+        if (inventoryName.startsWith(playerQuestsInterface.getInterfaceName(player))) {
             isPlayerInterface = true;
             event.setCancelled(true);
         }
@@ -65,7 +71,7 @@ public class InventoryClickListener extends ClickableChecker implements Listener
      */
     private boolean handlePlayerInterfaceClick(InventoryClickEvent event, ItemStack clickedItem, Player player) {
         if (event.getAction() == InventoryAction.HOTBAR_SWAP) return true;
-        if (PlayerQuestsInterface.getFillItems().contains(clickedItem)) return true;
+        if (playerQuestsInterface.isFillItem(clickedItem)) return true;
 
         final int slot = event.getRawSlot();
         if (handlePlayerCommandItem(player, slot)) return true;
@@ -196,7 +202,7 @@ public class InventoryClickListener extends ClickableChecker implements Listener
      * @return true if the item is a close item, false otherwise.
      */
     private boolean handleCloseItem(ItemStack clickedItem, Player player) {
-        if (PlayerQuestsInterface.getCloseItems().contains(clickedItem)) {
+        if (playerQuestsInterface.isCloseItem(clickedItem)) {
             player.closeInventory();
             return true;
         }
@@ -211,8 +217,8 @@ public class InventoryClickListener extends ClickableChecker implements Listener
      * @return true if the item is a player command item, false otherwise.
      */
     private boolean handlePlayerCommandItem(Player player, int slot) {
-        if (PlayerQuestsInterface.getPlayerCommandsItems().containsKey(slot)) {
-            for (String cmd : PlayerQuestsInterface.getPlayerCommandsItems().get(slot)) {
+        if (playerQuestsInterface.isPlayerCommandItem(slot)) {
+            for (String cmd : playerQuestsInterface.getPlayerCommands(slot)) {
                 Bukkit.getServer().dispatchCommand(player, cmd);
             }
             return true;
@@ -228,8 +234,8 @@ public class InventoryClickListener extends ClickableChecker implements Listener
      * @return true if the item is a console command item, false otherwise.
      */
     private boolean handleConsoleCommandItem(Player player, int slot) {
-        if (PlayerQuestsInterface.getConsoleCommandsItems().containsKey(slot)) {
-            for (String cmd : PlayerQuestsInterface.getConsoleCommandsItems().get(slot)) {
+        if (playerQuestsInterface.isConsoleCommandItem(slot)) {
+            for (String cmd : playerQuestsInterface.getConsoleCommands(slot)) {
                 ODailyQuests.morePaperLib.scheduling().globalRegionalScheduler().run(() -> Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), cmd.replace("%player%", player.getName())));
             }
             return true;

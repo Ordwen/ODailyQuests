@@ -43,7 +43,6 @@ public class EventsManager {
         Bukkit.getPluginManager().registerEvents(new ShearEntityListener(), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new EntityDeathListener(), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new SpawnerSpawnListener(), oDailyQuests);
-        //Bukkit.getPluginManager().registerEvents(new ProjectileHitListener(), oDailyQuests);
 
         if (EliteMobsHook.isEliteMobsSetup()) {
             Bukkit.getPluginManager().registerEvents(new EliteMobDeathListener(), oDailyQuests);
@@ -77,7 +76,7 @@ public class EventsManager {
         Bukkit.getPluginManager().registerEvents(new PlayerFishListener(), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new PlayerItemConsumeListener(), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new ProjectileLaunchListener(), oDailyQuests);
-        Bukkit.getPluginManager().registerEvents(new InventoryClickListener(), oDailyQuests);
+        Bukkit.getPluginManager().registerEvents(new InventoryClickListener(oDailyQuests.getInterfacesManager().getPlayerQuestsInterface()), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new BlockDropItemListener(), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new PlayerHarvestBlockListener(), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new PlayerDropItemListener(), oDailyQuests);

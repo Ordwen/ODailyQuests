@@ -1,17 +1,19 @@
 package com.ordwen.odailyquests.commands.interfaces.playerinterface.items;
 
 import com.ordwen.odailyquests.files.ConfigurationFile;
-import com.ordwen.odailyquests.nms.NMSHandler;
 import com.ordwen.odailyquests.tools.ColorConvert;
-import org.bukkit.Material;
+import com.ordwen.odailyquests.tools.ItemUtils;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 
 public class Buttons {
 
     /* instance */
-    private static ConfigurationFile configurationFile;
+    private final ConfigurationFile configurationFile;
+
+    /* init items */
+    private ItemStack previous;
+    private ItemStack next;
 
     /**
      * Constructor.
@@ -19,12 +21,8 @@ public class Buttons {
      * @param configurationFile configuration files class.
      */
     public Buttons(ConfigurationFile configurationFile) {
-        Buttons.configurationFile = configurationFile;
+        this.configurationFile = configurationFile;
     }
-
-    /* init items */
-    private static ItemStack previous;
-    private static ItemStack next;
 
     /**
      * Load all items.
@@ -38,8 +36,10 @@ public class Buttons {
      * Init previous button.
      */
     private void initPreviousButton() {
-        previous = getCustomHead("a2f0425d64fdc8992928d608109810c1251fe243d60d175bed427c651cbe");
+        previous = ItemUtils.getCustomHead("a2f0425d64fdc8992928d608109810c1251fe243d60d175bed427c651cbe");
         final ItemMeta previousMeta = previous.getItemMeta();
+        if (previousMeta == null) return;
+
         previousMeta.setDisplayName(ColorConvert.convertColorCode(configurationFile.getConfig().getConfigurationSection("interfaces").getString(".previous_item_name")));
         previous.setItemMeta(previousMeta);
     }
@@ -48,20 +48,12 @@ public class Buttons {
      * Init next button.
      */
     private void initNextButton() {
-        next = getCustomHead("6d865aae2746a9b8e9a4fe629fb08d18d0a9251e5ccbe5fa7051f53eab9b94");
+        next = ItemUtils.getCustomHead("6d865aae2746a9b8e9a4fe629fb08d18d0a9251e5ccbe5fa7051f53eab9b94");
         final ItemMeta nextMeta = next.getItemMeta();
+        if (nextMeta == null) return;
+
         nextMeta.setDisplayName(ColorConvert.convertColorCode(configurationFile.getConfig().getConfigurationSection("interfaces").getString(".next_item_name")));
         next.setItemMeta(nextMeta);
-    }
-
-    public static ItemStack getCustomHead(String texture) {
-        final ItemStack itemStack = new ItemStack(Material.PLAYER_HEAD, 1);
-
-        SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
-        skullMeta = NMSHandler.applySkullTexture(skullMeta, texture);
-
-        itemStack.setItemMeta(skullMeta);
-        return itemStack;
     }
 
     /**
@@ -69,7 +61,7 @@ public class Buttons {
      *
      * @return previous button.
      */
-    public static ItemStack getPreviousButton() {
+    public ItemStack getPreviousButton() {
         return previous;
     }
 
@@ -78,8 +70,7 @@ public class Buttons {
      *
      * @return next button.
      */
-    public static ItemStack getNextButton() {
+    public ItemStack getNextButton() {
         return next;
     }
-
 }

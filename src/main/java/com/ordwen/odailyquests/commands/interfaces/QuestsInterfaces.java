@@ -2,94 +2,156 @@ package com.ordwen.odailyquests.commands.interfaces;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.Buttons;
+import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.externs.hooks.placeholders.PAPIHook;
 import com.ordwen.odailyquests.files.ConfigurationFile;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
+import com.ordwen.odailyquests.tools.ColorConvert;
 import com.ordwen.odailyquests.tools.Pair;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import com.ordwen.odailyquests.configuration.functionalities.progression.ProgressBar;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.*;
 
 public class QuestsInterfaces {
 
-    /**
-     * Getting instance of classes.
-     */
-    private final ConfigurationFile configurationFile;
-
-    /**
-     * Class instance constructor.
-     * @param configurationFile configuration files class.
-     */
-    public QuestsInterfaces(ConfigurationFile configurationFile) {
-        this.configurationFile = configurationFile;
-    }
-
-    /* init items */
-    private final float invSize = 45;
-    private static final List<ItemStack> emptyCaseItems = new ArrayList<>();
-    private final Map<String, Pair<String, List<Inventory>>> categorizedInterfaces = new HashMap<>();
+    private static final float INV_SIZE = 45;
+    private static final String EMPTY_ITEM = "empty_item";
 
     private final NamespacedKey usePlaceholdersKey = new NamespacedKey(ODailyQuests.INSTANCE, "odq_interface_use_placeholders");
     private final NamespacedKey requiredKey = new NamespacedKey(ODailyQuests.INSTANCE, "odq_interface_required");
 
+    private final ConfigurationFile configurationFile;
+    private final Buttons buttons;
+
+    private String nextPageItemName;
+    private String previousPageItemName;
+
+    private String globalQuestsInventoryName;
+    private String easyQuestsInventoryName;
+    private String mediumQuestsInventoryName;
+    private String hardQuestsInventoryName;
+
+    private final List<ItemStack> emptyCaseItems = new ArrayList<>();
+    private final Map<String, Pair<String, List<Inventory>>> categorizedInterfaces = new HashMap<>();
+
+    public QuestsInterfaces(ConfigurationFile configurationFile, Buttons buttons) {
+        this.configurationFile = configurationFile;
+        this.buttons = buttons;
+    }
+
+    public void loadAll() {
+        final ConfigurationSection section = configurationFile.getConfig().getConfigurationSection("interfaces");
+        if (section == null) {
+            PluginLogger.error("Interfaces section not found in the configuration file.");
+            return;
+        }
+
+        initPaginationItemNames(section);
+        initInventoryNames(section);
+
+        if (Modes.getQuestsMode() == 2) {
+            loadCategorizedInterfaces(section);
+        } else loadGlobalInterface(section);
+    }
+
+    public void initPaginationItemNames(ConfigurationSection section) {
+        nextPageItemName = ColorConvert.convertColorCode(section.getString(".next_item_name"));
+        previousPageItemName = ColorConvert.convertColorCode(section.getString(".previous_item_name"));
+    }
+
+    public void initInventoryNames(ConfigurationSection section) {
+        globalQuestsInventoryName = ColorConvert.convertColorCode(section.getString(".global_quests.inventory_name"));
+        easyQuestsInventoryName = ColorConvert.convertColorCode(section.getString(".easy_quests.inventory_name"));
+        mediumQuestsInventoryName = ColorConvert.convertColorCode(section.getString(".medium_quests.inventory_name"));
+        hardQuestsInventoryName = ColorConvert.convertColorCode(section.getString(".hard_quests.inventory_name"));
+
+        PluginLogger.fine("Interfaces names successfully loaded.");
+    }
+
     /**
      * Load the global quests interface.
      */
-    public void loadGlobalInterface() {
+    public void loadGlobalInterface(ConfigurationSection section) {
         categorizedInterfaces.clear();
 
         /* Init empty case items */
-        final ItemStack globalEmptyCaseItem = new ItemStack(Material.valueOf(configurationFile.getConfig().getConfigurationSection("interfaces.global_quests").getString(".empty_item")));
+        final ConfigurationSection globalSection = section.getConfigurationSection("global_quests");
+        if (globalSection == null) {
+            PluginLogger.error("Global quests section not found in the configuration file.");
+            return;
+        }
+
+        final ItemStack globalEmptyCaseItem = new ItemStack(Material.valueOf(globalSection.getString(EMPTY_ITEM)));
         emptyCaseItems.add(globalEmptyCaseItem);
 
         /* Global quests inventory */
-        int neededInventories = (int) Math.ceil(CategoriesLoader.getGlobalQuests().size() / invSize);
-        loadSelectedInterface("global", InterfacesManager.getGlobalQuestsInventoryName(), globalEmptyCaseItem, neededInventories, CategoriesLoader.getGlobalQuests());
+        int neededInventories = (int) Math.ceil(CategoriesLoader.getGlobalQuests().size() / INV_SIZE);
+        loadSelectedInterface("global", globalQuestsInventoryName, globalEmptyCaseItem, neededInventories, CategoriesLoader.getGlobalQuests());
     }
 
     /**
      * Load all categorized interfaces.
      */
-    public void loadCategorizedInterfaces() {
+    public void loadCategorizedInterfaces(ConfigurationSection section) {
         categorizedInterfaces.clear();
 
         /* Init empty case items */
-        final ItemStack easyEmptyCaseItem = new ItemStack(Material.valueOf(configurationFile.getConfig().getConfigurationSection("interfaces.easy_quests").getString(".empty_item")));
-        final ItemStack mediumEmptyCaseItem = new ItemStack(Material.valueOf(configurationFile.getConfig().getConfigurationSection("interfaces.medium_quests").getString(".empty_item")));
-        final ItemStack hardEmptyCaseItem = new ItemStack(Material.valueOf(configurationFile.getConfig().getConfigurationSection("interfaces.hard_quests").getString(".empty_item")));
+        final ConfigurationSection easySection = section.getConfigurationSection("easy_quests");
+        if (easySection == null) {
+            PluginLogger.error("Easy quests section not found in the configuration file.");
+            return;
+        }
+        final ItemStack easyEmptyCaseItem = new ItemStack(Material.valueOf(easySection.getString(EMPTY_ITEM)));
+
+        final ConfigurationSection mediumSection = section.getConfigurationSection("medium_quests");
+        if (mediumSection == null) {
+            PluginLogger.error("Medium quests section not found in the configuration file.");
+            return;
+        }
+        final ItemStack mediumEmptyCaseItem = new ItemStack(Material.valueOf(mediumSection.getString(EMPTY_ITEM)));
+
+        final ConfigurationSection hardSection = section.getConfigurationSection("hard_quests");
+        if (hardSection == null) {
+            PluginLogger.error("Hard quests section not found in the configuration file.");
+            return;
+        }
+        final ItemStack hardEmptyCaseItem = new ItemStack(Material.valueOf(hardSection.getString(EMPTY_ITEM)));
+
         emptyCaseItems.addAll(Arrays.asList(easyEmptyCaseItem, mediumEmptyCaseItem, hardEmptyCaseItem));
 
         /* Easy quests inventory */
-        int neededInventories = (int) Math.ceil(CategoriesLoader.getEasyQuests().size() / invSize);
-        loadSelectedInterface("easy", InterfacesManager.getEasyQuestsInventoryName(), easyEmptyCaseItem, neededInventories, CategoriesLoader.getEasyQuests());
+        int neededInventories = (int) Math.ceil(CategoriesLoader.getEasyQuests().size() / INV_SIZE);
+        loadSelectedInterface("easy", easyQuestsInventoryName, easyEmptyCaseItem, neededInventories, CategoriesLoader.getEasyQuests());
 
         /* Medium quests inventory */
-        neededInventories = (int) Math.ceil(CategoriesLoader.getMediumQuests().size() / invSize);
-        loadSelectedInterface("medium", InterfacesManager.getMediumQuestsInventoryName(), mediumEmptyCaseItem, neededInventories, CategoriesLoader.getMediumQuests());
+        neededInventories = (int) Math.ceil(CategoriesLoader.getMediumQuests().size() / INV_SIZE);
+        loadSelectedInterface("medium", mediumQuestsInventoryName, mediumEmptyCaseItem, neededInventories, CategoriesLoader.getMediumQuests());
 
         /* Hard quests inventory */
-        neededInventories = (int) Math.ceil(CategoriesLoader.getHardQuests().size() / invSize);
-        loadSelectedInterface("hard", InterfacesManager.getHardQuestsInventoryName(), hardEmptyCaseItem, neededInventories, CategoriesLoader.getHardQuests());
+        neededInventories = (int) Math.ceil(CategoriesLoader.getHardQuests().size() / INV_SIZE);
+        loadSelectedInterface("hard", hardQuestsInventoryName, hardEmptyCaseItem, neededInventories, CategoriesLoader.getHardQuests());
     }
 
     /**
      * Load specified interface.
+     *
      * @param inventoryName name of interface.
      * @param emptyCaseItem item for empty-cases.
-     * @param quests list of quests.
+     * @param quests        list of quests.
      */
-    public void loadSelectedInterface(String category, String inventoryName, ItemStack emptyCaseItem, int neededInventories, ArrayList<AbstractQuest> quests) {
+    public void loadSelectedInterface(String category, String inventoryName, ItemStack emptyCaseItem, int neededInventories, List<AbstractQuest> quests) {
 
         boolean allQuestsLoaded = false;
         int currentQuestIndex = 0;
@@ -99,10 +161,10 @@ public class QuestsInterfaces {
         for (int i = 0; i < neededInventories; i++) {
             Inventory inv = Bukkit.createInventory(null, 54, inventoryName + " - " + (i + 1));
             if (i > 0) {
-                inv.setItem(45, Buttons.getPreviousButton());
+                inv.setItem(45, buttons.getPreviousButton());
             }
             if (i < neededInventories - 1) {
-                inv.setItem(53, Buttons.getNextButton());
+                inv.setItem(53, buttons.getNextButton());
             }
             questsInventories.add(inv);
         }
@@ -111,7 +173,7 @@ public class QuestsInterfaces {
             int i = 0;
 
             /* add quests items on slots */
-            while (i < invSize && !allQuestsLoaded) {
+            while (i < INV_SIZE && !allQuestsLoaded) {
                 if (currentQuestIndex < quests.size()) {
                     final AbstractQuest quest = quests.get(currentQuestIndex);
 
@@ -155,11 +217,12 @@ public class QuestsInterfaces {
             final ItemStack item = inventory.getItem(i);
             if (item != null && item.getItemMeta() != null) {
                 final ItemMeta itemMeta = item.getItemMeta();
-                if (itemMeta.getPersistentDataContainer().has(usePlaceholdersKey, PersistentDataType.BYTE)) {
+                final PersistentDataContainer pdc = itemMeta.getPersistentDataContainer();
+                if (pdc.has(usePlaceholdersKey, PersistentDataType.BYTE)) {
                     final List<String> lore = itemMeta.getLore();
                     if (lore == null) continue;
 
-                    final int required = itemMeta.getPersistentDataContainer().get(requiredKey, PersistentDataType.INTEGER);
+                    final int required = pdc.get(requiredKey, PersistentDataType.INTEGER);
 
                     lore.replaceAll(s -> s.replace("%progress%", String.valueOf(0)));
                     lore.replaceAll(s -> s.replace("%progressBar%", ProgressBar.getProgressBar(0, required)));
@@ -175,12 +238,43 @@ public class QuestsInterfaces {
         return inventory;
     }
 
-    /**
-     * Get empty case item material.
-     *
-     * @return material.
-     */
-    public static List<ItemStack> getEmptyCaseItems() {
-        return emptyCaseItems;
+    public boolean isEmptyCaseItem(ItemStack itemStack) {
+        return emptyCaseItems.contains(itemStack);
+    }
+
+    public String getGlobalQuestsInventoryName() {
+        return globalQuestsInventoryName;
+    }
+
+    public String getEasyQuestsInventoryName() {
+        return easyQuestsInventoryName;
+    }
+
+    public String getMediumQuestsInventoryName() {
+        return mediumQuestsInventoryName;
+    }
+
+    public String getHardQuestsInventoryName() {
+        return hardQuestsInventoryName;
+    }
+
+    public Inventory getInterfaceFirstPage(String category, Player player) {
+        return getInterfacePage(category, 0, player);
+    }
+
+    public Inventory getInterfaceNextPage(String category, int page, Player player) {
+        return getInterfacePage(category, page + 1, player);
+    }
+
+    public Inventory getInterfacePreviousPage(String category, int page, Player player) {
+        return getInterfacePage(category, page - 1, player);
+    }
+
+    public String getNextPageItemName() {
+        return nextPageItemName;
+    }
+
+    public String getPreviousPageItemName() {
+        return previousPageItemName;
     }
 }

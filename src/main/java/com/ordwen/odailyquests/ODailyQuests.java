@@ -62,8 +62,9 @@ public final class ODailyQuests extends JavaPlugin {
     private ReloadService reloadService;
     private CategoriesLoader categoriesLoader;
     private DatabaseManager databaseManager;
+    private RestartHandler restartHandler;
 
-    boolean isServerStopping = false;
+    boolean isServerStopping;
 
     @Override
     public void onLoad() {
@@ -74,6 +75,8 @@ public final class ODailyQuests extends JavaPlugin {
     @Override
     public void onEnable() {
         PluginLogger.info("Plugin is starting...");
+        isServerStopping = false;
+
         ODailyQuestsAPI.disableRegistration();
         morePaperLib = new MorePaperLib(this);
 
@@ -115,7 +118,7 @@ public final class ODailyQuests extends JavaPlugin {
         new EventsManager(this).registerListeners();
 
         /* Load commands */
-        getCommand("dquests").setExecutor(new PlayerCommands());
+        getCommand("dquests").setExecutor(new PlayerCommands(interfacesManager));
         getCommand("dqadmin").setExecutor(new AdminCommands(this));
 
         /* Load Tab Completers */
@@ -123,14 +126,15 @@ public final class ODailyQuests extends JavaPlugin {
         getCommand("dqadmin").setTabCompleter(new AdminCompleter());
 
         /* Register plugin events */
-        getServer().getPluginManager().registerEvents(new InventoryClickListener(), this);
+        getServer().getPluginManager().registerEvents(new InventoryClickListener(interfacesManager.getQuestsInterfaces()), this);
         getServer().getPluginManager().registerEvents(new QuestsManager(this), this);
         getServer().getPluginManager().registerEvents(new QuestCompletedListener(), this);
         getServer().getPluginManager().registerEvents(new AllQuestsCompletedListener(), this);
         getServer().getPluginManager().registerEvents(new AllCategoryQuestsCompletedListener(), this);
 
         /* Register server restart related events */
-        new RestartHandler(this).registerSubClasses();
+        restartHandler = new RestartHandler(this);
+        restartHandler.registerSubClasses();
 
         /* Avoid errors on reload */
         if (!Bukkit.getServer().getOnlinePlayers().isEmpty()) {
@@ -212,6 +216,7 @@ public final class ODailyQuests extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        restartHandler.setServerStopping();
         if (timerTask != null) timerTask.stop();
 
         /* Avoid errors on reload */
