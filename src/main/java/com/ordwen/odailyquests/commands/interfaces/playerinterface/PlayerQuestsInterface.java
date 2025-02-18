@@ -248,42 +248,6 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
     }
 
     /**
-     * Get all fill items.
-     *
-     * @return fill items set.
-     */
-    public Set<ItemStack> getFillItems() {
-        return fillItems;
-    }
-
-    /**
-     * Get all player command items.
-     *
-     * @return player command items map.
-     */
-    public Map<Integer, List<String>> getPlayerCommandsItems() {
-        return playerCommandsItems;
-    }
-
-    /**
-     * Get all console command items.
-     *
-     * @return console command items map.
-     */
-    public Map<Integer, List<String>> getConsoleCommandsItems() {
-        return consoleCommandsItems;
-    }
-
-    /**
-     * Get all close items.
-     *
-     * @return close items set.
-     */
-    public Set<ItemStack> getCloseItems() {
-        return closeItems;
-    }
-
-    /**
      * Load player quests interface.
      */
     public void load() {
