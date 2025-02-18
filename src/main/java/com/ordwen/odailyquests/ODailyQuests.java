@@ -38,6 +38,7 @@ import com.ordwen.odailyquests.quests.types.item.VillagerQuest;
 import com.ordwen.odailyquests.quests.types.item.*;
 import com.ordwen.odailyquests.tools.*;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
+import com.ordwen.odailyquests.tools.updater.ConfigUpdateManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -82,13 +83,14 @@ public final class ODailyQuests extends JavaPlugin {
         int pluginId = 14277;
         new Metrics(this, pluginId);
 
+
         /* Load files */
         this.configurationFile = new ConfigurationFile(this);
         this.filesManager = new FilesManager(this);
         this.filesManager.loadAllFiles();
 
         /* Check for updates */
-        new AutoUpdater(this).checkForUpdate();
+        new ConfigUpdateManager(this).runUpdates();
         checkForSpigotUpdate();
 
         /* Init categories loader */
