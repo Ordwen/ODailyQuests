@@ -152,64 +152,98 @@ public class QuestsInterfaces {
      * @param quests        list of quests.
      */
     public void loadSelectedInterface(String category, String inventoryName, ItemStack emptyCaseItem, int neededInventories, List<AbstractQuest> quests) {
+        final List<Inventory> questsInventories = createInventories(inventoryName, neededInventories);
+        populateInventories(questsInventories, emptyCaseItem, quests);
+        categorizedInterfaces.put(category, new Pair<>(inventoryName, questsInventories));
+        PluginLogger.fine("Categorized quests interface named " + inventoryName + " successfully loaded.");
+    }
 
-        boolean allQuestsLoaded = false;
-        int currentQuestIndex = 0;
-
-        final List<Inventory> questsInventories = new ArrayList<>();
-
+    /**
+     * Create a list of inventories.
+     *
+     * @param inventoryName     name of the inventory.
+     * @param neededInventories number of inventories needed.
+     * @return list of inventories.
+     */
+    private List<Inventory> createInventories(String inventoryName, int neededInventories) {
+        final List<Inventory> inventories = new ArrayList<>();
         for (int i = 0; i < neededInventories; i++) {
-            Inventory inv = Bukkit.createInventory(null, 54, inventoryName + " - " + (i + 1));
-            if (i > 0) {
-                inv.setItem(45, buttons.getPreviousButton());
-            }
-            if (i < neededInventories - 1) {
-                inv.setItem(53, buttons.getNextButton());
-            }
-            questsInventories.add(inv);
+            final Inventory inv = Bukkit.createInventory(null, 54, inventoryName + " - " + (i + 1));
+            if (i > 0) inv.setItem(45, buttons.getPreviousButton());
+            if (i < neededInventories - 1) inv.setItem(53, buttons.getNextButton());
+            inventories.add(inv);
         }
+        return inventories;
+    }
 
-        for (Inventory inv : questsInventories) {
-            int i = 0;
+    /**
+     * Add all items related to quests in the inventories.
+     *
+     * @param inventories   list of inventories.
+     * @param emptyCaseItem item for empty-cases.
+     * @param quests        list of quests.
+     */
+    private void populateInventories(List<Inventory> inventories, ItemStack emptyCaseItem, List<AbstractQuest> quests) {
+        int currentQuestIndex = 0;
+        boolean allQuestsLoaded = false;
 
-            /* add quests items on slots */
-            while (i < INV_SIZE && !allQuestsLoaded) {
+        for (Inventory inv : inventories) {
+            int slotIndex = 0;
+            while (slotIndex < INV_SIZE && !allQuestsLoaded) {
                 if (currentQuestIndex < quests.size()) {
-                    final AbstractQuest quest = quests.get(currentQuestIndex);
-
-                    final ItemStack itemStack = quest.getMenuItem();
-                    final ItemMeta itemMeta = itemStack.getItemMeta();
-                    if (itemMeta != null) {
-                        itemMeta.setDisplayName(quest.getQuestName());
-                        itemMeta.setLore(quest.getQuestDesc());
-
-                        if (quest.isUsingPlaceholders()) {
-                            itemMeta.getPersistentDataContainer().set(usePlaceholdersKey, PersistentDataType.BYTE, (byte) 1);
-                            itemMeta.getPersistentDataContainer().set(requiredKey, PersistentDataType.INTEGER, quest.getAmountRequired());
-                        }
-
-                        itemStack.setItemMeta(itemMeta);
-                    }
-
-                    inv.setItem(i, itemStack);
-                    i++;
+                    inv.setItem(slotIndex, createQuestItem(quests.get(currentQuestIndex)));
+                    slotIndex++;
                     currentQuestIndex++;
                 } else {
                     allQuestsLoaded = true;
                 }
             }
-
-            /* fill empty slots */
-            for (int j = 0; j < inv.getSize(); j++) {
-                if (inv.getItem(j) == null) inv.setItem(j, emptyCaseItem);
-            }
-
-            categorizedInterfaces.put(category, new Pair<>(inventoryName, questsInventories));
+            fillEmptySlots(inv, emptyCaseItem);
         }
-
-        PluginLogger.fine("Categorized quests interface named " + inventoryName + " successfully loaded.");
     }
 
+    /**
+     * Create an item for a quest.
+     *
+     * @param quest quest to create item for.
+     * @return item for the quest.
+     */
+    private ItemStack createQuestItem(AbstractQuest quest) {
+        ItemStack itemStack = quest.getMenuItem();
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (itemMeta != null) {
+            itemMeta.setDisplayName(quest.getQuestName());
+            itemMeta.setLore(quest.getQuestDesc());
+
+            if (quest.isUsingPlaceholders()) {
+                itemMeta.getPersistentDataContainer().set(usePlaceholdersKey, PersistentDataType.BYTE, (byte) 1);
+                itemMeta.getPersistentDataContainer().set(requiredKey, PersistentDataType.INTEGER, quest.getAmountRequired());
+            }
+            itemStack.setItemMeta(itemMeta);
+        }
+        return itemStack;
+    }
+
+    /**
+     * Fill empty slots with empty-case items.
+     *
+     * @param inv           inventory to fill.
+     * @param emptyCaseItem item for empty-cases.
+     */
+    private void fillEmptySlots(Inventory inv, ItemStack emptyCaseItem) {
+        for (int i = 0; i < inv.getSize(); i++) {
+            if (inv.getItem(i) == null) inv.setItem(i, emptyCaseItem);
+        }
+    }
+
+    /**
+     * Get the inventory for the specified category and page.
+     *
+     * @param category category of the interface.
+     * @param page     page of the interface.
+     * @param player   player to get the interface for.
+     * @return inventory for the specified category and page.
+     */
     public Inventory getInterfacePage(String category, int page, Player player) {
         final Inventory inventory = categorizedInterfaces.get(category).second().get(page);
 
@@ -238,6 +272,18 @@ public class QuestsInterfaces {
         return inventory;
     }
 
+    public Inventory getInterfaceFirstPage(String category, Player player) {
+        return getInterfacePage(category, 0, player);
+    }
+
+    public Inventory getInterfaceNextPage(String category, int page, Player player) {
+        return getInterfacePage(category, page + 1, player);
+    }
+
+    public Inventory getInterfacePreviousPage(String category, int page, Player player) {
+        return getInterfacePage(category, page - 1, player);
+    }
+
     public boolean isEmptyCaseItem(ItemStack itemStack) {
         return emptyCaseItems.contains(itemStack);
     }
@@ -256,18 +302,6 @@ public class QuestsInterfaces {
 
     public String getHardQuestsInventoryName() {
         return hardQuestsInventoryName;
-    }
-
-    public Inventory getInterfaceFirstPage(String category, Player player) {
-        return getInterfacePage(category, 0, player);
-    }
-
-    public Inventory getInterfaceNextPage(String category, int page, Player player) {
-        return getInterfacePage(category, page + 1, player);
-    }
-
-    public Inventory getInterfacePreviousPage(String category, int page, Player player) {
-        return getInterfacePage(category, page - 1, player);
     }
 
     public String getNextPageItemName() {

@@ -16,9 +16,14 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 
 public class PAPIExpansion extends PlaceholderExpansion {
+
+    private static final String INVALID_INDEX = ChatColor.RED + "Invalid index.";
 
     private final PlayerQuestsInterface playerQuestsInterface;
 
@@ -58,50 +63,39 @@ public class PAPIExpansion extends PlaceholderExpansion {
 
         final PlayerQuests playerQuests = QuestsManager.getActiveQuests().get(player.getName());
 
-        // player placeholders
-        if (params.equalsIgnoreCase("total")) {
-            return String.valueOf(playerQuests.getTotalAchievedQuests());
-        }
-        if (params.equalsIgnoreCase("achieved")) {
-            return String.valueOf(playerQuests.getAchievedQuests());
-        }
-        if (params.equalsIgnoreCase("drawin")) {
-            return TimeRemain.timeRemain(player.getName());
-        }
-        if (params.startsWith("interface")) {
-            return getInterfaceMessage(params, player, playerQuests);
-        }
-        if (params.startsWith("progressbar")) {
-            return getProgressBar(params, playerQuests);
-        }
-        if (params.startsWith("progress")) {
-            return String.valueOf(getPlayerQuestProgression(params, playerQuests));
-        }
-        if (params.startsWith("name")) {
-            return getPlayerQuestName(params, playerQuests);
-        }
-        if (params.startsWith("desc")) {
-            return getPlayerQuestDescription(params, playerQuests);
-        }
-        if (params.startsWith("iscompleted")) {
-            return isPlayerQuestCompleted(params, playerQuests);
-        }
-        if (params.startsWith("requiredamount")) {
-            return getPlayerQuestRequiredAmount(params, playerQuests);
+        final Map<String, Function<String, String>> placeholders = new HashMap<>();
+        placeholders.put("total", p -> String.valueOf(playerQuests.getTotalAchievedQuests()));
+        placeholders.put("achieved", p -> String.valueOf(playerQuests.getAchievedQuests()));
+        placeholders.put("drawin", p -> TimeRemain.timeRemain(player.getName()));
+        placeholders.put("interface", p -> getInterfaceMessage(p, player, playerQuests));
+        placeholders.put("progressbar", p -> getProgressBar(p, playerQuests));
+        placeholders.put("progress", p -> String.valueOf(getPlayerQuestProgression(p, playerQuests)));
+        placeholders.put("name", p -> getPlayerQuestName(p, playerQuests));
+        placeholders.put("desc", p -> getPlayerQuestDescription(p, playerQuests));
+        placeholders.put("iscompleted", p -> isPlayerQuestCompleted(p, playerQuests));
+        placeholders.put("requiredamount", p -> getPlayerQuestRequiredAmount(p, playerQuests));
+
+        for (Map.Entry<String, Function<String, String>> entry : placeholders.entrySet()) {
+            if (params.startsWith(entry.getKey())) {
+                return entry.getValue().apply(params);
+            }
         }
 
-        // quests placeholders
-        if (params.startsWith("global")) {
-            return getQuestName(params, CategoriesLoader.getGlobalQuests());
-        }
-        if (params.startsWith("easy")) {
-            return getQuestName(params, CategoriesLoader.getEasyQuests());
-        }
-        if (params.startsWith("medium")) {
-            return getQuestName(params, CategoriesLoader.getMediumQuests());
-        }
-        if (params.startsWith("hard")) {
-            return getQuestName(params, CategoriesLoader.getHardQuests());
+        return getQuestNameByCategory(params);
+    }
+
+    private String getQuestNameByCategory(String params) {
+        final Map<String, List<AbstractQuest>> questCategories = Map.of(
+                "global", CategoriesLoader.getGlobalQuests(),
+                "easy", CategoriesLoader.getEasyQuests(),
+                "medium", CategoriesLoader.getMediumQuests(),
+                "hard", CategoriesLoader.getHardQuests()
+        );
+
+        for (Map.Entry<String, List<AbstractQuest>> entry : questCategories.entrySet()) {
+            if (params.startsWith(entry.getKey())) {
+                return getQuestName(params, entry.getValue());
+            }
         }
 
         return null;
@@ -125,7 +119,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
             try {
                 index = Integer.parseInt(supposedIndex) - 1;
             } catch (Exception e) {
-                return ChatColor.RED + "Invalid index.";
+                return INVALID_INDEX;
             }
 
             return ColorConvert.convertColorCode(PlaceholderAPI.setPlaceholders(player, getQuestStatus(index, playerQuests)));
@@ -146,7 +140,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
         try {
             index = Integer.parseInt(params.substring(params.indexOf('_') + 1)) - 1;
         } catch (Exception e) {
-            return ChatColor.RED + "Invalid index.";
+            return INVALID_INDEX;
         }
 
         int i = 0;
@@ -157,7 +151,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
             i++;
         }
 
-        return ChatColor.RED + "Invalid index.";
+        return INVALID_INDEX;
     }
 
     /**
@@ -180,7 +174,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
             i++;
         }
 
-        return ChatColor.RED + "Invalid index.";
+        return INVALID_INDEX;
     }
 
     /**
@@ -195,7 +189,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
         try {
             index = Integer.parseInt(params.substring(params.indexOf("_") + 1)) - 1;
         } catch (Exception e) {
-            return ChatColor.RED + "Invalid index.";
+            return INVALID_INDEX;
         }
 
         int i = 0;
@@ -206,7 +200,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
             i++;
         }
 
-        return ChatColor.RED + "Invalid index.";
+        return INVALID_INDEX;
     }
 
     /**
@@ -221,7 +215,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
         try {
             index = Integer.parseInt(params.substring(params.indexOf('_') + 1)) - 1;
         } catch (Exception e) {
-            return ChatColor.RED + "Invalid index.";
+            return INVALID_INDEX;
         }
 
         int i = 0;
@@ -232,7 +226,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
             i++;
         }
 
-        return ChatColor.RED + "Invalid index.";
+        return INVALID_INDEX;
     }
 
     /**
@@ -247,7 +241,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
         try {
             index = Integer.parseInt(params.substring(params.indexOf("_") + 1, params.lastIndexOf("_"))) - 1;
         } catch (Exception e) {
-            return ChatColor.RED + "Invalid index.";
+            return INVALID_INDEX;
         }
 
         int line;
@@ -266,7 +260,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
             i++;
         }
 
-        return ChatColor.RED + "Invalid index.";
+        return INVALID_INDEX;
     }
 
     /**
@@ -306,7 +300,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
         try {
             index = Integer.parseInt(params.substring(params.indexOf("_") + 1)) - 1;
         } catch (Exception e) {
-            return ChatColor.RED + "Invalid index.";
+            return INVALID_INDEX;
         }
 
         int i = 0;
@@ -317,7 +311,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
             i++;
         }
 
-        return ChatColor.RED + "Invalid index.";
+        return INVALID_INDEX;
     }
 
     /**
@@ -327,15 +321,15 @@ public class PAPIExpansion extends PlaceholderExpansion {
      * @param quests list where find the quest
      * @return the name of the quest
      */
-    private String getQuestName(String params, ArrayList<AbstractQuest> quests) {
+    private String getQuestName(String params, List<AbstractQuest> quests) {
         int index;
         try {
             index = Integer.parseInt(params.substring(params.indexOf("_") + 1)) - 1;
         } catch (Exception e) {
-            return ChatColor.RED + "Invalid index.";
+            return INVALID_INDEX;
         }
         if (quests.size() - 1 >= index) {
             return quests.get(index).getQuestName();
-        } else return ChatColor.RED + "Invalid index.";
+        } else return INVALID_INDEX;
     }
 }

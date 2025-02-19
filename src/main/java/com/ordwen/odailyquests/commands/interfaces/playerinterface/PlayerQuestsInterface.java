@@ -32,13 +32,17 @@ import java.util.*;
 
 public class PlayerQuestsInterface extends InterfaceItemGetter {
 
+    private static final String ERROR_OCCURRED = "An error occurred when loading the player interface.";
+    private static final String OUT_OF_BOUNDS = " is out of bounds.";
+
+    private static final String PROGRESS = "%progress%";
+    private static final String PROGRESS_BAR = "%progressBar%";
+    private static final String REQUIRED = "%required%";
+    private static final String MATERIAL = "material";
+
+    /* instances */
     private final PlayerInterfaceFile playerInterfaceFile;
     private final PlayerHead playerHead;
-
-    public PlayerQuestsInterface(PlayerInterfaceFile playerInterfaceFile) {
-        this.playerInterfaceFile = playerInterfaceFile;
-        this.playerHead = new PlayerHead(playerInterfaceFile);
-    }
 
     /* item slots */
     private final Map<Integer, List<Integer>> slotQuests = new HashMap<>();
@@ -63,188 +67,9 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
     private boolean isGlowingEnabled;
     private boolean isStatusDisabled;
 
-    /**
-     * Get player quests inventory.
-     *
-     * @return player quests inventory.
-     */
-    public Inventory getPlayerQuestsInterface(Player player) {
-
-        final Map<String, PlayerQuests> activeQuests = QuestsManager.getActiveQuests();
-
-        if (!activeQuests.containsKey(player.getName())) {
-            PluginLogger.error("Impossible to find the player " + player.getName() + " in the active quests.");
-            PluginLogger.error("It can happen if the player try to open the interface while the server/plugin is reloading.");
-            PluginLogger.error("If the problem persist, please contact the developer.");
-            return null;
-        }
-
-        final PlayerQuests playerQuests = activeQuests.get(player.getName());
-
-        if (QuestLoaderUtils.isTimeToRenew(player, activeQuests)) return getPlayerQuestsInterface(player);
-
-        final Map<AbstractQuest, Progression> questsMap = playerQuests.getQuests();
-
-        final Inventory playerQuestsInventoryIndividual = Bukkit.createInventory(null, size, PAPIHook.getPlaceholders(player, interfaceName));
-        playerQuestsInventoryIndividual.setContents(playerQuestsInventoryBase.getContents());
-
-        if (!papiItems.isEmpty()) {
-            for (Integer slot : papiItems.keySet()) {
-
-                if (slot < 0 || slot >= size) {
-                    PluginLogger.error("An error occurred when loading the player interface.");
-                    PluginLogger.error("A placeholder at slot " + slot + " is out of bounds.");
-                    continue;
-                }
-
-                final ItemStack itemCopy = papiItems.get(slot).clone();
-                final ItemMeta meta = itemCopy.getItemMeta();
-                final List<String> lore = meta.getLore();
-
-                meta.setDisplayName(PAPIHook.getPlaceholders(player, meta.getDisplayName()));
-
-                for (String str : lore) {
-                    lore.set(lore.indexOf(str), PAPIHook.getPlaceholders(player, str).replace("%achieved%", String.valueOf(playerQuests.getAchievedQuests())).replace("%drawIn%", TimeRemain.timeRemain(player.getName())));
-                }
-
-                meta.setLore(lore);
-                itemCopy.setItemMeta(meta);
-                playerQuestsInventoryIndividual.setItem(slot, itemCopy);
-            }
-        }
-
-        /* load player head */
-        playerQuestsInventoryIndividual.setContents(playerHead.setPlayerHead(playerQuestsInventoryIndividual, player, size).getContents());
-
-        /* load quests */
-        int i = 0;
-        for (AbstractQuest quest : questsMap.keySet()) {
-
-            ItemStack itemStack;
-            if (questsMap.get(quest).isAchieved()) {
-                itemStack = quest.getAchievedItem().clone();
-            } else {
-                itemStack = quest.getMenuItem().clone();
-            }
-
-            final ItemMeta itemMeta = itemStack.getItemMeta().clone();
-            itemMeta.setDisplayName(quest.getQuestName());
-
-            final List<String> lore = new ArrayList<>(quest.getQuestDesc());
-
-            if (quest.isUsingPlaceholders()) {
-                final Progression progression = questsMap.get(quest);
-
-                for (String str : lore) {
-                    lore.set(lore.indexOf(str), PAPIHook.getPlaceholders(player, str).replace("%progress%", String.valueOf(progression.getProgression())).replace("%progressBar%", ProgressBar.getProgressBar(progression.getProgression(), quest.getAmountRequired())).replace("%required%", String.valueOf(quest.getAmountRequired())).replace("%achieved%", String.valueOf(playerQuests.getAchievedQuests())).replace("%drawIn%", TimeRemain.timeRemain(player.getName())).replace("%status%", getQuestStatus(progression, quest, player)));
-                }
-
-                itemMeta.setDisplayName(PAPIHook.getPlaceholders(player, itemMeta.getDisplayName()));
-            }
-
-            if (!status.isEmpty() && !isStatusDisabled)
-                lore.add(ColorConvert.convertColorCode(PAPIHook.getPlaceholders(player, status)));
-
-            if (questsMap.get(quest).isAchieved()) {
-
-                if (isGlowingEnabled) {
-                    itemMeta.addEnchant(Enchantment.SILK_TOUCH, 1, false);
-                }
-
-                if (!achieved.isEmpty() && !isStatusDisabled) {
-                    lore.add(ColorConvert.convertColorCode(achieved));
-                }
-            } else {
-
-                if (quest.getQuestType().equals("GET")) {
-                    if (!completeGetType.isEmpty())
-                        lore.add(ColorConvert.convertColorCode(PAPIHook.getPlaceholders(player, completeGetType).replace("%progress%", String.valueOf(questsMap.get(quest).getProgression())).replace("%required%", String.valueOf(quest.getAmountRequired())).replace("%progressBar%", ProgressBar.getProgressBar(questsMap.get(quest).getProgression(), quest.getAmountRequired()))));
-                } else {
-                    if (!progression.isEmpty() && !isStatusDisabled) {
-                        lore.add(ColorConvert.convertColorCode(PAPIHook.getPlaceholders(player, progression).replace("%progress%", String.valueOf(questsMap.get(quest).getProgression())).replace("%required%", String.valueOf(quest.getAmountRequired())).replace("%progressBar%", ProgressBar.getProgressBar(questsMap.get(quest).getProgression(), quest.getAmountRequired()))));
-                    }
-                }
-            }
-
-            // fix for flags not working on Paper +1.21
-            AttributeModifier dummyModifier = new AttributeModifier(UUID.randomUUID(), "dummy", 0, AttributeModifier.Operation.ADD_NUMBER);
-            itemMeta.addAttributeModifier(Attribute.GENERIC_MAX_HEALTH, dummyModifier);
-
-            itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_POTION_EFFECTS, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_DESTROYS, ItemFlag.HIDE_PLACED_ON, ItemFlag.HIDE_DYE);
-
-            itemMeta.setLore(lore);
-            itemStack.setItemMeta(itemMeta);
-
-            if (slotQuests.get(i) != null) {
-                for (int slot : slotQuests.get(i)) {
-                    if (slot >= 0 && slot <= size) {
-                        playerQuestsInventoryIndividual.setItem(slot - 1, itemStack);
-                    } else {
-                        PluginLogger.error("An error occurred when loading the player interface.");
-                        PluginLogger.error("The slot defined for the quest number " + (i + 1) + " is out of bounds.");
-                    }
-                }
-            } else {
-                PluginLogger.error("An error occurred when loading the player interface.");
-                PluginLogger.error("The slot for the quest number " + (i + 1) + " is not defined in the playerInterface file.");
-            }
-
-            i++;
-        }
-        return playerQuestsInventoryIndividual;
-    }
-
-    /**
-     * Get the corresponding text for the quest status.
-     *
-     * @param progression the current progression of the quest.
-     * @param quest       the quest.
-     * @param player      the player.
-     * @return the achieved message or the progress message.
-     */
-    private String getQuestStatus(Progression progression, AbstractQuest quest, Player player) {
-        if (progression.isAchieved()) {
-            return PAPIHook.getPlaceholders(player, getAchieved());
-        } else {
-            return PAPIHook.getPlaceholders(player, getProgression().replace("%progress%", String.valueOf(progression.getProgression())).replace("%required%", String.valueOf(quest.getAmountRequired())).replace("%progressBar%", ProgressBar.getProgressBar(progression.getProgression(), quest.getAmountRequired())));
-        }
-    }
-
-    /**
-     * Get the name of the interface.
-     *
-     * @param player player to get the name.
-     * @return name of the interface.
-     */
-    public String getInterfaceName(Player player) {
-        return PAPIHook.getPlaceholders(player, interfaceName);
-    }
-
-    /**
-     * Get the "achieved" message.
-     *
-     * @return "achieved" message.
-     */
-    public String getAchieved() {
-        return achieved;
-    }
-
-    /**
-     * Get the "progression" message.
-     *
-     * @return "progression" message.
-     */
-    public String getProgression() {
-        return progression;
-    }
-
-    /**
-     * Get the "completeGetType" message.
-     *
-     * @return "completeGetType" message.
-     */
-    public String getCompleteGetType() {
-        return completeGetType;
+    public PlayerQuestsInterface(PlayerInterfaceFile playerInterfaceFile) {
+        this.playerInterfaceFile = playerInterfaceFile;
+        this.playerHead = new PlayerHead(playerInterfaceFile);
     }
 
     /**
@@ -253,16 +78,16 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
     public void load() {
         final ConfigurationSection section = playerInterfaceFile.getConfig().getConfigurationSection("player_interface");
         if (section == null) {
-            PluginLogger.error("An error occurred when loading the player interface.");
+            PluginLogger.error(ERROR_OCCURRED);
             PluginLogger.error("The playerInterface file is not correctly configured.");
             return;
         }
 
-        initVariables(section);
+        loadVariables(section);
 
         final ConfigurationSection questsSection = section.getConfigurationSection("quests");
         if (questsSection == null) {
-            PluginLogger.error("An error occurred when loading the player interface.");
+            PluginLogger.error(ERROR_OCCURRED);
             PluginLogger.error("The quests section is not defined in the playerInterface file.");
             return;
         }
@@ -285,7 +110,7 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
      *
      * @param interfaceConfig configuration section of the interface.
      */
-    private void initVariables(ConfigurationSection interfaceConfig) {
+    private void loadVariables(ConfigurationSection interfaceConfig) {
 
         /* clear all lists, in case of reload */
         slotQuests.clear();
@@ -341,89 +166,342 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
      */
     private void loadItems(ConfigurationSection itemsSection) {
         for (String element : itemsSection.getKeys(false)) {
+            final ConfigurationSection elementSection = itemsSection.getConfigurationSection(element);
+            if (elementSection == null) {
+                configurationError(element, "item", "The item is not defined.");
+                continue;
+            }
 
-            final ConfigurationSection itemData = itemsSection.getConfigurationSection(element + ".item");
-            if (itemData == null) {
+            final ConfigurationSection itemSection = elementSection.getConfigurationSection("item");
+            if (itemSection == null) {
                 configurationError(element, "item", "The item is not defined.");
                 continue;
             }
 
             /* load item */
-            final String material = itemData.getString("material");
+            final String material = itemSection.getString(MATERIAL);
             if (material == null) {
-                configurationError(element, "material", "The material of the item is not defined.");
+                configurationError(element, MATERIAL, "The material of the item is not defined.");
                 continue;
             }
 
-            ItemStack item;
-            if (material.equals("CUSTOM_HEAD")) {
-                final String texture = itemData.getString("texture");
-                item = ItemUtils.getCustomHead(texture);
-
-            } else if (material.contains(":")) {
-                item = getItem(material, element, "material");
-
-            } else item = new ItemStack(Material.valueOf(material));
-
-            if (item == null) item = new ItemStack(Material.BARRIER);
+            /* get item */
+            final ItemStack item = getItemStack(element, material, itemSection);
 
             /* get slot(s) */
-            final List<Integer> slots;
-            if (itemData.isList("slot")) {
-                slots = itemData.getIntegerList("slot");
+            final List<Integer> slots = getSlots(itemSection);
+
+            /* load item depending on its type */
+            loadItemType(elementSection, item, itemSection, slots);
+
+            /* add item to placeholders list if applicable */
+            loadPlaceholderItem(elementSection, slots, item);
+
+            /* add loaded items into base inventory */
+            addIntoBaseInventory(element, slots, item);
+        }
+    }
+
+    /**
+     * Get the slots where the item should be added.
+     *
+     * @param itemSection configuration section of the item.
+     * @return slots where the item should be added.
+     */
+    private static List<Integer> getSlots(ConfigurationSection itemSection) {
+        final List<Integer> slots;
+        if (itemSection.isList("slot")) {
+            slots = itemSection.getIntegerList("slot");
+        } else {
+            slots = List.of(itemSection.getInt("slot"));
+        }
+        return slots;
+    }
+
+    /**
+     * Get the item stack.
+     *
+     * @param element     name of the item.
+     * @param material    material of the item.
+     * @param itemSection configuration section of the item.
+     * @return item stack.
+     */
+    private ItemStack getItemStack(String element, String material, ConfigurationSection itemSection) {
+        ItemStack item;
+        if (material.equals("CUSTOM_HEAD")) {
+            final String texture = itemSection.getString("texture");
+            item = ItemUtils.getCustomHead(texture);
+
+        } else if (material.contains(":")) {
+            item = getItem(material, element, MATERIAL);
+
+        } else item = new ItemStack(Material.valueOf(material));
+
+        if (item == null) item = new ItemStack(Material.BARRIER);
+        return item;
+    }
+
+    /**
+     * Add the loaded item into the base inventory.
+     *
+     * @param element name of the item.
+     * @param slots   slots where the item should be added.
+     * @param item    item to add.
+     */
+    private void addIntoBaseInventory(String element, List<Integer> slots, ItemStack item) {
+        for (int slot : slots) {
+            if (slot >= 0 && slot <= size) {
+                playerQuestsInventoryBase.setItem(slot - 1, item);
             } else {
-                slots = List.of(itemData.getInt("slot"));
+                PluginLogger.error(ERROR_OCCURRED);
+                PluginLogger.error("The slot defined for the item " + element + OUT_OF_BOUNDS);
             }
+        }
+    }
 
-            /* affect item to slot(s) depending on the type */
-            final String itemType = itemsSection.getString(element + ".type");
-            switch (ItemType.valueOf(itemType)) {
-
-                case FILL -> {
-                    ItemMeta fillItemMeta = item.getItemMeta();
-
-                    fillItemMeta.setDisplayName(ChatColor.RESET + "");
-                    item.setItemMeta(fillItemMeta);
-                    fillItems.add(item);
-                }
-
-                case CLOSE -> {
-                    item.setItemMeta(getItemMeta(item, itemData));
-                    closeItems.add(item);
-                }
-
-                case PLAYER_COMMAND -> {
-                    List<String> commands = itemsSection.getStringList(element + ".commands");
-                    item.setItemMeta(getItemMeta(item, itemData));
-
-                    for (int slot : slots) {
-                        playerCommandsItems.put(slot - 1, commands);
-                    }
-                }
-
-                case CONSOLE_COMMAND -> {
-                    List<String> commands = itemsSection.getStringList(element + ".commands");
-                    item.setItemMeta(getItemMeta(item, itemData));
-
-                    for (int slot : slots) {
-                        consoleCommandsItems.put(slot - 1, commands);
-                    }
-                }
-            }
-
-            if (itemsSection.contains(element + ".use_placeholders") && itemsSection.getBoolean(element + ".use_placeholders")) {
-                for (int slot : slots) {
-                    papiItems.put(slot - 1, item);
-                }
-            }
-
+    /**
+     * Check if the item needs to be loaded with placeholders. If so add it to the placeholders list.
+     *
+     * @param section configuration section of the item.
+     * @param slots   slots where the item should be added.
+     * @param item    item to add.
+     */
+    private void loadPlaceholderItem(ConfigurationSection section, List<Integer> slots, ItemStack item) {
+        if (section.contains("use_placeholders") && section.getBoolean("use_placeholders")) {
             for (int slot : slots) {
-                if (slot >= 0 && slot <= size) {
-                    playerQuestsInventoryBase.setItem(slot - 1, item);
-                } else {
-                    PluginLogger.error("An error occurred when loading the player interface.");
-                    PluginLogger.error("The slot defined for the item " + element + " is out of bounds.");
+                papiItems.put(slot - 1, item);
+            }
+        }
+    }
+
+    /**
+     * Load the item depending on its type.
+     *
+     * @param elementSection configuration section of the element.
+     * @param item           item to load.
+     * @param itemSection    configuration section of the item.
+     * @param slots          slots where the item should be added.
+     */
+    private void loadItemType(ConfigurationSection elementSection, ItemStack item, ConfigurationSection itemSection, List<Integer> slots) {
+        final String itemType = elementSection.getString("type");
+        switch (ItemType.valueOf(itemType)) {
+            case FILL -> {
+                final ItemMeta fillItemMeta = item.getItemMeta();
+                if (fillItemMeta == null) return;
+
+                fillItemMeta.setDisplayName(ChatColor.RESET + "");
+                item.setItemMeta(fillItemMeta);
+                fillItems.add(item);
+            }
+
+            case CLOSE -> {
+                item.setItemMeta(getItemMeta(item, itemSection));
+                closeItems.add(item);
+            }
+
+            case PLAYER_COMMAND -> {
+                final List<String> commands = elementSection.getStringList("commands");
+                item.setItemMeta(getItemMeta(item, itemSection));
+
+                for (int slot : slots) {
+                    playerCommandsItems.put(slot - 1, commands);
                 }
+            }
+
+            case CONSOLE_COMMAND -> {
+                final List<String> commands = elementSection.getStringList("commands");
+                item.setItemMeta(getItemMeta(item, itemSection));
+
+                for (int slot : slots) {
+                    consoleCommandsItems.put(slot - 1, commands);
+                }
+            }
+        }
+    }
+
+    /**
+     * Load the player quests inventory for the given player.
+     *
+     * @param player player to load the inventory.
+     * @return player quests inventory.
+     */
+    public Inventory getPlayerQuestsInterface(Player player) {
+
+        final Map<String, PlayerQuests> activeQuests = QuestsManager.getActiveQuests();
+
+        if (!activeQuests.containsKey(player.getName())) {
+            PluginLogger.error("Impossible to find the player " + player.getName() + " in the active quests.");
+            PluginLogger.error("It can happen if the player try to open the interface while the server/plugin is reloading.");
+            PluginLogger.error("If the problem persist, please contact the developer.");
+            return null;
+        }
+
+        final PlayerQuests playerQuests = activeQuests.get(player.getName());
+
+        if (QuestLoaderUtils.isTimeToRenew(player, activeQuests)) return getPlayerQuestsInterface(player);
+
+        final Map<AbstractQuest, Progression> questsMap = playerQuests.getQuests();
+
+        final Inventory playerQuestsInventoryIndividual = Bukkit.createInventory(null, size, PAPIHook.getPlaceholders(player, interfaceName));
+        playerQuestsInventoryIndividual.setContents(playerQuestsInventoryBase.getContents());
+
+        if (!papiItems.isEmpty()) {
+            applyPapiItems(player, playerQuests, playerQuestsInventoryIndividual);
+        }
+
+        /* load player head */
+        playerQuestsInventoryIndividual.setContents(playerHead.setPlayerHead(playerQuestsInventoryIndividual, player, size).getContents());
+
+        /* load quests */
+        applyQuestsItems(player, questsMap, playerQuests, playerQuestsInventoryIndividual);
+
+        return playerQuestsInventoryIndividual;
+    }
+
+    /**
+     * Apply the quests items to the inventory.
+     *
+     * @param player       player to apply the items.
+     * @param questsMap    quests to apply.
+     * @param playerQuests player quests.
+     * @param inventory    inventory to apply the items.
+     */
+    private void applyQuestsItems(Player player, Map<AbstractQuest, Progression> questsMap, PlayerQuests playerQuests, Inventory inventory) {
+        int i = 0;
+        for (Map.Entry<AbstractQuest, Progression> entry : questsMap.entrySet()) {
+            final AbstractQuest quest = entry.getKey();
+            final Progression playerProgression = entry.getValue();
+
+            final ItemStack itemStack = getQuestItem(quest, playerProgression);
+            final ItemMeta itemMeta = itemStack.getItemMeta();
+            if (itemMeta == null) continue;
+
+            configureItemMeta(itemMeta, quest, playerProgression, player, playerQuests);
+            itemStack.setItemMeta(itemMeta);
+            placeItemInInventory(i, itemStack, inventory);
+
+            i++;
+        }
+    }
+
+    /**
+     * Get the item of the quest depending on its progression.
+     *
+     * @param quest             the quest.
+     * @param playerProgression the player progression of the quest.
+     * @return the item of the quest.
+     */
+    private ItemStack getQuestItem(AbstractQuest quest, Progression playerProgression) {
+        return playerProgression.isAchieved() ? quest.getAchievedItem().clone() : quest.getMenuItem().clone();
+    }
+
+    /**
+     * Configure the ItemMeta of the item.
+     *
+     * @param itemMeta          the item meta to configure.
+     * @param quest             the quest of the item.
+     * @param playerProgression the player progression of the quest.
+     * @param player            the player.
+     * @param playerQuests      the player quests.
+     */
+    private void configureItemMeta(ItemMeta itemMeta, AbstractQuest quest, Progression playerProgression, Player player, PlayerQuests playerQuests) {
+        itemMeta.setDisplayName(PAPIHook.getPlaceholders(player, quest.getQuestName()));
+        List<String> lore = generateLore(quest, playerProgression, player, playerQuests);
+
+        if (playerProgression.isAchieved() && isGlowingEnabled) {
+            itemMeta.addEnchant(Enchantment.SILK_TOUCH, 1, false);
+        }
+
+        itemMeta.addAttributeModifier(Attribute.GENERIC_MAX_HEALTH,
+                new AttributeModifier(UUID.randomUUID(), "dummy", 0, AttributeModifier.Operation.ADD_NUMBER));
+        itemMeta.addItemFlags(ItemFlag.values());
+        itemMeta.setLore(lore);
+    }
+
+    /**
+     * Generate the lore of the item.
+     *
+     * @param quest             the quest of the item.
+     * @param playerProgression the player progression of the quest.
+     * @param player            the player.
+     * @param playerQuests      the player quests.
+     * @return the lore of the item.
+     */
+    private List<String> generateLore(AbstractQuest quest, Progression playerProgression, Player player, PlayerQuests playerQuests) {
+        final List<String> lore = new ArrayList<>(quest.getQuestDesc());
+        if (quest.isUsingPlaceholders()) {
+            lore.replaceAll(str -> PAPIHook.getPlaceholders(player, str)
+                    .replace(PROGRESS, String.valueOf(playerProgression.getProgression()))
+                    .replace(PROGRESS_BAR, ProgressBar.getProgressBar(playerProgression.getProgression(), quest.getAmountRequired()))
+                    .replace(REQUIRED, String.valueOf(quest.getAmountRequired()))
+                    .replace("%achieved%", String.valueOf(playerQuests.getAchievedQuests()))
+                    .replace("%drawIn%", TimeRemain.timeRemain(player.getName()))
+                    .replace("%status%", getQuestStatus(playerProgression, quest, player)));
+        }
+
+        if (!status.isEmpty() && !isStatusDisabled) {
+            lore.add(ColorConvert.convertColorCode(PAPIHook.getPlaceholders(player, status)));
+        }
+
+        if (playerProgression.isAchieved() && !achieved.isEmpty() && !isStatusDisabled) {
+            lore.add(ColorConvert.convertColorCode(achieved));
+        } else if (!progression.isEmpty() && !isStatusDisabled) {
+            lore.add(ColorConvert.convertColorCode(PAPIHook.getPlaceholders(player, progression)
+                    .replace(PROGRESS, String.valueOf(playerProgression.getProgression()))
+                    .replace(REQUIRED, String.valueOf(quest.getAmountRequired()))
+                    .replace(PROGRESS_BAR, ProgressBar.getProgressBar(playerProgression.getProgression(), quest.getAmountRequired()))));
+        }
+
+        return lore;
+    }
+
+    private void placeItemInInventory(int questIndex, ItemStack itemStack, Inventory inventory) {
+        List<Integer> slots = slotQuests.get(questIndex);
+        if (slots == null) {
+            PluginLogger.error(ERROR_OCCURRED + " Slot not defined for quest " + (questIndex + 1));
+            return;
+        }
+        for (int slot : slots) {
+            if (slot >= 0 && slot <= size) {
+                inventory.setItem(slot - 1, itemStack);
+            } else {
+                PluginLogger.error(ERROR_OCCURRED + " Slot " + slot + " for quest " + (questIndex + 1) + OUT_OF_BOUNDS);
+            }
+        }
+    }
+
+    /**
+     * Apply placeholders to items.
+     *
+     * @param player       player to apply placeholders.
+     * @param playerQuests player quests.
+     * @param inventory    player quests inventory.
+     */
+    private void applyPapiItems(Player player, PlayerQuests playerQuests, Inventory inventory) {
+        for (Map.Entry<Integer, ItemStack> entry : papiItems.entrySet()) {
+            final Integer slot = entry.getKey();
+            final ItemStack itemCopy = entry.getValue().clone();
+
+            if (slot < 0 || slot >= size) {
+                PluginLogger.error(ERROR_OCCURRED);
+                PluginLogger.error("A placeholder at slot " + slot + OUT_OF_BOUNDS);
+                continue;
+            }
+
+            final ItemMeta meta = itemCopy.getItemMeta();
+            if (meta != null) {
+                meta.setDisplayName(PAPIHook.getPlaceholders(player, meta.getDisplayName()));
+
+                final List<String> lore = meta.getLore();
+                if (lore != null) {
+                    for (String str : lore) {
+                        lore.set(lore.indexOf(str), PAPIHook.getPlaceholders(player, str).replace("%achieved%", String.valueOf(playerQuests.getAchievedQuests())).replace("%drawIn%", TimeRemain.timeRemain(player.getName())));
+                    }
+                }
+
+                meta.setLore(lore);
+                itemCopy.setItemMeta(meta);
+                inventory.setItem(slot, itemCopy);
             }
         }
     }
@@ -455,6 +533,33 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
         return meta;
     }
 
+    /**
+     * Get the corresponding text for the quest status.
+     *
+     * @param progression the current progression of the quest.
+     * @param quest       the quest.
+     * @param player      the player.
+     * @return the achieved message or the progress message.
+     */
+    private String getQuestStatus(Progression progression, AbstractQuest quest, Player player) {
+        if (progression.isAchieved()) {
+            return PAPIHook.getPlaceholders(player, getAchieved());
+        } else {
+            return PAPIHook.getPlaceholders(player, getProgression().replace(PROGRESS, String.valueOf(progression.getProgression())).replace(REQUIRED, String.valueOf(quest.getAmountRequired())).replace(PROGRESS_BAR, ProgressBar.getProgressBar(progression.getProgression(), quest.getAmountRequired())));
+        }
+    }
+
+
+    /**
+     * Get the corresponding text for the interface name.
+     *
+     * @param player player to get the interface name.
+     * @return the interface name.
+     */
+    public String getInterfaceName(Player player) {
+        return PAPIHook.getPlaceholders(player, interfaceName);
+    }
+
     public boolean isFillItem(ItemStack itemStack) {
         return fillItems.contains(itemStack);
     }
@@ -477,5 +582,17 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
 
     public List<String> getConsoleCommands(int slot) {
         return consoleCommandsItems.get(slot);
+    }
+
+    public String getAchieved() {
+        return achieved;
+    }
+
+    public String getProgression() {
+        return progression;
+    }
+
+    public String getCompleteGetType() {
+        return completeGetType;
     }
 }
