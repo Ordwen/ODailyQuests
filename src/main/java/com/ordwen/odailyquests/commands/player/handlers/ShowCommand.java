@@ -1,6 +1,6 @@
 package com.ordwen.odailyquests.commands.player.handlers;
 
-import com.ordwen.odailyquests.commands.interfaces.InterfacesManager;
+import com.ordwen.odailyquests.commands.interfaces.QuestsInterfaces;
 import com.ordwen.odailyquests.commands.player.PCommandHandler;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.enums.QuestsPermissions;
@@ -14,8 +14,11 @@ public class ShowCommand extends PCommandHandler {
     private static final String MEDIUM = "medium";
     private static final String HARD = "hard";
 
-    public ShowCommand(Player player, String[] args) {
+    private final QuestsInterfaces questsInterfaces;
+
+    public ShowCommand(QuestsInterfaces questsInterfaces, Player player, String[] args) {
         super(player, args);
+        this.questsInterfaces = questsInterfaces;
     }
 
     @Override
@@ -68,7 +71,7 @@ public class ShowCommand extends PCommandHandler {
             return;
         }
 
-        final Inventory inventory = InterfacesManager.getInterfaceFirstPage(GLOBAL, player);
+        final Inventory inventory = questsInterfaces.getInterfaceFirstPage(GLOBAL, player);
         player.openInventory(inventory);
     }
 
@@ -80,7 +83,7 @@ public class ShowCommand extends PCommandHandler {
             noPermissionCategory(player);
             return;
         }
-        final Inventory inventory = InterfacesManager.getInterfaceFirstPage(EASY, player);
+        final Inventory inventory = questsInterfaces.getInterfaceFirstPage(EASY, player);
         player.openInventory(inventory);
     }
 
@@ -92,7 +95,7 @@ public class ShowCommand extends PCommandHandler {
             noPermissionCategory(player);
             return;
         }
-        final Inventory inventory = InterfacesManager.getInterfaceFirstPage(MEDIUM, player);
+        final Inventory inventory = questsInterfaces.getInterfaceFirstPage(MEDIUM, player);
         player.openInventory(inventory);
     }
 
@@ -104,7 +107,7 @@ public class ShowCommand extends PCommandHandler {
             noPermissionCategory(player);
             return;
         }
-        final Inventory inventory = InterfacesManager.getInterfaceFirstPage(HARD, player);
+        final Inventory inventory = questsInterfaces.getInterfaceFirstPage(HARD, player);
         player.openInventory(inventory);
     }
 }

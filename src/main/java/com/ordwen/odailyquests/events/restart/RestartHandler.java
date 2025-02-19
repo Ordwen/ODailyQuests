@@ -11,7 +11,7 @@ public class RestartHandler {
         this.plugin = oDailyQuests;
     }
 
-    protected void setServerStopping() {
+    public void setServerStopping() {
         PluginLogger.warn("Server is stopping. The datas will be saved in synchronous mode.");
         PluginLogger.warn("If you think this is a mistake, please contact the developer!");
         plugin.setServerStopping(true);

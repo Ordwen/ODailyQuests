@@ -31,8 +31,8 @@ public class PickupItemListener extends PlayerProgressor implements Listener {
                 }
             }
 
-            Debugger.addDebug("=========================================================================================");
-            Debugger.addDebug("PickupItemListener: onPickupItemEvent summoned by " + player.getName() + " for " + item.getType() + ".");
+            Debugger.write("=========================================================================================");
+            Debugger.write("PickupItemListener: onPickupItemEvent summoned by " + player.getName() + " for " + item.getType() + ".");
 
             setPlayerQuestProgression(event, player, event.getItem().getItemStack().getAmount(), "PICKUP");
         }

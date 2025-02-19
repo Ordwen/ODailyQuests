@@ -15,7 +15,7 @@ public class YAMLtoH2Converter extends SQLConverter {
             ODailyQuests.morePaperLib.scheduling().asyncScheduler().run(() -> {
 
                 final FileConfiguration progressionFile = ProgressionFile.getProgressionFileConfiguration();
-                final SQLManager sqlManager = new H2Manager(ODailyQuests.INSTANCE);
+                final SQLManager sqlManager = new H2Manager();
 
                 convertData(progressionFile, sqlManager);
             });

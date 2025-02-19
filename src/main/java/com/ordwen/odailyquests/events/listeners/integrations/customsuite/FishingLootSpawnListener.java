@@ -10,7 +10,7 @@ public class FishingLootSpawnListener extends PlayerProgressor implements Listen
 
     @EventHandler
     public void onLootSpawn(FishingLootSpawnEvent event) {
-        Debugger.addDebug("FishingLootSpawnListener: onLootSpawn summoned by " + event.getPlayer().getName());
+        Debugger.write("FishingLootSpawnListener: onLootSpawn summoned by " + event.getPlayer().getName());
         setPlayerQuestProgression(event, event.getPlayer(), 1, "FISH");
     }
 }

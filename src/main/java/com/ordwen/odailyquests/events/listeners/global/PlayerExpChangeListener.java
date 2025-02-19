@@ -11,8 +11,8 @@ public class PlayerExpChangeListener extends PlayerProgressor implements Listene
 
     @EventHandler
     public void onPlayerExpChangeEvent(PlayerExpChangeEvent event) {
-        Debugger.addDebug("=========================================================================================");
-        Debugger.addDebug("PlayerExpChangeListener: onPlayerExpChangeEvent summoned by " + event.getPlayer().getName());
+        Debugger.write("=========================================================================================");
+        Debugger.write("PlayerExpChangeListener: onPlayerExpChangeEvent summoned by " + event.getPlayer().getName());
 
         setPlayerQuestProgression(event, event.getPlayer(), event.getAmount(), "EXP_POINTS");
     }

@@ -16,10 +16,10 @@ public class PlayerHarvestBlockListener extends PlayerProgressor implements List
 
     @EventHandler
     public void onPlayerHarvestBlock(PlayerHarvestBlockEvent event) {
-        Debugger.addDebug("PlayerHarvestBlockListener: onPlayerHarvestBlockEvent summoned.");
+        Debugger.write("PlayerHarvestBlockListener: onPlayerHarvestBlockEvent summoned.");
 
         if (event.isCancelled()) {
-            Debugger.addDebug("PlayerHarvestBlockListener: onPlayerHarvestBlockEvent is cancelled.");
+            Debugger.write("PlayerHarvestBlockListener: onPlayerHarvestBlockEvent is cancelled.");
             return;
         }
 

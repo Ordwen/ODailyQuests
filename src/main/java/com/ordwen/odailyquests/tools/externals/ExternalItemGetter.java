@@ -1,8 +1,8 @@
 package com.ordwen.odailyquests.tools.externals;
 
-import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.Buttons;
 import com.ordwen.odailyquests.configuration.integrations.ItemsAdderEnabled;
 import com.ordwen.odailyquests.configuration.integrations.OraxenEnabled;
+import com.ordwen.odailyquests.tools.ItemUtils;
 import com.ordwen.odailyquests.tools.Pair;
 import dev.lone.itemsadder.api.CustomStack;
 import io.th0rgal.oraxen.api.OraxenItems;
@@ -91,6 +91,6 @@ public abstract class ExternalItemGetter implements IExternalItemGetter {
      */
     @Override
     public Pair<String, ItemStack> getCustomHead(String texture) {
-        return new Pair<>("", Buttons.getCustomHead(texture));
+        return new Pair<>("", ItemUtils.getCustomHead(texture));
     }
 }

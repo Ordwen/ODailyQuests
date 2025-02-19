@@ -13,8 +13,8 @@ public class ShearEntityListener extends PlayerProgressor implements Listener {
     public void onShearEntityEvent(PlayerShearEntityEvent event) {
         if (event.isCancelled()) return;
 
-        Debugger.addDebug("=========================================================================================");
-        Debugger.addDebug("ShearEntityListener: onShearEntityEvent summoned by " + event.getPlayer().getName() + " for " + event.getEntity().getType() + ".");
+        Debugger.write("=========================================================================================");
+        Debugger.write("ShearEntityListener: onShearEntityEvent summoned by " + event.getPlayer().getName() + " for " + event.getEntity().getType() + ".");
 
         setPlayerQuestProgression(event, event.getPlayer(), 1, "SHEAR");
     }

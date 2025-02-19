@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.quests.player.progression.storage.sql;
 
-import com.ordwen.odailyquests.configuration.ConfigurationHolder;
+import com.ordwen.odailyquests.configuration.essentials.Debugger;
+import com.ordwen.odailyquests.enums.SQLQuery;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -13,45 +14,20 @@ public abstract class SQLManager {
     protected LoadProgressionSQL loadProgressionSQL;
     protected SaveProgressionSQL saveProgressionSQL;
 
-    private static final String PLAYER_TABLE = ConfigurationHolder.DatabaseConfig.PLAYER_TABLE_NAME;
-    private static final String PROGRESSION_TABLE = ConfigurationHolder.DatabaseConfig.PROGRESSION_TABLE_NAME;
-
     public void setupTables() {
-        final Connection connection = getConnection();
-        try {
-            if (!tableExists(connection, PLAYER_TABLE)) {
-                PreparedStatement preparedStatement = connection.prepareStatement(SQLQueries.CREATE_PLAYER_TABLE);
-                preparedStatement.execute();
+        try (final Connection connection = getConnection();
+             final PreparedStatement playerStatement = connection.prepareStatement(SQLQuery.CREATE_PLAYER_TABLE.getQuery());
+             final PreparedStatement progressionStatement = connection.prepareStatement(SQLQuery.CREATE_PROGRESSION_TABLE.getQuery())) {
 
-                preparedStatement.close();
-                PluginLogger.info("Table 'Player' created in database.");
-            }
-            if (!tableExists(connection, PROGRESSION_TABLE)) {
-                PreparedStatement preparedStatement = connection.prepareStatement(SQLQueries.CREATE_PROGRESSION_TABLE);
-                preparedStatement.execute();
+            playerStatement.execute();
+            Debugger.write("Table odq_player created or found in database.");
 
-                preparedStatement.close();
-                PluginLogger.info("Table 'Progression' created in database.");
-            }
-            connection.close();
+            progressionStatement.execute();
+            Debugger.write("Table odq_progression created or found in database.");
+
         } catch (SQLException e) {
             PluginLogger.error(e.getMessage());
         }
-    }
-
-    /**
-     * Check if a table exists in database.
-     *
-     * @param connection connection to check.
-     * @param tableName  name of the table to check.
-     * @return true if table exists.
-     * @throws SQLException SQL errors.
-     */
-    private static boolean tableExists(Connection connection, String tableName) throws SQLException {
-        DatabaseMetaData meta = connection.getMetaData();
-        ResultSet resultSet = meta.getTables(null, null, tableName, new String[]{"TABLE"});
-
-        return resultSet.next();
     }
 
     /**
@@ -79,6 +55,7 @@ public abstract class SQLManager {
 
     /**
      * Test database connection.
+     *
      * @throws SQLException SQL errors.
      */
     protected void testConnection() throws SQLException {
@@ -91,6 +68,7 @@ public abstract class SQLManager {
 
     /**
      * Get load progression SQL instance.
+     *
      * @return load progression SQL instance.
      */
     public LoadProgressionSQL getLoadProgressionSQL() {
@@ -99,6 +77,7 @@ public abstract class SQLManager {
 
     /**
      * Get save progression SQL instance.
+     *
      * @return save progression SQL instance.
      */
     public SaveProgressionSQL getSaveProgressionSQL() {

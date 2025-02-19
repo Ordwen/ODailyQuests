@@ -21,8 +21,8 @@ public class PlayerInteractListener extends PlayerProgressor implements Listener
         if (block.getType() != Material.PUMPKIN) return;
         if (event.getPlayer().getInventory().getItemInMainHand().getType() != Material.SHEARS) return;
 
-        Debugger.addDebug("=========================================================================================");
-        Debugger.addDebug("PlayerInteractListener: onPlayerInteract summoned by " + event.getPlayer().getName());
+        Debugger.write("=========================================================================================");
+        Debugger.write("PlayerInteractListener: onPlayerInteract summoned by " + event.getPlayer().getName());
 
         setPlayerQuestProgression(event, event.getPlayer(), 1, "CARVE");
     }

@@ -15,7 +15,7 @@ public class CropBreakListener extends PlayerProgressor implements Listener {
         final Entity breaker = event.entityBreaker();
 
         if (breaker instanceof Player player) {
-            Debugger.addDebug("CropBreakListener: onCropBreak summoned by " + player.getName() + ".");
+            Debugger.write("CropBreakListener: onCropBreak summoned by " + player.getName() + ".");
             setPlayerQuestProgression(event, player, 1, "BREAK");
         }
     }

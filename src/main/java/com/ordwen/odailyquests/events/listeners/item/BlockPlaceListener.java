@@ -28,7 +28,7 @@ public class BlockPlaceListener extends PlayerProgressor implements Listener {
         boolean valid = true;
 
         if (Antiglitch.isStoreBrokenBlocks()) {
-            Debugger.addDebug("BlockPlaceListener: onBlockPlaceEvent checking for broken blocks.");
+            Debugger.write("BlockPlaceListener: onBlockPlaceEvent checking for broken blocks.");
             final ItemStack placedItem = player.getInventory().getItemInMainHand();
             final ItemMeta placedItemMeta = placedItem.getItemMeta();
 
@@ -37,20 +37,20 @@ public class BlockPlaceListener extends PlayerProgressor implements Listener {
                 final String placedItemKey = pdc.get(Antiglitch.BROKEN_KEY, PersistentDataType.STRING);
 
                 if (placedItemKey != null && placedItemKey.equals(player.getUniqueId().toString())) {
-                    Debugger.addDebug("BlockPlaceListener: onBlockPlaceEvent cancelled due to broken block.");
+                    Debugger.write("BlockPlaceListener: onBlockPlaceEvent cancelled due to broken block.");
                     valid = false;
                 }
             }
-            Debugger.addDebug("BlockPlaceListener: onBlockPlaceEvent broken block check complete.");
+            Debugger.write("BlockPlaceListener: onBlockPlaceEvent broken block check complete.");
         }
 
         if (valid) {
-            Debugger.addDebug("BlockPlaceListener: onBlockPlaceEvent summoned by " + player.getName() + " for " + block.getType() + ".");
+            Debugger.write("BlockPlaceListener: onBlockPlaceEvent summoned by " + player.getName() + " for " + block.getType() + ".");
             setPlayerQuestProgression(event, player, 1, "PLACE");
         }
 
         if (Antiglitch.isStorePlacedBlocks()) {
-            Debugger.addDebug("BlockPlaceListener: onBlockPlaceEvent storing placed block.");
+            Debugger.write("BlockPlaceListener: onBlockPlaceEvent storing placed block.");
             final PersistentDataContainer pdc = new CustomBlockData(block, ODailyQuests.INSTANCE);
             pdc.set(Antiglitch.PLACED_KEY, PersistentDataType.STRING, block.getType().name());
         }

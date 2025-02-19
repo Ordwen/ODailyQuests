@@ -19,10 +19,10 @@ public class CustomBlockBreakListener extends PlayerProgressor implements Listen
 
     @EventHandler
     public void onCustomBlockBreakEvent(CustomBlockBreakEvent event) {
-        Debugger.addDebug("CustomBlockBreakListener: onCustomBlockBreakEvent summoned.");
+        Debugger.write("CustomBlockBreakListener: onCustomBlockBreakEvent summoned.");
 
         if (event.isCancelled()) {
-            Debugger.addDebug("CustomBlockBreakListener: onCustomBlockBreakEvent is cancelled.");
+            Debugger.write("CustomBlockBreakListener: onCustomBlockBreakEvent is cancelled.");
             return;
         }
 

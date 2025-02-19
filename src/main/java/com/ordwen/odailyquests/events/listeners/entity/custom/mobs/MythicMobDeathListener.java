@@ -21,7 +21,7 @@ public class MythicMobDeathListener extends PlayerProgressor implements Listener
             final ActiveMob.ThreatTable threatTable = event.getMob().getThreatTable();
 
             if (threatTable == null) {
-                Debugger.addDebug("Threat table is null for mob: " + event.getMob().getDisplayName());
+                Debugger.write("Threat table is null for mob: " + event.getMob().getDisplayName());
                 return;
             }
 

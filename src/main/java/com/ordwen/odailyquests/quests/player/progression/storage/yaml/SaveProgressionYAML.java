@@ -7,11 +7,11 @@ import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.tools.PluginLogger;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class SaveProgressionYAML {
 
@@ -21,11 +21,10 @@ public class SaveProgressionYAML {
      * @param playerName   player name.
      * @param playerQuests player quests.
      */
-    public void saveProgression(String playerName, PlayerQuests playerQuests, boolean isAsync) {
+    public void saveProgression(String playerName, PlayerQuests playerQuests, boolean isServerStopping) {
 
-        if (isAsync) {
-            ODailyQuests.morePaperLib.scheduling().asyncScheduler().run(() -> updateFile(playerName, playerQuests));
-        } else updateFile(playerName, playerQuests);
+        if (isServerStopping) updateFile(playerName, playerQuests);
+        else ODailyQuests.morePaperLib.scheduling().asyncScheduler().run(() -> updateFile(playerName, playerQuests));
     }
 
     private void updateFile(String playerName, PlayerQuests playerQuests) {
@@ -35,7 +34,7 @@ public class SaveProgressionYAML {
         int achievedQuests = playerQuests.getAchievedQuests();
         int totalAchievedQuests = playerQuests.getTotalAchievedQuests();
 
-        final LinkedHashMap<AbstractQuest, Progression> quests = playerQuests.getPlayerQuests();
+        final Map<AbstractQuest, Progression> quests = playerQuests.getQuests();
 
         progressionFile.set(playerName + ".timestamp", timestamp);
         progressionFile.set(playerName + ".achievedQuests", achievedQuests);

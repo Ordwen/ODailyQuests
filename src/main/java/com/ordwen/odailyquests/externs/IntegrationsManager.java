@@ -117,7 +117,7 @@ public class IntegrationsManager {
      */
     private void loadCitizens() {
         if (CitizensHook.isCitizensEnabled()) {
-            getServer().getPluginManager().registerEvents(new CitizensHook(), oDailyQuests);
+            getServer().getPluginManager().registerEvents(new CitizensHook(oDailyQuests.getInterfacesManager()), oDailyQuests);
             PluginLogger.info("Citizens successfully hooked.");
         }
     }
@@ -127,7 +127,7 @@ public class IntegrationsManager {
      */
     private void loadPAPI() {
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            new PAPIExpansion().register();
+            new PAPIExpansion(oDailyQuests.getInterfacesManager().getPlayerQuestsInterface()).register();
             PluginLogger.info("PlaceholderAPI successfully hooked.");
         }
     }

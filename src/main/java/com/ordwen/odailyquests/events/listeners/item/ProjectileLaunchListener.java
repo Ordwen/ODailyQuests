@@ -16,8 +16,8 @@ public class ProjectileLaunchListener extends PlayerProgressor implements Listen
 
         if (event.getEntity().getShooter() instanceof Player player) {
 
-            Debugger.addDebug("=========================================================================================");
-            Debugger.addDebug("ProjectileLaunchListener: onProjectileLaunch summoned by " + player.getName() + " for " + event.getEntity().getType() + ".");
+            Debugger.write("=========================================================================================");
+            Debugger.write("ProjectileLaunchListener: onProjectileLaunch summoned by " + player.getName() + " for " + event.getEntity().getType() + ".");
 
             setPlayerQuestProgression(event, player, 1, "LAUNCH");
         }

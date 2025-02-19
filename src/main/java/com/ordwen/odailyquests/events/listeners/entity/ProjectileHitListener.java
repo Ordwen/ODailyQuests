@@ -27,8 +27,8 @@ public class ProjectileHitListener extends PlayerProgressor implements Listener 
         // check if player is reflecting fireball
         if (event.getEntityType() == EntityType.FIREBALL) {
             if (entity instanceof Ghast) {
-                Debugger.addDebug("=========================================================================================");
-                Debugger.addDebug("ProjectileHitListener: onProjectileHit summoned by " + player.getName() + " for " + entity.getType() + ".");
+                Debugger.write("=========================================================================================");
+                Debugger.write("ProjectileHitListener: onProjectileHit summoned by " + player.getName() + " for " + entity.getType() + ".");
 
                 setPlayerQuestProgression(event, player, 1, "FIREBALL_REFLECT");
             }

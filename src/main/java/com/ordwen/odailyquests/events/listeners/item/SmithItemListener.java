@@ -60,8 +60,8 @@ public class SmithItemListener extends PlayerProgressor implements Listener {
 
         result.setAmount(recipeAmount);
 
-        Debugger.addDebug("=========================================================================================");
-        Debugger.addDebug("SmithItemListener: onSmithItemEvent summoned by " + player.getName() + " for " + result.getType() + ".");
+        Debugger.write("=========================================================================================");
+        Debugger.write("SmithItemListener: onSmithItemEvent summoned by " + player.getName() + " for " + result.getType() + ".");
         setPlayerQuestProgression(event, player, result.getAmount(), "CRAFT");
     }
 

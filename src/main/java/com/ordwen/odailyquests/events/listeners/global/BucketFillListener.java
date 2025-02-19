@@ -19,8 +19,8 @@ public class BucketFillListener extends PlayerProgressor implements Listener {
         if (item == null) return;
 
         if (item.getType() == Material.MILK_BUCKET) {
-            Debugger.addDebug("=========================================================================================");
-            Debugger.addDebug("BucketFillListener: onPlayerBucketFill summoned by " + event.getPlayer().getName());
+            Debugger.write("=========================================================================================");
+            Debugger.write("BucketFillListener: onPlayerBucketFill summoned by " + event.getPlayer().getName());
 
             setPlayerQuestProgression(event, event.getPlayer(), 1, "MILKING");
         }

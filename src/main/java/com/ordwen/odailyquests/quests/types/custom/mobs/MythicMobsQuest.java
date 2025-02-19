@@ -22,8 +22,8 @@ public class MythicMobsQuest extends CustomMobQuest {
     @Override
     public boolean canProgress(Event provided) {
         if (provided instanceof MythicMobDeathEvent event) {
-            Debugger.addDebug("MythicMobsQuest: Checking if required entity was killed.");
-            Debugger.addDebug("MythicMobsQuest: Killed entity: " + event.getMobType().getInternalName());
+            Debugger.write("MythicMobsQuest: Checking if required entity was killed.");
+            Debugger.write("MythicMobsQuest: Killed entity: " + event.getMobType().getInternalName());
             return super.isRequiredEntity(event.getMobType().getInternalName());
         }
         return false;

@@ -15,8 +15,8 @@ public class EntityBreedListener extends PlayerProgressor implements Listener {
         if (event.isCancelled()) return;
 
         if (event.getBreeder() != null && event.getBreeder() instanceof Player player) {
-            Debugger.addDebug("=========================================================================================");
-            Debugger.addDebug("EntityBreedEvent: onEntityBreadEvent summoned by " + player.getName() + " for " + event.getEntityType() + ".");
+            Debugger.write("=========================================================================================");
+            Debugger.write("EntityBreedEvent: onEntityBreadEvent summoned by " + player.getName() + " for " + event.getEntityType() + ".");
             setPlayerQuestProgression(event, player, 1, "BREED");
         }
     }

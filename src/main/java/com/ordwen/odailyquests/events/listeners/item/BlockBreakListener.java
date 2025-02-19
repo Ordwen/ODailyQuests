@@ -22,9 +22,9 @@ public class BlockBreakListener extends PlayerProgressor implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockBreakEvent(BlockBreakEvent event) {
 
-        Debugger.addDebug("BlockBreakListener: onBlockBreakEvent summoned.");
+        Debugger.write("BlockBreakListener: onBlockBreakEvent summoned.");
         if (event.isCancelled()) {
-            Debugger.addDebug("BlockBreakListener: onBlockBreakEvent cancelled.");
+            Debugger.write("BlockBreakListener: onBlockBreakEvent cancelled.");
             return;
         }
 
@@ -34,7 +34,7 @@ public class BlockBreakListener extends PlayerProgressor implements Listener {
         if (ItemsAdderEnabled.isEnabled()) {
             final CustomBlock customBlock = CustomBlock.byAlreadyPlaced(block);
             if (customBlock != null) {
-                Debugger.addDebug("BlockBreakListener: onBlockBreakEvent cancelled due to ItemsAdder custom block.");
+                Debugger.write("BlockBreakListener: onBlockBreakEvent cancelled due to ItemsAdder custom block.");
                 return;
             }
         }
@@ -42,7 +42,7 @@ public class BlockBreakListener extends PlayerProgressor implements Listener {
         boolean valid = canProgress(block);
 
         if (valid) {
-            Debugger.addDebug("BlockBreakListener: onBlockBreakEvent summoned by " + player.getName() + " for " + block.getType() + ".");
+            Debugger.write("BlockBreakListener: onBlockBreakEvent summoned by " + player.getName() + " for " + block.getType() + ".");
             setPlayerQuestProgression(event, player, 1, "BREAK");
         }
     }
@@ -56,22 +56,22 @@ public class BlockBreakListener extends PlayerProgressor implements Listener {
      */
     private static boolean canProgress(Block block) {
         if (Antiglitch.isStorePlacedBlocks()) {
-            Debugger.addDebug("BlockBreakListener: onBlockBreakEvent checking for placed blocks.");
+            Debugger.write("BlockBreakListener: onBlockBreakEvent checking for placed blocks.");
             if (block.getBlockData() instanceof Ageable ageable && ageable.getAge() != ageable.getMaximumAge()) {
-                Debugger.addDebug("BlockBreakListener: onBlockBreakEvent cancelled due to ageable block.");
+                Debugger.write("BlockBreakListener: onBlockBreakEvent cancelled due to ageable block.");
                 return false;
             }
 
             final PersistentDataContainer pdc = new CustomBlockData(block, ODailyQuests.INSTANCE);
             if (pdc.has(Antiglitch.PLACED_KEY)) {
                 if (KGeneratorsHook.isKGeneratorsLocation(block.getLocation())) {
-                    Debugger.addDebug("BlockBreakListener: onBlockBreakEvent processing KGenerators generator.");
+                    Debugger.write("BlockBreakListener: onBlockBreakEvent processing KGenerators generator.");
                 } else {
-                    Debugger.addDebug("BlockBreakListener: onBlockBreakEvent cancelled due to placed block.");
+                    Debugger.write("BlockBreakListener: onBlockBreakEvent cancelled due to placed block.");
                     return false;
                 }
             }
-            Debugger.addDebug("BlockBreakListener: onBlockBreakEvent placed block check complete.");
+            Debugger.write("BlockBreakListener: onBlockBreakEvent placed block check complete.");
         }
 
         return true;

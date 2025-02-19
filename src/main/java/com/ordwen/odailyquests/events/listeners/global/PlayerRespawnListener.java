@@ -16,8 +16,8 @@ public class PlayerRespawnListener extends PlayerProgressor implements Listener 
         if (player.hasMetadata("odailyquests:dead")) {
             player.removeMetadata("odailyquests:dead", ODailyQuests.INSTANCE);
 
-            Debugger.addDebug("=========================================================================================");
-            Debugger.addDebug("PlayerRespawnListener: onPlayerRespawn summoned by " + player.getName());
+            Debugger.write("=========================================================================================");
+            Debugger.write("PlayerRespawnListener: onPlayerRespawn summoned by " + player.getName());
             setPlayerQuestProgression(event, player, 1, "PLAYER_DEATH");
         }
     }

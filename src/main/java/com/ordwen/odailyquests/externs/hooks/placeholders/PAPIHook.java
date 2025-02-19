@@ -6,6 +6,8 @@ import org.bukkit.entity.Player;
 
 public class PAPIHook {
 
+    private PAPIHook() {}
+
     protected static boolean isPlaceholderAPIHooked = false;
 
     /**

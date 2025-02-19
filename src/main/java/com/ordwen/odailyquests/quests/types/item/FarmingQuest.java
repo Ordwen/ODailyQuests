@@ -35,7 +35,7 @@ public class FarmingQuest extends ItemQuest {
         if (provided instanceof BlockDropItemEvent event) {
             // check if the broken block is a container
             if (event.getBlockState() instanceof InventoryHolder) {
-                Debugger.addDebug("FarmingQuest:canProgress: Block is a container.");
+                Debugger.write("FarmingQuest:canProgress: Block is a container.");
                 return false;
             }
 

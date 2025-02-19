@@ -10,6 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class ResetCommand extends ACommandHandler {
 
@@ -42,7 +43,7 @@ public class ResetCommand extends ACommandHandler {
      */
     public void quests(Player target) {
         final String playerName = target.getName();
-        final HashMap<String, PlayerQuests> activeQuests = QuestsManager.getActiveQuests();
+        final Map<String, PlayerQuests> activeQuests = QuestsManager.getActiveQuests();
         int totalAchievedQuests = activeQuests.get(playerName).getTotalAchievedQuests();
         QuestLoaderUtils.loadNewPlayerQuests(playerName, QuestsManager.getActiveQuests(), totalAchievedQuests);
 

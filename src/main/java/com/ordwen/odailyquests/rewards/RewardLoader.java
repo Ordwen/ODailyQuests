@@ -42,7 +42,7 @@ public class RewardLoader {
     }
 
     /**
-     * Display an error message in the console when a quest cannot be loaded because of a configuration error.
+     * Display an error message in the console when a reward cannot be loaded because of a configuration error.
      *
      * @param fileName   the name of the file where the error occurred
      * @param parameter  the parameter that caused the error
@@ -51,7 +51,7 @@ public class RewardLoader {
      */
     public void configurationError(String fileName, String parameter, String reason, String questIndex) {
         PluginLogger.error("-----------------------------------");
-        PluginLogger.error("Invalid quest configuration detected.");
+        PluginLogger.error("Invalid reward configuration detected.");
         PluginLogger.error("File : " + fileName);
         PluginLogger.error("Reason : " + reason);
 

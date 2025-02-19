@@ -12,7 +12,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class CompleteCommand extends ACommandHandler {
@@ -54,7 +53,7 @@ public class CompleteCommand extends ACommandHandler {
      */
     private void complete(int questIndex, Player target) {
         if (questIndex >= 1 && questIndex <= QuestsAmount.getQuestsAmount()) {
-            final HashMap<AbstractQuest, Progression> playerQuests = QuestsManager.getActiveQuests().get(target.getName()).getPlayerQuests();
+            final Map<AbstractQuest, Progression> playerQuests = QuestsManager.getActiveQuests().get(target.getName()).getQuests();
 
             int index = 0;
             for (Map.Entry<AbstractQuest, Progression> entry : playerQuests.entrySet()) {

@@ -1,25 +1,29 @@
 package com.ordwen.odailyquests.configuration.essentials;
 
-import com.ordwen.odailyquests.files.ConfigurationFiles;
+import com.ordwen.odailyquests.configuration.ConfigFactory;
+import com.ordwen.odailyquests.configuration.IConfigurable;
+import com.ordwen.odailyquests.files.ConfigurationFile;
 
-public class Synchronization {
+public class Synchronization implements IConfigurable {
 
-    private final ConfigurationFiles configurationFiles;
-    private static boolean isEnabled;
+    private final ConfigurationFile configurationFile;
+    private boolean isEnabled;
 
-    public Synchronization(ConfigurationFiles configurationFiles) {
-        this.configurationFiles = configurationFiles;
+    public Synchronization(ConfigurationFile configurationFile) {
+        this.configurationFile = configurationFile;
     }
 
-    /**
-     * Check if WildStacker option is enabled in config.
-     */
+    @Override
     public void load() {
         final String path = "synchronised_progression";
-        isEnabled = configurationFiles.getConfigFile().getBoolean(path);
+        isEnabled = configurationFile.getConfig().getBoolean(path);
+    }
+
+    private static Synchronization getInstance() {
+        return ConfigFactory.getConfig(Synchronization.class);
     }
 
     public static boolean isSynchronised() {
-        return isEnabled;
+        return getInstance().isEnabled;
     }
 }
