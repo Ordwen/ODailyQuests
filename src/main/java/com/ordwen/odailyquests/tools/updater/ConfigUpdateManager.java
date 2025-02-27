@@ -32,17 +32,16 @@ public class ConfigUpdateManager {
 
             if (compareVersions(configVersion, updateVersion) < 0) {
                 PluginLogger.warn("Applying update: " + updateVersion);
-                updater.apply(plugin);
+                updater.apply(plugin, currentVersion);
             }
         }
 
-        configFile.set("version", currentVersion);
         plugin.saveConfig();
     }
 
     private int compareVersions(String v1, String v2) {
-        String[] parts1 = v1.split("\\.");
-        String[] parts2 = v2.split("\\.");
+        final String[] parts1 = v1.split("\\.");
+        final String[] parts2 = v2.split("\\.");
         for (int i = 0; i < Math.max(parts1.length, parts2.length); i++) {
             int num1 = i < parts1.length ? Integer.parseInt(parts1[i]) : 0;
             int num2 = i < parts2.length ? Integer.parseInt(parts2[i]) : 0;

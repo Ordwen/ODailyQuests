@@ -10,13 +10,15 @@ public class Update225to230 extends ConfigUpdater {
     }
 
     @Override
-    public void apply(ODailyQuests plugin) {
-        addDefaultConfigItem("reroll_only_if_not_achieved", false, config, configFile);
-        addDefaultConfigItem("shared_mobs", false, config, configFile);
+    public void apply(ODailyQuests plugin, String version) {
+        setDefaultConfigItem("reroll_only_if_not_achieved", false, config, configFile);
+        setDefaultConfigItem("shared_mobs", false, config, configFile);
 
-        addDefaultConfigItem("progress_bar.symbol", "|", config, configFile);
-        addDefaultConfigItem("progress_bar.completed_color", "&a", config, configFile);
-        addDefaultConfigItem("progress_bar.remaining_color", "&7", config, configFile);
-        addDefaultConfigItem("progress_bar.amount_of_symbols", 20, config, configFile);
+        setDefaultConfigItem("progress_bar.symbol", "|", config, configFile);
+        setDefaultConfigItem("progress_bar.completed_color", "&a", config, configFile);
+        setDefaultConfigItem("progress_bar.remaining_color", "&7", config, configFile);
+        setDefaultConfigItem("progress_bar.amount_of_symbols", 20, config, configFile);
+
+        updateVersion(version);
     }
 }

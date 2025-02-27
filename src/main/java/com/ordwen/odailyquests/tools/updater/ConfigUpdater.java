@@ -34,16 +34,25 @@ public abstract class ConfigUpdater implements IConfigUpdater {
      * @param fileConfiguration file configuration where add the parameter
      * @param file              file to save the configuration
      */
-    protected void addDefaultConfigItem(String path, Object value, FileConfiguration fileConfiguration, File file) {
+    protected void setDefaultConfigItem(String path, Object value, FileConfiguration fileConfiguration, File file) {
         if (fileConfiguration.contains(path)) {
             return;
         }
 
-        fileConfiguration.addDefault(path, value);
+        fileConfiguration.set(path, value);
 
         try {
             fileConfiguration.save(file);
             PluginLogger.warn("Parameter \"" + path + "\" was missing in one of your configuration files. It has been added automatically.");
+        } catch (IOException e) {
+            PluginLogger.error("Error while saving the configuration file.");
+        }
+    }
+
+    protected void updateVersion(String version) {
+        config.set("version", version);
+        try {
+            config.save(configFile);
         } catch (IOException e) {
             PluginLogger.error("Error while saving the configuration file.");
         }

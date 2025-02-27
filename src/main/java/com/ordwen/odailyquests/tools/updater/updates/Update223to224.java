@@ -10,11 +10,13 @@ public class Update223to224 extends ConfigUpdater {
     }
 
     @Override
-    public void apply(ODailyQuests plugin) {
-        addDefaultConfigItem("use_custom_furnace_results", false, config, configFile);
-        addDefaultConfigItem("disable_logs", false, config, configFile);
-        addDefaultConfigItem("use_oraxen", false, config, configFile);
+    public void apply(ODailyQuests plugin, String version) {
+        setDefaultConfigItem("use_custom_furnace_results", false, config, configFile);
+        setDefaultConfigItem("disable_logs", false, config, configFile);
+        setDefaultConfigItem("use_oraxen", false, config, configFile);
 
-        addDefaultConfigItem("player_interface.disable_status", false, playerInterface, playerInterfaceFile);
+        setDefaultConfigItem("player_interface.disable_status", false, playerInterface, playerInterfaceFile);
+
+        updateVersion(version);
     }
 }
