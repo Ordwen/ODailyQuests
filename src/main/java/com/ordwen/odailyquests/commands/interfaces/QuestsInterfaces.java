@@ -3,11 +3,10 @@ package com.ordwen.odailyquests.commands.interfaces;
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.Buttons;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
-import com.ordwen.odailyquests.externs.hooks.placeholders.PAPIHook;
 import com.ordwen.odailyquests.files.ConfigurationFile;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
-import com.ordwen.odailyquests.tools.ColorConvert;
+import com.ordwen.odailyquests.tools.TextFormatter;
 import com.ordwen.odailyquests.tools.Pair;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import com.ordwen.odailyquests.configuration.functionalities.progression.ProgressBar;
@@ -29,7 +28,6 @@ public class QuestsInterfaces {
     private static final float INV_SIZE = 45;
     private static final String EMPTY_ITEM = "empty_item";
 
-    private final NamespacedKey usePlaceholdersKey = new NamespacedKey(ODailyQuests.INSTANCE, "odq_interface_use_placeholders");
     private final NamespacedKey requiredKey = new NamespacedKey(ODailyQuests.INSTANCE, "odq_interface_required");
 
     private final ConfigurationFile configurationFile;
@@ -67,15 +65,15 @@ public class QuestsInterfaces {
     }
 
     public void initPaginationItemNames(ConfigurationSection section) {
-        nextPageItemName = ColorConvert.convertColorCode(section.getString(".next_item_name"));
-        previousPageItemName = ColorConvert.convertColorCode(section.getString(".previous_item_name"));
+        nextPageItemName = TextFormatter.format(section.getString(".next_item_name"));
+        previousPageItemName = TextFormatter.format(section.getString(".previous_item_name"));
     }
 
     public void initInventoryNames(ConfigurationSection section) {
-        globalQuestsInventoryName = ColorConvert.convertColorCode(section.getString(".global_quests.inventory_name"));
-        easyQuestsInventoryName = ColorConvert.convertColorCode(section.getString(".easy_quests.inventory_name"));
-        mediumQuestsInventoryName = ColorConvert.convertColorCode(section.getString(".medium_quests.inventory_name"));
-        hardQuestsInventoryName = ColorConvert.convertColorCode(section.getString(".hard_quests.inventory_name"));
+        globalQuestsInventoryName = TextFormatter.format(section.getString(".global_quests.inventory_name"));
+        easyQuestsInventoryName = TextFormatter.format(section.getString(".easy_quests.inventory_name"));
+        mediumQuestsInventoryName = TextFormatter.format(section.getString(".medium_quests.inventory_name"));
+        hardQuestsInventoryName = TextFormatter.format(section.getString(".hard_quests.inventory_name"));
 
         PluginLogger.fine("Interfaces names successfully loaded.");
     }
@@ -215,10 +213,8 @@ public class QuestsInterfaces {
             itemMeta.setDisplayName(quest.getQuestName());
             itemMeta.setLore(quest.getQuestDesc());
 
-            if (quest.isUsingPlaceholders()) {
-                itemMeta.getPersistentDataContainer().set(usePlaceholdersKey, PersistentDataType.BYTE, (byte) 1);
-                itemMeta.getPersistentDataContainer().set(requiredKey, PersistentDataType.INTEGER, quest.getAmountRequired());
-            }
+            itemMeta.getPersistentDataContainer().set(requiredKey, PersistentDataType.INTEGER, quest.getAmountRequired());
+
             itemStack.setItemMeta(itemMeta);
         }
         return itemStack;
@@ -252,21 +248,21 @@ public class QuestsInterfaces {
             if (item != null && item.getItemMeta() != null) {
                 final ItemMeta itemMeta = item.getItemMeta();
                 final PersistentDataContainer pdc = itemMeta.getPersistentDataContainer();
-                if (pdc.has(usePlaceholdersKey, PersistentDataType.BYTE)) {
-                    final List<String> lore = itemMeta.getLore();
-                    if (lore == null) continue;
 
-                    final int required = pdc.get(requiredKey, PersistentDataType.INTEGER);
+                final List<String> lore = itemMeta.getLore();
+                if (lore == null) continue;
 
-                    lore.replaceAll(s -> s.replace("%progress%", String.valueOf(0)));
-                    lore.replaceAll(s -> s.replace("%progressBar%", ProgressBar.getProgressBar(0, required)));
-                    lore.replaceAll(s -> s.replace("%required%", String.valueOf(required)));
-                    lore.replaceAll(s -> s.replace("%drawIn%", "~"));
-                    lore.replaceAll(s -> PAPIHook.getPlaceholders(player, s));
+                final int required = pdc.get(requiredKey, PersistentDataType.INTEGER);
 
-                    itemMeta.setLore(lore);
-                    item.setItemMeta(itemMeta);
-                }
+                lore.replaceAll(s -> s.replace("%progress%", String.valueOf(0)));
+                lore.replaceAll(s -> s.replace("%progressBar%", ProgressBar.getProgressBar(0, required)));
+                lore.replaceAll(s -> s.replace("%required%", String.valueOf(required)));
+                lore.replaceAll(s -> s.replace("%drawIn%", "~"));
+                lore.replaceAll(s -> TextFormatter.format(player, s));
+
+                itemMeta.setLore(lore);
+                item.setItemMeta(itemMeta);
+
             }
         }
         return inventory;

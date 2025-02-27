@@ -5,7 +5,7 @@ import com.ordwen.odailyquests.configuration.ConfigFactory;
 import com.ordwen.odailyquests.configuration.IConfigurable;
 import com.ordwen.odailyquests.enums.ProgressionMessageType;
 import com.ordwen.odailyquests.files.ConfigurationFile;
-import com.ordwen.odailyquests.tools.ColorConvert;
+import com.ordwen.odailyquests.tools.TextFormatter;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -110,7 +110,7 @@ public class ProgressionMessage implements IConfigurable {
      */
     public void sendProgressionMessageInternal(Player player, String questName, int progression, int required) {
         if (isEnabled) {
-            final String toSend = ColorConvert.convertColorCode(message
+            final String toSend = TextFormatter.format(message
                     .replace("%player%", player.getDisplayName())
                     .replace("%questName%", questName)
                     .replace("%progress%", String.valueOf(progression))

@@ -2,7 +2,7 @@ package com.ordwen.odailyquests.configuration.functionalities.progression;
 
 import com.ordwen.odailyquests.configuration.ConfigFactory;
 import com.ordwen.odailyquests.configuration.IConfigurable;
-import com.ordwen.odailyquests.tools.ColorConvert;
+import com.ordwen.odailyquests.tools.TextFormatter;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -33,12 +33,12 @@ public class ActionBar implements IConfigurable {
         }
 
         isEnabled = section.getBoolean("enabled");
-        if (isEnabled) text = ColorConvert.convertColorCode(section.getString("text"));
+        if (isEnabled) text = TextFormatter.format(section.getString("text"));
     }
 
     public void sendActionbarInternal(Player player, String questName) {
         if (isEnabled) {
-            final String toSend = ColorConvert.convertColorCode(text
+            final String toSend = TextFormatter.format(text
                     .replace("%player%", player.getDisplayName())
                     .replace("%questName%", questName)
             );

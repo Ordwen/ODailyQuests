@@ -1,7 +1,7 @@
 package com.ordwen.odailyquests.quests.getters;
 
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.getters.ItemGetter;
-import com.ordwen.odailyquests.tools.ColorConvert;
+import com.ordwen.odailyquests.tools.TextFormatter;
 import com.ordwen.odailyquests.tools.Pair;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Material;
@@ -189,11 +189,11 @@ public class QuestItemGetter extends ItemGetter implements IQuestItem {
             return null;
         }
 
-        meta.setDisplayName(ColorConvert.convertColorCode(section.getString(".name")));
+        meta.setDisplayName(TextFormatter.format(section.getString(".name")));
 
         final List<String> lore = section.getStringList(".lore");
         for (String str : lore) {
-            lore.set(lore.indexOf(str), ColorConvert.convertColorCode(str));
+            lore.set(lore.indexOf(str), TextFormatter.format(str));
         }
         meta.setLore(lore);
         requiredItem.setItemMeta(meta);

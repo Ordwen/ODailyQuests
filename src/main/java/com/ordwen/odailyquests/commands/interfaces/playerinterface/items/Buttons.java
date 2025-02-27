@@ -1,7 +1,7 @@
 package com.ordwen.odailyquests.commands.interfaces.playerinterface.items;
 
 import com.ordwen.odailyquests.files.ConfigurationFile;
-import com.ordwen.odailyquests.tools.ColorConvert;
+import com.ordwen.odailyquests.tools.TextFormatter;
 import com.ordwen.odailyquests.tools.ItemUtils;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.configuration.ConfigurationSection;
@@ -49,7 +49,7 @@ public class Buttons {
         final ItemMeta previousMeta = previous.getItemMeta();
         if (previousMeta == null) return;
 
-        previousMeta.setDisplayName(ColorConvert.convertColorCode(section.getString(".previous_item_name")));
+        previousMeta.setDisplayName(TextFormatter.format(section.getString(".previous_item_name")));
         previous.setItemMeta(previousMeta);
     }
 
@@ -61,7 +61,7 @@ public class Buttons {
         final ItemMeta nextMeta = next.getItemMeta();
         if (nextMeta == null) return;
 
-        nextMeta.setDisplayName(ColorConvert.convertColorCode(section.getString(".next_item_name")));
+        nextMeta.setDisplayName(TextFormatter.format(section.getString(".next_item_name")));
         next.setItemMeta(nextMeta);
     }
 

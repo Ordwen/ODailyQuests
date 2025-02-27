@@ -2,7 +2,7 @@ package com.ordwen.odailyquests.quests.types.custom.mobs;
 
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
-import com.ordwen.odailyquests.tools.ColorConvert;
+import com.ordwen.odailyquests.tools.TextFormatter;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -29,7 +29,7 @@ public abstract class CustomMobQuest extends AbstractQuest {
         }
 
         for (String entityName : entityNames) {
-            entityNames.set(entityNames.indexOf(entityName), ColorConvert.convertColorCode(entityName));
+            entityNames.set(entityNames.indexOf(entityName), TextFormatter.format(entityName));
         }
 
         if (entityNames.isEmpty()) {

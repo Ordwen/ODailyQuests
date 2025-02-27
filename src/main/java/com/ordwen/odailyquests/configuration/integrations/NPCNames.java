@@ -3,7 +3,7 @@ package com.ordwen.odailyquests.configuration.integrations;
 import com.ordwen.odailyquests.configuration.ConfigFactory;
 import com.ordwen.odailyquests.configuration.IConfigurable;
 import com.ordwen.odailyquests.files.ConfigurationFile;
-import com.ordwen.odailyquests.tools.ColorConvert;
+import com.ordwen.odailyquests.tools.TextFormatter;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -30,11 +30,11 @@ public class NPCNames implements IConfigurable {
             return;
         }
 
-        playerNPCName = ColorConvert.convertColorCode(section.getString(".name_player"));
-        globalNPCName = ColorConvert.convertColorCode(section.getString(".name_global"));
-        easyNPCName = ColorConvert.convertColorCode(section.getString(".name_easy"));
-        mediumNPCName = ColorConvert.convertColorCode(section.getString(".name_medium"));
-        hardNPCName = ColorConvert.convertColorCode(section.getString(".name_hard"));
+        playerNPCName = TextFormatter.format(section.getString(".name_player"));
+        globalNPCName = TextFormatter.format(section.getString(".name_global"));
+        easyNPCName = TextFormatter.format(section.getString(".name_easy"));
+        mediumNPCName = TextFormatter.format(section.getString(".name_medium"));
+        hardNPCName = TextFormatter.format(section.getString(".name_hard"));
     }
 
     private static NPCNames getInstance() {

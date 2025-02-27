@@ -6,10 +6,9 @@ import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.QuestLoaderUtils;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
-import com.ordwen.odailyquests.tools.ColorConvert;
+import com.ordwen.odailyquests.tools.TextFormatter;
 import com.ordwen.odailyquests.configuration.functionalities.progression.ProgressBar;
 import com.ordwen.odailyquests.tools.TimeRemain;
-import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -28,7 +27,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
     private final PlayerQuestsInterface playerQuestsInterface;
 
     public PAPIExpansion(PlayerQuestsInterface playerQuestsInterface) {
-        PAPIHook.setPlaceholderAPIHooked(true);
+        TextFormatter.setPlaceholderAPIEnabled(true);
         this.playerQuestsInterface = playerQuestsInterface;
     }
 
@@ -111,7 +110,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
      */
     private String getInterfaceMessage(String params, OfflinePlayer player, PlayerQuests playerQuests) {
         if (params.equals("interface_complete_get_type")) {
-            return ColorConvert.convertColorCode(PlaceholderAPI.setPlaceholders(player, playerQuestsInterface.getCompleteGetType()));
+            return TextFormatter.format((Player) player, playerQuestsInterface.getCompleteGetType());
         } else if (params.startsWith("interface_status_")) {
             final String supposedIndex = params.substring("interface_status_".length());
             int index;
@@ -122,7 +121,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
                 return INVALID_INDEX;
             }
 
-            return ColorConvert.convertColorCode(PlaceholderAPI.setPlaceholders(player, getQuestStatus(index, playerQuests)));
+            return TextFormatter.format((Player) player, getQuestStatus(index, playerQuests));
         }
 
         return ChatColor.RED + "Invalid placeholder.";

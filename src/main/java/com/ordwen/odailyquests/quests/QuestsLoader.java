@@ -8,7 +8,7 @@ import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
 import com.ordwen.odailyquests.rewards.Reward;
 import com.ordwen.odailyquests.rewards.RewardLoader;
 import com.ordwen.odailyquests.rewards.RewardType;
-import com.ordwen.odailyquests.tools.ColorConvert;
+import com.ordwen.odailyquests.tools.TextFormatter;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
@@ -18,6 +18,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 public class QuestsLoader extends QuestItemGetter {
+
+    private static final String ACHIEVED_MENU_ITEM = "achieved_menu_item";
 
     private final RewardLoader rewardLoader = new RewardLoader();
     private final QuestTypeRegistry questTypeRegistry = ODailyQuests.INSTANCE.getAPI().getQuestTypeRegistry();
@@ -48,14 +50,11 @@ public class QuestsLoader extends QuestItemGetter {
     private BasicQuest createBasicQuest(ConfigurationSection questSection, String fileName, int questIndex, String fileIndex) {
 
         /* quest name */
-        String questName = ColorConvert.convertColorCode(questSection.getString(".name"));
+        String questName = TextFormatter.format(questSection.getString(".name"));
 
         /* quest description */
         List<String> questDesc = questSection.getStringList(".description");
-        for (String string : questDesc) questDesc.set(questDesc.indexOf(string), ColorConvert.convertColorCode(string));
-
-        /* check if quest uses placeholders */
-        boolean usePlaceholders = questSection.getBoolean(".use_placeholders");
+        for (String string : questDesc) questDesc.set(questDesc.indexOf(string), TextFormatter.format(string));
 
         /* quest type */
         final String questType = questSection.getString(".quest_type");
@@ -87,9 +86,9 @@ public class QuestsLoader extends QuestItemGetter {
         if (menuItem == null) return null;
 
         final ItemStack achievedItem;
-        if (questSection.isString("achieved_menu_item")) {
-            final String presumedAchievedItem = questSection.getString("achieved_menu_item");
-            achievedItem = getItemStackFromMaterial(presumedAchievedItem, fileName, fileIndex, "achieved_menu_item");
+        if (questSection.isString(ACHIEVED_MENU_ITEM)) {
+            final String presumedAchievedItem = questSection.getString(ACHIEVED_MENU_ITEM);
+            achievedItem = getItemStackFromMaterial(presumedAchievedItem, fileName, fileIndex, ACHIEVED_MENU_ITEM);
             if (achievedItem == null) return null;
         } else {
             achievedItem = menuItem;
@@ -99,7 +98,7 @@ public class QuestsLoader extends QuestItemGetter {
         final Reward reward = createReward(questSection, fileName, fileIndex);
 
         return new BasicQuest(questIndex, questName, fileName, questDesc, questType, menuItem,
-                achievedItem, requiredAmount, reward, requiredWorlds, requiredRegions, protectionBypass, usePlaceholders);
+                achievedItem, requiredAmount, reward, requiredWorlds, requiredRegions, protectionBypass);
     }
 
     /**
