@@ -1,7 +1,6 @@
 package com.ordwen.odailyquests.enums;
 
-import com.ordwen.odailyquests.externs.hooks.placeholders.PAPIHook;
-import com.ordwen.odailyquests.tools.ColorConvert;
+import com.ordwen.odailyquests.tools.TextFormatter;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -79,7 +78,7 @@ public enum QuestsMessages {
 
     private final String path;
     private final String defaultMessage;
-    private static FileConfiguration LANG;
+    private static FileConfiguration lang;
 
     /**
      * Message constructor.
@@ -97,7 +96,7 @@ public enum QuestsMessages {
      * @param messagesFile the config to set.
      */
     public static void setFile(FileConfiguration messagesFile) {
-        LANG = messagesFile;
+        lang = messagesFile;
     }
 
     /**
@@ -107,27 +106,27 @@ public enum QuestsMessages {
      */
     @Override
     public String toString() {
-        String msg = LANG.getString(this.path, defaultMessage);
+        String msg = lang.getString(this.path, defaultMessage);
 
-        if (msg.trim().isEmpty()) return null;
-        else return ColorConvert.convertColorCode(PAPIHook.getPlaceholders(null, msg));
+        if (msg.trim().isEmpty()) return "";
+        else return TextFormatter.format(TextFormatter.format(null, msg));
     }
 
     public String getMessage(Player player) {
-        String msg = LANG.getString(this.path, defaultMessage);
+        String msg = lang.getString(this.path, defaultMessage);
 
         if (msg.trim().isEmpty()) return null;
-        else return ColorConvert.convertColorCode(PAPIHook.getPlaceholders(player, msg));
+        else return TextFormatter.format(TextFormatter.format(player, msg));
     }
 
     public String getMessage(String playerName) {
         final Player player = Bukkit.getPlayer(playerName);
         if (player == null) return null;
 
-        String msg = LANG.getString(this.path, defaultMessage);
+        String msg = lang.getString(this.path, defaultMessage);
         if (msg.trim().isEmpty()) return null;
 
-        else return ColorConvert.convertColorCode(PAPIHook.getPlaceholders(player, msg));
+        else return TextFormatter.format(TextFormatter.format(player, msg));
     }
 
     /**

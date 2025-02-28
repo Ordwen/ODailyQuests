@@ -23,7 +23,6 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
     final List<String> requiredWorlds;
     final List<String> requiredRegions;
     final boolean protectionBypass;
-    final boolean isUsingPlaceholders;
 
     /**
      * Quest constructor.
@@ -34,7 +33,7 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
      * @param amountRequired required amount of the item.
      * @param reward         reward of the quest.
      */
-    protected AbstractQuest(int questIndex, String questName, String categoryName, List<String> questDesc, String questType, ItemStack menuItem, ItemStack achievedItem, int amountRequired, Reward reward, List<String> requiredWorlds, final List<String> requiredRegions, boolean protectionBypass, boolean isUsingPlaceholders) {
+    protected AbstractQuest(int questIndex, String questName, String categoryName, List<String> questDesc, String questType, ItemStack menuItem, ItemStack achievedItem, int amountRequired, Reward reward, List<String> requiredWorlds, final List<String> requiredRegions, boolean protectionBypass) {
         this.questIndex = questIndex;
         this.questName = questName;
         this.categoryName = categoryName;
@@ -47,7 +46,6 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
         this.requiredWorlds = requiredWorlds;
         this.requiredRegions = requiredRegions;
         this.protectionBypass = protectionBypass;
-        this.isUsingPlaceholders = isUsingPlaceholders;
     }
 
     /**
@@ -68,7 +66,6 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
         this.requiredWorlds = basicQuest.getRequiredWorlds();
         this.requiredRegions = basicQuest.getRequiredRegions();
         this.protectionBypass = basicQuest.isProtectionBypass();
-        this.isUsingPlaceholders = basicQuest.isUsingPlaceholders();
     }
 
     /**
@@ -177,14 +174,5 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
      */
     public boolean isProtectionBypass() {
         return this.protectionBypass;
-    }
-
-    /**
-     * Get whether the quest is using placeholders.
-     *
-     * @return quest isUsingPlaceholders.
-     */
-    public boolean isUsingPlaceholders() {
-        return this.isUsingPlaceholders;
     }
 }

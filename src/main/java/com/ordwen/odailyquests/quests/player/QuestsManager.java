@@ -17,6 +17,9 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import java.util.*;
 
 public class QuestsManager implements Listener {
+    
+    private static final String PLAYER = "Player ";
+    private static final Random random = new Random();
 
     /**
      * Getting instance of classes.
@@ -42,14 +45,14 @@ public class QuestsManager implements Listener {
 
         final String playerName = event.getPlayer().getName();
 
-        Debugger.write("Player " + playerName + " joined the server.");
+        Debugger.write(PLAYER + playerName + " joined the server.");
 
         if (!activeQuests.containsKey(playerName)) {
-            Debugger.write("Player " + playerName + " is not in the array.");
+            Debugger.write(PLAYER + playerName + " is not in the array.");
             plugin.getDatabaseManager().loadQuestsForPlayer(playerName);
         } else {
 
-            Debugger.write("Player " + playerName + " is already in the array.");
+            Debugger.write(PLAYER + playerName + " is already in the array.");
 
             PluginLogger.warn(playerName + " detected into the array. This is not supposed to happen!");
             PluginLogger.warn("If the player can't make his quests progress, please contact the plugin developer.");
@@ -66,12 +69,12 @@ public class QuestsManager implements Listener {
 
         String playerName = event.getPlayer().getName();
 
-        Debugger.write("Player " + playerName + " left the server.");
+        Debugger.write(PLAYER + playerName + " left the server.");
 
         final PlayerQuests playerQuests = activeQuests.get(playerName);
 
         if (playerQuests == null) {
-            Debugger.write("Player " + playerName + " not found in the array.");
+            Debugger.write(PLAYER + playerName + " not found in the array.");
 
 
             PluginLogger.warn("Player quests not found for player " + playerName);
@@ -81,7 +84,7 @@ public class QuestsManager implements Listener {
         plugin.getDatabaseManager().saveProgressionForPlayer(playerName, playerQuests);
         activeQuests.remove(playerName);
 
-        Debugger.write("Player " + playerName + " removed from the array.");
+        Debugger.write(PLAYER + playerName + " removed from the array.");
         Debugger.write("[EVENT END]");
 
     }
@@ -151,7 +154,7 @@ public class QuestsManager implements Listener {
      * @return a quest.
      */
     public static AbstractQuest getRandomQuestInCategory(List<AbstractQuest> quests) {
-        int questNumber = new Random().nextInt(quests.size());
+        int questNumber = random.nextInt(quests.size());
         return quests.get(questNumber);
     }
 

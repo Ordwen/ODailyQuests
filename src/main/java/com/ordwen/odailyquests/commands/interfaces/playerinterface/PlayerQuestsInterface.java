@@ -3,14 +3,13 @@ package com.ordwen.odailyquests.commands.interfaces.playerinterface;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.ItemType;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.PlayerHead;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.getters.InterfaceItemGetter;
-import com.ordwen.odailyquests.externs.hooks.placeholders.PAPIHook;
 import com.ordwen.odailyquests.files.PlayerInterfaceFile;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.player.progression.QuestLoaderUtils;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
-import com.ordwen.odailyquests.tools.ColorConvert;
+import com.ordwen.odailyquests.tools.TextFormatter;
 import com.ordwen.odailyquests.tools.ItemUtils;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import com.ordwen.odailyquests.configuration.functionalities.progression.ProgressBar;
@@ -29,6 +28,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class PlayerQuestsInterface extends InterfaceItemGetter {
 
@@ -124,7 +124,7 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
         playerHead.load();
 
         /* get inventory name */
-        interfaceName = ColorConvert.convertColorCode(interfaceConfig.getString(".inventory_name"));
+        interfaceName = TextFormatter.format(interfaceConfig.getString(".inventory_name"));
 
         /* get booleans */
         isGlowingEnabled = interfaceConfig.getBoolean("glowing_if_achieved");
@@ -195,7 +195,7 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
             loadItemType(elementSection, item, itemSection, slots);
 
             /* add item to placeholders list if applicable */
-            loadPlaceholderItem(elementSection, slots, item);
+            loadPlaceholderItem(slots, item);
 
             /* add loaded items into base inventory */
             addIntoBaseInventory(element, slots, item);
@@ -262,16 +262,46 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
     /**
      * Check if the item needs to be loaded with placeholders. If so add it to the placeholders list.
      *
-     * @param section configuration section of the item.
      * @param slots   slots where the item should be added.
      * @param item    item to add.
      */
-    private void loadPlaceholderItem(ConfigurationSection section, List<Integer> slots, ItemStack item) {
-        if (section.contains("use_placeholders") && section.getBoolean("use_placeholders")) {
-            for (int slot : slots) {
-                papiItems.put(slot - 1, item);
+    private void loadPlaceholderItem(List<Integer> slots, ItemStack item) {
+        boolean hasPlaceholders = false;
+
+        if (item.hasItemMeta()) {
+            final ItemMeta meta = item.getItemMeta();
+
+            if (meta.hasDisplayName() && containsPlaceholder(meta.getDisplayName())) {
+                hasPlaceholders = true;
+            }
+
+            if (!hasPlaceholders && meta.hasLore()) {
+                for (String line : meta.getLore()) {
+                    if (containsPlaceholder(line)) {
+                        hasPlaceholders = true;
+                        break;
+                    }
+                }
             }
         }
+
+        if (hasPlaceholders) {
+            slots.forEach(slot -> papiItems.put(slot - 1, item));
+        }
+    }
+
+    /**
+     * Check if the given text contains placeholders.
+     *
+     * @param text text to check.
+     * @return true if the text contains placeholders, false otherwise.
+     */
+    private boolean containsPlaceholder(String text) {
+        if (text == null) {
+            return false;
+        }
+        final Pattern pattern = Pattern.compile("%\\w+%");
+        return pattern.matcher(text).find();
     }
 
     /**
@@ -342,7 +372,7 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
 
         final Map<AbstractQuest, Progression> questsMap = playerQuests.getQuests();
 
-        final Inventory playerQuestsInventoryIndividual = Bukkit.createInventory(null, size, PAPIHook.getPlaceholders(player, interfaceName));
+        final Inventory playerQuestsInventoryIndividual = Bukkit.createInventory(null, size, TextFormatter.format(player, interfaceName));
         playerQuestsInventoryIndividual.setContents(playerQuestsInventoryBase.getContents());
 
         if (!papiItems.isEmpty()) {
@@ -405,7 +435,7 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
      * @param playerQuests      the player quests.
      */
     private void configureItemMeta(ItemMeta itemMeta, AbstractQuest quest, Progression playerProgression, Player player, PlayerQuests playerQuests) {
-        itemMeta.setDisplayName(PAPIHook.getPlaceholders(player, quest.getQuestName()));
+        itemMeta.setDisplayName(TextFormatter.format(player, quest.getQuestName()));
         List<String> lore = generateLore(quest, playerProgression, player, playerQuests);
 
         if (playerProgression.isAchieved() && isGlowingEnabled) {
@@ -429,24 +459,23 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
      */
     private List<String> generateLore(AbstractQuest quest, Progression playerProgression, Player player, PlayerQuests playerQuests) {
         final List<String> lore = new ArrayList<>(quest.getQuestDesc());
-        if (quest.isUsingPlaceholders()) {
-            lore.replaceAll(str -> PAPIHook.getPlaceholders(player, str)
-                    .replace(PROGRESS, String.valueOf(playerProgression.getProgression()))
-                    .replace(PROGRESS_BAR, ProgressBar.getProgressBar(playerProgression.getProgression(), quest.getAmountRequired()))
-                    .replace(REQUIRED, String.valueOf(quest.getAmountRequired()))
-                    .replace("%achieved%", String.valueOf(playerQuests.getAchievedQuests()))
-                    .replace("%drawIn%", TimeRemain.timeRemain(player.getName()))
-                    .replace("%status%", getQuestStatus(playerProgression, quest, player)));
-        }
+
+        lore.replaceAll(str -> TextFormatter.format(player, str)
+                .replace(PROGRESS, String.valueOf(playerProgression.getProgression()))
+                .replace(PROGRESS_BAR, ProgressBar.getProgressBar(playerProgression.getProgression(), quest.getAmountRequired()))
+                .replace(REQUIRED, String.valueOf(quest.getAmountRequired()))
+                .replace("%achieved%", String.valueOf(playerQuests.getAchievedQuests()))
+                .replace("%drawIn%", TimeRemain.timeRemain(player.getName()))
+                .replace("%status%", getQuestStatus(playerProgression, quest, player)));
 
         if (!status.isEmpty() && !isStatusDisabled) {
-            lore.add(ColorConvert.convertColorCode(PAPIHook.getPlaceholders(player, status)));
+            lore.add(TextFormatter.format(TextFormatter.format(player, status)));
         }
 
         if (playerProgression.isAchieved() && !achieved.isEmpty() && !isStatusDisabled) {
-            lore.add(ColorConvert.convertColorCode(achieved));
+            lore.add(TextFormatter.format(achieved));
         } else if (!progression.isEmpty() && !isStatusDisabled) {
-            lore.add(ColorConvert.convertColorCode(PAPIHook.getPlaceholders(player, progression)
+            lore.add(TextFormatter.format(TextFormatter.format(player, progression)
                     .replace(PROGRESS, String.valueOf(playerProgression.getProgression()))
                     .replace(REQUIRED, String.valueOf(quest.getAmountRequired()))
                     .replace(PROGRESS_BAR, ProgressBar.getProgressBar(playerProgression.getProgression(), quest.getAmountRequired()))));
@@ -490,12 +519,12 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
 
             final ItemMeta meta = itemCopy.getItemMeta();
             if (meta != null) {
-                meta.setDisplayName(PAPIHook.getPlaceholders(player, meta.getDisplayName()));
+                meta.setDisplayName(TextFormatter.format(player, meta.getDisplayName()));
 
                 final List<String> lore = meta.getLore();
                 if (lore != null) {
                     for (String str : lore) {
-                        lore.set(lore.indexOf(str), PAPIHook.getPlaceholders(player, str).replace("%achieved%", String.valueOf(playerQuests.getAchievedQuests())).replace("%drawIn%", TimeRemain.timeRemain(player.getName())));
+                        lore.set(lore.indexOf(str), TextFormatter.format(player, str).replace("%achieved%", String.valueOf(playerQuests.getAchievedQuests())).replace("%drawIn%", TimeRemain.timeRemain(player.getName())));
                     }
                 }
 
@@ -521,12 +550,12 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
 
         final String name = section.getString("name");
         if (name != null) {
-            meta.setDisplayName(ColorConvert.convertColorCode(name));
+            meta.setDisplayName(TextFormatter.format(name));
         }
 
         final List<String> lore = section.getStringList("lore");
         for (String str : lore) {
-            lore.set(lore.indexOf(str), ColorConvert.convertColorCode(str));
+            lore.set(lore.indexOf(str), TextFormatter.format(str));
         }
         meta.setLore(lore);
 
@@ -543,9 +572,9 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
      */
     private String getQuestStatus(Progression progression, AbstractQuest quest, Player player) {
         if (progression.isAchieved()) {
-            return PAPIHook.getPlaceholders(player, getAchieved());
+            return TextFormatter.format(player, getAchieved());
         } else {
-            return PAPIHook.getPlaceholders(player, getProgression().replace(PROGRESS, String.valueOf(progression.getProgression())).replace(REQUIRED, String.valueOf(quest.getAmountRequired())).replace(PROGRESS_BAR, ProgressBar.getProgressBar(progression.getProgression(), quest.getAmountRequired())));
+            return TextFormatter.format(player, getProgression().replace(PROGRESS, String.valueOf(progression.getProgression())).replace(REQUIRED, String.valueOf(quest.getAmountRequired())).replace(PROGRESS_BAR, ProgressBar.getProgressBar(progression.getProgression(), quest.getAmountRequired())));
         }
     }
 
@@ -557,7 +586,7 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
      * @return the interface name.
      */
     public String getInterfaceName(Player player) {
-        return PAPIHook.getPlaceholders(player, interfaceName);
+        return TextFormatter.format(player, interfaceName);
     }
 
     public boolean isFillItem(ItemStack itemStack) {

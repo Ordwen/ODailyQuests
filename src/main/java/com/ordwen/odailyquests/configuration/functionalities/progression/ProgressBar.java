@@ -3,7 +3,7 @@ package com.ordwen.odailyquests.configuration.functionalities.progression;
 import com.ordwen.odailyquests.configuration.ConfigFactory;
 import com.ordwen.odailyquests.configuration.IConfigurable;
 import com.ordwen.odailyquests.files.ConfigurationFile;
-import com.ordwen.odailyquests.tools.ColorConvert;
+import com.ordwen.odailyquests.tools.TextFormatter;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
@@ -41,8 +41,8 @@ public class ProgressBar implements IConfigurable {
         }
 
         symbol = section.getString("symbol", "|");
-        completedColor = ColorConvert.convertColorCode(section.getString("completed_color", ChatColor.GREEN.toString()));
-        remainingColor = ColorConvert.convertColorCode(section.getString("remaining_color", ChatColor.GRAY.toString()));
+        completedColor = TextFormatter.format(section.getString("completed_color", ChatColor.GREEN.toString()));
+        remainingColor = TextFormatter.format(section.getString("remaining_color", ChatColor.GRAY.toString()));
         amountOfSymbols = section.getInt("amount_of_symbols", 20);
     }
 

@@ -3,7 +3,7 @@ package com.ordwen.odailyquests.configuration.functionalities.progression;
 import com.ordwen.odailyquests.configuration.ConfigFactory;
 import com.ordwen.odailyquests.configuration.IConfigurable;
 import com.ordwen.odailyquests.files.ConfigurationFile;
-import com.ordwen.odailyquests.tools.ColorConvert;
+import com.ordwen.odailyquests.tools.TextFormatter;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -39,8 +39,8 @@ public class Title implements IConfigurable {
             fadeIn = section.getInt("fadeIn");
             stay = section.getInt("stay");
             fadeOut = section.getInt("fadeOut");
-            mainTitle = ColorConvert.convertColorCode(section.getString("text"));
-            subTitle = ColorConvert.convertColorCode(section.getString("subtitle"));
+            mainTitle = TextFormatter.format(section.getString("text"));
+            subTitle = TextFormatter.format(section.getString("subtitle"));
 
             PluginLogger.fine("Title successfully loaded.");
         } else PluginLogger.fine("Title is disabled.");
