@@ -19,6 +19,8 @@ import java.util.concurrent.TimeUnit;
 
 public class QuestLoaderUtils {
 
+    private QuestLoaderUtils() {}
+
     /**
      * Check if it is time to redraw quests for a player.
      *
@@ -50,6 +52,8 @@ public class QuestLoaderUtils {
                     long diffM = TimeUnit.DAYS.convert(currentCal.getTimeInMillis() - oldCal.getTimeInMillis(), TimeUnit.MILLISECONDS);
                     return diffM >= 31;
                 }
+                default ->
+                    PluginLogger.error(ChatColor.RED + "Impossible to check player quests timestamp. The selected mode is incorrect.");
             }
         }
 
@@ -105,15 +109,9 @@ public class QuestLoaderUtils {
         final String msg = QuestsMessages.QUESTS_RENEWED.getMessage(player);
         if (msg != null) player.sendMessage(msg);
 
-        if (Bukkit.getPlayer(playerName) != null) {
-            activeQuests.put(playerName, playerQuests);
-            PluginLogger.fine(playerName + " inserted into the array.");
-            PluginLogger.info(playerName + "'s quests have been renewed.");
-        } else {
-            Debugger.write("Player " + playerName + " is null. Impossible to load quests.");
-            PluginLogger.warn("It looks like " + playerName + " has disconnected before his quests were loaded.");
-            return;
-        }
+        activeQuests.put(playerName, playerQuests);
+        PluginLogger.fine(playerName + " inserted into the array.");
+        PluginLogger.info(playerName + "'s quests have been renewed.");
 
         Debugger.write("Quests of player " + playerName + " have been renewed.");
     }
@@ -121,7 +119,7 @@ public class QuestLoaderUtils {
     /**
      * Check if it's time to renew quests. If so, renew them.
      *
-     * @param player    player.
+     * @param player       player.
      * @param activeQuests all active quests.
      * @return true if it's time to renew quests.
      */
@@ -184,13 +182,12 @@ public class QuestLoaderUtils {
      * @param playerName  the name of the player for whom the quest is intended.
      * @return the quest.
      */
-    public static AbstractQuest getQuestAtIndex(ArrayList<AbstractQuest> questsArray, int index, String playerName) {
+    public static AbstractQuest getQuestAtIndex(List<AbstractQuest> questsArray, int index, String playerName) {
         AbstractQuest quest;
         try {
             quest = questsArray.get(index);
         } catch (IndexOutOfBoundsException e) {
-
-            quest = questsArray.get(0);
+            quest = questsArray.getFirst();
 
             PluginLogger.error("A quest of the player " + playerName + " could not be loaded.");
             PluginLogger.error("This happens when a previously loaded quest has been deleted from the file.");
@@ -199,6 +196,7 @@ public class QuestLoaderUtils {
             PluginLogger.error("");
             PluginLogger.error("To reset the player's progress, do /qadmin reset " + playerName);
         }
+
         return quest;
     }
 }

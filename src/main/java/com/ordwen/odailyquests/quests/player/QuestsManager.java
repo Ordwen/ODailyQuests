@@ -9,6 +9,7 @@ import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -17,7 +18,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import java.util.*;
 
 public class QuestsManager implements Listener {
-    
+
     private static final String PLAYER = "Player ";
     private static final Random random = new Random();
 
@@ -40,12 +41,15 @@ public class QuestsManager implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
 
-        Debugger.write("EVENT START");
+        Debugger.write("[EVENT START]");
         Debugger.write("PlayerJoinEvent triggered.");
 
-        final String playerName = event.getPlayer().getName();
+        final Player player = event.getPlayer();
+        final String playerName = player.getName();
+        final UUID uuid = player.getUniqueId();
 
         Debugger.write(PLAYER + playerName + " joined the server.");
+        Debugger.write("Player UUID is " + uuid);
 
         if (!activeQuests.containsKey(playerName)) {
             Debugger.write(PLAYER + playerName + " is not in the array.");
@@ -57,9 +61,6 @@ public class QuestsManager implements Listener {
             PluginLogger.warn(playerName + " detected into the array. This is not supposed to happen!");
             PluginLogger.warn("If the player can't make his quests progress, please contact the plugin developer.");
         }
-
-        Debugger.write("[EVENT END]");
-
     }
 
     @EventHandler
@@ -67,7 +68,9 @@ public class QuestsManager implements Listener {
         Debugger.write("[EVENT START]");
         Debugger.write("PlayerQuitEvent triggered.");
 
-        String playerName = event.getPlayer().getName();
+        final Player player = event.getPlayer();
+        final String playerName = player.getName();
+        final String playerUUID = player.getUniqueId().toString();
 
         Debugger.write(PLAYER + playerName + " left the server.");
 
@@ -75,25 +78,22 @@ public class QuestsManager implements Listener {
 
         if (playerQuests == null) {
             Debugger.write(PLAYER + playerName + " not found in the array.");
-
-
             PluginLogger.warn("Player quests not found for player " + playerName);
             return;
         }
 
-        plugin.getDatabaseManager().saveProgressionForPlayer(playerName, playerQuests);
+        plugin.getDatabaseManager().saveProgressionForPlayer(playerName, playerUUID, playerQuests);
         activeQuests.remove(playerName);
 
         Debugger.write(PLAYER + playerName + " removed from the array.");
-        Debugger.write("[EVENT END]");
-
     }
 
     /**
-     * Select random quests.
+     * Select random quests for player, based on the selected mode and the amount of quests.
+     *
+     * @return quests map.
      */
     public static Map<AbstractQuest, Progression> selectRandomQuests() {
-
         final Map<AbstractQuest, Progression> quests = new LinkedHashMap<>();
 
         if (Modes.getQuestsMode() == 1) {
@@ -135,7 +135,8 @@ public class QuestsManager implements Listener {
 
     /**
      * Get a random quest that is not already in the player's quests.
-     * @param currentQuests the player's current quests
+     *
+     * @param currentQuests   the player's current quests
      * @param availableQuests the available quests
      * @return a quest
      */
@@ -166,5 +167,4 @@ public class QuestsManager implements Listener {
     public static Map<String, PlayerQuests> getActiveQuests() {
         return activeQuests;
     }
-
 }

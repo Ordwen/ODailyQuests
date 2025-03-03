@@ -2,11 +2,13 @@ package com.ordwen.odailyquests.commands.admin;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.ConfigFactory;
+import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.integrations.ItemsAdderEnabled;
 import com.ordwen.odailyquests.configuration.integrations.OraxenEnabled;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
+import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -45,7 +47,14 @@ public class ReloadService {
     public void saveConnectedPlayerQuests() {
         final Map<String, PlayerQuests> activeQuests = new HashMap<>(QuestsManager.getActiveQuests());
         for (Map.Entry<String, PlayerQuests> entry : activeQuests.entrySet()) {
-            plugin.getDatabaseManager().saveProgressionForPlayer(entry.getKey(), entry.getValue());
+            final Player player = Bukkit.getPlayer(entry.getKey());
+            if (player == null) {
+                Debugger.write("Impossible to save progression for player " + entry.getKey() + " because the player is offline.");
+                PluginLogger.warn("Impossible to save progression for player " + entry.getKey() + " because the player is offline.");
+                continue;
+            }
+
+            plugin.getDatabaseManager().saveProgressionForPlayer(player.getName(), player.getUniqueId().toString(), entry.getValue());
             QuestsManager.getActiveQuests().remove(entry.getKey());
         }
     }

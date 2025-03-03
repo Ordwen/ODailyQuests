@@ -14,7 +14,6 @@ import com.ordwen.odailyquests.tools.PluginLogger;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class SaveProgressionSQL {
@@ -35,9 +34,10 @@ public class SaveProgressionSQL {
      * Save player quests progression.
      *
      * @param playerName   name of the player.
+     * @param playerUuid   player uuid.
      * @param playerQuests player quests.
      */
-    public void saveProgression(String playerName, PlayerQuests playerQuests, boolean isServerStopping) {
+    public void saveProgression(String playerName, String playerUuid, PlayerQuests playerQuests, boolean isServerStopping) {
         if (playerQuests == null) {
             PluginLogger.warn("Impossible to save progression for player " + playerName + " because playerQuests is null.");
             PluginLogger.warn("It can happen if the server is starting/reloading and the player's quests are not loaded yet.");
@@ -46,7 +46,6 @@ public class SaveProgressionSQL {
 
         Debugger.write("Entering saveProgression method for player " + playerName);
 
-        /* init variables */
         long timestamp = playerQuests.getTimestamp();
         int achievedQuests = playerQuests.getAchievedQuests();
         int totalAchievedQuests = playerQuests.getTotalAchievedQuests();
@@ -55,13 +54,12 @@ public class SaveProgressionSQL {
 
         if (isServerStopping) {
             Debugger.write("Saving player " + playerName + " progression (server is stopping).");
-            saveDatas(playerName, timestamp, achievedQuests, totalAchievedQuests, quests);
-
+            saveDatas(playerName, playerUuid, timestamp, achievedQuests, totalAchievedQuests, quests);
         } else {
             ODailyQuests.morePaperLib.scheduling().asyncScheduler().run(() -> {
                 Debugger.write("Saving player " + playerName + " progression asynchronously");
 
-                saveDatas(playerName, timestamp, achievedQuests, totalAchievedQuests, quests);
+                saveDatas(playerName, playerUuid, timestamp, achievedQuests, totalAchievedQuests, quests);
             });
         }
     }
@@ -70,59 +68,65 @@ public class SaveProgressionSQL {
      * Save player quests progression.
      *
      * @param playerName          name of the player.
+     * @param playerUuid          player uuid.
      * @param timestamp           timestamp.
      * @param achievedQuests      achieved quests.
      * @param totalAchievedQuests total achieved quests.
      * @param quests              quests.
      */
-    private void saveDatas(String playerName, long timestamp, int achievedQuests, int totalAchievedQuests, Map<AbstractQuest, Progression> quests) {
+    private void saveDatas(String playerName, String playerUuid, long timestamp, int achievedQuests, int totalAchievedQuests, Map<AbstractQuest, Progression> quests) {
         final Connection connection = sqlManager.getConnection();
+        if (connection == null) {
+            PluginLogger.error("Database connection unavailable");
+            return;
+        }
 
-        Debugger.write("Connection to database: " + (connection != null ? "OK" : "UNAVAILABLE"));
+        try (Connection conn = connection) {
+            final String playerQuery = (Database.getMode() == StorageMode.MYSQL)
+                    ? SQLQuery.MYSQL_PLAYER_QUERY.getQuery()
+                    : SQLQuery.H2_PLAYER_QUERY.getQuery();
 
-        try {
-            PreparedStatement playerStatement;
-            if (Database.getMode() == StorageMode.MYSQL) playerStatement = connection.prepareStatement(SQLQuery.MYSQL_PLAYER_QUERY.getQuery());
-            else playerStatement = connection.prepareStatement(SQLQuery.H2_PLAYER_QUERY.getQuery());
-
-            playerStatement.setString(1, playerName);
-            playerStatement.setLong(2, timestamp);
-            playerStatement.setInt(3, achievedQuests);
-            playerStatement.setInt(4, totalAchievedQuests);
-
-            playerStatement.executeUpdate();
-
-            Debugger.write("Player " + playerName + " data saved");
-
-            int index = 0;
-            for (AbstractQuest quest : quests.keySet()) {
-                PreparedStatement progressionStatement;
-                if (Database.getMode() == StorageMode.MYSQL) progressionStatement = connection.prepareStatement(SQLQuery.MYSQL_PROGRESS_UPDATE.getQuery());
-                else progressionStatement = connection.prepareStatement(SQLQuery.H2_PROGRESS_UPDATE.getQuery());
-
-                progressionStatement.setString(1, playerName);
-                progressionStatement.setInt(2, index);
-                progressionStatement.setInt(3, quest.getQuestIndex());
-                progressionStatement.setInt(4, quests.get(quest).getProgression());
-                progressionStatement.setBoolean(5, quests.get(quest).isAchieved());
-
-                progressionStatement.executeUpdate();
-
-                Debugger.write("Quest number " + index + " saved for player " + playerName);
-
-                index++;
+            try (PreparedStatement playerStatement = conn.prepareStatement(playerQuery)) {
+                playerStatement.setString(1, playerUuid);
+                playerStatement.setLong(2, timestamp);
+                playerStatement.setInt(3, achievedQuests);
+                playerStatement.setInt(4, totalAchievedQuests);
+                playerStatement.executeUpdate();
+                Debugger.write("Player " + playerName + " data saved");
             }
 
-            Debugger.write(playerName + " quests progression saved");
+            final String progressQuery = (Database.getMode() == StorageMode.MYSQL)
+                    ? SQLQuery.MYSQL_PROGRESS_UPDATE.getQuery()
+                    : SQLQuery.H2_PROGRESS_UPDATE.getQuery();
 
-            if (Logs.isEnabled()) PluginLogger.info(playerName + "'s data saved.");
-            connection.close();
+            try (PreparedStatement progressionStatement = conn.prepareStatement(progressQuery)) {
+                progressionStatement.setString(1, playerUuid);
+
+                int index = 0;
+                for (Map.Entry<AbstractQuest, Progression> entry : quests.entrySet()) {
+                    final AbstractQuest quest = entry.getKey();
+                    final Progression progression = entry.getValue();
+
+                    progressionStatement.setInt(2, index);
+                    progressionStatement.setInt(3, quest.getQuestIndex());
+                    progressionStatement.setInt(4, progression.getProgression());
+                    progressionStatement.setBoolean(5, progression.isAchieved());
+                    progressionStatement.addBatch();
+
+                    Debugger.write("Quest number " + index + " saved for player " + playerName);
+                    index++;
+                }
+                progressionStatement.executeBatch();
+                Debugger.write(playerName + " quests progression saved");
+            }
+
+            if (Logs.isEnabled()) {
+                PluginLogger.info(playerName + "'s data saved.");
+            }
         } catch (SQLException e) {
-            PluginLogger.error("An error occurred while saving player " + playerName + " data.");
-
             Debugger.write("An error occurred while saving player " + playerName + " data.");
             Debugger.write(e.getMessage());
-
+            PluginLogger.error("An error occurred while saving player " + playerName + " data.");
             PluginLogger.error(e.getMessage());
         }
     }

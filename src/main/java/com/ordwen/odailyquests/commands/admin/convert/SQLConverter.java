@@ -27,8 +27,8 @@ public abstract class SQLConverter {
 
         final LinkedHashMap<AbstractQuest, Progression> quests = new LinkedHashMap<>();
 
-        for (String playerName : progressionFile.getKeys(false)) {
-            final ConfigurationSection playerSection = progressionFile.getConfigurationSection(playerName);
+        for (String playerUuid : progressionFile.getKeys(false)) {
+            final ConfigurationSection playerSection = progressionFile.getConfigurationSection(playerUuid);
             if (playerSection == null) {
                 error("SQLConverter, 31 - The player section is null.");
                 return;
@@ -56,7 +56,7 @@ public abstract class SQLConverter {
                 boolean isAchieved = progressionSection.getBoolean(".isAchieved");
 
                 final Progression progression = new Progression(advancement, isAchieved);
-                final AbstractQuest quest = QuestLoaderUtils.findQuest(playerName, questIndex, Integer.parseInt(string));
+                final AbstractQuest quest = QuestLoaderUtils.findQuest(playerUuid, questIndex, Integer.parseInt(string));
 
                 quests.put(quest, progression);
             }
@@ -65,7 +65,7 @@ public abstract class SQLConverter {
             playerQuests.setAchievedQuests(achievedQuests);
             playerQuests.setTotalAchievedQuests(totalAchievedQuests);
 
-            sqlManager.getSaveProgressionSQL().saveProgression(playerName, playerQuests, true);
+            sqlManager.getSaveProgressionSQL().saveProgression(playerUuid, playerUuid, playerQuests, true);
         }
     }
 
