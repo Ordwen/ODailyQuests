@@ -12,9 +12,9 @@ prefix: "&7[O'DailyQuests&7]"
 disable_logs: false
 
 # storage mode for quests & progression
-# AVAILABLE MODES: YAML, MySQL,H2
-# RECOMMENDED: H2
-storage_mode: "H2"
+# AVAILABLE MODES: YAML, MySQL, SQLite
+# RECOMMENDED: SQLite
+storage_mode: "SQLite"
 
 # MySQL Database Connection
 database:

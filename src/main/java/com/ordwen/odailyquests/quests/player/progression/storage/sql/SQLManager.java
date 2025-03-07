@@ -1,7 +1,9 @@
 package com.ordwen.odailyquests.quests.player.progression.storage.sql;
 
+import com.ordwen.odailyquests.configuration.essentials.Database;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.enums.SQLQuery;
+import com.ordwen.odailyquests.enums.StorageMode;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -16,8 +18,8 @@ public abstract class SQLManager {
 
     public void setupTables() {
         try (final Connection connection = getConnection();
-             final PreparedStatement playerStatement = connection.prepareStatement(SQLQuery.CREATE_PLAYER_TABLE.getQuery());
-             final PreparedStatement progressionStatement = connection.prepareStatement(SQLQuery.CREATE_PROGRESSION_TABLE.getQuery())) {
+             final PreparedStatement playerStatement = connection.prepareStatement(Database.getMode() == StorageMode.MYSQL ? SQLQuery.MYSQL_CREATE_PLAYER_TABLE.getQuery() : SQLQuery.SQLITE_CREATE_PLAYER_TABLE.getQuery());
+             final PreparedStatement progressionStatement = connection.prepareStatement(Database.getMode() == StorageMode.MYSQL ? SQLQuery.MYSQL_CREATE_PROGRESSION_TABLE.getQuery() : SQLQuery.SQLITE_CREATE_PROGRESSION_TABLE.getQuery())) {
 
             playerStatement.execute();
             Debugger.write("Table odq_player created or found in database.");
