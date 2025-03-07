@@ -61,30 +61,25 @@ public class LoadProgressionSQL extends ProgressionLoader {
             int achievedQuests = 0;
             int totalAchievedQuests = 0;
 
-            try {
-                final Connection connection = sqlManager.getConnection();
+            try (final Connection connection = sqlManager.getConnection();
+                 final PreparedStatement preparedStatement = connection.prepareStatement(SQLQuery.TIMESTAMP_QUERY.getQuery())) {
 
-                final PreparedStatement preparedStatement = connection.prepareStatement(SQLQuery.TIMESTAMP_QUERY.getQuery());
                 preparedStatement.setString(1, playerUuid);
 
-                final ResultSet resultSet = preparedStatement.executeQuery();
+                try (final ResultSet resultSet = preparedStatement.executeQuery()) {
+                    Debugger.write("Executing query for player " + playerName + ": " + SQLQuery.TIMESTAMP_QUERY.getQuery());
 
-                Debugger.write("Executing query for player " + playerName + ": " + SQLQuery.TIMESTAMP_QUERY.getQuery());
+                    if (resultSet.next()) {
+                        hasStoredData = true;
+                        timestamp = resultSet.getLong("player_timestamp");
+                        achievedQuests = resultSet.getInt("achieved_quests");
+                        totalAchievedQuests = resultSet.getInt("total_achieved_quests");
 
-                if (resultSet.next()) {
-                    hasStoredData = true;
-                    timestamp = resultSet.getLong("player_timestamp");
-                    achievedQuests = resultSet.getInt("achieved_quests");
-                    totalAchievedQuests = resultSet.getInt("total_achieved_quests");
-
-                    Debugger.write(playerName + " has stored data.");
-                } else {
-                    Debugger.write(playerName + " has no stored data.");
+                        Debugger.write(playerName + " has stored data.");
+                    } else {
+                        Debugger.write(playerName + " has no stored data.");
+                    }
                 }
-
-                resultSet.close();
-                preparedStatement.close();
-                connection.close();
 
                 Debugger.write("Database connection closed.");
             } catch (SQLException e) {
@@ -131,7 +126,9 @@ public class LoadProgressionSQL extends ProgressionLoader {
 
         Debugger.write("Entering loadPlayerQuests method for player " + playerName + ".");
 
-        try (final Connection connection = sqlManager.getConnection(); final PreparedStatement preparedStatement = connection.prepareStatement(SQLQuery.QUEST_PROGRESSION_QUERY.getQuery())) {
+        try (final Connection connection = sqlManager.getConnection();
+             final PreparedStatement preparedStatement = connection.prepareStatement(SQLQuery.QUEST_PROGRESSION_QUERY.getQuery())) {
+
             preparedStatement.setString(1, player.getUniqueId().toString());
 
             try (final ResultSet resultSet = preparedStatement.executeQuery()) {

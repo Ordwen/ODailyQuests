@@ -31,7 +31,7 @@ public class AdminCompleter implements TabCompleter {
             switch (args[0]) {
                 case "reset" -> allCompletions = new ArrayList<>(List.of("quests", "total"));
                 case "add" -> allCompletions = new ArrayList<>(List.of("total"));
-                case "convert" -> allCompletions = new ArrayList<>(List.of("mysql", "h2"));
+                case "convert" -> allCompletions = new ArrayList<>(List.of("mysql", "sqlite"));
                 default -> {
                     return null;
                 }
@@ -45,7 +45,7 @@ public class AdminCompleter implements TabCompleter {
             final List<String> completions = new ArrayList<>();
 
             if (args[0].equalsIgnoreCase("convert")) {
-                allCompletions.addAll(List.of("mysql", "h2"));
+                allCompletions.addAll(List.of("mysql", "sqlite"));
             } else if (args[0].equalsIgnoreCase("reroll") || args[0].equalsIgnoreCase("complete")) {
                 for (int i = 1; i <= QuestsAmount.getQuestsAmount(); i++) {
                     allCompletions.add(String.valueOf(i));

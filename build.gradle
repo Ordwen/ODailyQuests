@@ -61,7 +61,7 @@ repositories {
 dependencies {
     /* database management */
     compileOnly 'com.zaxxer:HikariCP:5.0.1'
-    compileOnly 'com.h2database:h2:2.2.220'
+    compileOnly 'org.xerial:sqlite-jdbc:3.49.1.0'
 
     /* Spigot */
     compileOnly 'org.spigotmc:spigot-api:1.18.1-R0.1-SNAPSHOT'
@@ -114,6 +114,9 @@ dependencies {
 
     /* vote */
     compileOnly 'com.github.NuVotifier:NuVotifier:2.7.2'
+
+    /* crates */
+    compileOnly 'su.nightexpress.excellentcrates:ExcellentCrates:6.0.0'
 }
 
 def targetJavaVersion = 21

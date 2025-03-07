@@ -1,7 +1,9 @@
 package com.ordwen.odailyquests.quests.player.progression.storage.sql;
 
+import com.ordwen.odailyquests.configuration.essentials.Database;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.enums.SQLQuery;
+import com.ordwen.odailyquests.enums.StorageMode;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -16,8 +18,8 @@ public abstract class SQLManager {
 
     public void setupTables() {
         try (final Connection connection = getConnection();
-             final PreparedStatement playerStatement = connection.prepareStatement(SQLQuery.CREATE_PLAYER_TABLE.getQuery());
-             final PreparedStatement progressionStatement = connection.prepareStatement(SQLQuery.CREATE_PROGRESSION_TABLE.getQuery())) {
+             final PreparedStatement playerStatement = connection.prepareStatement(Database.getMode() == StorageMode.MYSQL ? SQLQuery.MYSQL_CREATE_PLAYER_TABLE.getQuery() : SQLQuery.SQLITE_CREATE_PLAYER_TABLE.getQuery());
+             final PreparedStatement progressionStatement = connection.prepareStatement(Database.getMode() == StorageMode.MYSQL ? SQLQuery.MYSQL_CREATE_PROGRESSION_TABLE.getQuery() : SQLQuery.SQLITE_CREATE_PROGRESSION_TABLE.getQuery())) {
 
             playerStatement.execute();
             Debugger.write("Table odq_player created or found in database.");
@@ -34,7 +36,9 @@ public abstract class SQLManager {
      * Close database connection.
      */
     public void close() {
-        this.hikariDataSource.close();
+        if (this.hikariDataSource != null && !this.hikariDataSource.isClosed()) {
+            this.hikariDataSource.close();
+        }
     }
 
     /**
@@ -55,15 +59,18 @@ public abstract class SQLManager {
 
     /**
      * Test database connection.
-     *
-     * @throws SQLException SQL errors.
      */
-    protected void testConnection() throws SQLException {
-        Connection con = getConnection();
-        if (con.isValid(1)) {
-            PluginLogger.info("Plugin successfully connected to database " + con.getCatalog() + ".");
-            con.close();
-        } else PluginLogger.error("IMPOSSIBLE TO CONNECT TO DATABASE");
+    protected void testConnection() {
+        try (Connection con = getConnection()) {
+            if (con != null && con.isValid(1)) {
+                PluginLogger.info("Plugin successfully connected to database " + con.getCatalog() + ".");
+            } else {
+                PluginLogger.error("Impossible to connect to database, please check your configuration.");
+            }
+        } catch (SQLException e) {
+            PluginLogger.error("Impossible to connect to database.");
+            PluginLogger.error(e.getMessage());
+        }
     }
 
     /**
