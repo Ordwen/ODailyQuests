@@ -75,13 +75,12 @@ public class SaveProgressionSQL {
      * @param quests              quests.
      */
     private void saveDatas(String playerName, String playerUuid, long timestamp, int achievedQuests, int totalAchievedQuests, Map<AbstractQuest, Progression> quests) {
-        final Connection connection = sqlManager.getConnection();
-        if (connection == null) {
-            PluginLogger.error("Database connection unavailable");
-            return;
-        }
+        try (Connection conn = sqlManager.getConnection()) {
+            if (conn == null) {
+                PluginLogger.error("Database connection unavailable");
+                return;
+            }
 
-        try (Connection conn = connection) {
             final String playerQuery = (Database.getMode() == StorageMode.MYSQL)
                     ? SQLQuery.MYSQL_PLAYER_QUERY.getQuery()
                     : SQLQuery.H2_PLAYER_QUERY.getQuery();
@@ -92,6 +91,7 @@ public class SaveProgressionSQL {
                 playerStatement.setInt(3, achievedQuests);
                 playerStatement.setInt(4, totalAchievedQuests);
                 playerStatement.executeUpdate();
+
                 Debugger.write("Player " + playerName + " data saved");
             }
 
@@ -116,6 +116,7 @@ public class SaveProgressionSQL {
                     Debugger.write("Quest number " + index + " saved for player " + playerName);
                     index++;
                 }
+
                 progressionStatement.executeBatch();
                 Debugger.write(playerName + " quests progression saved");
             }
