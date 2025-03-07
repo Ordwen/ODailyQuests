@@ -112,6 +112,9 @@ dependencies {
 
     /* vote */
     compileOnly 'com.github.NuVotifier:NuVotifier:2.7.2'
+
+    /* crates */
+    compileOnly 'su.nightexpress.excellentcrates:ExcellentCrates:6.0.0'
 }
 
 def targetJavaVersion = 21
