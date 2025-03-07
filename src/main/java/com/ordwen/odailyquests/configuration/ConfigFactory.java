@@ -51,6 +51,7 @@ public class ConfigFactory {
         configs.put(ItemsAdderEnabled.class, new ItemsAdderEnabled(configurationFile));
         configs.put(NPCNames.class, new NPCNames(configurationFile));
         configs.put(OraxenEnabled.class, new OraxenEnabled(configurationFile));
+        configs.put(NexoEnabled.class, new NexoEnabled(configurationFile));
         configs.put(SharedMobs.class, new SharedMobs(configurationFile));
         configs.put(WildStackerEnabled.class, new WildStackerEnabled(configurationFile));
 

@@ -54,6 +54,7 @@ repositories {
     maven { url = 'https://repo.glaremasters.me/repository/towny/'}
     maven { url = 'https://repo.magmaguy.com/releases/' }
     maven { url = 'https://repo.nightexpressdev.com/releases/' }
+    maven { url = "https://repo.nexomc.com/releases/" }
     maven { url = 'https://jitpack.io' }
 }
 
@@ -97,6 +98,7 @@ dependencies {
     /* custom items */
     compileOnly 'com.github.oraxen:oraxen:1.157.0'
     compileOnly 'com.github.LoneDev6:API-ItemsAdder:3.6.3-beta-14'
+    compileOnly 'com.nexomc:nexo:1.1.0'
     compileOnly 'net.Indyuce:MMOItems-API:6.9.2-SNAPSHOT'
     compileOnly 'io.lumine:MythicLib-dist:1.5.2-SNAPSHOT'
     compileOnly 'net.momirealms:custom-crops:3.6.29'

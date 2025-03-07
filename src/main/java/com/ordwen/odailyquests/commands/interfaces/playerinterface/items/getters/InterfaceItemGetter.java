@@ -9,7 +9,8 @@ public class InterfaceItemGetter extends ItemGetter implements IInterfaceItem {
 
     /**
      * Get an item from a string.
-     * @param material the material of the item
+     *
+     * @param material  the material of the item
      * @param itemIndex the index of the item in the file
      * @param parameter the parameter involved
      * @return the ItemStack or null if the item cannot be loaded
@@ -19,6 +20,7 @@ public class InterfaceItemGetter extends ItemGetter implements IInterfaceItem {
         final String[] split = material.split(":", 2);
         return switch (split[0]) {
             case "oraxen" -> this.getOraxenItem(split[1], itemIndex, parameter);
+            case "nexo" -> this.getNexoItem(split[1], itemIndex, parameter);
             case "itemsadder" -> this.getItemsAdderItem(split[1], itemIndex, parameter);
             case "mmoitems" -> this.getMMOItemsItem(split[1], itemIndex, parameter);
             case "customhead" -> this.getCustomHead(split[1], itemIndex, parameter);
@@ -29,6 +31,7 @@ public class InterfaceItemGetter extends ItemGetter implements IInterfaceItem {
 
     /**
      * Get an item from Oraxen.
+     *
      * @param namespace the namespace of the item
      * @param itemIndex the index of the item in the file
      * @param parameter the parameter involved
@@ -46,7 +49,27 @@ public class InterfaceItemGetter extends ItemGetter implements IInterfaceItem {
     }
 
     /**
+     * Get an item from Nexo.
+     *
+     * @param namespace the namespace of the item
+     * @param itemIndex the index of the item in the file
+     * @param parameter the parameter involved
+     * @return the ItemStack or null if the item cannot be loaded
+     */
+    @Override
+    public ItemStack getNexoItem(String namespace, String itemIndex, String parameter) {
+        final Pair<String, ItemStack> result = super.getNexoItem(namespace);
+        if (!result.first().isEmpty()) {
+            configurationError(itemIndex, parameter, result.first());
+            return null;
+        }
+
+        return result.second();
+    }
+
+    /**
      * Get an item from ItemsAdder.
+     *
      * @param namespace the namespace of the item
      * @param itemIndex the index of the item in the file
      * @param parameter the parameter involved
@@ -65,6 +88,7 @@ public class InterfaceItemGetter extends ItemGetter implements IInterfaceItem {
 
     /**
      * Get an item from MMOItems.
+     *
      * @param namespace the namespace of the item
      * @param itemIndex the index of the item in the file
      * @param parameter the parameter involved
@@ -83,9 +107,10 @@ public class InterfaceItemGetter extends ItemGetter implements IInterfaceItem {
 
     /**
      * Get a custom head.
-     * @param texture the texture of the head
+     *
+     * @param texture    the texture of the head
      * @param questIndex the index of the quest in the file
-     * @param parameter the parameter involved
+     * @param parameter  the parameter involved
      * @return the ItemStack or null if the item cannot be loaded
      */
     @Override
@@ -101,9 +126,10 @@ public class InterfaceItemGetter extends ItemGetter implements IInterfaceItem {
 
     /**
      * Get an item with custom model data.
+     *
      * @param customModelData the custom model data of the item
-     * @param questIndex the index of the quest in the file
-     * @param parameter the parameter involved
+     * @param questIndex      the index of the quest in the file
+     * @param parameter       the parameter involved
      * @return the ItemStack or null if the item cannot be loaded
      */
     @Override
@@ -142,8 +168,8 @@ public class InterfaceItemGetter extends ItemGetter implements IInterfaceItem {
      * Display an error message in the console when an interface item cannot be loaded.
      *
      * @param itemIndex the index of the item in the file
-     * @param parameter  the parameter that caused the error
-     * @param reason     the reason of the error
+     * @param parameter the parameter that caused the error
+     * @param reason    the reason of the error
      */
     public void configurationError(String itemIndex, String parameter, String reason) {
         PluginLogger.error("-----------------------------------");

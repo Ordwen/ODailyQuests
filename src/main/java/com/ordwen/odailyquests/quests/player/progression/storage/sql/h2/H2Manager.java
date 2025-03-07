@@ -11,7 +11,6 @@ import java.sql.*;
 
 public class H2Manager extends SQLManager {
 
-
     public H2Manager() {
         super.loadProgressionSQL = new LoadProgressionSQL(this);
         super.saveProgressionSQL = new SaveProgressionSQL(this);

@@ -3,12 +3,14 @@ package com.ordwen.odailyquests.events;
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.CustomFurnaceResults;
 import com.ordwen.odailyquests.configuration.integrations.ItemsAdderEnabled;
+import com.ordwen.odailyquests.configuration.integrations.NexoEnabled;
 import com.ordwen.odailyquests.configuration.integrations.OraxenEnabled;
 import com.ordwen.odailyquests.events.listeners.customs.CustomFurnaceExtractListener;
 import com.ordwen.odailyquests.events.listeners.integrations.customsuite.CropBreakListener;
 import com.ordwen.odailyquests.events.listeners.integrations.customsuite.FishingLootSpawnListener;
 import com.ordwen.odailyquests.events.listeners.integrations.itemsadder.CustomBlockBreakListener;
 import com.ordwen.odailyquests.events.listeners.integrations.itemsadder.ItemsAdderLoadDataListener;
+import com.ordwen.odailyquests.events.listeners.integrations.nexo.NexoItemsLoadedListener;
 import com.ordwen.odailyquests.events.listeners.integrations.oraxen.OraxenItemsLoadedListener;
 import com.ordwen.odailyquests.events.listeners.vote.VotifierListener;
 import com.ordwen.odailyquests.externs.hooks.mobs.EliteMobsHook;
@@ -88,6 +90,7 @@ public class EventsManager {
         // custom events
         if (ItemsAdderEnabled.isEnabled()
                 || OraxenEnabled.isEnabled()
+                || NexoEnabled.isEnabled()
                 || CustomFurnaceResults.isEnabled()) {
             Bukkit.getPluginManager().registerEvents(new CustomFurnaceExtractListener(), oDailyQuests);
         }
@@ -100,6 +103,10 @@ public class EventsManager {
 
         if (OraxenEnabled.isEnabled()) {
             Bukkit.getPluginManager().registerEvents(new OraxenItemsLoadedListener(oDailyQuests), oDailyQuests);
+        }
+
+        if (NexoEnabled.isEnabled()) {
+            Bukkit.getPluginManager().registerEvents(new NexoItemsLoadedListener(oDailyQuests), oDailyQuests);
         }
 
         if (Bukkit.getPluginManager().isPluginEnabled("CustomCrops")) {

@@ -4,6 +4,7 @@ import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.ConfigFactory;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.integrations.ItemsAdderEnabled;
+import com.ordwen.odailyquests.configuration.integrations.NexoEnabled;
 import com.ordwen.odailyquests.configuration.integrations.OraxenEnabled;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
@@ -74,7 +75,8 @@ public class ReloadService {
 
         /* load quests & interface */
         if ((!ItemsAdderEnabled.isEnabled() || ItemsAdderEnabled.isLoaded())
-                && (!OraxenEnabled.isEnabled() || OraxenEnabled.isLoaded())) {
+                && (!OraxenEnabled.isEnabled() || OraxenEnabled.isLoaded())
+                && (!NexoEnabled.isEnabled() || NexoEnabled.isLoaded())) {
             categoriesLoader.loadCategories();
             plugin.getInterfacesManager().initAllObjects();
         }
