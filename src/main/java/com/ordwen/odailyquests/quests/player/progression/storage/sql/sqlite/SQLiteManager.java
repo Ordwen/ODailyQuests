@@ -6,8 +6,6 @@ import com.ordwen.odailyquests.quests.player.progression.storage.sql.SaveProgres
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
-import java.sql.*;
-
 public class SQLiteManager extends SQLManager {
 
 
