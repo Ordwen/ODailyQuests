@@ -36,7 +36,9 @@ public abstract class SQLManager {
      * Close database connection.
      */
     public void close() {
-        this.hikariDataSource.close();
+        if (this.hikariDataSource != null && !this.hikariDataSource.isClosed()) {
+            this.hikariDataSource.close();
+        }
     }
 
     /**
@@ -57,15 +59,18 @@ public abstract class SQLManager {
 
     /**
      * Test database connection.
-     *
-     * @throws SQLException SQL errors.
      */
-    protected void testConnection() throws SQLException {
-        Connection con = getConnection();
-        if (con.isValid(1)) {
-            PluginLogger.info("Plugin successfully connected to database " + con.getCatalog() + ".");
-            con.close();
-        } else PluginLogger.error("IMPOSSIBLE TO CONNECT TO DATABASE");
+    protected void testConnection() {
+        try (Connection con = getConnection()) {
+            if (con != null && con.isValid(1)) {
+                PluginLogger.info("Plugin successfully connected to database " + con.getCatalog() + ".");
+            } else {
+                PluginLogger.error("Impossible to connect to database, please check your configuration.");
+            }
+        } catch (SQLException e) {
+            PluginLogger.error("Impossible to connect to database.");
+            PluginLogger.error(e.getMessage());
+        }
     }
 
     /**

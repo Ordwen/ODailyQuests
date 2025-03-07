@@ -66,4 +66,12 @@ public class DatabaseManager {
                     PluginLogger.error("Impossible to save player quests : the selected storage mode is incorrect !");
         }
     }
+
+    public SQLManager getSqlManager() {
+        return sqlManager;
+    }
+
+    public YamlManager getYamlManager() {
+        return yamlManager;
+    }
 }

@@ -3,7 +3,6 @@ package com.ordwen.odailyquests.quests.player.progression.storage.sql.sqlite;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.LoadProgressionSQL;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.SaveProgressionSQL;
-import com.ordwen.odailyquests.tools.PluginLogger;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -25,12 +24,7 @@ public class SQLiteManager extends SQLManager {
     public void setupDatabase() {
         initSQLite();
 
-        try {
-            testConnection();
-        } catch (SQLException e) {
-            PluginLogger.error(e.getMessage());
-        }
-
+        testConnection();
         setupTables();
     }
 
