@@ -4,11 +4,8 @@ import com.ordwen.odailyquests.configuration.essentials.Database;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.LoadProgressionSQL;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.SaveProgressionSQL;
-import com.ordwen.odailyquests.tools.PluginLogger;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-
-import java.sql.*;
 
 public class MySQLManager extends SQLManager {
 
@@ -42,12 +39,7 @@ public class MySQLManager extends SQLManager {
     public void setupDatabase() {
         initHikariCP();
 
-        try {
-            testConnection();
-        } catch (SQLException e) {
-            PluginLogger.error(e.getMessage());
-        }
-
+        testConnection();
         setupTables();
     }
 
