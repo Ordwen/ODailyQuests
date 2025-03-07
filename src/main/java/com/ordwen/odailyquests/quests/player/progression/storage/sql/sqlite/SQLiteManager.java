@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.quests.player.progression.storage.sql.h2;
+package com.ordwen.odailyquests.quests.player.progression.storage.sql.sqlite;
 
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.LoadProgressionSQL;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
@@ -6,10 +6,10 @@ import com.ordwen.odailyquests.quests.player.progression.storage.sql.SaveProgres
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
-public class H2Manager extends SQLManager {
+public class SQLiteManager extends SQLManager {
 
 
-    public H2Manager() {
+    public SQLiteManager() {
         super.loadProgressionSQL = new LoadProgressionSQL(this);
         super.saveProgressionSQL = new SaveProgressionSQL(this);
 
@@ -20,18 +20,16 @@ public class H2Manager extends SQLManager {
      * Init database.
      */
     public void setupDatabase() {
-        initH2();
+        initSQLite();
 
         testConnection();
         setupTables();
     }
 
-    private void initH2() {
-        HikariConfig config = new HikariConfig();
-        config.setDriverClassName("org.h2.Driver");
-        config.setJdbcUrl("jdbc:h2:./plugins/ODailyQuests/database");
-        config.setUsername("odq");
-        config.setPassword("");
+    private void initSQLite() {
+        final HikariConfig config = new HikariConfig();
+        config.setDriverClassName("org.sqlite.JDBC");
+        config.setJdbcUrl("jdbc:sqlite:./plugins/ODailyQuests/database.db");
         config.setMaximumPoolSize(100);
         config.setMaxLifetime(300000L);
         config.setLeakDetectionThreshold(60000L);

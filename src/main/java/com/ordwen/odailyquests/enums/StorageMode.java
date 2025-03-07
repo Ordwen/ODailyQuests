@@ -5,7 +5,7 @@ import com.ordwen.odailyquests.tools.PluginLogger;
 public enum StorageMode {
 
     YAML(true),
-    H2(true),
+    SQLITE(true),
     MYSQL(false),
     ;
 

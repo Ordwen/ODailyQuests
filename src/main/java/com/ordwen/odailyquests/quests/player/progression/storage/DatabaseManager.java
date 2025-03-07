@@ -5,7 +5,7 @@ import com.ordwen.odailyquests.configuration.essentials.Database;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
-import com.ordwen.odailyquests.quests.player.progression.storage.sql.h2.H2Manager;
+import com.ordwen.odailyquests.quests.player.progression.storage.sql.sqlite.SQLiteManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.mysql.MySQLManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.yaml.YamlManager;
 import com.ordwen.odailyquests.tools.PluginLogger;
@@ -29,8 +29,8 @@ public class DatabaseManager {
                 this.sqlManager = new MySQLManager();
                 this.yamlManager = null;
             }
-            case H2 -> {
-                this.sqlManager = new H2Manager();
+            case SQLITE -> {
+                this.sqlManager = new SQLiteManager();
                 this.yamlManager = null;
             }
             case YAML -> {
@@ -50,7 +50,7 @@ public class DatabaseManager {
         final Map<String, PlayerQuests> activeQuests = QuestsManager.getActiveQuests();
         switch (Database.getMode()) {
             case YAML -> yamlManager.getLoadProgressionYAML().loadPlayerQuests(playerName, activeQuests);
-            case MYSQL, H2 -> sqlManager.getLoadProgressionSQL().loadProgression(playerName, activeQuests);
+            case MYSQL, SQLITE -> sqlManager.getLoadProgressionSQL().loadProgression(playerName, activeQuests);
             default ->
                     PluginLogger.error("Impossible to load player quests : the selected storage mode is incorrect !");
         }
@@ -60,7 +60,7 @@ public class DatabaseManager {
         switch (Database.getMode()) {
             case YAML ->
                     yamlManager.getSaveProgressionYAML().saveProgression(playerName, playerUuid, playerQuests, plugin.isServerStopping());
-            case MYSQL, H2 ->
+            case MYSQL, SQLITE ->
                     sqlManager.getSaveProgressionSQL().saveProgression(playerName, playerUuid, playerQuests, plugin.isServerStopping());
             default ->
                     PluginLogger.error("Impossible to save player quests : the selected storage mode is incorrect !");
