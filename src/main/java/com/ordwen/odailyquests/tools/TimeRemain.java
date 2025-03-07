@@ -8,19 +8,7 @@ import java.util.Calendar;
 
 public class TimeRemain {
 
-    private static String d;
-    private static String h;
-    private static String m;
-    private static String fewSeconds;
-
-    /**
-     * Setup initials.
-     */
-    public void setupInitials() {
-        d = Temporality.getDayInitial();
-        h = Temporality.getHourInitial();
-        m = Temporality.getMinuteInitial();
-        fewSeconds = Temporality.getFewSeconds();
+    private TimeRemain() {
     }
 
     /**
@@ -30,6 +18,11 @@ public class TimeRemain {
      * @return the time remain before the next quests draw, in String.
      */
     public static String timeRemain(String playerName) {
+
+        final String d = Temporality.getDayInitial();
+        final String h = Temporality.getHourInitial();
+        final String m = Temporality.getMinuteInitial();
+        final String fewSeconds = Temporality.getFewSeconds();
 
         long timestamp = QuestsManager.getActiveQuests().get(playerName).getTimestamp();
         long diff;
@@ -50,63 +43,53 @@ public class TimeRemain {
             diff = System.currentTimeMillis() - timestamp;
         }
 
-        String timeRemain = "";
-
         long rest;
 
-        switch (Temporality.getTemporalityMode()) {
+        return switch (Temporality.getTemporalityMode()) {
             case 1 -> {
                 rest = 86400000L - diff;
                 int minutes = (int) ((rest / (1000 * 60)) % 60);
                 int hours = (int) ((rest / (1000 * 60 * 60)) % 24);
                 if (hours != 0) {
-                    timeRemain = String.format("%d" + h + "%d" + m, hours, minutes);
+                    yield String.format("%d%s%d%s", hours, h, minutes, m);
                 } else if (minutes != 0) {
-                    timeRemain = String.format("%d" + m, minutes);
+                    yield String.format("%d%s", minutes, m);
                 } else {
-                    timeRemain = fewSeconds;
+                    yield fewSeconds;
                 }
             }
             case 2 -> {
                 rest = 604800000L - diff;
-                timeRemain = getTimeRemainString(rest, d, h, m);
+                yield getTimeRemainString(rest, d, h, m);
             }
             case 3 -> {
                 rest = 2678400000L - diff;
-                timeRemain = getTimeRemainString(rest, d, h, m);
+                yield getTimeRemainString(rest, d, h, m);
             }
-        }
-
-        return timeRemain;
+            default -> "";
+        };
     }
 
     /**
      * Get a text from remaining time.
+     *
      * @param rest remaining time in milliseconds.
-     * @param d day initial.
-     * @param h hour initial.
-     * @param m minute initial.
+     * @param d    day initial.
+     * @param h    hour initial.
+     * @param m    minute initial.
      * @return formatted text with remaining time.
      */
     private static String getTimeRemainString(long rest, String d, String h, String m) {
-        int minutes;
-        int hours;
-        int days;
-        String timeRemain;
+        final int days = (int) (rest / (1000 * 60 * 60 * 24));
+        final int hours = (int) ((rest / (1000 * 60 * 60)) % 24);
+        final int minutes = (int) ((rest / (1000 * 60)) % 60);
 
-        minutes = (int) ((rest / (1000 * 60)) % 60);
-        hours = (int) ((rest / (1000 * 60 * 60)) % 24);
-        days = (int) (rest / (1000 * 60 * 60 * 24));
+        final String timeRemain;
 
-        if (days != 0) {
-            timeRemain = String.format("%d" + d + "%d" + h + "%d" + m, days, hours, minutes);
-        } else if (hours != 0) {
-            timeRemain = String.format("%d" + h + "%d" + m, hours, minutes);
-        } else if (minutes != 0) {
-            timeRemain = String.format("%d" + m, minutes);
-        } else {
-            timeRemain = "Few seconds.";
-        }
+        if (days != 0) timeRemain = String.format("%d%s%d%s%d%s", days, d, hours, h, minutes, m);
+        else if (hours != 0) timeRemain = String.format("%d%s%d%s", hours, h, minutes, m);
+        else if (minutes != 0) timeRemain = String.format("%d%s", minutes, m);
+        else timeRemain = "Few seconds.";
 
         return timeRemain;
     }

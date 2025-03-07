@@ -13,10 +13,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class AdminCommands implements CommandExecutor {
 
-    private final ReloadService reloadService;
+    private final ODailyQuests plugin;
 
-    public AdminCommands(ODailyQuests oDailyQuests) {
-        this.reloadService = oDailyQuests.getReloadService();
+    public AdminCommands(ODailyQuests plugin) {
+        this.plugin = plugin;
     }
 
     @Override
@@ -25,7 +25,7 @@ public class AdminCommands implements CommandExecutor {
         if (sender.hasPermission(QuestsPermissions.QUESTS_ADMIN.getPermission())) {
             if (args.length == 1) {
                 if (args[0].equals("reload")) {
-                    reloadService.reload();
+                    plugin.getReloadService().reload();
                     sender.sendMessage(ChatColor.GREEN + "Plugin successfully reloaded!");
                 } else help(sender);
             } else if (args.length >= 2) {
@@ -34,11 +34,10 @@ public class AdminCommands implements CommandExecutor {
                     case "reset" -> new ResetCommand(sender, args).handle();
                     case "add" -> new AddCommand(sender, args).handle();
                     case "reroll" -> new ARerollCommand(sender, args).handle();
-                    case "show" -> new ShowCommand(sender, args).handle();
-                    case "open" -> new OpenCommand(sender, args).handle();
+                    case "show" -> new ShowCommand(plugin.getInterfacesManager().getPlayerQuestsInterface(), sender, args).handle();
+                    case "open" -> new OpenCommand(plugin.getInterfacesManager().getPlayerQuestsInterface(), sender, args).handle();
                     case "complete" -> new CompleteCommand(sender, args).handle();
                     case "customcomplete" -> new CustomCompleteCommand(sender, args).handle();
-                    case "holo" -> new HoloCommand(sender, args).handle();
                     default -> help(sender);
                 }
             } else help(sender);

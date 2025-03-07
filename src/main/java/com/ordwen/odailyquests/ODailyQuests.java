@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests;
 
+import com.jeff_media.customblockdata.CustomBlockData;
 import com.ordwen.odailyquests.api.ODailyQuestsAPI;
 import com.ordwen.odailyquests.api.quests.QuestTypeRegistry;
 import com.ordwen.odailyquests.events.restart.RestartHandler;
@@ -11,8 +12,6 @@ import com.ordwen.odailyquests.commands.admin.AdminCompleter;
 import com.ordwen.odailyquests.commands.player.PlayerCompleter;
 import com.ordwen.odailyquests.commands.interfaces.InterfacesManager;
 import com.ordwen.odailyquests.commands.interfaces.InventoryClickListener;
-import com.ordwen.odailyquests.configuration.ConfigurationManager;
-import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.configuration.essentials.Temporality;
 import com.ordwen.odailyquests.events.EventsManager;
@@ -21,12 +20,8 @@ import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.player.progression.listeners.AllCategoryQuestsCompletedListener;
 import com.ordwen.odailyquests.quests.player.progression.listeners.AllQuestsCompletedListener;
 import com.ordwen.odailyquests.quests.player.progression.listeners.QuestCompletedListener;
-import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
-import com.ordwen.odailyquests.quests.player.progression.storage.sql.h2.H2Manager;
-import com.ordwen.odailyquests.quests.player.progression.storage.yaml.YamlManager;
+import com.ordwen.odailyquests.quests.player.progression.storage.DatabaseManager;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
-import com.ordwen.odailyquests.quests.types.custom.crate.CrateOpenQuest;
-import com.ordwen.odailyquests.quests.types.custom.items.PyroFishQuest;
 import com.ordwen.odailyquests.quests.types.custom.mobs.EliteMobsQuest;
 import com.ordwen.odailyquests.quests.types.custom.mobs.MythicMobsQuest;
 import com.ordwen.odailyquests.quests.types.custom.vote.NuVotifierQuest;
@@ -43,7 +38,7 @@ import com.ordwen.odailyquests.quests.types.item.VillagerQuest;
 import com.ordwen.odailyquests.quests.types.item.*;
 import com.ordwen.odailyquests.tools.*;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
-import com.ordwen.odailyquests.quests.player.progression.storage.sql.mysql.MySQLManager;
+import com.ordwen.odailyquests.tools.updater.ConfigUpdateManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -61,17 +56,15 @@ public final class ODailyQuests extends JavaPlugin {
     /**
      * Getting instance of files classes.
      */
-    private ConfigurationFiles configurationFiles;
-    private ConfigurationManager configurationManager;
     private InterfacesManager interfacesManager;
     private FilesManager filesManager;
-    private SQLManager sqlManager;
-    private YamlManager yamlManager;
     private TimerTask timerTask;
     private ReloadService reloadService;
     private CategoriesLoader categoriesLoader;
+    private DatabaseManager databaseManager;
+    private RestartHandler restartHandler;
 
-    boolean isServerStopping = false;
+    boolean isServerStopping;
 
     @Override
     public void onLoad() {
@@ -82,44 +75,85 @@ public final class ODailyQuests extends JavaPlugin {
     @Override
     public void onEnable() {
         PluginLogger.info("Plugin is starting...");
+        isServerStopping = false;
+
         ODailyQuestsAPI.disableRegistration();
         morePaperLib = new MorePaperLib(this);
 
         /* Load Metrics */
         // https://bstats.org/plugin/bukkit/ODailyQuests/14277
         int pluginId = 14277;
-        final Metrics metrics = new Metrics(this, pluginId);
+        new Metrics(this, pluginId);
+
 
         /* Load files */
-        this.configurationFiles = new ConfigurationFiles(this);
         this.filesManager = new FilesManager(this);
-        this.filesManager.loadAllFiles();
+        this.filesManager.load();
 
         /* Check for updates */
-        new AutoUpdater(this).checkForUpdate();
+        new ConfigUpdateManager(this).runUpdates();
         checkForSpigotUpdate();
-
-        /* Load SQL Support */
-        switch (configurationFiles.getConfigFile().getString("storage_mode")) {
-            case "MySQL" -> this.sqlManager = new MySQLManager(this);
-            case "H2" -> this.sqlManager = new H2Manager(this);
-            default -> this.yamlManager = new YamlManager();
-        }
 
         /* Init categories loader */
         this.categoriesLoader = new CategoriesLoader();
 
         /* Load class instances */
         this.interfacesManager = new InterfacesManager(this);
-        this.configurationManager = new ConfigurationManager(this);
-        this.reloadService = new ReloadService(this, sqlManager != null);
+        this.databaseManager = new DatabaseManager(this);
 
         /* Load dependencies */
         new IntegrationsManager(this).loadAllDependencies();
 
-        /* Load debugger */
-        new Debugger(this).loadDebugMode();
+        /* Hook CustomBlockData */
+        CustomBlockData.registerListener(this);
 
+        /* Register all quest types, from main plugin or addons */
+        registerQuestTypes();
+
+        /* Load all config elements */
+        this.reloadService = new ReloadService(this);
+        reloadService.reload();
+
+        /* Load listeners */
+        new EventsManager(this).registerListeners();
+
+        /* Load commands */
+        getCommand("dquests").setExecutor(new PlayerCommands(interfacesManager));
+        getCommand("dqadmin").setExecutor(new AdminCommands(this));
+
+        /* Load Tab Completers */
+        getCommand("dquests").setTabCompleter(new PlayerCompleter());
+        getCommand("dqadmin").setTabCompleter(new AdminCompleter());
+
+        /* Register plugin events */
+        getServer().getPluginManager().registerEvents(new InventoryClickListener(interfacesManager.getQuestsInterfaces()), this);
+        getServer().getPluginManager().registerEvents(new QuestsManager(this), this);
+        getServer().getPluginManager().registerEvents(new QuestCompletedListener(), this);
+        getServer().getPluginManager().registerEvents(new AllQuestsCompletedListener(), this);
+        getServer().getPluginManager().registerEvents(new AllCategoryQuestsCompletedListener(), this);
+
+        /* Register server restart related events */
+        restartHandler = new RestartHandler(this);
+        restartHandler.registerSubClasses();
+
+        /* Avoid errors on reload */
+        if (!Bukkit.getServer().getOnlinePlayers().isEmpty()) {
+            reloadService.loadConnectedPlayerQuests();
+
+            PluginLogger.warn("It seems that you have reloaded the server.");
+            PluginLogger.warn("Think that this can cause problems, especially in the data backup.");
+            PluginLogger.warn("You should restart the server instead.");
+        }
+
+        /* Init delayed task to draw new quests */
+        if (Modes.getTimestampMode() == 1 && Temporality.getTemporalityMode() == 1) {
+            timerTask = new TimerTask(LocalDateTime.now());
+        }
+
+        PluginLogger.info("Plugin is started!");
+    }
+
+    private void registerQuestTypes() {
         /* Register quest types */
         final QuestTypeRegistry questTypeRegistry = API.getQuestTypeRegistry();
 
@@ -159,10 +193,8 @@ public final class ODailyQuests extends JavaPlugin {
         questTypeRegistry.registerQuestType("FIREBALL_REFLECT", FireballReflectQuest.class);
 
         /* other plugins */
-        questTypeRegistry.registerQuestType("PYRO_FISH", PyroFishQuest.class);
         questTypeRegistry.registerQuestType("NU_VOTIFIER", NuVotifierQuest.class);
         questTypeRegistry.registerQuestType("VOTIFIER_PLUS", VotifierPlusQuest.class);
-        questTypeRegistry.registerQuestType("CRATE_OPEN", CrateOpenQuest.class);
 
         /* register addons types */
         final Map<String, Class<? extends AbstractQuest>> externalTypes = ODailyQuestsAPI.getExternalTypes();
@@ -170,46 +202,6 @@ public final class ODailyQuests extends JavaPlugin {
             questTypeRegistry.registerQuestType(entry.getKey(), entry.getValue());
             PluginLogger.info("Registered external quest type: " + entry.getKey());
         }
-
-        /* Load all elements */
-        reloadService.reload();
-
-        /* Load listeners */
-        new EventsManager(this).registerListeners();
-
-        /* Load commands */
-        getCommand("dquests").setExecutor(new PlayerCommands());
-        getCommand("dqadmin").setExecutor(new AdminCommands(this));
-
-        /* Load Tab Completers */
-        getCommand("dquests").setTabCompleter(new PlayerCompleter());
-        getCommand("dqadmin").setTabCompleter(new AdminCompleter());
-
-        /* Register plugin events */
-        getServer().getPluginManager().registerEvents(new InventoryClickListener(), this);
-        getServer().getPluginManager().registerEvents(new QuestsManager(this, sqlManager != null), this);
-        getServer().getPluginManager().registerEvents(new QuestCompletedListener(), this);
-        getServer().getPluginManager().registerEvents(new AllQuestsCompletedListener(), this);
-        getServer().getPluginManager().registerEvents(new AllCategoryQuestsCompletedListener(), this);
-
-        /* Register server restart related events */
-        new RestartHandler(this).registerSubClasses();
-
-        /* Avoid errors on reload */
-        if (!Bukkit.getServer().getOnlinePlayers().isEmpty()) {
-            reloadService.loadConnectedPlayerQuests();
-
-            PluginLogger.error("It seems that you have reloaded the server.");
-            PluginLogger.error("Think that this can cause problems, especially in the data backup.");
-            PluginLogger.error("You should restart the server instead.");
-        }
-
-        /* Init delayed task to draw new quests */
-        if (Modes.getTimestampMode() == 1 && Temporality.getTemporalityMode() == 1) {
-            timerTask = new TimerTask(LocalDateTime.now());
-        }
-
-        PluginLogger.info("Plugin is started!");
     }
 
     /**
@@ -224,13 +216,13 @@ public final class ODailyQuests extends JavaPlugin {
 
     @Override
     public void onDisable() {
-
+        restartHandler.setServerStopping();
         if (timerTask != null) timerTask.stop();
 
         /* Avoid errors on reload */
-        reloadService.saveConnectedPlayerQuests(false);
+        reloadService.saveConnectedPlayerQuests();
 
-        if (sqlManager != null) sqlManager.close();
+        databaseManager.close();
         PluginLogger.info(ChatColor.RED + "Plugin is shutting down...");
     }
 
@@ -270,24 +262,6 @@ public final class ODailyQuests extends JavaPlugin {
     }
 
     /**
-     * Get ConfigurationManager instance.
-     *
-     * @return ConfigurationManager instance.
-     */
-    public ConfigurationFiles getConfigurationFiles() {
-        return configurationFiles;
-    }
-
-    /**
-     * Get MySQLManager instance.
-     *
-     * @return MySQLManager instance.
-     */
-    public SQLManager getSQLManager() {
-        return sqlManager;
-    }
-
-    /**
      * Get ReloadService instance.
      *
      * @return ReloadService instance.
@@ -315,30 +289,21 @@ public final class ODailyQuests extends JavaPlugin {
     }
 
     /**
-     * Get ConfigurationManager instance.
-     *
-     * @return ConfigurationManager instance.
-     */
-    public ConfigurationManager getConfigurationManager() {
-        return configurationManager;
-    }
-
-    /**
-     * Get YamlManager instance.
-     *
-     * @return YamlManager instance.
-     */
-    public YamlManager getYamlManager() {
-        return yamlManager;
-    }
-
-    /**
      * Get QuestsLoader instance.
      *
      * @return QuestsLoader instance.
      */
     public CategoriesLoader getCategoriesLoader() {
         return categoriesLoader;
+    }
+
+    /**
+     * Get DatabaseManager instance.
+     *
+     * @return DatabaseManager instance.
+     */
+    public DatabaseManager getDatabaseManager() {
+        return databaseManager;
     }
 
     /**

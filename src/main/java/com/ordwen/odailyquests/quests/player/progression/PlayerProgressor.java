@@ -32,12 +32,12 @@ public class PlayerProgressor {
      */
     public void setPlayerQuestProgression(Event event, Player player, int amount, String questType) {
         if (DisabledWorlds.isWorldDisabled(player.getWorld().getName())) {
-            Debugger.addDebug("PlayerProgressor: setPlayerQuestProgression cancelled due to disabled world.");
+            Debugger.write("PlayerProgressor: setPlayerQuestProgression cancelled due to disabled world.");
             return;
         }
 
         if (QuestsManager.getActiveQuests().containsKey(player.getName())) {
-            Debugger.addDebug("Active quests contain " + player.getName() + ".");
+            Debugger.write("Active quests contain " + player.getName() + ".");
             checkForProgress(event, player, amount, questType);
         }
     }
@@ -51,7 +51,7 @@ public class PlayerProgressor {
      * @param questType the quest type to check for
      */
     private void checkForProgress(Event event, Player player, int amount, String questType) {
-        final HashMap<AbstractQuest, Progression> playerQuests = QuestsManager.getActiveQuests().get(player.getName()).getPlayerQuests();
+        final Map<AbstractQuest, Progression> playerQuests = QuestsManager.getActiveQuests().get(player.getName()).getQuests();
         for (Map.Entry<AbstractQuest, Progression> entry : playerQuests.entrySet()) {
             final AbstractQuest quest = entry.getKey();
             if (quest.getQuestType().equals(questType)) {
@@ -74,13 +74,13 @@ public class PlayerProgressor {
      */
     public void actionQuest(Player player, Progression progression, AbstractQuest quest, int amount) {
 
-        Debugger.addDebug("QuestProgressUtils: actionQuest summoned by " + player.getName() + " for " + quest.getQuestName() + " with amount " + amount + ".");
+        Debugger.write("QuestProgressUtils: actionQuest summoned by " + player.getName() + " for " + quest.getQuestName() + " with amount " + amount + ".");
 
         final QuestProgressEvent event = new QuestProgressEvent(player, progression, quest, amount);
         Bukkit.getPluginManager().callEvent(event);
 
         if (!event.isCancelled()) {
-            Debugger.addDebug("QuestProgressUtils: QuestProgressEvent is not cancelled.");
+            Debugger.write("QuestProgressUtils: QuestProgressEvent is not cancelled.");
             runProgress(player, progression, quest, amount);
         }
     }
@@ -98,14 +98,14 @@ public class PlayerProgressor {
         if (!isAllowedToProgress(player, quest)) return;
 
         for (int i = 0; i < amount; i++) {
-            Debugger.addDebug("QuestProgressUtils: increasing progression for " + quest.getQuestName() + " by " + amount + ".");
+            Debugger.write("QuestProgressUtils: increasing progression for " + quest.getQuestName() + " by " + amount + ".");
             progression.increaseProgression();
         }
 
         if (progression.getProgression() >= quest.getAmountRequired()) {
-            Debugger.addDebug("QuestProgressUtils: progression " + progression.getProgression() + " is greater than or equal to amount required " + quest.getAmountRequired() + ".");
+            Debugger.write("QuestProgressUtils: progression " + progression.getProgression() + " is greater than or equal to amount required " + quest.getAmountRequired() + ".");
             ODailyQuests.morePaperLib.scheduling().globalRegionalScheduler().runDelayed(() -> {
-                Debugger.addDebug("QuestProgressUtils: QuestCompletedEvent is called.");
+                Debugger.write("QuestProgressUtils: QuestCompletedEvent is called.");
                 final QuestCompletedEvent completedEvent = new QuestCompletedEvent(player, progression, quest);
                 Bukkit.getPluginManager().callEvent(completedEvent);
             }, 1L);
@@ -125,7 +125,7 @@ public class PlayerProgressor {
      */
     public boolean isAllowedToProgress(Player player, AbstractQuest quest) {
         if (DisabledWorlds.isWorldDisabled(player.getWorld().getName())) {
-            Debugger.addDebug("PlayerProgressor: isAllowedToProgress cancelled due to disabled world.");
+            Debugger.write("PlayerProgressor: isAllowedToProgress cancelled due to disabled world.");
             return false;
         }
 

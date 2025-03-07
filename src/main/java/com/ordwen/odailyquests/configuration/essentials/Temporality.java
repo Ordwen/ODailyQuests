@@ -1,74 +1,74 @@
 package com.ordwen.odailyquests.configuration.essentials;
 
-import com.ordwen.odailyquests.files.ConfigurationFiles;
+import com.ordwen.odailyquests.configuration.ConfigFactory;
+import com.ordwen.odailyquests.configuration.IConfigurable;
+import com.ordwen.odailyquests.files.ConfigurationFile;
+import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.configuration.ConfigurationSection;
 
-public class Temporality {
+public class Temporality implements IConfigurable {
 
-    private final ConfigurationFiles configurationFiles;
+    private final ConfigurationFile configurationFile;
 
-    public Temporality(ConfigurationFiles configurationFiles) {
-        this.configurationFiles = configurationFiles;
+    public Temporality(ConfigurationFile configurationFile) {
+        this.configurationFile = configurationFile;
     }
 
-    private static int temporalityMode;
-    private static String d;
-    private static String h;
-    private static String m;
-    private static String fewSeconds;
+    private int temporalityMode;
+    private String days;
+    private String hours;
+    private String minutes;
+    private String fewSeconds;
 
     /**
      * Load all temporality settings.
      */
-    public void loadTemporalitySettings() {
-        final ConfigurationSection config = configurationFiles.getConfigFile();
+    @Override
+    public void load() {
+        final ConfigurationSection config = configurationFile.getConfig();
         temporalityMode = config.getInt("temporality_mode");
 
         final ConfigurationSection initials = config.getConfigurationSection("temporality_initials");
 
-        d = initials.getString("days");
-        h = initials.getString("hours");
-        m = initials.getString("minutes");
+        if (initials == null) {
+            PluginLogger.error("Temporality initials are not set in the configuration file.");
+            PluginLogger.error("Default values will be used.");
+
+            days = "d";
+            hours = "h";
+            minutes = "m";
+            fewSeconds = "few seconds";
+
+            return;
+        }
+
+        days = initials.getString("days");
+        hours = initials.getString("hours");
+        minutes = initials.getString("minutes");
         fewSeconds = initials.getString("few_seconds");
     }
 
-    /**
-     * Get temporality mode.
-     * @return plugin mode.
-     */
+    private static Temporality getInstance() {
+        return ConfigFactory.getConfig(Temporality.class);
+    }
+
     public static int getTemporalityMode() {
-        return temporalityMode;
+        return getInstance().temporalityMode;
     }
 
-    /**
-     * Get day initial.
-     * @return d
-     */
     public static String getDayInitial() {
-        return d;
+        return getInstance().days;
     }
 
-    /**
-     * Get hour initial.
-     * @return h
-     */
     public static String getHourInitial() {
-        return h;
+        return getInstance().hours;
     }
 
-    /**
-     * Get minute initial.
-     * @return m
-     */
     public static String getMinuteInitial() {
-        return m;
+        return getInstance().minutes;
     }
 
-    /**
-     * Get few seconds text.
-     * @return fewSeconds
-     */
     public static String getFewSeconds() {
-        return fewSeconds;
+        return getInstance().fewSeconds;
     }
 }

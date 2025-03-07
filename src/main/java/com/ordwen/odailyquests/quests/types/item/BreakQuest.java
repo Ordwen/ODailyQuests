@@ -36,7 +36,7 @@ public class BreakQuest extends ItemQuest {
             if (!this.isProtectionBypass() && !Protection.canBuild(event.getPlayer(), block, "BLOCK_BREAK"))
                 return false;
 
-            Debugger.addDebug("BlockBreakListener: onBlockBreakEvent summoned by " + event.getPlayer().getName() + " for " + block.getType() + ".");
+            Debugger.write("BlockBreakListener: onBlockBreakEvent summoned by " + event.getPlayer().getName() + " for " + block.getType() + ".");
 
             Material material = switch (block.getType()) {
                 case POTATOES -> Material.POTATO;
@@ -48,12 +48,12 @@ public class BreakQuest extends ItemQuest {
             };
 
             if (!material.isItem()) {
-                Debugger.addDebug("BreakQuest: canProgress material is not an item: " + material);
-                Debugger.addDebug("BreakQuest: cancelling event.");
+                Debugger.write("BreakQuest: canProgress material is not an item: " + material);
+                Debugger.write("BreakQuest: cancelling event.");
                 return false;
             }
 
-            Debugger.addDebug("BreakQuest: canProgress material: " + material);
+            Debugger.write("BreakQuest: canProgress material: " + material);
             return super.isRequiredItem(new ItemStack(material));
         }
 
@@ -66,7 +66,7 @@ public class BreakQuest extends ItemQuest {
 
             final ItemStack cropItem = getCustomItemStack(cropNamespace);
             if (cropItem == null) {
-                Debugger.addDebug("CropBreakListener: onCropBreak: The crop item " + cropNamespace + " does not exist.");
+                Debugger.write("CropBreakListener: onCropBreak: The crop item " + cropNamespace + " does not exist.");
                 return false;
             }
 

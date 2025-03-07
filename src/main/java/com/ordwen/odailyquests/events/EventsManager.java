@@ -1,7 +1,7 @@
 package com.ordwen.odailyquests.events;
 
 import com.ordwen.odailyquests.ODailyQuests;
-import com.ordwen.odailyquests.configuration.essentials.UseCustomFurnaceResults;
+import com.ordwen.odailyquests.configuration.essentials.CustomFurnaceResults;
 import com.ordwen.odailyquests.configuration.integrations.ItemsAdderEnabled;
 import com.ordwen.odailyquests.configuration.integrations.OraxenEnabled;
 import com.ordwen.odailyquests.events.listeners.crate.CrateOpenListener;
@@ -11,7 +11,6 @@ import com.ordwen.odailyquests.events.listeners.integrations.customsuite.Fishing
 import com.ordwen.odailyquests.events.listeners.integrations.itemsadder.CustomBlockBreakListener;
 import com.ordwen.odailyquests.events.listeners.integrations.itemsadder.ItemsAdderLoadDataListener;
 import com.ordwen.odailyquests.events.listeners.integrations.oraxen.OraxenItemsLoadedListener;
-import com.ordwen.odailyquests.events.listeners.integrations.pyrofishingpro.PyroFishCatchListener;
 import com.ordwen.odailyquests.events.listeners.vote.VotifierListener;
 import com.ordwen.odailyquests.externs.hooks.mobs.EliteMobsHook;
 import com.ordwen.odailyquests.externs.hooks.mobs.MythicMobsHook;
@@ -78,7 +77,7 @@ public class EventsManager {
         Bukkit.getPluginManager().registerEvents(new PlayerFishListener(), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new PlayerItemConsumeListener(), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new ProjectileLaunchListener(), oDailyQuests);
-        Bukkit.getPluginManager().registerEvents(new InventoryClickListener(), oDailyQuests);
+        Bukkit.getPluginManager().registerEvents(new InventoryClickListener(oDailyQuests.getInterfacesManager().getPlayerQuestsInterface()), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new BlockDropItemListener(), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new PlayerHarvestBlockListener(), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new PlayerDropItemListener(), oDailyQuests);
@@ -90,7 +89,7 @@ public class EventsManager {
         // custom events
         if (ItemsAdderEnabled.isEnabled()
                 || OraxenEnabled.isEnabled()
-                || UseCustomFurnaceResults.isEnabled()) {
+                || CustomFurnaceResults.isEnabled()) {
             Bukkit.getPluginManager().registerEvents(new CustomFurnaceExtractListener(), oDailyQuests);
         }
 
@@ -110,10 +109,6 @@ public class EventsManager {
 
         if (Bukkit.getPluginManager().isPluginEnabled("CustomFishing")) {
             Bukkit.getPluginManager().registerEvents(new FishingLootSpawnListener(), oDailyQuests);
-        }
-
-        if (Bukkit.getServer().getPluginManager().isPluginEnabled("PyroFishingPro")) {
-            Bukkit.getPluginManager().registerEvents(new PyroFishCatchListener(), oDailyQuests);
         }
 
         if (Bukkit.getServer().getPluginManager().isPluginEnabled("Votifier")) {

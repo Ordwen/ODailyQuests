@@ -15,8 +15,8 @@ public class PlayerFishListener extends PlayerProgressor implements Listener {
         if (event.isCancelled()) return;
 
         if (event.getState() == PlayerFishEvent.State.CAUGHT_FISH && event.getCaught() instanceof Item item) {
-            Debugger.addDebug("=========================================================================================");
-            Debugger.addDebug("PlayerFishListener: onPlayerFishEvent summoned by " + event.getPlayer().getName() + " for " + item.getItemStack().getType() + ".");
+            Debugger.write("=========================================================================================");
+            Debugger.write("PlayerFishListener: onPlayerFishEvent summoned by " + event.getPlayer().getName() + " for " + item.getItemStack().getType() + ".");
 
             setPlayerQuestProgression(event, event.getPlayer(), 1, "FISH");
         }

@@ -16,7 +16,6 @@ import org.bukkit.entity.Villager;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public abstract class ClickableChecker extends PlayerProgressor {
@@ -28,7 +27,7 @@ public abstract class ClickableChecker extends PlayerProgressor {
 
         if (isWorldDisabled(player)) return;
 
-        final HashMap<AbstractQuest, Progression> playerQuests = QuestsManager.getActiveQuests().get(player.getName()).getPlayerQuests();
+        final Map<AbstractQuest, Progression> playerQuests = QuestsManager.getActiveQuests().get(player.getName()).getQuests();
 
         for (Map.Entry<AbstractQuest, Progression> entry : playerQuests.entrySet()) {
             final AbstractQuest abstractQuest = entry.getKey();

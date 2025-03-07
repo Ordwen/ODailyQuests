@@ -1,11 +1,11 @@
 package com.ordwen.odailyquests.quests.player.progression.clickable.commands;
 
 import com.ordwen.odailyquests.enums.QuestsMessages;
-import com.ordwen.odailyquests.externs.hooks.placeholders.PAPIHook;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.player.progression.clickable.QuestCommand;
 import com.ordwen.odailyquests.quests.player.progression.clickable.QuestContext;
 import com.ordwen.odailyquests.quests.types.inventory.PlaceholderQuest;
+import com.ordwen.odailyquests.tools.TextFormatter;
 import org.bukkit.ChatColor;
 
 import java.time.Duration;
@@ -25,12 +25,12 @@ public class PlaceholderQuestCommand extends QuestCommand<PlaceholderQuest> {
 
         if (!quest.isAllowedToProgress(player, quest)) return;
 
-        if (!PAPIHook.isPlaceholderAPIHooked()) {
+        if (!TextFormatter.isPlaceholderAPIEnabled()) {
             sendMessage(QuestsMessages.PLACEHOLDER_API_NOT_ENABLED);
             return;
         }
 
-        final String placeholderValue = PAPIHook.getPlaceholders(player, quest.getPlaceholder());
+        final String placeholderValue = TextFormatter.format(player, quest.getPlaceholder());
         boolean isValid = validateCondition(placeholderValue);
 
         if (isValid) {

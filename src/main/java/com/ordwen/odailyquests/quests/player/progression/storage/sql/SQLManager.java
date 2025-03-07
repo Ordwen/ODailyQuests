@@ -1,5 +1,9 @@
 package com.ordwen.odailyquests.quests.player.progression.storage.sql;
 
+import com.ordwen.odailyquests.configuration.essentials.Database;
+import com.ordwen.odailyquests.configuration.essentials.Debugger;
+import com.ordwen.odailyquests.enums.SQLQuery;
+import com.ordwen.odailyquests.enums.StorageMode;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -13,71 +17,28 @@ public abstract class SQLManager {
     protected SaveProgressionSQL saveProgressionSQL;
 
     public void setupTables() {
-        final Connection connection = getConnection();
-        try {
-            if (!tableExists(connection, "PLAYER")) {
+        try (final Connection connection = getConnection();
+             final PreparedStatement playerStatement = connection.prepareStatement(Database.getMode() == StorageMode.MYSQL ? SQLQuery.MYSQL_CREATE_PLAYER_TABLE.getQuery() : SQLQuery.SQLITE_CREATE_PLAYER_TABLE.getQuery());
+             final PreparedStatement progressionStatement = connection.prepareStatement(Database.getMode() == StorageMode.MYSQL ? SQLQuery.MYSQL_CREATE_PROGRESSION_TABLE.getQuery() : SQLQuery.SQLITE_CREATE_PROGRESSION_TABLE.getQuery())) {
 
-                String str = "create table PLAYER\n" +
-                        "  (\n" +
-                        "     PLAYERNAME char(32)  not null  ,\n" +
-                        "     PLAYERTIMESTAMP bigint not null,  \n" +
-                        "     ACHIEVEDQUESTS tinyint not null, \n" +
-                        "     TOTALACHIEVEDQUESTS int not null, \n" +
-                        "     constraint PK_PLAYER primary key (PLAYERNAME)\n" +
-                        "  );";
+            playerStatement.execute();
+            Debugger.write("Table odq_player created or found in database.");
 
-                PreparedStatement preparedStatement = connection.prepareStatement(str);
-                preparedStatement.execute();
+            progressionStatement.execute();
+            Debugger.write("Table odq_progression created or found in database.");
 
-                preparedStatement.close();
-                PluginLogger.info("Table 'Player' created in database.");
-            }
-            if (!tableExists(connection, "PROGRESSION")) {
-
-                String str = "create table PROGRESSION\n" +
-                        "  (\n" +
-                        "     PRIMARYKEY int auto_increment  ,\n" +
-                        "     PLAYERNAME char(32)  not null  ,\n" +
-                        "     PLAYERQUESTID smallint  not null  ,\n" +
-                        "     QUESTINDEX int  not null  ,\n" +
-                        "     ADVANCEMENT int  not null  ,\n" +
-                        "     ISACHIEVED bit  not null  ,\n" +
-                        "     primary key (PRIMARYKEY) ,\n" +
-                        "     constraint UNIQUE_PLAYERNAME_PLAYERQUESTID unique (PLAYERNAME, PLAYERQUESTID)" +
-                        "  ); ";
-
-                PreparedStatement preparedStatement = connection.prepareStatement(str);
-                preparedStatement.execute();
-
-                preparedStatement.close();
-                PluginLogger.info("Table 'Progression' created in database.");
-            }
-            connection.close();
         } catch (SQLException e) {
             PluginLogger.error(e.getMessage());
         }
     }
 
     /**
-     * Check if a table exists in database.
-     *
-     * @param connection connection to check.
-     * @param tableName  name of the table to check.
-     * @return true if table exists.
-     * @throws SQLException SQL errors.
-     */
-    private static boolean tableExists(Connection connection, String tableName) throws SQLException {
-        DatabaseMetaData meta = connection.getMetaData();
-        ResultSet resultSet = meta.getTables(null, null, tableName, new String[]{"TABLE"});
-
-        return resultSet.next();
-    }
-
-    /**
      * Close database connection.
      */
     public void close() {
-        this.hikariDataSource.close();
+        if (this.hikariDataSource != null && !this.hikariDataSource.isClosed()) {
+            this.hikariDataSource.close();
+        }
     }
 
     /**
@@ -98,18 +59,23 @@ public abstract class SQLManager {
 
     /**
      * Test database connection.
-     * @throws SQLException SQL errors.
      */
-    protected void testConnection() throws SQLException {
-        Connection con = getConnection();
-        if (con.isValid(1)) {
-            PluginLogger.info("Plugin successfully connected to database " + con.getCatalog() + ".");
-            con.close();
-        } else PluginLogger.error("IMPOSSIBLE TO CONNECT TO DATABASE");
+    protected void testConnection() {
+        try (Connection con = getConnection()) {
+            if (con != null && con.isValid(1)) {
+                PluginLogger.info("Plugin successfully connected to database " + con.getCatalog() + ".");
+            } else {
+                PluginLogger.error("Impossible to connect to database, please check your configuration.");
+            }
+        } catch (SQLException e) {
+            PluginLogger.error("Impossible to connect to database.");
+            PluginLogger.error(e.getMessage());
+        }
     }
 
     /**
      * Get load progression SQL instance.
+     *
      * @return load progression SQL instance.
      */
     public LoadProgressionSQL getLoadProgressionSQL() {
@@ -118,6 +84,7 @@ public abstract class SQLManager {
 
     /**
      * Get save progression SQL instance.
+     *
      * @return save progression SQL instance.
      */
     public SaveProgressionSQL getSaveProgressionSQL() {

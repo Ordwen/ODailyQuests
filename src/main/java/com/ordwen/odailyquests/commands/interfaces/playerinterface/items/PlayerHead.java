@@ -1,73 +1,107 @@
 package com.ordwen.odailyquests.commands.interfaces.playerinterface.items;
 
-import com.ordwen.odailyquests.externs.hooks.placeholders.PAPIHook;
 import com.ordwen.odailyquests.files.PlayerInterfaceFile;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
-import com.ordwen.odailyquests.tools.ColorConvert;
+import com.ordwen.odailyquests.tools.TextFormatter;
+import com.ordwen.odailyquests.tools.PluginLogger;
 import com.ordwen.odailyquests.tools.TimeRemain;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class PlayerHead {
 
-    private static ItemStack playerHead;
-    private static SkullMeta skullMeta;
-    private static boolean usePlaceholders = false;
+    private static final String SLOT_PARAMETER = "slot";
+    
+    private final PlayerInterfaceFile playerInterfaceFile;
+
+    private boolean enabled;
+    private final Set<Integer> slots = new HashSet<>();
+
+    private ItemStack head;
+    private SkullMeta meta;
+
+    public PlayerHead(PlayerInterfaceFile playerInterfaceFile) {
+        this.playerInterfaceFile = playerInterfaceFile;
+    }
 
     /**
      * Init player head.
      */
-    public void initPlayerHead() {
-        final ConfigurationSection playerHeadSection = PlayerInterfaceFile.getPlayerInterfaceFileConfiguration().getConfigurationSection("player_interface.player_head");
+    public void load() {
+        final ConfigurationSection section = playerInterfaceFile.getConfig().getConfigurationSection("player_interface.player_head");
+        if (section == null) {
+            PluginLogger.error("Player head section not found in the player interface file.");
+            enabled = false;
+            return;
+        }
 
-        playerHead = new ItemStack(Material.PLAYER_HEAD, 1);
-        skullMeta = (SkullMeta) playerHead.getItemMeta();
+        enabled = section.getBoolean(".enabled");
+        if (!enabled) return;
 
-        skullMeta.setDisplayName(ColorConvert.convertColorCode(playerHeadSection.getString(".item_name")));
-        skullMeta.setLore(playerHeadSection.getStringList(".item_description"));
+        head = new ItemStack(Material.PLAYER_HEAD, 1);
+        meta = (SkullMeta) head.getItemMeta();
+        if (meta == null) return;
 
-        if (playerHeadSection.isInt(".custom_model_data"))
-            skullMeta.setCustomModelData(playerHeadSection.getInt(".custom_model_data"));
+        meta.setDisplayName(TextFormatter.format(section.getString(".item_name")));
+        meta.setLore(section.getStringList(".item_description"));
 
-        if (playerHeadSection.isBoolean(".use_placeholders"))
-            usePlaceholders = playerHeadSection.getBoolean(".use_placeholders");
+        if (section.isInt(".custom_model_data"))
+            meta.setCustomModelData(section.getInt(".custom_model_data"));
+
+        slots.clear();
+        if (section.isList(SLOT_PARAMETER)) slots.addAll(section.getIntegerList(SLOT_PARAMETER));
+        else slots.add(section.getInt(SLOT_PARAMETER) - 1);
     }
 
-    /**
-     * Get player head.
-     * @return player head.
-     */
-    public static ItemStack getPlayerHead(Player player) {
+    public Inventory setPlayerHead(Inventory inventory, Player player, int size) {
+        if (!enabled) return inventory;
 
-        SkullMeta meta = PlayerHead.skullMeta.clone();
-        if (usePlaceholders) meta.setDisplayName(PAPIHook.getPlaceholders(player, meta.getDisplayName()));
-
-        meta.setOwningPlayer(player);
-        List<String> itemDesc = meta.getLore();
-
-        for (String string : itemDesc) {
-
-            int index = itemDesc.indexOf(string);
-
-            if (usePlaceholders) {
-                string = PAPIHook.getPlaceholders(player, string);
+        for (int slot : slots) {
+            if (slot >= 0 && slot <= size) {
+                inventory.setItem(slot, getPlayerHead(player));
+            } else {
+                PluginLogger.error("An error occurred when loading the player interface.");
+                PluginLogger.error("The slot defined for the player head is out of bounds.");
             }
+        }
+
+        return inventory;
+    }
+
+    public ItemStack getPlayerHead(Player player) {
+        final SkullMeta clone = this.meta.clone();
+        clone.setDisplayName(TextFormatter.format(player, clone.getDisplayName()));
+
+        clone.setOwningPlayer(player);
+        final List<String> lore = clone.getLore();
+        if (lore == null) return head;
+
+        for (String string : lore) {
+            int index = lore.indexOf(string);
+            string = TextFormatter.format(player, string);
+
 
             final PlayerQuests playerQuests = QuestsManager.getActiveQuests().get(player.getName());
-            itemDesc.set(index, ColorConvert.convertColorCode(string)
+            lore.set(index, TextFormatter.format(string)
                     .replace("%achieved%", String.valueOf(playerQuests.getAchievedQuests()))
                     .replace("%drawIn%", TimeRemain.timeRemain(player.getName())));
         }
 
-        meta.setLore(itemDesc);
-        playerHead.setItemMeta(meta);
-        return playerHead;
+        clone.setLore(lore);
+        head.setItemMeta(clone);
+        return head;
     }
 
+    public boolean isEnabled() {
+        return enabled;
+    }
 }

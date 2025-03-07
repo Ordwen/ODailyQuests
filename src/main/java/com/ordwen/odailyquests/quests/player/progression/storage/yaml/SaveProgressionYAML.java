@@ -7,49 +7,49 @@ import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.tools.PluginLogger;
-import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.IOException;
-import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class SaveProgressionYAML {
 
-    /**
-     * Save player progression in YAML file.
-     *
-     * @param playerName   player name.
-     * @param playerQuests player quests.
-     */
-    public void saveProgression(String playerName, PlayerQuests playerQuests, boolean isAsync) {
+    public void saveProgression(String playerName, String playerUuid, PlayerQuests playerQuests, boolean isServerStopping) {
 
-        if (isAsync) {
-            ODailyQuests.morePaperLib.scheduling().asyncScheduler().run(() -> updateFile(playerName, playerQuests));
-        } else updateFile(playerName, playerQuests);
+        if (isServerStopping) updateFile(playerName, playerUuid, playerQuests);
+        else ODailyQuests.morePaperLib.scheduling().asyncScheduler().run(() -> updateFile(playerName, playerUuid, playerQuests));
     }
 
-    private void updateFile(String playerName, PlayerQuests playerQuests) {
+    private void updateFile(String playerName, String playerUuid, PlayerQuests playerQuests) {
         final FileConfiguration progressionFile = ProgressionFile.getProgressionFileConfiguration();
 
         long timestamp = playerQuests.getTimestamp();
         int achievedQuests = playerQuests.getAchievedQuests();
         int totalAchievedQuests = playerQuests.getTotalAchievedQuests();
 
-        final LinkedHashMap<AbstractQuest, Progression> quests = playerQuests.getPlayerQuests();
+        final Map<AbstractQuest, Progression> quests = playerQuests.getQuests();
 
-        progressionFile.set(playerName + ".timestamp", timestamp);
-        progressionFile.set(playerName + ".achievedQuests", achievedQuests);
-        progressionFile.set(playerName + ".totalAchievedQuests", totalAchievedQuests);
+        progressionFile.set(playerUuid + ".timestamp", timestamp);
+        progressionFile.set(playerUuid + ".achievedQuests", achievedQuests);
+        progressionFile.set(playerUuid + ".totalAchievedQuests", totalAchievedQuests);
 
         int index = 1;
-        for (AbstractQuest quest : quests.keySet()) {
-            progressionFile.set(playerName + ".quests." + index + ".index", quest.getQuestIndex());
-            progressionFile.set(playerName + ".quests." + index + ".progression", quests.get(quest).getProgression());
-            progressionFile.set(playerName + ".quests." + index + ".isAchieved", quests.get(quest).isAchieved());
+        for (Map.Entry<AbstractQuest, Progression> entry : quests.entrySet()) {
+            final AbstractQuest quest = entry.getKey();
+            final Progression progression = entry.getValue();
+
+            final ConfigurationSection questSection = progressionFile.createSection(playerUuid + ".quests." + index);
+            questSection.set("index", quest.getQuestIndex());
+            questSection.set("progression", progression.getProgression());
+            questSection.set("isAchieved", progression.isAchieved());
+
             index++;
         }
 
-        if (Logs.isEnabled()) PluginLogger.info(playerName + "'s data saved.");
+        if (Logs.isEnabled()) {
+            PluginLogger.info(playerName + "'s data saved.");
+        }
 
         try {
             progressionFile.save(ProgressionFile.getProgressionFile());

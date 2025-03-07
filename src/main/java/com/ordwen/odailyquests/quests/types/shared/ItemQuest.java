@@ -34,14 +34,14 @@ public abstract class ItemQuest extends AbstractQuest {
         if (requiredItems == null || requiredItems.isEmpty()) return true;
 
         for (ItemStack item : requiredItems) {
-            Debugger.addDebug("ItemQuest:isRequiredItem: Checking if item is required: " + item.getType() + " vs " + provided.getType() + ".");
+            Debugger.write("ItemQuest:isRequiredItem: Checking if item is required: " + item.getType() + " vs " + provided.getType() + ".");
 
             if (ignoreNbt && item.getType() == provided.getType()) {
-                Debugger.addDebug("ItemQuest:isRequiredItem: Ignoring NBT data.");
+                Debugger.write("ItemQuest:isRequiredItem: Ignoring NBT data.");
 
                 // check if potion
                 if (POTIONS_TYPES.contains(item.getType())) {
-                    Debugger.addDebug("ItemQuest:isRequiredItem: Required item is a potion.");
+                    Debugger.write("ItemQuest:isRequiredItem: Required item is a potion.");
                     boolean canProgress = true;
 
                     final PotionMeta potionMeta = (PotionMeta) item.getItemMeta();
@@ -49,19 +49,19 @@ public abstract class ItemQuest extends AbstractQuest {
 
                     // check potion type
                     if (potionMeta.getBasePotionData().getType() != providedPotionMeta.getBasePotionData().getType()) {
-                        Debugger.addDebug("ItemQuest:isRequiredItem: Potion type is different.");
+                        Debugger.write("ItemQuest:isRequiredItem: Potion type is different.");
                         canProgress = false;
                     }
 
                     // check upgraded
                     if (potionMeta.getBasePotionData().isUpgraded() != providedPotionMeta.getBasePotionData().isUpgraded()) {
-                        Debugger.addDebug("ItemQuest:isRequiredItem: Potion is upgraded.");
+                        Debugger.write("ItemQuest:isRequiredItem: Potion is upgraded.");
                         canProgress = false;
                     }
 
                     // check extended
                     if (potionMeta.getBasePotionData().isExtended() != providedPotionMeta.getBasePotionData().isExtended()) {
-                        Debugger.addDebug("ItemQuest:isRequiredItem: Potion is extended.");
+                        Debugger.write("ItemQuest:isRequiredItem: Potion is extended.");
                         canProgress = false;
                     }
 
@@ -72,23 +72,23 @@ public abstract class ItemQuest extends AbstractQuest {
             }
 
             if (item.hasItemMeta() && item.getItemMeta().hasCustomModelData()) {
-                Debugger.addDebug("ItemQuest:isRequiredItem: Required item has custom model data.");
+                Debugger.write("ItemQuest:isRequiredItem: Required item has custom model data.");
                 if (provided.hasItemMeta() && provided.getItemMeta().hasCustomModelData()) {
-                    Debugger.addDebug("ItemQuest:isRequiredItem: Provided item has custom model data.");
+                    Debugger.write("ItemQuest:isRequiredItem: Provided item has custom model data.");
                     return item.getType() == provided.getType() && item.getItemMeta().getCustomModelData() == provided.getItemMeta().getCustomModelData();
                 }
-                Debugger.addDebug("ItemQuest:isRequiredItem: Provided item does not have custom model data.");
+                Debugger.write("ItemQuest:isRequiredItem: Provided item does not have custom model data.");
                 return false;
             }
 
             if (item.isSimilar(provided)) {
-                Debugger.addDebug("ItemQuest:isRequiredItem: Item is similar.");
+                Debugger.write("ItemQuest:isRequiredItem: Item is similar.");
                 return true;
             }
 
-            Debugger.addDebug("ItemQuest:isRequiredItem: Item is not similar.");
+            Debugger.write("ItemQuest:isRequiredItem: Item is not similar.");
         }
-        Debugger.addDebug("ItemQuest:isRequiredItem: Item is not required.");
+        Debugger.write("ItemQuest:isRequiredItem: Item is not required.");
         return false;
     }
 

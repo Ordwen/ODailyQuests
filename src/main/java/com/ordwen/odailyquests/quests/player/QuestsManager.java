@@ -5,12 +5,11 @@ import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
-import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
-import com.ordwen.odailyquests.quests.player.progression.storage.yaml.YamlManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -20,11 +19,12 @@ import java.util.*;
 
 public class QuestsManager implements Listener {
 
+    private static final String PLAYER = "Player ";
+    private static final Random random = new Random();
+
     /**
      * Getting instance of classes.
      */
-    private final SQLManager sqlManager;
-    private final YamlManager yamlManager;
     private final ODailyQuests plugin;
 
     /**
@@ -32,90 +32,69 @@ public class QuestsManager implements Listener {
      *
      * @param oDailyQuests main class instance.
      */
-    public QuestsManager(ODailyQuests oDailyQuests, boolean useSQL) {
+    public QuestsManager(ODailyQuests oDailyQuests) {
         this.plugin = oDailyQuests;
-
-        if (useSQL) {
-            this.sqlManager = oDailyQuests.getSQLManager();
-            this.yamlManager = null;
-        } else {
-            this.yamlManager = oDailyQuests.getYamlManager();
-            this.sqlManager = null;
-        }
     }
 
-    private static final HashMap<String, PlayerQuests> activeQuests = new HashMap<>();
+    private static final Map<String, PlayerQuests> activeQuests = new HashMap<>();
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
 
-        Debugger.addDebug("EVENT START");
-        Debugger.addDebug("PlayerJoinEvent triggered.");
+        Debugger.write("[EVENT START]");
+        Debugger.write("PlayerJoinEvent triggered.");
 
-        final String playerName = event.getPlayer().getName();
+        final Player player = event.getPlayer();
+        final String playerName = player.getName();
+        final UUID uuid = player.getUniqueId();
 
-        Debugger.addDebug("Player " + playerName + " joined the server.");
+        Debugger.write(PLAYER + playerName + " joined the server.");
+        Debugger.write("Player UUID is " + uuid);
 
         if (!activeQuests.containsKey(playerName)) {
-
-            Debugger.addDebug("Player " + playerName + " is not in the array.");
-
-            switch (Modes.getStorageMode()) {
-                case "YAML" -> yamlManager.getLoadProgressionYAML().loadPlayerQuests(playerName, activeQuests);
-                case "MySQL", "H2" -> sqlManager.getLoadProgressionSQL().loadProgression(playerName, activeQuests);
-                default ->
-                        PluginLogger.error("Impossible to load player quests : the selected storage mode is incorrect !");
-            }
+            Debugger.write(PLAYER + playerName + " is not in the array.");
+            plugin.getDatabaseManager().loadQuestsForPlayer(playerName);
         } else {
 
-            Debugger.addDebug("Player " + playerName + " is already in the array.");
+            Debugger.write(PLAYER + playerName + " is already in the array.");
 
             PluginLogger.warn(playerName + " detected into the array. This is not supposed to happen!");
             PluginLogger.warn("If the player can't make his quests progress, please contact the plugin developer.");
         }
-
-        Debugger.addDebug("[EVENT END]");
-
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        Debugger.addDebug("[EVENT START]");
-        Debugger.addDebug("PlayerQuitEvent triggered.");
+        Debugger.write("[EVENT START]");
+        Debugger.write("PlayerQuitEvent triggered.");
 
-        String playerName = event.getPlayer().getName();
+        final Player player = event.getPlayer();
+        final String playerName = player.getName();
+        final String playerUUID = player.getUniqueId().toString();
 
-        Debugger.addDebug("Player " + playerName + " left the server.");
+        Debugger.write(PLAYER + playerName + " left the server.");
 
         final PlayerQuests playerQuests = activeQuests.get(playerName);
 
         if (playerQuests == null) {
-            Debugger.addDebug("Player " + playerName + " not found in the array.");
-
-
+            Debugger.write(PLAYER + playerName + " not found in the array.");
             PluginLogger.warn("Player quests not found for player " + playerName);
             return;
         }
 
-        switch (Modes.getStorageMode()) {
-            case "YAML" -> yamlManager.getSaveProgressionYAML().saveProgression(playerName, playerQuests, !plugin.isServerStopping());
-            case "MySQL", "H2" -> sqlManager.getSaveProgressionSQL().saveProgression(playerName, playerQuests, !plugin.isServerStopping());
-            default -> PluginLogger.error("Impossible to save player quests : the selected storage mode is incorrect !");
-        }
-
+        plugin.getDatabaseManager().saveProgressionForPlayer(playerName, playerUUID, playerQuests);
         activeQuests.remove(playerName);
 
-        Debugger.addDebug("Player " + playerName + " removed from the array.");
-        Debugger.addDebug("[EVENT END]");
-
+        Debugger.write(PLAYER + playerName + " removed from the array.");
     }
 
     /**
-     * Select random quests.
+     * Select random quests for player, based on the selected mode and the amount of quests.
+     *
+     * @return quests map.
      */
-    public static LinkedHashMap<AbstractQuest, Progression> selectRandomQuests() {
-
-        LinkedHashMap<AbstractQuest, Progression> quests = new LinkedHashMap<>();
+    public static Map<AbstractQuest, Progression> selectRandomQuests() {
+        final Map<AbstractQuest, Progression> quests = new LinkedHashMap<>();
 
         if (Modes.getQuestsMode() == 1) {
             ArrayList<AbstractQuest> globalQuests = CategoriesLoader.getGlobalQuests();
@@ -156,7 +135,8 @@ public class QuestsManager implements Listener {
 
     /**
      * Get a random quest that is not already in the player's quests.
-     * @param currentQuests the player's current quests
+     *
+     * @param currentQuests   the player's current quests
      * @param availableQuests the available quests
      * @return a quest
      */
@@ -175,7 +155,7 @@ public class QuestsManager implements Listener {
      * @return a quest.
      */
     public static AbstractQuest getRandomQuestInCategory(List<AbstractQuest> quests) {
-        int questNumber = new Random().nextInt(quests.size());
+        int questNumber = random.nextInt(quests.size());
         return quests.get(questNumber);
     }
 
@@ -184,8 +164,7 @@ public class QuestsManager implements Listener {
      *
      * @return quests map.
      */
-    public static HashMap<String, PlayerQuests> getActiveQuests() {
+    public static Map<String, PlayerQuests> getActiveQuests() {
         return activeQuests;
     }
-
 }

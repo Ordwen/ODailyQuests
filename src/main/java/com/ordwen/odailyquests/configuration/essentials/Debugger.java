@@ -1,6 +1,9 @@
 package com.ordwen.odailyquests.configuration.essentials;
 
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.configuration.ConfigFactory;
+import com.ordwen.odailyquests.configuration.IConfigurable;
+import com.ordwen.odailyquests.files.ConfigurationFile;
 import com.ordwen.odailyquests.tools.PluginLogger;
 
 import java.io.File;
@@ -8,18 +11,19 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
 
-public class Debugger {
+public class Debugger implements IConfigurable {
 
-    private final ODailyQuests oDailyQuests;
-    private static boolean debugMode;
-    private static File debugFile;
+    private final ConfigurationFile configurationFile;
+    private boolean debugMode;
+    private File debugFile;
 
-    public Debugger(ODailyQuests oDailyQuests) {
-        this.oDailyQuests = oDailyQuests;
+    public Debugger(ConfigurationFile configurationFile) {
+        this.configurationFile = configurationFile;
     }
 
-    public void loadDebugMode() {
-        debugMode = oDailyQuests.getConfigurationFiles().getConfigFile().getBoolean("debug");
+    @Override
+    public void load() {
+        debugMode = configurationFile.getConfig().getBoolean("debug");
         if (debugMode) {
             loadDebugFile();
             PluginLogger.warn("Debug mode is enabled. This may cause performance issues.");
@@ -27,29 +31,34 @@ public class Debugger {
     }
 
     public void loadDebugFile() {
-
-        debugFile = new File(oDailyQuests.getDataFolder(), "debug.yml");
+        debugFile = new File(ODailyQuests.INSTANCE.getDataFolder(), "debug.yml");
 
         if (!debugFile.exists()) {
-            oDailyQuests.saveResource("debug.yml", false);
+            ODailyQuests.INSTANCE.saveResource("debug.yml", false);
             PluginLogger.info("Debug file created (YAML).");
         }
     }
 
-    public static void addDebug(String debugMessage) {
+    public void writeInternal(String debugMessage) {
         if (debugMode) {
             final Date date = new Date();
 
-            try {
-                final FileWriter writer = new FileWriter(debugFile, true);
+            try (FileWriter writer = new FileWriter(debugFile, true)) {
                 writer.write("[" + date + "] " + debugMessage);
                 writer.write(System.lineSeparator());
-                writer.close();
             } catch (IOException e) {
                 PluginLogger.error("An error happened on the write of the debug file.");
                 PluginLogger.error("If the problem persists, contact the developer.");
                 PluginLogger.error(e.getMessage());
             }
         }
+    }
+
+    private static Debugger getInstance() {
+        return ConfigFactory.getConfig(Debugger.class);
+    }
+
+    public static void write(String debugMessage) {
+        getInstance().writeInternal(debugMessage);
     }
 }

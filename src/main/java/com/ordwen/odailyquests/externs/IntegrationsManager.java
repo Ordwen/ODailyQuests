@@ -4,7 +4,6 @@ import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.externs.hooks.Protection;
 import com.ordwen.odailyquests.externs.hooks.eco.CoinsEngineHook;
 import com.ordwen.odailyquests.externs.hooks.eco.VaultHook;
-import com.ordwen.odailyquests.externs.hooks.holograms.HolographicDisplaysHook;
 import com.ordwen.odailyquests.externs.hooks.items.KGeneratorsHook;
 import com.ordwen.odailyquests.externs.hooks.mobs.EliteMobsHook;
 import com.ordwen.odailyquests.externs.hooks.mobs.MythicMobsHook;
@@ -37,7 +36,6 @@ public class IntegrationsManager {
         loadMythicMobs();
         loadPointsPlugin();
         loadCitizens();
-        loadHolographicDisplays();
         loadPAPI();
         loadWildStacker();
         loadRoseStacker();
@@ -119,17 +117,8 @@ public class IntegrationsManager {
      */
     private void loadCitizens() {
         if (CitizensHook.isCitizensEnabled()) {
-            getServer().getPluginManager().registerEvents(new CitizensHook(), oDailyQuests);
+            getServer().getPluginManager().registerEvents(new CitizensHook(oDailyQuests.getInterfacesManager()), oDailyQuests);
             PluginLogger.info("Citizens successfully hooked.");
-        }
-    }
-
-    /**
-     * Hook - HolographicDisplays
-     */
-    private void loadHolographicDisplays() {
-        if (HolographicDisplaysHook.isHolographicDisplaysSetup()) {
-            PluginLogger.info("HolographicDisplays successfully hooked.");
         }
     }
 
@@ -138,7 +127,7 @@ public class IntegrationsManager {
      */
     private void loadPAPI() {
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            new PAPIExpansion().register();
+            new PAPIExpansion(oDailyQuests.getInterfacesManager().getPlayerQuestsInterface()).register();
             PluginLogger.info("PlaceholderAPI successfully hooked.");
         }
     }

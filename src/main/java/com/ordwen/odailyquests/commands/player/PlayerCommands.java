@@ -1,6 +1,6 @@
 package com.ordwen.odailyquests.commands.player;
 
-import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
+import com.ordwen.odailyquests.commands.interfaces.InterfacesManager;
 import com.ordwen.odailyquests.commands.player.handlers.PRerollCommand;
 import com.ordwen.odailyquests.commands.player.handlers.ShowCommand;
 import com.ordwen.odailyquests.enums.QuestsPermissions;
@@ -13,6 +13,12 @@ import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
 
 public class PlayerCommands extends PlayerMessages implements CommandExecutor {
+
+    private final InterfacesManager interfacesManager;
+
+    public PlayerCommands(InterfacesManager interfacesManager) {
+        this.interfacesManager = interfacesManager;
+    }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
@@ -28,7 +34,7 @@ public class PlayerCommands extends PlayerMessages implements CommandExecutor {
 
         if (args.length >= 1) {
             switch (args[0]) {
-                case "show" -> new ShowCommand(player, args).handle();
+                case "show" -> new ShowCommand(interfacesManager.getQuestsInterfaces(), player, args).handle();
                 case "reroll" -> new PRerollCommand(player, args).handle();
                 case "me" -> openInventory(player);
                 default -> help(player);
@@ -44,7 +50,7 @@ public class PlayerCommands extends PlayerMessages implements CommandExecutor {
      * @param player the player.
      */
     private void openInventory(Player player) {
-        final Inventory inventory = PlayerQuestsInterface.getPlayerQuestsInterface(player);
+        final Inventory inventory = interfacesManager.getPlayerQuestsInterface().getPlayerQuestsInterface(player);
         if (inventory == null) {
             player.sendMessage(ChatColor.RED + "Impossible to open the quests interface. Is the plugin still loading?");
             player.sendMessage(ChatColor.RED + "If the problem persists, please contact the server administrator.");

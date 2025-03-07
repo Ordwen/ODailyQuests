@@ -15,8 +15,8 @@ public class PlayerItemConsumeListener extends PlayerProgressor implements Liste
     public void onItemConsumeEvent(PlayerItemConsumeEvent event) {
         if (event.isCancelled()) return;
 
-        Debugger.addDebug("=========================================================================================");
-        Debugger.addDebug("PlayerItemConsumeListener: onItemConsumeEvent summoned by " + event.getPlayer().getName() + " for " + event.getItem().getType() + ".");
+        Debugger.write("=========================================================================================");
+        Debugger.write("PlayerItemConsumeListener: onItemConsumeEvent summoned by " + event.getPlayer().getName() + " for " + event.getItem().getType() + ".");
 
         setPlayerQuestProgression(event, event.getPlayer(), 1, "CONSUME");
     }
@@ -24,7 +24,7 @@ public class PlayerItemConsumeListener extends PlayerProgressor implements Liste
     @EventHandler
     public void onResurrect(EntityResurrectEvent event) {
         if (event.isCancelled()) {
-            Debugger.addDebug("PlayerItemConsumeListener: onResurrect cancelled.");
+            Debugger.write("PlayerItemConsumeListener: onResurrect cancelled.");
             return;
         }
 

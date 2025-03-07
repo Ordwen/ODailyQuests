@@ -20,7 +20,7 @@ public class EntityUnstackListener extends PlayerProgressor implements Listener 
         final Entity entity = event.getEntity().getLivingEntity();
 
         if (EntitySource.isEntityFromSpawner(entity)) {
-            Debugger.addDebug("[EntityUnstackListener] Entity is from spawner, cancelling progression.");
+            Debugger.write("[EntityUnstackListener] Entity is from spawner, cancelling progression.");
             return;
         }
 

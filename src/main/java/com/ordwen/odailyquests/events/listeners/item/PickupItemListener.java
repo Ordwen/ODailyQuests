@@ -25,14 +25,14 @@ public class PickupItemListener extends PlayerProgressor implements Listener {
             if (Antiglitch.isStoreDroppedItems()) {
                 if (item.hasItemMeta()) {
                     final PersistentDataContainer pdc = item.getItemMeta().getPersistentDataContainer();
-                    final String droppedKey = pdc.get(Antiglitch.DROPPED_BY, PersistentDataType.STRING);
+                    final String droppedKey = pdc.get(Antiglitch.DROPPED_KEY, PersistentDataType.STRING);
 
                     if (droppedKey != null) return;
                 }
             }
 
-            Debugger.addDebug("=========================================================================================");
-            Debugger.addDebug("PickupItemListener: onPickupItemEvent summoned by " + player.getName() + " for " + item.getType() + ".");
+            Debugger.write("=========================================================================================");
+            Debugger.write("PickupItemListener: onPickupItemEvent summoned by " + player.getName() + " for " + item.getType() + ".");
 
             setPlayerQuestProgression(event, player, event.getItem().getItemStack().getAmount(), "PICKUP");
         }

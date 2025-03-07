@@ -1,48 +1,36 @@
 package com.ordwen.odailyquests.configuration.essentials;
 
-import com.ordwen.odailyquests.files.ConfigurationFiles;
+import com.ordwen.odailyquests.configuration.ConfigFactory;
+import com.ordwen.odailyquests.configuration.IConfigurable;
+import com.ordwen.odailyquests.files.ConfigurationFile;
 
-public class Modes {
+public class Modes implements IConfigurable {
 
-    private final ConfigurationFiles configurationFiles;
+    private final ConfigurationFile configurationFile;
 
-    public Modes(ConfigurationFiles configurationFiles) {
-        this.configurationFiles = configurationFiles;
+    public Modes(ConfigurationFile configurationFile) {
+        this.configurationFile = configurationFile;
     }
 
-    private static int questsMode;
-    private static int timestampMode;
-    private static String storageMode;
+    private int questsMode;
+    private int timestampMode;
 
-    public void loadPluginModes() {
-        questsMode = configurationFiles.getConfigFile().getInt("quests_mode");
-        timestampMode = configurationFiles.getConfigFile().getInt("timestamp_mode");
-        storageMode = configurationFiles.getConfigFile().getString("storage_mode");
+    @Override
+    public void load() {
+        questsMode = configurationFile.getConfig().getInt("quests_mode");
+        timestampMode = configurationFile.getConfig().getInt("timestamp_mode");
     }
 
-    /**
-     * Get quests mode.
-     * @return plugin mode.
-     */
+    private static Modes getInstance() {
+        return ConfigFactory.getConfig(Modes.class);
+    }
+
     public static int getQuestsMode() {
-        return questsMode;
+        return getInstance().questsMode;
     }
 
-    /**
-     * Get timestamp mode.
-     * @return plugin mode.
-     */
     public static int getTimestampMode() {
-        return timestampMode;
+        return getInstance().timestampMode;
     }
-
-    /**
-     * Get storage mode.
-     * @return plugin mode.
-     */
-    public static String getStorageMode() {
-        return storageMode;
-    }
-
 }
 

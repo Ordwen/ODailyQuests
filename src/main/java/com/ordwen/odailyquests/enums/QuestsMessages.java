@@ -1,7 +1,6 @@
 package com.ordwen.odailyquests.enums;
 
-import com.ordwen.odailyquests.externs.hooks.placeholders.PAPIHook;
-import com.ordwen.odailyquests.tools.ColorConvert;
+import com.ordwen.odailyquests.tools.TextFormatter;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -38,12 +37,6 @@ public enum QuestsMessages {
     CATEGORIZED_DISABLED("categorized_disabled", "&cCategorized quests are disabled, only the global menu is available."),
     GLOBAL_DISABLED("global_disabled", "&cGlobal quests are disabled, only the categorized menus are available."),
     QUEST_ALREADY_ACHIEVED("already_achieved", "&cThis quest is already achieved."),
-
-    HOLO_CATEGORIZED_ENABLED("hologram_categorized_enabled", "&cCategorized quests are enabled, impossible to create the global hologram."),
-    HOLO_CATEGORIZED_DISABLED("hologram_categorized_disabled", "&cCategorized quests are disabled, impossible to create the categorized holograms."),
-    HOLO_DELETED("hologram_deleted", "&aHologram successfully deleted."),
-    HOLO_INVALID_INDEX("hologram_invalid_index", "&cInvalid index for the hologram."),
-
     QUESTS_IN_PROGRESS("quests_in_progress", "&eYou still have daily quests to complete !"),
     ALL_QUESTS_ACHIEVED_CONNECT("all_quests_achieved_connect", "&aYou have completed all your daily quests !"),
     QUESTS_RENEWED("quests_renewed", "&aYou have new daily quests to complete !"),
@@ -85,7 +78,7 @@ public enum QuestsMessages {
 
     private final String path;
     private final String defaultMessage;
-    private static FileConfiguration LANG;
+    private static FileConfiguration lang;
 
     /**
      * Message constructor.
@@ -103,7 +96,7 @@ public enum QuestsMessages {
      * @param messagesFile the config to set.
      */
     public static void setFile(FileConfiguration messagesFile) {
-        LANG = messagesFile;
+        lang = messagesFile;
     }
 
     /**
@@ -113,27 +106,27 @@ public enum QuestsMessages {
      */
     @Override
     public String toString() {
-        String msg = LANG.getString(this.path, defaultMessage);
+        String msg = lang.getString(this.path, defaultMessage);
 
-        if (msg.trim().isEmpty()) return null;
-        else return ColorConvert.convertColorCode(PAPIHook.getPlaceholders(null, msg));
+        if (msg.trim().isEmpty()) return "";
+        else return TextFormatter.format(TextFormatter.format(null, msg));
     }
 
     public String getMessage(Player player) {
-        String msg = LANG.getString(this.path, defaultMessage);
+        String msg = lang.getString(this.path, defaultMessage);
 
         if (msg.trim().isEmpty()) return null;
-        else return ColorConvert.convertColorCode(PAPIHook.getPlaceholders(player, msg));
+        else return TextFormatter.format(TextFormatter.format(player, msg));
     }
 
     public String getMessage(String playerName) {
         final Player player = Bukkit.getPlayer(playerName);
         if (player == null) return null;
 
-        String msg = LANG.getString(this.path, defaultMessage);
+        String msg = lang.getString(this.path, defaultMessage);
         if (msg.trim().isEmpty()) return null;
 
-        else return ColorConvert.convertColorCode(PAPIHook.getPlaceholders(player, msg));
+        else return TextFormatter.format(TextFormatter.format(player, msg));
     }
 
     /**

@@ -10,8 +10,11 @@ import org.bukkit.inventory.Inventory;
 
 public class OpenCommand extends ACommandHandler {
 
-    public OpenCommand(CommandSender sender, String[] args) {
+    private final PlayerQuestsInterface playerQuestsInterface;
+
+    public OpenCommand(PlayerQuestsInterface playerQuestsInterface, CommandSender sender, String[] args) {
         super(sender, args);
+        this.playerQuestsInterface = playerQuestsInterface;
     }
 
     @Override
@@ -19,7 +22,7 @@ public class OpenCommand extends ACommandHandler {
         if (Bukkit.getPlayerExact(args[1]) != null) {
             final Player target = Bukkit.getPlayerExact(args[1]);
             if (target != null) {
-                final Inventory inventory = PlayerQuestsInterface.getPlayerQuestsInterface(target);
+                final Inventory inventory = playerQuestsInterface.getPlayerQuestsInterface(target);
                 if (inventory == null) {
                     sender.sendMessage(ChatColor.RED + "An error occurred while opening the inventory.");
                     sender.sendMessage(ChatColor.RED + "Please check the console for more information.");

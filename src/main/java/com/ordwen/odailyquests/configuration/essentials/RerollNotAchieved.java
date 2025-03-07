@@ -1,25 +1,29 @@
 package com.ordwen.odailyquests.configuration.essentials;
 
-import com.ordwen.odailyquests.files.ConfigurationFiles;
+import com.ordwen.odailyquests.configuration.ConfigFactory;
+import com.ordwen.odailyquests.configuration.IConfigurable;
+import com.ordwen.odailyquests.files.ConfigurationFile;
 
-public class RerollNotAchieved {
+public class RerollNotAchieved implements IConfigurable {
 
-    private final ConfigurationFiles configurationFiles;
-    private static boolean rerollIfNotAchieved;
+    private final ConfigurationFile configurationFile;
+    private boolean rerollIfNotAchieved;
 
-    public RerollNotAchieved(ConfigurationFiles configurationFiles) {
-        this.configurationFiles = configurationFiles;
+    public RerollNotAchieved(ConfigurationFile configurationFile) {
+        this.configurationFile = configurationFile;
     }
 
-    /**
-     * Check if WildStacker option is enabled in config.
-     */
+    @Override
     public void load() {
         final String path = "reroll_only_if_not_achieved";
-        rerollIfNotAchieved = configurationFiles.getConfigFile().getBoolean(path);
+        rerollIfNotAchieved = configurationFile.getConfig().getBoolean(path);
+    }
+
+    private static RerollNotAchieved getInstance() {
+        return ConfigFactory.getConfig(RerollNotAchieved.class);
     }
 
     public static boolean isRerollIfNotAchieved() {
-        return rerollIfNotAchieved;
+        return getInstance().rerollIfNotAchieved;
     }
 }

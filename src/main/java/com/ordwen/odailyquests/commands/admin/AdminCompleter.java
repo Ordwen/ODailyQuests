@@ -18,7 +18,7 @@ public class AdminCompleter implements TabCompleter {
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
 
         if (args.length <= 1) {
-            final List<String> allCompletions = new ArrayList<>(Arrays.asList("reload", "reset", "reroll", "add", "show", "complete", "customcomplete", "help", "holo", "convert"));
+            final List<String> allCompletions = new ArrayList<>(Arrays.asList("reload", "reset", "reroll", "add", "show", "complete", "customcomplete", "help", "convert"));
             final List<String> completions = new ArrayList<>();
 
             StringUtil.copyPartialMatches(args[0], allCompletions, completions);
@@ -29,10 +29,9 @@ public class AdminCompleter implements TabCompleter {
             final List<String> completions = new ArrayList<>();
 
             switch (args[0]) {
-                case "holo" -> allCompletions = new ArrayList<>(List.of("create", "delete"));
                 case "reset" -> allCompletions = new ArrayList<>(List.of("quests", "total"));
                 case "add" -> allCompletions = new ArrayList<>(List.of("total"));
-                case "convert" -> allCompletions = new ArrayList<>(List.of("mysql", "h2"));
+                case "convert" -> allCompletions = new ArrayList<>(List.of("mysql", "sqlite"));
                 default -> {
                     return null;
                 }
@@ -45,10 +44,8 @@ public class AdminCompleter implements TabCompleter {
             final List<String> allCompletions = new ArrayList<>();
             final List<String> completions = new ArrayList<>();
 
-            if (args[0].equalsIgnoreCase("holo") && args[1].equalsIgnoreCase("create")) {
-                allCompletions.addAll(List.of("global", "easy", "medium", "hard"));
-            } else if (args[0].equalsIgnoreCase("convert")) {
-                allCompletions.addAll(List.of("mysql", "h2"));
+            if (args[0].equalsIgnoreCase("convert")) {
+                allCompletions.addAll(List.of("mysql", "sqlite"));
             } else if (args[0].equalsIgnoreCase("reroll") || args[0].equalsIgnoreCase("complete")) {
                 for (int i = 1; i <= QuestsAmount.getQuestsAmount(); i++) {
                     allCompletions.add(String.valueOf(i));

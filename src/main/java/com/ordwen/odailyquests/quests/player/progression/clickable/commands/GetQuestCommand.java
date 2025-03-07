@@ -1,6 +1,6 @@
 package com.ordwen.odailyquests.quests.player.progression.clickable.commands;
 
-import com.ordwen.odailyquests.configuration.functionalities.TakeItems;
+import com.ordwen.odailyquests.configuration.functionalities.TakeItem;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.player.progression.clickable.QuestCommand;
@@ -36,7 +36,7 @@ public class GetQuestCommand extends QuestCommand<GetQuest> {
         }
 
         if (totalAmount >= quest.getAmountRequired()) {
-            if (TakeItems.isTakeItemsEnabled()) {
+            if (TakeItem.isTakeItemsEnabled()) {
                 boolean success = removeRequiredItems(inventory, quest, quest.getAmountRequired());
                 if (!success) {
                     sendMessage(QuestsMessages.NOT_ENOUGH_ITEM);

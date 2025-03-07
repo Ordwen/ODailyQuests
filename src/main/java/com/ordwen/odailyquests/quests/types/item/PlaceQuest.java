@@ -30,7 +30,7 @@ public class PlaceQuest extends ItemQuest {
 
             final ItemStack placedItem = event.getItemInHand();
 
-            Debugger.addDebug("BlockPlaceListener: onBlockPlaceEvent summoned by " + event.getPlayer().getName() + " for " + placedItem.getType() + ".");
+            Debugger.write("BlockPlaceListener: onBlockPlaceEvent summoned by " + event.getPlayer().getName() + " for " + placedItem.getType() + ".");
             return super.isRequiredItem(new ItemStack(placedItem.getType()));
         }
 

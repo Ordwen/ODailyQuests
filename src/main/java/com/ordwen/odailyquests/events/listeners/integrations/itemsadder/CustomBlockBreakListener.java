@@ -1,5 +1,7 @@
 package com.ordwen.odailyquests.events.listeners.integrations.itemsadder;
 
+import com.jeff_media.customblockdata.CustomBlockData;
+import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.Antiglitch;
 
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
@@ -9,6 +11,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.persistence.PersistentDataContainer;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -16,10 +19,10 @@ public class CustomBlockBreakListener extends PlayerProgressor implements Listen
 
     @EventHandler
     public void onCustomBlockBreakEvent(CustomBlockBreakEvent event) {
-        Debugger.addDebug("CustomBlockBreakListener: onCustomBlockBreakEvent summoned.");
+        Debugger.write("CustomBlockBreakListener: onCustomBlockBreakEvent summoned.");
 
         if (event.isCancelled()) {
-            Debugger.addDebug("CustomBlockBreakListener: onCustomBlockBreakEvent is cancelled.");
+            Debugger.write("CustomBlockBreakListener: onCustomBlockBreakEvent is cancelled.");
             return;
         }
 
@@ -29,7 +32,8 @@ public class CustomBlockBreakListener extends PlayerProgressor implements Listen
         AtomicBoolean valid = new AtomicBoolean(true);
 
         if (Antiglitch.isStorePlacedBlocks()) {
-            if (!block.getMetadata("odailyquests:placed").isEmpty()) {
+            final PersistentDataContainer pdc = new CustomBlockData(block, ODailyQuests.INSTANCE);
+            if (pdc.has(Antiglitch.PLACED_KEY)) {
                 valid.set(false);
             }
         }

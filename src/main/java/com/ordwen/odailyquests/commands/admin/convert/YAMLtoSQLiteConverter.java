@@ -3,11 +3,11 @@ package com.ordwen.odailyquests.commands.admin.convert;
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.files.ProgressionFile;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
-import com.ordwen.odailyquests.quests.player.progression.storage.sql.h2.H2Manager;
+import com.ordwen.odailyquests.quests.player.progression.storage.sql.sqlite.SQLiteManager;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.configuration.file.FileConfiguration;
 
-public class YAMLtoH2Converter extends SQLConverter {
+public class YAMLtoSQLiteConverter extends SQLConverter {
 
     public boolean convert() {
 
@@ -15,12 +15,12 @@ public class YAMLtoH2Converter extends SQLConverter {
             ODailyQuests.morePaperLib.scheduling().asyncScheduler().run(() -> {
 
                 final FileConfiguration progressionFile = ProgressionFile.getProgressionFileConfiguration();
-                final SQLManager sqlManager = new H2Manager(ODailyQuests.INSTANCE);
+                final SQLManager sqlManager = new SQLiteManager();
 
                 convertData(progressionFile, sqlManager);
             });
         } catch (Exception e) {
-            PluginLogger.error("An error occurred while converting YAML to H2.");
+            PluginLogger.error("An error occurred while converting YAML to SQLite.");
             PluginLogger.error(e.getMessage());
             return false;
         }

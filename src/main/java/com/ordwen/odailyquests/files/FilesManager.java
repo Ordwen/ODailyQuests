@@ -1,27 +1,39 @@
 package com.ordwen.odailyquests.files;
 
 import com.ordwen.odailyquests.ODailyQuests;
-import com.ordwen.odailyquests.configuration.essentials.Debugger;
 
 public class FilesManager {
 
     private final ODailyQuests oDailyQuests;
 
+    private final ConfigurationFile configurationFile;
+    private final PlayerInterfaceFile playerInterfaceFile;
+
     public FilesManager(ODailyQuests oDailyQuests) {
         this.oDailyQuests = oDailyQuests;
+
+        this.configurationFile = new ConfigurationFile(oDailyQuests);
+        this.playerInterfaceFile = new PlayerInterfaceFile(oDailyQuests);
     }
 
     /**
      * Load all files.
      */
-    public void loadAllFiles() {
+    public void load() {
+        configurationFile.loadConfigurationFile();
+        configurationFile.loadMessagesFiles();
 
-        oDailyQuests.getConfigurationFiles().loadConfigurationFiles();
-        oDailyQuests.getConfigurationFiles().loadMessagesFiles();
+        playerInterfaceFile.loadPlayerInterfaceFile();
 
         new QuestsFiles(oDailyQuests).loadQuestsFiles();
         new ProgressionFile(oDailyQuests).loadProgressionFile();
-        new HologramsFile(oDailyQuests).loadHologramsFile();
-        new PlayerInterfaceFile(oDailyQuests).loadPlayerInterfaceFile();
+    }
+
+    public ConfigurationFile getConfigurationFile() {
+        return configurationFile;
+    }
+
+    public PlayerInterfaceFile getPlayerInterfaceFile() {
+        return playerInterfaceFile;
     }
 }

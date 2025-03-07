@@ -63,7 +63,7 @@ public class CraftItemListener extends PlayerProgressor implements Listener {
 
         test.setAmount(recipeAmount);
 
-        Debugger.addDebug("CraftItemListener: onCraftItemEvent summoned by " + player.getName() + " for " + test.getType() + " x" + test.getAmount() + ".");
+        Debugger.write("CraftItemListener: onCraftItemEvent summoned by " + player.getName() + " for " + test.getType() + " x" + test.getAmount() + ".");
         setPlayerQuestProgression(event, player, test.getAmount(), "CRAFT");
     }
 

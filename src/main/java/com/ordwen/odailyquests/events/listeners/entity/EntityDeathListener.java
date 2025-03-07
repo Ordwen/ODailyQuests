@@ -25,14 +25,14 @@ public class EntityDeathListener extends PlayerProgressor implements Listener {
         }
 
         if (EntitySource.isEntityFromSpawner(entity)) {
-            Debugger.addDebug("[EntityDeathEvent] Entity is from spawner, cancelling progression.");
+            Debugger.write("[EntityDeathEvent] Entity is from spawner, cancelling progression.");
             return;
         }
 
         if (WildStackerEnabled.isEnabled()) return;
         if (entity.getKiller() == null) return;
 
-        Debugger.addDebug("EntityDeathListener: onEntityDeathEvent summoned by " + entity.getKiller().getName() + " for " + entity.getType() + ".");
+        Debugger.write("EntityDeathListener: onEntityDeathEvent summoned by " + entity.getKiller().getName() + " for " + entity.getType() + ".");
 
         setPlayerQuestProgression(event, entity.getKiller(), 1, "KILL");
     }
