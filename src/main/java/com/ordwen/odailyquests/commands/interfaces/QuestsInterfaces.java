@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.commands.interfaces;
 
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.commands.interfaces.holder.CategoryHolder;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.Buttons;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.files.ConfigurationFile;
@@ -166,9 +167,12 @@ public class QuestsInterfaces {
     private List<Inventory> createInventories(String inventoryName, int neededInventories) {
         final List<Inventory> inventories = new ArrayList<>();
         for (int i = 0; i < neededInventories; i++) {
-            final Inventory inv = Bukkit.createInventory(null, 54, inventoryName + " - " + (i + 1));
+            final CategoryHolder holder = new CategoryHolder(i, inventoryName);
+            final Inventory inv = Bukkit.createInventory(holder, 54, inventoryName + " - " + (i + 1));
+
             if (i > 0) inv.setItem(45, buttons.getPreviousButton());
             if (i < neededInventories - 1) inv.setItem(53, buttons.getNextButton());
+
             inventories.add(inv);
         }
         return inventories;
