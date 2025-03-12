@@ -47,15 +47,15 @@ public class EventsManager {
         Bukkit.getPluginManager().registerEvents(new EntityDeathListener(), oDailyQuests);
         Bukkit.getPluginManager().registerEvents(new SpawnerSpawnListener(), oDailyQuests);
 
-        if (EliteMobsHook.isEliteMobsSetup()) {
+        if (EliteMobsHook.isEnabled()) {
             Bukkit.getPluginManager().registerEvents(new EliteMobDeathListener(), oDailyQuests);
         }
 
-        if (MythicMobsHook.isMythicMobsSetup()) {
+        if (MythicMobsHook.isEnabled()) {
             Bukkit.getPluginManager().registerEvents(new MythicMobDeathListener(), oDailyQuests);
         }
 
-        if (WildStackerHook.isWildStackerSetup()) {
+        if (WildStackerHook.isEnabled()) {
             Bukkit.getPluginManager().registerEvents(new EntityUnstackListener(), oDailyQuests);
         }
 

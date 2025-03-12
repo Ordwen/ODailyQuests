@@ -19,7 +19,7 @@ public class EntityDeathListener extends PlayerProgressor implements Listener {
     public void onEntityDeathEvent(EntityDeathEvent event) {
         final LivingEntity entity = event.getEntity();
 
-        if (MythicMobsHook.isMythicMobsSetup()) {
+        if (MythicMobsHook.isEnabled()) {
             final ActiveMob mythicMob = MythicBukkit.inst().getMobManager().getActiveMob(entity.getUniqueId()).orElse(null);
             if (mythicMob != null) return;
         }
