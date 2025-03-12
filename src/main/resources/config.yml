@@ -168,6 +168,10 @@ take_items_for_get_quests: false
 # Determines if the quest can be rerolled even if it has already been completed, when using the reroll command.
 reroll_only_if_not_achieved: true
 
+# Delay in seconds before the status message is displayed when a player joins the server.
+# Corresponds to quests_in_progress and all_quests_achieved_connect messages.
+join_message_delay: 1
+
 # ===========================================================
 # ANTI-GLITCH PART
 # Here you can prevent some abuse from players, by storing the items they have used.
