@@ -11,7 +11,6 @@ import java.util.List;
 
 public abstract class EntityQuest extends AbstractQuest {
 
-    private static final String TYPE_PATH = ".required_entity";
 
     protected final List<EntityType> requiredEntities;
     protected DyeColor dyeColor;
@@ -23,14 +22,28 @@ public abstract class EntityQuest extends AbstractQuest {
 
     @Override
     public boolean loadParameters(ConfigurationSection section, String file, String index) {
-        if (!section.contains(TYPE_PATH)) return true;
+        return loadRequiredEntities(section, file, index, ".required_entity")
+                && loadRequiredEntities(section, file, index, ".required");
+    }
 
-        if (section.isString(TYPE_PATH)) {
-            final EntityType entityType = getEntityType(file, index, section.getString(TYPE_PATH));
+    /**
+     * Load entity types from a configuration section.
+     *
+     * @param section the configuration section
+     * @param file    the file name
+     * @param index   the quest index
+     * @param path    the path to check
+     * @return true if loading was successful, false otherwise
+     */
+    private boolean loadRequiredEntities(ConfigurationSection section, String file, String index, String path) {
+        if (!section.contains(path)) return true;
+
+        if (section.isString(path)) {
+            final EntityType entityType = getEntityType(file, index, section.getString(path));
             if (entityType != null) requiredEntities.add(entityType);
             else return false;
         } else {
-            for (String presumedEntity : section.getStringList(TYPE_PATH)) {
+            for (String presumedEntity : section.getStringList(path)) {
                 final EntityType entityType = getEntityType(file, index, presumedEntity);
                 if (entityType != null) requiredEntities.add(entityType);
                 else return false;
@@ -39,6 +52,7 @@ public abstract class EntityQuest extends AbstractQuest {
 
         return true;
     }
+
 
     /**
      * Get the entity type.

@@ -35,7 +35,7 @@ quests:
       - "&bMine 32 cobblestones."
       - "&bWin &c500$&b."
     quest_type: BREAK
-    required_item: COBBLESTONE
+    required: COBBLESTONE
     required_amount: 32
     reward:
       reward_type: MONEY
@@ -47,7 +47,7 @@ quests:
       - "&eGet 16 gold blocks."
       - "&eWin &b&m32 diamond blocks."
     quest_type: GET
-    required_item: GOLD_BLOCK
+    required: GOLD_BLOCK
     required_amount: 16
     reward:
       reward_type: COMMAND
@@ -61,7 +61,7 @@ quests:
       - "&cKill &65 &czombies."
       - "&aWin &b500 &aTokens."
     quest_type: KILL
-    required_entity: ZOMBIE
+    required: ZOMBIE
     required_amount: 5
     reward:
       reward_type: POINTS
