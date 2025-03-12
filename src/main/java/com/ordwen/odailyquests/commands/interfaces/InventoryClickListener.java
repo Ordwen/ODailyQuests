@@ -31,8 +31,8 @@ public class InventoryClickListener implements Listener {
             return;
         }
 
-        final String category = holder.getCategory();
-        final int page = holder.getPage();
+        final String category = holder.category();
+        final int page = holder.page();
 
         event.setCancelled(true);
 
