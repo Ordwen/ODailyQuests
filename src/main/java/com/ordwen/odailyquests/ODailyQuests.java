@@ -147,6 +147,10 @@ public final class ODailyQuests extends JavaPlugin {
 
         /* Init delayed task to draw new quests */
         if (Modes.getTimestampMode() == 1 && Temporality.getTemporalityMode() == 1) {
+            if (timerTask != null) {
+                timerTask.stop();
+            }
+
             timerTask = new TimerTask(LocalDateTime.now());
         }
 
@@ -217,7 +221,10 @@ public final class ODailyQuests extends JavaPlugin {
     @Override
     public void onDisable() {
         restartHandler.setServerStopping();
-        if (timerTask != null) timerTask.stop();
+        if (timerTask != null) {
+            timerTask.stop();
+            timerTask = null;
+        }
 
         /* Avoid errors on reload */
         reloadService.saveConnectedPlayerQuests();

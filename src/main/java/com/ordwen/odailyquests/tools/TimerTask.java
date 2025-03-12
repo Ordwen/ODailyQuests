@@ -32,7 +32,7 @@ public class TimerTask {
         PluginLogger.info("It's a new day. The player quests are being reloaded.");
         for (Player player : Bukkit.getServer().getOnlinePlayers()) {
             final String msg = QuestsMessages.NEW_DAY.toString();
-            if (msg != null) player.sendMessage(msg);
+            if (!msg.isEmpty()) player.sendMessage(msg);
 
             int totalAchievedQuests = QuestsManager.getActiveQuests().get(player.getName()).getTotalAchievedQuests();
             QuestLoaderUtils.loadNewPlayerQuests(player.getName(), QuestsManager.getActiveQuests(), totalAchievedQuests);
@@ -43,6 +43,6 @@ public class TimerTask {
     }
 
     public void stop() {
-        scheduler.shutdown();
+        scheduler.shutdownNow();
     }
 }
