@@ -28,6 +28,8 @@ public class Update230to300 extends ConfigUpdater {
             }
         }
 
+        setDefaultConfigItem("join_message_delay", 1.0, config, configFile);
+
         updateVersion(version);
     }
 }

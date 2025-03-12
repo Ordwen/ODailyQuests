@@ -170,7 +170,7 @@ reroll_only_if_not_achieved: true
 
 # Delay in seconds before the status message is displayed when a player joins the server.
 # Corresponds to quests_in_progress and all_quests_achieved_connect messages.
-join_message_delay: 1
+join_message_delay: 1.0
 
 # ===========================================================
 # ANTI-GLITCH PART
