@@ -151,7 +151,7 @@ public class QuestsInterfaces {
      * @param quests        list of quests.
      */
     public void loadSelectedInterface(String category, String inventoryName, ItemStack emptyCaseItem, int neededInventories, List<AbstractQuest> quests) {
-        final List<Inventory> questsInventories = createInventories(inventoryName, neededInventories);
+        final List<Inventory> questsInventories = createInventories(category, inventoryName, neededInventories);
         populateInventories(questsInventories, emptyCaseItem, quests);
         categorizedInterfaces.put(category, new Pair<>(inventoryName, questsInventories));
         PluginLogger.fine("Categorized quests interface named " + inventoryName + " successfully loaded.");
@@ -160,14 +160,15 @@ public class QuestsInterfaces {
     /**
      * Create a list of inventories.
      *
+     * @param category          category of the inventory.
      * @param inventoryName     name of the inventory.
      * @param neededInventories number of inventories needed.
      * @return list of inventories.
      */
-    private List<Inventory> createInventories(String inventoryName, int neededInventories) {
+    private List<Inventory> createInventories(String category, String inventoryName, int neededInventories) {
         final List<Inventory> inventories = new ArrayList<>();
         for (int i = 0; i < neededInventories; i++) {
-            final CategoryHolder holder = new CategoryHolder(i, inventoryName);
+            final CategoryHolder holder = new CategoryHolder(i, category);
             final Inventory inv = Bukkit.createInventory(holder, 54, inventoryName + " - " + (i + 1));
 
             if (i > 0) inv.setItem(45, buttons.getPreviousButton());

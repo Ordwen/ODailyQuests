@@ -27,12 +27,9 @@ public class InventoryClickListener implements Listener {
         final ItemMeta clickedItemMeta = clickedItem.getItemMeta();
         if (clickedItemMeta == null) return;
 
-        if (!(event.getView().getTopInventory().getHolder() instanceof CategoryHolder holder)) {
+        if (!(event.getView().getTopInventory().getHolder() instanceof CategoryHolder(int page, String category))) {
             return;
         }
-
-        final String category = holder.category();
-        final int page = holder.page();
 
         event.setCancelled(true);
 
