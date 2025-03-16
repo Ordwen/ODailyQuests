@@ -1,6 +1,8 @@
 package com.ordwen.odailyquests.quests.player.progression;
 
+import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
+import com.ordwen.odailyquests.configuration.essentials.JoinMessageDelay;
 import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
@@ -25,7 +27,8 @@ public abstract class ProgressionLoader {
                 QuestsMessages.QUESTS_IN_PROGRESS.getMessage(player.getName());
 
         if (msg != null) {
-            player.sendMessage(msg);
+            double delay = JoinMessageDelay.getDelay() * 20;
+            ODailyQuests.morePaperLib.scheduling().entitySpecificScheduler(player).runDelayed(() -> player.sendMessage(msg), null, (long) delay);
         }
     }
 

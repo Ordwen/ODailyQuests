@@ -29,6 +29,7 @@ public class ConfigFactory {
         configs.put(CustomTypes.class, new CustomTypes(configurationFile));
         configs.put(Database.class, new Database(configurationFile));
         configs.put(Debugger.class, new Debugger(configurationFile));
+        configs.put(JoinMessageDelay.class, new JoinMessageDelay(configurationFile));
         configs.put(Logs.class, new Logs(configurationFile));
         configs.put(Modes.class, new Modes(configurationFile));
         configs.put(QuestsAmount.class, new QuestsAmount(configurationFile));
