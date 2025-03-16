@@ -37,7 +37,7 @@ quests:
       - "&bMine 32 stones."
       - "&bWin &c500$&b."
     quest_type: BREAK
-    required_item: STONE
+    required: STONE
     required_amount: 32
     reward:
       reward_type: MONEY
@@ -51,7 +51,7 @@ quests:
       - "&eGet 16 gold blocks."
       - "&eWin &b&n32 diamond blocks."
     quest_type: GET
-    required_item: GOLD_BLOCK
+    required: GOLD_BLOCK
     required_amount: 16
     reward:
       reward_type: COMMAND
@@ -67,7 +67,7 @@ quests:
       - "&cKill &65 &czombies."
       - "&aWin &b500 &aTokens."
     quest_type: KILL
-    required_entity: ZOMBIE
+    required: ZOMBIE
     required_amount: 5
     reward:
       reward_type: POINTS
@@ -81,7 +81,7 @@ quests:
       - "&aTame a wolf."
       - "&aWin &b500 &a$."
     quest_type: TAME
-    required_entity: WOLF
+    required: WOLF
     required_amount: 1
     reward:
       reward_type: MONEY
@@ -95,7 +95,7 @@ quests:
       - "&eBreed two sheeps."
       - "&aWin &b5 000 &a$."
     quest_type: BREED
-    required_entity: SHEEP
+    required: SHEEP
     required_amount: 2
     reward:
       reward_type: MONEY
@@ -109,7 +109,7 @@ quests:
       - "&eShear a mooshroom."
       - "&aWin &b500 points of EXP&a."
     quest_type: SHEAR
-    required_entity: MUSHROOM_COW
+    required: MUSHROOM_COW
     required_amount: 1
     reward:
       reward_type: EXP_POINTS
@@ -123,7 +123,7 @@ quests:
       - "&eGet 2 emeralds from villager."
       - "&aWin &b5 levels of EXP&a."
     quest_type: VILLAGER_TRADE
-    required_item: EMERALD
+    required: EMERALD
     required_amount: 2
     reward:
       reward_type: EXP_LEVELS
@@ -140,7 +140,7 @@ quests:
     quest_type: VILLAGER_TRADE
     villager_profession: FARMER
     villager_level: 3
-    required_item: COOKIE
+    required: COOKIE
     required_amount: 32
     reward:
       reward_type: MONEY
@@ -182,7 +182,7 @@ quests:
       - "&eGet one &dbeautiful flower&e."
       - "&eWin &b&n32 diamond blocks."
     quest_type: GET
-    required_item: CUSTOM_ITEM
+    required: CUSTOM_ITEM
     custom_item:
       type: ALLIUM
       name: "&dBeautiful Flower"
@@ -203,7 +203,7 @@ quests:
       - "&bCraft a Saint Cobblestone."
       - "&bWin &c5 000 000$&b."
     quest_type: CRAFT
-    required_item: CUSTOM_ITEM
+    required: CUSTOM_ITEM
     custom_item:
       type: COBBLESTONE
       name: "&c&lThe Saint Cobblestone"
@@ -277,7 +277,7 @@ quests:
       - "&6Reward:"
       - "&7A \"hello\" message from the server :)"
     quest_type: SHEAR
-    required_entity: SHEEP
+    required: SHEEP
     required_amount: 3
     reward:
       reward_type: COMMAND
@@ -292,7 +292,7 @@ quests:
       - "&6Reward:"
       - "&7A \"hello\" message from the server :)"
     quest_type: SHEAR
-    required_entity: SHEEP
+    required: SHEEP
     sheep_color: PURPLE
     required_amount: 3
     reward:
@@ -349,7 +349,7 @@ quests:
       - "&eHarvest 10 fully grown carrots."
       - "&eWin &b5 EXP levels&e."
     quest_type: FARMING
-    required_item: CARROT
+    required: CARROT
     required_amount: 10
     reward:
       reward_type: EXP_LEVELS
@@ -363,7 +363,7 @@ quests:
         - "&eGet a speed potion level 1."
         - "&eWin &b5 EXP levels&e."
     quest_type: GET
-    required_item: POTION
+    required: POTION
     potion:
       type: SPEED
       upgraded: true
@@ -381,7 +381,7 @@ quests:
       - "&eGet a speed potion level 2."
       - "&eWin &b5 EXP levels&e."
     quest_type: GET
-    required_item:
+    required:
       - POTION
       - SPLASH_POTION
       - LINGERING_POTION
@@ -402,7 +402,7 @@ quests:
       - "&cKill a Wither in the Nether."
       - "&aWin &b50 000 &a$."
     quest_type: KILL
-    required_entity: WITHER
+    required: WITHER
     required_amount: 1
     required_worlds:
         - world_nether
@@ -453,7 +453,7 @@ quests:
           - "&6Get some Thanos dust."
           - "&6Win &b50 000 &6$."
     quest_type: GET
-    required_item: "itemsadder:thanos_namespace:thanos_dust"
+    required: "itemsadder:thanos_namespace:thanos_dust"
     required_amount: 1
     reward:
         reward_type: MONEY
@@ -467,7 +467,7 @@ quests:
       - "&6Get some Thanos dust."
       - "&6Win &b50 000 &6$."
     quest_type: GET
-    required_item: "oraxen:thanos_dust"
+    required: "oraxen:thanos_dust"
     required_amount: 1
     reward:
       reward_type: MONEY
@@ -481,7 +481,7 @@ quests:
       - "&6Get some Thanos dust."
       - "&6Win &b50 000 &6$."
     quest_type: GET
-    required_item: "mmoitems:thanos_category:thanos_dust"
+    required: "mmoitems:thanos_category:thanos_dust"
     required_amount: 1
     reward:
       reward_type: MONEY
@@ -495,7 +495,7 @@ quests:
       - "&6Get the Thanos head."
       - "&6Win &b50 000 &6$."
     quest_type: GET
-    required_item: "customhead:8f217869a64e9f215d9cc44f5a8bd7d7ea08cd73d2f95b97dc78e3a38ae2fa23"
+    required: "customhead:8f217869a64e9f215d9cc44f5a8bd7d7ea08cd73d2f95b97dc78e3a38ae2fa23"
     required_amount: 1
     reward:
       reward_type: MONEY
@@ -509,7 +509,7 @@ quests:
       - "&6Get the Thanos head."
       - "&6Win &b50 000 &6$."
     quest_type: GET
-    required_item: "custommodeldata:player_head:1234"
+    required: "custommodeldata:player_head:1234"
     required_amount: 1
     reward:
       reward_type: MONEY
@@ -524,7 +524,7 @@ quests:
       - "&bMine 32 stones."
       - "&bWin &c500$&b."
     quest_type: BREAK
-    required_item: STONE
+    required: STONE
     required_amount: 32
     reward:
       reward_type: MONEY
@@ -539,7 +539,7 @@ quests:
       - "&bMine 32 stones."
       - "&bWin &c500$&b."
     quest_type: BREAK
-    required_item: STONE
+    required: STONE
     required_amount: 32
     reward:
       reward_type: COINS_ENGINE
