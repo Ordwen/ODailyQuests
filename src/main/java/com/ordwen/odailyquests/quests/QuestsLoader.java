@@ -76,6 +76,9 @@ public class QuestsLoader extends QuestItemGetter {
         /* protection bypass */
         final boolean protectionBypass = questSection.getBoolean(".protection_bypass");
 
+        /* required permission */
+        final String requiredPermission = questSection.getString(".required_permission");
+
         String presumedItem = questSection.getString(".menu_item");
         if (presumedItem == null) {
             PluginLogger.configurationError(fileName, fileIndex, "menu_item", "The menu item is not defined.");
@@ -98,7 +101,7 @@ public class QuestsLoader extends QuestItemGetter {
         final Reward reward = createReward(questSection, fileName, fileIndex);
 
         return new BasicQuest(questIndex, questName, fileName, questDesc, questType, menuItem,
-                achievedItem, requiredAmount, reward, requiredWorlds, requiredRegions, protectionBypass);
+                achievedItem, requiredAmount, reward, requiredWorlds, requiredRegions, protectionBypass, requiredPermission);
     }
 
     /**

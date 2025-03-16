@@ -23,6 +23,7 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
     final List<String> requiredWorlds;
     final List<String> requiredRegions;
     final boolean protectionBypass;
+    final String requiredPermission;
 
     /**
      * Quest constructor.
@@ -33,7 +34,7 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
      * @param amountRequired required amount of the item.
      * @param reward         reward of the quest.
      */
-    protected AbstractQuest(int questIndex, String questName, String categoryName, List<String> questDesc, String questType, ItemStack menuItem, ItemStack achievedItem, int amountRequired, Reward reward, List<String> requiredWorlds, final List<String> requiredRegions, boolean protectionBypass) {
+    protected AbstractQuest(int questIndex, String questName, String categoryName, List<String> questDesc, String questType, ItemStack menuItem, ItemStack achievedItem, int amountRequired, Reward reward, List<String> requiredWorlds, final List<String> requiredRegions, boolean protectionBypass, String requiredPermission) {
         this.questIndex = questIndex;
         this.questName = questName;
         this.categoryName = categoryName;
@@ -46,6 +47,7 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
         this.requiredWorlds = requiredWorlds;
         this.requiredRegions = requiredRegions;
         this.protectionBypass = protectionBypass;
+        this.requiredPermission = requiredPermission;
     }
 
     /**
@@ -66,6 +68,7 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
         this.requiredWorlds = basicQuest.getRequiredWorlds();
         this.requiredRegions = basicQuest.getRequiredRegions();
         this.protectionBypass = basicQuest.isProtectionBypass();
+        this.requiredPermission = basicQuest.getRequiredPermission();
     }
 
     /**
@@ -174,5 +177,14 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
      */
     public boolean isProtectionBypass() {
         return this.protectionBypass;
+    }
+
+    /**
+     * Get the required permission of the quest.
+     *
+     * @return quest required permission.
+     */
+    public String getRequiredPermission() {
+        return this.requiredPermission;
     }
 }
