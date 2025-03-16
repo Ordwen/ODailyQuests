@@ -22,6 +22,7 @@ import com.ordwen.odailyquests.quests.player.progression.listeners.AllQuestsComp
 import com.ordwen.odailyquests.quests.player.progression.listeners.QuestCompletedListener;
 import com.ordwen.odailyquests.quests.player.progression.storage.DatabaseManager;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
+import com.ordwen.odailyquests.quests.types.custom.crate.CrateOpenQuest;
 import com.ordwen.odailyquests.quests.types.custom.mobs.EliteMobsQuest;
 import com.ordwen.odailyquests.quests.types.custom.mobs.MythicMobsQuest;
 import com.ordwen.odailyquests.quests.types.custom.vote.NuVotifierQuest;
@@ -147,6 +148,10 @@ public final class ODailyQuests extends JavaPlugin {
 
         /* Init delayed task to draw new quests */
         if (Modes.getTimestampMode() == 1 && Temporality.getTemporalityMode() == 1) {
+            if (timerTask != null) {
+                timerTask.stop();
+            }
+
             timerTask = new TimerTask(LocalDateTime.now());
         }
 
@@ -195,6 +200,8 @@ public final class ODailyQuests extends JavaPlugin {
         /* other plugins */
         questTypeRegistry.registerQuestType("NU_VOTIFIER", NuVotifierQuest.class);
         questTypeRegistry.registerQuestType("VOTIFIER_PLUS", VotifierPlusQuest.class);
+        questTypeRegistry.registerQuestType("CRATE_OPEN", CrateOpenQuest.class);
+
 
         /* register addons types */
         final Map<String, Class<? extends AbstractQuest>> externalTypes = ODailyQuestsAPI.getExternalTypes();
@@ -217,7 +224,10 @@ public final class ODailyQuests extends JavaPlugin {
     @Override
     public void onDisable() {
         restartHandler.setServerStopping();
-        if (timerTask != null) timerTask.stop();
+        if (timerTask != null) {
+            timerTask.stop();
+            timerTask = null;
+        }
 
         /* Avoid errors on reload */
         reloadService.saveConnectedPlayerQuests();
