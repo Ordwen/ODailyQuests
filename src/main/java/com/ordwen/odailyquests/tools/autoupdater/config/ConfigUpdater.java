@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.tools.updater;
+package com.ordwen.odailyquests.tools.autoupdater.config;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.files.FilesManager;
