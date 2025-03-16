@@ -18,7 +18,6 @@ import org.bukkit.event.Event;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class PlayerProgressor {
@@ -99,11 +98,11 @@ public class PlayerProgressor {
 
         for (int i = 0; i < amount; i++) {
             Debugger.write("QuestProgressUtils: increasing progression for " + quest.getQuestName() + " by " + amount + ".");
-            progression.increaseProgression();
+            progression.increaseAdvancement();
         }
 
-        if (progression.getProgression() >= quest.getAmountRequired()) {
-            Debugger.write("QuestProgressUtils: progression " + progression.getProgression() + " is greater than or equal to amount required " + quest.getAmountRequired() + ".");
+        if (progression.getAdvancement() >= progression.getRequiredAmount()) {
+            Debugger.write("QuestProgressUtils: progression " + progression.getAdvancement() + " is greater than or equal to amount required " + progression.getRequiredAmount() + ".");
             ODailyQuests.morePaperLib.scheduling().globalRegionalScheduler().runDelayed(() -> {
                 Debugger.write("QuestProgressUtils: QuestCompletedEvent is called.");
                 final QuestCompletedEvent completedEvent = new QuestCompletedEvent(player, progression, quest);
@@ -113,7 +112,7 @@ public class PlayerProgressor {
             return;
         }
 
-        ProgressionMessage.sendProgressionMessage(player, quest.getQuestName(), progression.getProgression(), quest.getAmountRequired());
+        ProgressionMessage.sendProgressionMessage(player, quest.getQuestName(), progression.getAdvancement(), progression.getRequiredAmount());
     }
 
     /**

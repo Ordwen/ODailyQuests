@@ -2,17 +2,19 @@ package com.ordwen.odailyquests.quests.player.progression;
 
 public class Progression {
 
-    private int progression;
+    private final int requiredAmount;
+    private int advancement;
     private boolean isAchieved;
 
     /**
      * Progression constructor.
      *
-     * @param progression progression of quest.
+     * @param advancement progression of quest.
      * @param isAchieved  status of quest.
      */
-    public Progression(int progression, boolean isAchieved) {
-        this.progression = progression;
+    public Progression(int requiredAmount, int advancement, boolean isAchieved) {
+        this.requiredAmount = requiredAmount;
+        this.advancement = advancement;
         this.isAchieved = isAchieved;
     }
 
@@ -21,15 +23,15 @@ public class Progression {
      *
      * @return progression.
      */
-    public int getProgression() {
-        return this.progression;
+    public int getAdvancement() {
+        return this.advancement;
     }
 
     /**
      * Increment the progression of quest.
      */
-    public void increaseProgression() {
-        this.progression++;
+    public void increaseAdvancement() {
+        this.advancement++;
     }
 
     /**
@@ -46,5 +48,14 @@ public class Progression {
      */
     public void setAchieved() {
         this.isAchieved = true;
+    }
+
+    /**
+     * Get required amount of quest.
+     *
+     * @return required amount.
+     */
+    public int getRequiredAmount() {
+        return this.requiredAmount;
     }
 }

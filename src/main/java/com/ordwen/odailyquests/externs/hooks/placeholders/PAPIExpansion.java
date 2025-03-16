@@ -4,6 +4,7 @@ import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsI
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
+import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.player.progression.QuestLoaderUtils;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.tools.TextFormatter;
@@ -165,10 +166,12 @@ public class PAPIExpansion extends PlaceholderExpansion {
         int i = 0;
         for (AbstractQuest quest : playerQuests.getQuests().keySet()) {
             if (i == index) {
+                final Progression progression = playerQuests.getQuests().get(quest);
+
                 return (playerQuests.getQuests().get(quest).isAchieved() ? playerQuestsInterface.getAchieved() : playerQuestsInterface.getProgression())
-                        .replace("%progress%", String.valueOf(playerQuests.getQuests().get(quest).getProgression()))
-                        .replace("%required%", String.valueOf(quest.getAmountRequired()))
-                        .replace("%progressBar%", ProgressBar.getProgressBar(playerQuests.getQuests().get(quest).getProgression(), quest.getAmountRequired()));
+                        .replace("%progress%", String.valueOf(progression.getAdvancement()))
+                        .replace("%required%", String.valueOf(progression.getRequiredAmount()))
+                        .replace("%progressBar%", ProgressBar.getProgressBar(progression.getAdvancement(), progression.getRequiredAmount()));
             }
             i++;
         }
@@ -220,7 +223,8 @@ public class PAPIExpansion extends PlaceholderExpansion {
         int i = 0;
         for (AbstractQuest quest : playerQuests.getQuests().keySet()) {
             if (i == index) {
-                return String.valueOf(quest.getAmountRequired());
+                final Progression progression = playerQuests.getQuests().get(quest);
+                return String.valueOf(progression.getRequiredAmount());
             }
             i++;
         }
@@ -280,7 +284,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
         int i = 0;
         for (AbstractQuest quest : playerQuests.getQuests().keySet()) {
             if (i == index) {
-                return playerQuests.getQuests().get(quest).getProgression();
+                return playerQuests.getQuests().get(quest).getAdvancement();
             }
             i++;
         }
@@ -305,7 +309,8 @@ public class PAPIExpansion extends PlaceholderExpansion {
         int i = 0;
         for (AbstractQuest quest : playerQuests.getQuests().keySet()) {
             if (i == index) {
-                return ProgressBar.getProgressBar(playerQuests.getQuests().get(quest).getProgression(), quest.getAmountRequired());
+                final Progression progression = playerQuests.getQuests().get(quest);
+                return ProgressBar.getProgressBar(progression.getAdvancement(), progression.getRequiredAmount());
             }
             i++;
         }

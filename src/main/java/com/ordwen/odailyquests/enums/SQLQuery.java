@@ -21,6 +21,7 @@ public enum SQLQuery {
                     `player_quest_id` SMALLINT NOT NULL,
                     `quest_index` INT NOT NULL,
                     `advancement` INT NOT NULL,
+                    `required_amount` INT NOT NULL,
                     `is_achieved` BIT NOT NULL,
                     PRIMARY KEY (`primary_key`),
                     CONSTRAINT `odq_unique_player_quest` UNIQUE (`player_uuid`, `player_quest_id`)
@@ -37,11 +38,12 @@ public enum SQLQuery {
             """),
 
     MYSQL_PROGRESS_UPDATE("""
-                INSERT INTO `odq_progression` (`player_uuid`, `player_quest_id`, `quest_index`, `advancement`, `is_achieved`)
+                INSERT INTO `odq_progression` (`player_uuid`, `player_quest_id`, `quest_index`, `advancement`, `required_amount`, `is_achieved`)
                 VALUES (?, ?, ?, ?, ?)
                 ON DUPLICATE KEY UPDATE
                     `quest_index` = VALUES(`quest_index`),
                     `advancement` = VALUES(`advancement`),
+                    `required_amount` = VALUES(`required_amount`),
                     `is_achieved` = VALUES(`is_achieved`);
             """),
 
@@ -64,6 +66,7 @@ public enum SQLQuery {
                     player_quest_id INTEGER NOT NULL,
                     quest_index INTEGER NOT NULL,
                     advancement INTEGER NOT NULL,
+                    required_amount INTEGER NOT NULL,
                     is_achieved INTEGER NOT NULL,
                     UNIQUE (player_uuid, player_quest_id)
                 );
@@ -75,8 +78,8 @@ public enum SQLQuery {
             """),
 
     SQLITE_PROGRESS_UPDATE("""
-                INSERT OR REPLACE INTO `odq_progression` (`player_uuid`, `player_quest_id`, `quest_index`, `advancement`, `is_achieved`)
-                VALUES (?, ?, ?, ?, ?);
+                INSERT OR REPLACE INTO `odq_progression` (`player_uuid`, `player_quest_id`, `quest_index`, `advancement`, `required_amount`, `is_achieved`)
+                VALUES (?, ?, ?, ?, ?, ?);
             """),
 
     // Common queries //

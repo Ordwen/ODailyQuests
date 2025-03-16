@@ -87,10 +87,11 @@ public class LoadProgressionYAML extends ProgressionLoader {
 
             int questIndex = questsSection.getInt(key + ".index");
             int advancement = questsSection.getInt(key + ".progression");
+            int requiredAmount = questsSection.getInt(key + ".requiredAmount");
             boolean isAchieved = questsSection.getBoolean(key + ".isAchieved");
 
             final AbstractQuest quest = QuestLoaderUtils.findQuest(playerName, questIndex, Integer.parseInt(key));
-            quests.put(quest, new Progression(advancement, isAchieved));
+            quests.put(quest, new Progression(requiredAmount, advancement, isAchieved));
             i++;
         }
 

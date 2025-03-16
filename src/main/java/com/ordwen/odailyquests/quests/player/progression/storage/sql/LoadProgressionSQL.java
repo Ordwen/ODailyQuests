@@ -137,9 +137,10 @@ public class LoadProgressionSQL extends ProgressionLoader {
                     do {
                         final int questIndex = resultSet.getInt("quest_index");
                         final int advancement = resultSet.getInt("advancement");
+                        final int requiredAmount = resultSet.getInt("required_amount");
                         final boolean isAchieved = resultSet.getBoolean("is_achieved");
 
-                        final Progression progression = new Progression(advancement, isAchieved);
+                        final Progression progression = new Progression(requiredAmount, advancement, isAchieved);
                         final AbstractQuest quest = QuestLoaderUtils.findQuest(playerName, questIndex, id);
 
                         quests.put(quest, progression);

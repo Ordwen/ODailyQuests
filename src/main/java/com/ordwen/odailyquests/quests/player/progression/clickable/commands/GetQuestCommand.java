@@ -35,9 +35,9 @@ public class GetQuestCommand extends QuestCommand<GetQuest> {
             return;
         }
 
-        if (totalAmount >= quest.getAmountRequired()) {
+        if (totalAmount >= progression.getRequiredAmount()) {
             if (TakeItem.isTakeItemsEnabled()) {
-                boolean success = removeRequiredItems(inventory, quest, quest.getAmountRequired());
+                boolean success = removeRequiredItems(inventory, quest, progression.getRequiredAmount());
                 if (!success) {
                     sendMessage(QuestsMessages.NOT_ENOUGH_ITEM);
                     return;

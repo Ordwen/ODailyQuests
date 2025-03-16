@@ -101,7 +101,8 @@ public class QuestsManager implements Listener {
 
             for (int i = 0; i < QuestsAmount.getQuestsAmount(); i++) {
                 final AbstractQuest quest = getRandomQuestForPlayer(quests.keySet(), globalQuests);
-                final Progression progression = new Progression(0, false);
+                final int requiredAmount = getDynamicRequiredAmount(quest.getRequiredAmountRaw());
+                final Progression progression = new Progression(requiredAmount, 0, false);
                 quests.put(quest, progression);
             }
         } else if (Modes.getQuestsMode() == 2) {
@@ -112,25 +113,42 @@ public class QuestsManager implements Listener {
 
             for (int i = 0; i < QuestsAmount.getEasyQuestsAmount(); i++) {
                 final AbstractQuest quest = getRandomQuestForPlayer(quests.keySet(), easyQuests);
-                final Progression progression = new Progression(0, false);
+                final int requiredAmount = getDynamicRequiredAmount(quest.getRequiredAmountRaw());
+                final Progression progression = new Progression(requiredAmount, 0, false);
                 quests.put(quest, progression);
             }
 
             for (int i = 0; i < QuestsAmount.getMediumQuestsAmount(); i++) {
                 final AbstractQuest quest = getRandomQuestForPlayer(quests.keySet(), mediumQuests);
-                final Progression progression = new Progression(0, false);
+                final int requiredAmount = getDynamicRequiredAmount(quest.getRequiredAmountRaw());
+                final Progression progression = new Progression(requiredAmount, 0, false);
                 quests.put(quest, progression);
             }
 
             for (int i = 0; i < QuestsAmount.getHardQuestsAmount(); i++) {
                 final AbstractQuest quest = getRandomQuestForPlayer(quests.keySet(), hardQuests);
-                final Progression progression = new Progression(0, false);
+                final int requiredAmount = getDynamicRequiredAmount(quest.getRequiredAmountRaw());
+                final Progression progression = new Progression(requiredAmount, 0, false);
                 quests.put(quest, progression);
             }
         } else
             PluginLogger.error(ChatColor.RED + "Impossible to select quests for player. The selected mode is incorrect.");
 
         return quests;
+    }
+
+    public static int getDynamicRequiredAmount(String requiredAmountRaw) {
+        if (requiredAmountRaw.contains("-")) {
+            String[] parts = requiredAmountRaw.split("-");
+            int min = Integer.parseInt(parts[0].trim());
+            int max = Integer.parseInt(parts[1].trim());
+            if (min < 1) min = 1;
+
+            return random.nextInt(min, max + 1);
+        }
+
+        int amount = Integer.parseInt(requiredAmountRaw);
+        return Math.max(amount, 1);
     }
 
     /**

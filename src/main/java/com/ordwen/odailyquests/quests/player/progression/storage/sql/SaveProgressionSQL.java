@@ -109,8 +109,9 @@ public class SaveProgressionSQL {
 
                     progressionStatement.setInt(2, index);
                     progressionStatement.setInt(3, quest.getQuestIndex());
-                    progressionStatement.setInt(4, progression.getProgression());
-                    progressionStatement.setBoolean(5, progression.isAchieved());
+                    progressionStatement.setInt(4, progression.getAdvancement());
+                    progressionStatement.setInt(5, progression.getRequiredAmount());
+                    progressionStatement.setBoolean(6, progression.isAchieved());
                     progressionStatement.addBatch();
 
                     Debugger.write("Quest number " + index + " saved for player " + playerName);

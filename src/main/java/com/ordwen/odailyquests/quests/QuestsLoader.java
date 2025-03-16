@@ -64,8 +64,7 @@ public class QuestsLoader extends QuestItemGetter {
         }
 
         /* required amount */
-        int requiredAmount = !questSection.contains(".required_amount") ? 1 : questSection.getInt(".required_amount");
-        if (requiredAmount < 1) requiredAmount = 1;
+        final String requiredAmount = questSection.getString(".required_amount", "1");
 
         /* required worlds */
         final List<String> requiredWorlds = questSection.getStringList(".required_worlds");

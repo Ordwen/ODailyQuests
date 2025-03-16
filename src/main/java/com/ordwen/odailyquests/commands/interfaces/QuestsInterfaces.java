@@ -213,7 +213,7 @@ public class QuestsInterfaces {
             itemMeta.setDisplayName(quest.getQuestName());
             itemMeta.setLore(quest.getQuestDesc());
 
-            itemMeta.getPersistentDataContainer().set(requiredKey, PersistentDataType.INTEGER, quest.getAmountRequired());
+            itemMeta.getPersistentDataContainer().set(requiredKey, PersistentDataType.STRING, quest.getRequiredAmountRaw());
 
             itemStack.setItemMeta(itemMeta);
         }
@@ -252,10 +252,10 @@ public class QuestsInterfaces {
                 final List<String> lore = itemMeta.getLore();
                 if (lore == null) continue;
 
-                final int required = pdc.get(requiredKey, PersistentDataType.INTEGER);
+                final String required = pdc.get(requiredKey, PersistentDataType.STRING);
 
                 lore.replaceAll(s -> s.replace("%progress%", String.valueOf(0)));
-                lore.replaceAll(s -> s.replace("%progressBar%", ProgressBar.getProgressBar(0, required)));
+                lore.replaceAll(s -> s.replace("%progressBar%", getProgressBar(required)));
                 lore.replaceAll(s -> s.replace("%required%", String.valueOf(required)));
                 lore.replaceAll(s -> s.replace("%drawIn%", "~"));
                 lore.replaceAll(s -> TextFormatter.format(player, s));
@@ -266,6 +266,22 @@ public class QuestsInterfaces {
             }
         }
         return inventory;
+    }
+
+    /**
+     * Get the progress bar for the specified required amount.
+     * If the required amount is dynamic, return a progress bar with 0/1.
+     * If the required amount is static, return a progress bar with 0/required amount.
+     *
+     * @param requiredAmountRaw required amount.
+     * @return progress bar.
+     */
+    private String getProgressBar(String requiredAmountRaw) {
+        if (requiredAmountRaw.contains("-")) {
+            return ProgressBar.getProgressBar(0, 1);
+        }
+
+        return ProgressBar.getProgressBar(0, Integer.parseInt(requiredAmountRaw));
     }
 
     public Inventory getInterfaceFirstPage(String category, Player player) {

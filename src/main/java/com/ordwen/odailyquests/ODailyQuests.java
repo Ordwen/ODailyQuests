@@ -39,7 +39,7 @@ import com.ordwen.odailyquests.quests.types.item.VillagerQuest;
 import com.ordwen.odailyquests.quests.types.item.*;
 import com.ordwen.odailyquests.tools.*;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
-import com.ordwen.odailyquests.tools.updater.ConfigUpdateManager;
+import com.ordwen.odailyquests.tools.autoupdater.config.ConfigUpdateManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
