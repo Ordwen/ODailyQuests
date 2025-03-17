@@ -1,6 +1,8 @@
 package com.ordwen.odailyquests.tools.externals;
 
+import com.nexomc.nexo.api.NexoItems;
 import com.ordwen.odailyquests.configuration.integrations.ItemsAdderEnabled;
+import com.ordwen.odailyquests.configuration.integrations.NexoEnabled;
 import com.ordwen.odailyquests.configuration.integrations.OraxenEnabled;
 import com.ordwen.odailyquests.tools.ItemUtils;
 import com.ordwen.odailyquests.tools.Pair;
@@ -16,6 +18,7 @@ public abstract class ExternalItemGetter implements IExternalItemGetter {
 
     /**
      * Get an Oraxen item by its namespace.
+     *
      * @param namespace the namespace of the item
      * @return the ItemStack or null if it does not exist
      */
@@ -33,7 +36,27 @@ public abstract class ExternalItemGetter implements IExternalItemGetter {
     }
 
     /**
+     * Get a Nexo item by its namespace.
+     *
+     * @param namespace the namespace of the item
+     * @return the ItemStack or null if it does not exist
+     */
+    @Override
+    public Pair<String, ItemStack> getNexoItem(String namespace) {
+        if (!NexoEnabled.isEnabled()) {
+            return new Pair<>("Nexo is not enabled.", null);
+        }
+
+        if (!NexoItems.exists(namespace)) {
+            return new Pair<>("The item " + namespace + " does not exist in Nexo.", null);
+        }
+
+        return new Pair<>("", NexoItems.itemFromId(namespace).build());
+    }
+
+    /**
      * Get an ItemsAdder item by its namespace.
+     *
      * @param namespace the namespace of the item
      * @return the ItemStack or null if it does not exist
      */
@@ -56,6 +79,7 @@ public abstract class ExternalItemGetter implements IExternalItemGetter {
 
     /**
      * Get an MMOItems item by its namespace.
+     *
      * @param namespace the namespace of the item
      * @return the ItemStack or null if it does not exist
      */
@@ -86,6 +110,7 @@ public abstract class ExternalItemGetter implements IExternalItemGetter {
 
     /**
      * Get a custom head by its texture.
+     *
      * @param texture the texture of the head
      * @return the ItemStack textured or not
      */

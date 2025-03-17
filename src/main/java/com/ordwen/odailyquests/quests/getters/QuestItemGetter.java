@@ -30,6 +30,7 @@ public class QuestItemGetter extends ItemGetter implements IQuestItem {
         final String[] split = material.split(":", 2);
         return switch (split[0]) {
             case "oraxen" -> this.getOraxenItem(split[1], fileName, questIndex, parameter);
+            case "nexo" -> this.getNexoItem(split[1], fileName, questIndex, parameter);
             case "itemsadder" -> this.getItemsAdderItem(split[1], fileName, questIndex, parameter);
             case "mmoitems" -> this.getMMOItemsItem(split[1], fileName, questIndex, parameter);
             case "customhead" -> this.getCustomHead(split[1], fileName, questIndex, parameter);
@@ -50,6 +51,26 @@ public class QuestItemGetter extends ItemGetter implements IQuestItem {
     @Override
     public ItemStack getOraxenItem(String namespace, String fileName, String questIndex, String parameter) {
         final Pair<String, ItemStack> result = super.getOraxenItem(namespace);
+        if (!result.first().isEmpty()) {
+            PluginLogger.configurationError(fileName, questIndex, parameter, result.first());
+            return null;
+        }
+
+        return result.second();
+    }
+
+    /**
+     * Get an item from Nexo.
+     *
+     * @param namespace  the namespace of the item
+     * @param fileName   the name of the file where the item is
+     * @param questIndex the index of the quest in the file
+     * @param parameter  the parameter involved
+     * @return the ItemStack or null if the item cannot be loaded
+     */
+    @Override
+    public ItemStack getNexoItem(String namespace, String fileName, String questIndex, String parameter) {
+        final Pair<String, ItemStack> result = super.getNexoItem(namespace);
         if (!result.first().isEmpty()) {
             PluginLogger.configurationError(fileName, questIndex, parameter, result.first());
             return null;

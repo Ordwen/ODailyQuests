@@ -48,7 +48,7 @@ public class IntegrationsManager {
      * Load WildStacker.
      */
     private void loadWildStacker() {
-        if (WildStackerHook.isWildStackerSetup()) {
+        if (WildStackerHook.isEnabled()) {
             PluginLogger.info("WildStacker successfully hooked.");
         }
     }
@@ -66,7 +66,7 @@ public class IntegrationsManager {
      * Hook - MythicMobs
      */
     private void loadMythicMobs() {
-        if (MythicMobsHook.isMythicMobsSetup()) {
+        if (MythicMobsHook.isEnabled()) {
             PluginLogger.info("MythicMobs successfully hooked.");
         }
     }
@@ -75,7 +75,7 @@ public class IntegrationsManager {
      * Hook - EliteMobs
      */
     private void loadEliteMobs() {
-        if (EliteMobsHook.isEliteMobsSetup()) {
+        if (EliteMobsHook.isEnabled()) {
             PluginLogger.info("EliteMobs successfully hooked.");
         }
     }

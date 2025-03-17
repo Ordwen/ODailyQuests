@@ -1,7 +1,9 @@
 package com.ordwen.odailyquests.quests.types.item;
 
+import com.nexomc.nexo.api.NexoItems;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.integrations.ItemsAdderEnabled;
+import com.ordwen.odailyquests.configuration.integrations.NexoEnabled;
 import com.ordwen.odailyquests.configuration.integrations.OraxenEnabled;
 import com.ordwen.odailyquests.externs.hooks.Protection;
 import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
@@ -92,6 +94,13 @@ public class BreakQuest extends ItemQuest {
 
         if (OraxenEnabled.isEnabled()) {
             final ItemBuilder itemBuilder = OraxenItems.getItemById(cropNamespace);
+            if (itemBuilder != null) {
+                return itemBuilder.build();
+            }
+        }
+
+        if (NexoEnabled.isEnabled()) {
+            final com.nexomc.nexo.items.ItemBuilder itemBuilder = NexoItems.itemFromId(cropNamespace);
             if (itemBuilder != null) {
                 return itemBuilder.build();
             }
