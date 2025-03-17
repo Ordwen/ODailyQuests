@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.commands.interfaces;
 
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.commands.interfaces.holder.CategoryHolder;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.Buttons;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.files.ConfigurationFile;
@@ -150,7 +151,7 @@ public class QuestsInterfaces {
      * @param quests        list of quests.
      */
     public void loadSelectedInterface(String category, String inventoryName, ItemStack emptyCaseItem, int neededInventories, List<AbstractQuest> quests) {
-        final List<Inventory> questsInventories = createInventories(inventoryName, neededInventories);
+        final List<Inventory> questsInventories = createInventories(category, inventoryName, neededInventories);
         populateInventories(questsInventories, emptyCaseItem, quests);
         categorizedInterfaces.put(category, new Pair<>(inventoryName, questsInventories));
         PluginLogger.fine("Categorized quests interface named " + inventoryName + " successfully loaded.");
@@ -159,16 +160,20 @@ public class QuestsInterfaces {
     /**
      * Create a list of inventories.
      *
+     * @param category          category of the inventory.
      * @param inventoryName     name of the inventory.
      * @param neededInventories number of inventories needed.
      * @return list of inventories.
      */
-    private List<Inventory> createInventories(String inventoryName, int neededInventories) {
+    private List<Inventory> createInventories(String category, String inventoryName, int neededInventories) {
         final List<Inventory> inventories = new ArrayList<>();
         for (int i = 0; i < neededInventories; i++) {
-            final Inventory inv = Bukkit.createInventory(null, 54, inventoryName + " - " + (i + 1));
+            final CategoryHolder holder = new CategoryHolder(i, category);
+            final Inventory inv = Bukkit.createInventory(holder, 54, inventoryName + " - " + (i + 1));
+
             if (i > 0) inv.setItem(45, buttons.getPreviousButton());
             if (i < neededInventories - 1) inv.setItem(53, buttons.getNextButton());
+
             inventories.add(inv);
         }
         return inventories;

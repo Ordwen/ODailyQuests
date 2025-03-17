@@ -10,8 +10,8 @@ import java.util.List;
 
 public class BasicQuest extends AbstractQuest {
 
-    public BasicQuest(int questIndex, String questName, String categoryName, List<String> questDesc, String questType, ItemStack menuItem, ItemStack achievedItem, String requiredAmountRaw, Reward reward, List<String> requiredWorlds, List<String> requiredRegions, boolean protectionBypass) {
-        super(questIndex, questName, categoryName, questDesc, questType, menuItem, achievedItem, requiredAmountRaw, reward, requiredWorlds, requiredRegions, protectionBypass);
+    public BasicQuest(int questIndex, String questName, String categoryName, List<String> questDesc, String questType, ItemStack menuItem, ItemStack achievedItem, String requiredAmountRaw, Reward reward, List<String> requiredWorlds, List<String> requiredRegions, boolean protectionBypass, String requiredPermission) {
+        super(questIndex, questName, categoryName, questDesc, questType, menuItem, achievedItem, requiredAmountRaw, reward, requiredWorlds, requiredRegions, protectionBypass, requiredPermission);
     }
 
     @Override
