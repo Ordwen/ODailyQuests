@@ -53,9 +53,10 @@ public abstract class SQLConverter {
 
                 int questIndex = progressionSection.getInt(".index");
                 int advancement = progressionSection.getInt(".progression");
+                int requiredAmount = progressionSection.getInt(".requiredAmount");
                 boolean isAchieved = progressionSection.getBoolean(".isAchieved");
 
-                final Progression progression = new Progression(advancement, isAchieved);
+                final Progression progression = new Progression(requiredAmount, advancement, isAchieved);
                 final AbstractQuest quest = QuestLoaderUtils.findQuest(playerUuid, questIndex, Integer.parseInt(string));
 
                 quests.put(quest, progression);

@@ -3,6 +3,7 @@ debug: false
 
 # never touch this line
 version: 3.0.0
+database_version: 2
 
 # plugin prefix for messaging
 prefix: "&7[O'DailyQuests&7]"

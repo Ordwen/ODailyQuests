@@ -102,7 +102,10 @@ public class LoadProgressionSQL extends ProgressionLoader {
         if (QuestLoaderUtils.checkTimestamp(timestamp)) {
             QuestLoaderUtils.loadNewPlayerQuests(playerName, activeQuests, totalAchievedQuests);
         } else {
-            loadPlayerQuests(player, quests);
+            if (!loadPlayerQuests(player, quests)) {
+                QuestLoaderUtils.loadNewPlayerQuests(playerName, activeQuests, totalAchievedQuests);
+                return;
+            }
 
             final PlayerQuests playerQuests = new PlayerQuests(timestamp, quests);
             playerQuests.setAchievedQuests(achievedQuests);
@@ -121,7 +124,7 @@ public class LoadProgressionSQL extends ProgressionLoader {
      * @param player player.
      * @param quests list of player quests.
      */
-    private void loadPlayerQuests(Player player, LinkedHashMap<AbstractQuest, Progression> quests) {
+    private boolean loadPlayerQuests(Player player, LinkedHashMap<AbstractQuest, Progression> quests) {
         final String playerName = player.getName();
 
         Debugger.write("Entering loadPlayerQuests method for player " + playerName + ".");
@@ -137,9 +140,17 @@ public class LoadProgressionSQL extends ProgressionLoader {
                     do {
                         final int questIndex = resultSet.getInt("quest_index");
                         final int advancement = resultSet.getInt("advancement");
+                        final int requiredAmount = resultSet.getInt("required_amount");
+
+                        // schema update check (1 to 2)
+                        if (requiredAmount == 0) {
+                            Debugger.write("Required amount is 0 for player " + playerName + ". New quests will be drawn.");
+                            return false;
+                        }
+
                         final boolean isAchieved = resultSet.getBoolean("is_achieved");
 
-                        final Progression progression = new Progression(advancement, isAchieved);
+                        final Progression progression = new Progression(requiredAmount, advancement, isAchieved);
                         final AbstractQuest quest = QuestLoaderUtils.findQuest(playerName, questIndex, id);
 
                         quests.put(quest, progression);
@@ -156,5 +167,6 @@ public class LoadProgressionSQL extends ProgressionLoader {
         }
 
         Debugger.write("Quests of player " + playerName + " have been loaded.");
+        return true;
     }
 }

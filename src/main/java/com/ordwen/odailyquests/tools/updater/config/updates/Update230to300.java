@@ -1,8 +1,8 @@
-package com.ordwen.odailyquests.tools.updater.updates;
+package com.ordwen.odailyquests.tools.updater.config.updates;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.tools.PluginLogger;
-import com.ordwen.odailyquests.tools.updater.ConfigUpdater;
+import com.ordwen.odailyquests.tools.updater.config.ConfigUpdater;
 
 import java.io.IOException;
 

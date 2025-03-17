@@ -187,7 +187,8 @@ public class PlayerQuests {
         final LinkedHashMap<AbstractQuest, Progression> newPlayerQuests = new LinkedHashMap<>();
         for (AbstractQuest quest : oldQuests) {
             if (quest.equals(questToRemove)) {
-                final Progression progression = new Progression(0, false);
+                final int requiredAmount = QuestsManager.getDynamicRequiredAmount(newQuest.getRequiredAmountRaw());
+                final Progression progression = new Progression(requiredAmount, 0, false);
                 newPlayerQuests.put(newQuest, progression);
             } else {
                 final Progression progression = this.quests.get(quest);
