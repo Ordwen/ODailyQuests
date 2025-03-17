@@ -39,7 +39,8 @@ import com.ordwen.odailyquests.quests.types.item.VillagerQuest;
 import com.ordwen.odailyquests.quests.types.item.*;
 import com.ordwen.odailyquests.tools.*;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
-import com.ordwen.odailyquests.tools.autoupdater.config.ConfigUpdateManager;
+import com.ordwen.odailyquests.tools.updater.config.ConfigUpdateManager;
+import com.ordwen.odailyquests.tools.updater.database.DatabaseUpdateManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -114,6 +115,9 @@ public final class ODailyQuests extends JavaPlugin {
         /* Load all config elements */
         this.reloadService = new ReloadService(this);
         reloadService.reload();
+
+        /* Apply database migrations if necessary */
+        new DatabaseUpdateManager(this).runUpdates();
 
         /* Load listeners */
         new EventsManager(this).registerListeners();

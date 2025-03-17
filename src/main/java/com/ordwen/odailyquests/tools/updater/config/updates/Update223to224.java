@@ -1,7 +1,7 @@
-package com.ordwen.odailyquests.tools.autoupdater.config.updates;
+package com.ordwen.odailyquests.tools.updater.config.updates;
 
 import com.ordwen.odailyquests.ODailyQuests;
-import com.ordwen.odailyquests.tools.autoupdater.config.ConfigUpdater;
+import com.ordwen.odailyquests.tools.updater.config.ConfigUpdater;
 
 public class Update223to224 extends ConfigUpdater {
 

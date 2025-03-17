@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.tools.autoupdater.database;
+package com.ordwen.odailyquests.tools.updater.database;
 
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
 

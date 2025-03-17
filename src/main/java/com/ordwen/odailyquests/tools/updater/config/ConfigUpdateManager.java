@@ -1,10 +1,10 @@
-package com.ordwen.odailyquests.tools.autoupdater.config;
+package com.ordwen.odailyquests.tools.updater.config;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.tools.PluginLogger;
-import com.ordwen.odailyquests.tools.autoupdater.config.updates.Update223to224;
-import com.ordwen.odailyquests.tools.autoupdater.config.updates.Update225to230;
-import com.ordwen.odailyquests.tools.autoupdater.config.updates.Update230to300;
+import com.ordwen.odailyquests.tools.updater.config.updates.Update223to224;
+import com.ordwen.odailyquests.tools.updater.config.updates.Update225to230;
+import com.ordwen.odailyquests.tools.updater.config.updates.Update230to300;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.LinkedHashMap;

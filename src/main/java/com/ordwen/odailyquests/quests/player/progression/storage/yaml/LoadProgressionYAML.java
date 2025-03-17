@@ -59,6 +59,11 @@ public class LoadProgressionYAML extends ProgressionLoader {
         }
 
         final LinkedHashMap<AbstractQuest, Progression> quests = loadPlayerQuestsFromConfig(playerName, playerSection);
+        if (quests == null) {
+            QuestLoaderUtils.loadNewPlayerQuests(playerName, activeQuests, totalAchievedQuests);
+            return;
+        }
+
         final PlayerQuests playerQuests = new PlayerQuests(timestamp, quests);
         playerQuests.setAchievedQuests(achievedQuests);
         playerQuests.setTotalAchievedQuests(totalAchievedQuests);
@@ -88,6 +93,13 @@ public class LoadProgressionYAML extends ProgressionLoader {
             int questIndex = questsSection.getInt(key + ".index");
             int advancement = questsSection.getInt(key + ".progression");
             int requiredAmount = questsSection.getInt(key + ".requiredAmount");
+
+            // schema update check (1 to 2)
+            if (requiredAmount == 0) {
+                Debugger.write("Required amount is 0 for player " + playerName + ". New quests will be drawn.");
+                return null;
+            }
+
             boolean isAchieved = questsSection.getBoolean(key + ".isAchieved");
 
             final AbstractQuest quest = QuestLoaderUtils.findQuest(playerName, questIndex, Integer.parseInt(key));
