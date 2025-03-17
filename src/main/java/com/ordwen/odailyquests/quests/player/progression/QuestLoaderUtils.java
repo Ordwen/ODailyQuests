@@ -87,7 +87,15 @@ public class QuestLoaderUtils {
         Debugger.write("Entering loadNewPlayerQuests method for player " + playerName + ".");
         activeQuests.remove(playerName);
 
-        final Map<AbstractQuest, Progression> quests = QuestsManager.selectRandomQuests();
+        final Player player = Bukkit.getPlayer(playerName);
+        Debugger.write("Attempting to renew quests for player " + playerName + ".");
+        if (player == null) {
+            Debugger.write("Player " + playerName + " is null. Impossible to renew quests.");
+            PluginLogger.warn("It seems that " + playerName + " disconnected before the end of the quest renewal.");
+            return;
+        }
+
+        final Map<AbstractQuest, Progression> quests = QuestsManager.selectRandomQuests(player);
         final PlayerQuests playerQuests;
 
         if (Modes.getTimestampMode() == 1) {
@@ -97,14 +105,6 @@ public class QuestLoaderUtils {
         }
 
         playerQuests.setTotalAchievedQuests(totalAchievedQuests);
-
-        final Player player = Bukkit.getPlayer(playerName);
-        Debugger.write("Attempting to renew quests for player " + playerName + ".");
-        if (player == null) {
-            Debugger.write("Player " + playerName + " is null. Impossible to renew quests.");
-            PluginLogger.warn("It seems that " + playerName + " disconnected before the end of the quest renewal.");
-            return;
-        }
 
         final String msg = QuestsMessages.QUESTS_RENEWED.getMessage(player);
         if (msg != null) player.sendMessage(msg);

@@ -182,7 +182,7 @@ public class PlayerQuests {
         final Set<AbstractQuest> oldQuestsSet = this.quests.keySet();
         oldQuestsSet.remove(questToRemove);
 
-        final AbstractQuest newQuest = QuestsManager.getRandomQuestForPlayer(oldQuestsSet, category);
+        final AbstractQuest newQuest = QuestsManager.getRandomQuestForPlayer(oldQuestsSet, category, player);
 
         final LinkedHashMap<AbstractQuest, Progression> newPlayerQuests = new LinkedHashMap<>();
         for (AbstractQuest quest : oldQuests) {
