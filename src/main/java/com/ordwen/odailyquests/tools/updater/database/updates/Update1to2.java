@@ -2,15 +2,12 @@ package com.ordwen.odailyquests.tools.updater.database.updates;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.Database;
+import com.ordwen.odailyquests.enums.StorageMode;
 import com.ordwen.odailyquests.files.ProgressionFile;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import com.ordwen.odailyquests.tools.updater.database.DatabaseUpdater;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
 
 public class Update1to2 extends DatabaseUpdater {
 
@@ -20,12 +17,10 @@ public class Update1to2 extends DatabaseUpdater {
 
     @Override
     public void apply(ODailyQuests plugin, String version) {
-        switch (Database.getMode()) {
-            case MYSQL -> applyMySQL();
-            case SQLITE -> applySQLite();
-            case YAML -> applyYAML();
-            default ->
-                    PluginLogger.error("Impossible to apply database update: the selected storage mode is incorrect!");
+        if (Database.getMode() == StorageMode.YAML) {
+            applyYAML();
+        } else {
+            PluginLogger.warn("No database update required for storage mode: " + Database.getMode());
         }
 
         updateVersion(version);
@@ -33,30 +28,12 @@ public class Update1to2 extends DatabaseUpdater {
 
     @Override
     public void applyMySQL() {
-        try (final Connection connection = databaseManager.getSqlManager().getConnection();
-             final Statement statement = connection.createStatement()) {
-
-            final String alterTableQuery = "ALTER TABLE `odq_progression` ADD COLUMN `required_amount` INT NOT NULL DEFAULT 0;";
-            statement.executeUpdate(alterTableQuery);
-            PluginLogger.info("Database update 1 to 2 applied successfully for MySQL.");
-
-        } catch (SQLException e) {
-            PluginLogger.error("Failed to apply database update 1 to 2 for MySQL: " + e.getMessage());
-        }
+        // no database update required
     }
 
     @Override
     public void applySQLite() {
-        try (final Connection connection = databaseManager.getSqlManager().getConnection();
-             final Statement statement = connection.createStatement()) {
-
-            final String alterTableQuery = "ALTER TABLE odq_progression ADD COLUMN required_amount INTEGER NOT NULL DEFAULT 0;";
-            statement.executeUpdate(alterTableQuery);
-            PluginLogger.info("Database update 1 to 2 applied successfully for SQLite.");
-
-        } catch (SQLException e) {
-            PluginLogger.error("Failed to apply database update 1 to 2 for SQLite: " + e.getMessage());
-        }
+        // no database update required
     }
 
     @Override

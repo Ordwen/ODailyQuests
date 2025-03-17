@@ -39,7 +39,7 @@ public enum SQLQuery {
 
     MYSQL_PROGRESS_UPDATE("""
                 INSERT INTO `odq_progression` (`player_uuid`, `player_quest_id`, `quest_index`, `advancement`, `required_amount`, `is_achieved`)
-                VALUES (?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?)
                 ON DUPLICATE KEY UPDATE
                     `quest_index` = VALUES(`quest_index`),
                     `advancement` = VALUES(`advancement`),
