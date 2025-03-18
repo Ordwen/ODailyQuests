@@ -9,6 +9,8 @@ import org.bukkit.Bukkit;
 
 public class NexoEnabled implements IConfigurable {
 
+    private static boolean loaded = false;
+
     private final ConfigurationFile configurationFile;
 
     public NexoEnabled(ConfigurationFile configurationFile) {
@@ -16,7 +18,6 @@ public class NexoEnabled implements IConfigurable {
     }
 
     private boolean isEnabled;
-    private boolean isLoaded;
 
     @Override
     public void load() {
@@ -35,7 +36,7 @@ public class NexoEnabled implements IConfigurable {
     }
 
     public static void setLoaded(boolean isLoaded) {
-        getInstance().isLoaded = isLoaded;
+        NexoEnabled.loaded = isLoaded;
     }
 
     public static boolean isEnabled() {
@@ -43,6 +44,6 @@ public class NexoEnabled implements IConfigurable {
     }
 
     public static boolean isLoaded() {
-        return getInstance().isLoaded && getInstance().isEnabled;
+        return loaded && getInstance().isEnabled;
     }
 }
