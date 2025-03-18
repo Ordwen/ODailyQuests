@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.quests.player.progression.storage.sql;
 
+import com.magmaguy.elitemobs.utils.DebugBlockLocation;
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
@@ -152,6 +153,10 @@ public class LoadProgressionSQL extends ProgressionLoader {
 
                         final Progression progression = new Progression(requiredAmount, advancement, isAchieved);
                         final AbstractQuest quest = QuestLoaderUtils.findQuest(playerName, questIndex, id);
+                        if (quest == null) {
+                            Debugger.write("Quest " + id + " does not exist. New quests will be drawn.");
+                            return false;
+                        }
 
                         quests.put(quest, progression);
                         id++;

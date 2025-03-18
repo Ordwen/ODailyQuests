@@ -19,7 +19,8 @@ import java.util.concurrent.TimeUnit;
 
 public class QuestLoaderUtils {
 
-    private QuestLoaderUtils() {}
+    private QuestLoaderUtils() {
+    }
 
     /**
      * Check if it is time to redraw quests for a player.
@@ -53,7 +54,7 @@ public class QuestLoaderUtils {
                     return diffM >= 31;
                 }
                 default ->
-                    PluginLogger.error(ChatColor.RED + "Impossible to check player quests timestamp. The selected mode is incorrect.");
+                        PluginLogger.error(ChatColor.RED + "Impossible to check player quests timestamp. The selected mode is incorrect.");
             }
         }
 
@@ -149,7 +150,6 @@ public class QuestLoaderUtils {
         if (Modes.getQuestsMode() == 1) {
             quest = getQuestAtIndex(CategoriesLoader.getGlobalQuests(), questIndex, playerName);
         } else if (Modes.getQuestsMode() == 2) {
-
             final int questsAmount = QuestsAmount.getQuestsAmount();
 
             if (id <= (questsAmount - QuestsAmount.getMediumQuestsAmount() - QuestsAmount.getHardQuestsAmount())) {
@@ -159,16 +159,8 @@ public class QuestLoaderUtils {
             } else {
                 quest = getQuestAtIndex(CategoriesLoader.getHardQuests(), questIndex, playerName);
             }
-
-        } else
+        } else {
             PluginLogger.error("Impossible to load player quests. The selected mode is incorrect.");
-
-        if (quest == null) {
-            PluginLogger.error("An error occurred while loading " + playerName + "'s quests.");
-            PluginLogger.error("Quest number " + id + " of player is null.");
-            PluginLogger.error("Try to do the following command to reset the player's progress :");
-            PluginLogger.error("/questsadmin reset " + playerName);
-            PluginLogger.error("If the problem persists, contact the developer.");
         }
 
         return quest;
@@ -183,20 +175,27 @@ public class QuestLoaderUtils {
      * @return the quest.
      */
     public static AbstractQuest getQuestAtIndex(List<AbstractQuest> questsArray, int index, String playerName) {
-        AbstractQuest quest;
+        AbstractQuest quest = null;
         try {
             quest = questsArray.get(index);
         } catch (IndexOutOfBoundsException e) {
-            quest = questsArray.getFirst();
-
-            PluginLogger.error("A quest of the player " + playerName + " could not be loaded.");
-            PluginLogger.error("This happens when a previously loaded quest has been deleted from the file.");
-            PluginLogger.error("To avoid this problem, you should reset player progressions when you delete quests from the files.");
-            PluginLogger.error("The first quest in the file was loaded instead.");
-            PluginLogger.error("");
-            PluginLogger.error("To reset the player's progress, do /qadmin reset " + playerName);
+            if (!questsArray.isEmpty()) playerQuestMissing(playerName);
+            else noQuestsAvailable();
         }
 
         return quest;
+    }
+
+    private static void playerQuestMissing(String playerName) {
+        PluginLogger.warn("A quest of the player " + playerName + " could not be loaded.");
+        PluginLogger.warn("This happens when a previously loaded quest has been deleted from the file.");
+        PluginLogger.warn("To avoid this problem, you should reset player progressions when you delete quests.");
+        PluginLogger.warn("New quests will be drawn for the player.");
+    }
+
+    private static void noQuestsAvailable() {
+        PluginLogger.error("There is no quest at all available!");
+        PluginLogger.error("It can happen if IA/Oraxen/Nexo integration is enabled without the corresponding plugin.");
+        PluginLogger.error("Please check your configuration. If the problem persists, contact the developer.");
     }
 }

@@ -40,14 +40,14 @@ public abstract class SQLConverter {
 
             final ConfigurationSection questsSection = playerSection.getConfigurationSection(".quests");
             if (questsSection == null) {
-                error("SQLConverter, 36 - The quests section is null.");
+                error("SQLConverter, 43 - The quests section is null.");
                 return;
             }
 
             for (String string : questsSection.getKeys(false)) {
                 final ConfigurationSection progressionSection = questsSection.getConfigurationSection(string);
                 if (progressionSection == null) {
-                    error("SQLConverter, 48 - The progression section is null.");
+                    error("SQLConverter, 50 - The progression section is null.");
                     return;
                 }
 
@@ -58,6 +58,10 @@ public abstract class SQLConverter {
 
                 final Progression progression = new Progression(requiredAmount, advancement, isAchieved);
                 final AbstractQuest quest = QuestLoaderUtils.findQuest(playerUuid, questIndex, Integer.parseInt(string));
+                if (quest == null) {
+                    error("SQLConverter, 62 - The quest is null.");
+                    return;
+                }
 
                 quests.put(quest, progression);
             }

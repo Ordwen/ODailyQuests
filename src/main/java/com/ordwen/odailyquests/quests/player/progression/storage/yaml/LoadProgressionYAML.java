@@ -103,6 +103,11 @@ public class LoadProgressionYAML extends ProgressionLoader {
             boolean isAchieved = questsSection.getBoolean(key + ".isAchieved");
 
             final AbstractQuest quest = QuestLoaderUtils.findQuest(playerName, questIndex, Integer.parseInt(key));
+            if (quest == null) {
+                Debugger.write("Quest " + questIndex + " does not exist. New quests will be drawn.");
+                return null;
+            }
+
             quests.put(quest, new Progression(requiredAmount, advancement, isAchieved));
             i++;
         }
