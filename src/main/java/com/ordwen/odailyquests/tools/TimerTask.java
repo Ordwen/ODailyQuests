@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.tools;
 
+import com.ordwen.odailyquests.configuration.essentials.RenewTime;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.QuestLoaderUtils;
@@ -8,6 +9,7 @@ import org.bukkit.entity.Player;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -19,12 +21,22 @@ public class TimerTask {
 
     /**
      * Set a runnable to reload quests at midnight.
+     *
      * @param start date and time to start the task.
      */
     public TimerTask(LocalDateTime start) {
-        final LocalDateTime nextDay = start.plusDays(1).truncatedTo(ChronoUnit.DAYS).plusSeconds(2);
-        final long initialDelay = Duration.between(start, nextDay).toNanos();
+        scheduleNextExecution(start);
+    }
 
+    private void scheduleNextExecution(LocalDateTime start) {
+        final LocalTime renewTime = RenewTime.getRenewTime();
+        LocalDateTime nextExecution = start.with(renewTime);
+
+        if (nextExecution.isBefore(start)) {
+            nextExecution = nextExecution.plusDays(1);
+        }
+
+        final long initialDelay = Duration.between(start, nextExecution).toNanos();
         scheduler.schedule(this::executeAndReschedule, initialDelay, TimeUnit.NANOSECONDS);
     }
 
@@ -38,8 +50,7 @@ public class TimerTask {
             QuestLoaderUtils.loadNewPlayerQuests(player.getName(), QuestsManager.getActiveQuests(), totalAchievedQuests);
         }
 
-        final long delayUntilNextRun = Duration.ofDays(1).toNanos();
-        scheduler.schedule(this::executeAndReschedule, delayUntilNextRun, TimeUnit.NANOSECONDS);
+        scheduleNextExecution(LocalDateTime.now());
     }
 
     public void stop() {

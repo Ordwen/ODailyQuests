@@ -36,6 +36,7 @@ public class ConfigFactory {
         configs.put(RerollNotAchieved.class, new RerollNotAchieved(configurationFile));
         configs.put(Synchronization.class, new Synchronization(configurationFile));
         configs.put(Temporality.class, new Temporality(configurationFile));
+        configs.put(RenewTime.class, new RenewTime(configurationFile));
 
         // functionalities
         configs.put(ActionBar.class, new ActionBar(configurationFile));
