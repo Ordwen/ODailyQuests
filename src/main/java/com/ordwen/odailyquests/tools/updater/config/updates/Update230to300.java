@@ -29,6 +29,7 @@ public class Update230to300 extends ConfigUpdater {
         }
 
         setDefaultConfigItem("join_message_delay", 1.0, config, configFile);
+        setDefaultConfigItem("use_nexo", false, config, configFile);
 
         updateVersion(version);
     }
