@@ -3,8 +3,7 @@ package com.ordwen.odailyquests.quests.player;
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.api.events.AllCategoryQuestsCompletedEvent;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
-import com.ordwen.odailyquests.configuration.essentials.Modes;
-import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
+import com.ordwen.odailyquests.configuration.essentials.QuestsPerCategory;
 import com.ordwen.odailyquests.api.events.AllQuestsCompletedEvent;
 import com.ordwen.odailyquests.configuration.essentials.RerollNotAchieved;
 import com.ordwen.odailyquests.enums.QuestsMessages;
@@ -84,14 +83,14 @@ public class PlayerQuests {
 
         Debugger.write("PlayerQuests: increaseAchievedQuests: " + player.getName() + " has completed " + this.achievedQuestsByCategory.get(category) + " quests in category " + category + ".");
 
-        if (Modes.getQuestsMode() == 2 && this.achievedQuestsByCategory.get(category) == QuestsAmount.getQuestsAmountByCategory(category)) {
+        if (this.achievedQuestsByCategory.get(category) == QuestsPerCategory.getAmountForCategory(category)) {
             Debugger.write("PlayerQuests: AllCategoryQuestsCompletedEvent is called.");
             final AllCategoryQuestsCompletedEvent event = new AllCategoryQuestsCompletedEvent(player, category);
             ODailyQuests.INSTANCE.getServer().getPluginManager().callEvent(event);
         }
 
         /* check if the player have completed all quests */
-        if (this.achievedQuests == QuestsAmount.getQuestsAmount()) {
+        if (this.achievedQuests == QuestsPerCategory.getTotalQuestsAmount()) {
             Debugger.write("PlayerQuests: AllQuestsCompletedEvent is called.");
 
             final AllQuestsCompletedEvent event = new AllQuestsCompletedEvent(player);
@@ -205,11 +204,11 @@ public class PlayerQuests {
             final int achievedByCategory = this.achievedQuestsByCategory.get(categoryName);
 
             // check if the player has completed all quests from a category
-            if (achievedByCategory >= QuestsAmount.getQuestsAmountByCategory(categoryName)) {
+            if (achievedByCategory >= QuestsPerCategory.getAmountForCategory(categoryName)) {
                 Debugger.write("All quests from category " + categoryName + " have been completed. Nothing to do.");
             } else {
                 this.achievedQuestsByCategory.put(questToRemove.getCategoryName(), achievedByCategory - 1);
-                Debugger.write("Quest removed from category " + categoryName + ". Quests completed: " + (achievedByCategory - 1) + "/" + QuestsAmount.getQuestsAmountByCategory(categoryName) + ".");
+                Debugger.write("Quest removed from category " + categoryName + ". Quests completed: " + (achievedByCategory - 1) + "/" + QuestsPerCategory.getAmountForCategory(categoryName) + ".");
             }
         }
 

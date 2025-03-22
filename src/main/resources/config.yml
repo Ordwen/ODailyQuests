@@ -25,26 +25,20 @@ database:
   password: "1234"     # Database password
   port: 3306           # Database port
 
-# Select the mode of the quests.
-# ==========================================================
-# 1 : only the global quests will be loaded.
-# The player's quests will only come from there.
-# ==========================================================
-# 2 : easy, medium and hard quests will be loaded.
-# One quest per difficulty will be assigned to the players.
-# ==========================================================
-# You need to reset progressions if you change this mode.
-quests_mode: 1
-
-# Select the amount of daily quests given to the player.
-# Apply to quests mode 1 (global).
-global_quests_amount: 3
-
-# Select the amount of daily quests given to the player.
-# Apply to quests mode 2 (categorized).
-easy_quests_amount: 1
-medium_quests_amount: 1
-hard_quests_amount: 1
+# Define the number of daily quests assigned to the player for each category.
+# Categories that are not listed here will not be loaded.
+#
+# The order in which categories are listed matters! Quests will be assigned in this order.
+#
+# The category name must exactly match the filename containing the quests (e.g., "global" refers to "global.yml").
+# You can create and configure as many categories as you want.
+#
+# More information here: https:////////////
+quests_per_category:
+  global: 3 # The player will receive 3 quests from the "global.yml" file.
+  #easy: 1
+  #medium: 1
+  #hard: 1
 
 # Select the mode of timestamp.
 # ============================================================================
@@ -101,6 +95,7 @@ global_reward:
 # Will be given when the player has completed all his daily quests of a precise category.
 # The syntax is the same as for quest rewards, and the global reward.
 # Will be by default disabled if the quests mode is set to 1.
+# The name of the category must match the name of the category in the quests_per_category section.
 categories_rewards:
   easy:
     enabled: true
@@ -236,20 +231,22 @@ custom_types:
 
 # ===========================================================
 
-# interfaces settings
+# Here you can define the name of the interfaces for each quests category.
+# You can also define which item will be displayed to fill the empty slots.
+# The name of the category must match the name of the category in the quests_per_category section.
 interfaces:
   next_item_name: "&a&lNext Page"
   previous_item_name: "&e&lPrevious Page"
-  global_quests:
+  global:
     inventory_name: "Quests - Global"
     empty_item: BLACK_STAINED_GLASS_PANE
-  easy_quests:
+  easy:
     inventory_name: "Quests - Easy"
     empty_item: GREEN_STAINED_GLASS_PANE
-  medium_quests:
+  medium:
     inventory_name: "Quests - Medium"
     empty_item: YELLOW_STAINED_GLASS_PANE
-  hard_quests:
+  hard:
     inventory_name: "Quests - Hard"
     empty_item: RED_STAINED_GLASS_PANE
 
@@ -271,12 +268,14 @@ disabled_worlds:
 # Citizens Implementation
 # Here you can select NPCs names for each category.
 # The player have to interact with the NPC to open an interface.
+# 'player' is the name of the NPC that will open the player quests interface.
+# For categories, the name must match the name of the category in the quests_per_category section.
 npcs:
-  name_player: "&7Player Quests"
-  name_global: "&4Global Quests"
-  name_easy: "&a&lEasy &mQuests"
-  name_medium: "&e&lMedium &rQuests"
-  name_hard: "&cHard &b&lQuests"
+  player: "&7Player Quests"
+  global: "&4Global Quests"
+  easy: "&a&lEasy &mQuests"
+  medium: "&e&lMedium &rQuests"
+  hard: "&cHard &b&lQuests"
 
 # If you use WildStacker on your server to group mobs, set this parameter to "true".
 use_wildstacker: false

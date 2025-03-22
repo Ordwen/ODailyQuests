@@ -2,17 +2,14 @@ package com.ordwen.odailyquests.commands.player.handlers;
 
 import com.ordwen.odailyquests.commands.interfaces.QuestsInterfaces;
 import com.ordwen.odailyquests.commands.player.PCommandHandler;
-import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.enums.QuestsPermissions;
+import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
 public class ShowCommand extends PCommandHandler {
 
-    private static final String GLOBAL = "global";
-    private static final String EASY = "easy";
-    private static final String MEDIUM = "medium";
-    private static final String HARD = "hard";
+    private static final String PERMISSION_PREFIX = "odailyquests.";
 
     private final QuestsInterfaces questsInterfaces;
 
@@ -33,9 +30,7 @@ public class ShowCommand extends PCommandHandler {
             return;
         }
 
-        if (args[1].equalsIgnoreCase(GLOBAL)) {
-            openGlobal();
-        } else openCategory(args[1]);
+        openCategory(args[1]);
     }
 
     /**
@@ -43,71 +38,17 @@ public class ShowCommand extends PCommandHandler {
      * @param category the category.
      */
     private void openCategory(String category) {
-        if (Modes.getQuestsMode() == 1) {
-            categorizedDisabled(player);
+        if (!CategoriesLoader.hasCategory(category)) {
+            invalidCategory(player);
             return;
         }
 
-        switch (category) {
-            case GLOBAL -> openGlobal();
-            case EASY -> openEasy();
-            case MEDIUM -> openMedium();
-            case HARD -> openHard();
-            default -> invalidCategory(player);
-        }
-    }
-
-    /**
-     * Opens the global interface.
-     */
-    private void openGlobal() {
-        if (Modes.getQuestsMode() == 2) {
-            categorizedEnabled(player);
-            return;
-        }
-
-        if (!player.hasPermission(QuestsPermissions.QUESTS_SHOW_GLOBAL.getPermission())) {
+        if (!player.hasPermission(PERMISSION_PREFIX + category)) {
             noPermissionCategory(player);
             return;
         }
 
-        final Inventory inventory = questsInterfaces.getInterfaceFirstPage(GLOBAL, player);
-        player.openInventory(inventory);
-    }
-
-    /**
-     * Opens the easy interface.
-     */
-    private void openEasy() {
-        if (!player.hasPermission(QuestsPermissions.QUESTS_SHOW_EASY.getPermission())) {
-            noPermissionCategory(player);
-            return;
-        }
-        final Inventory inventory = questsInterfaces.getInterfaceFirstPage(EASY, player);
-        player.openInventory(inventory);
-    }
-
-    /**
-     * Opens the medium interface.
-     */
-    private void openMedium() {
-        if (!player.hasPermission(QuestsPermissions.QUESTS_SHOW_MEDIUM.getPermission())) {
-            noPermissionCategory(player);
-            return;
-        }
-        final Inventory inventory = questsInterfaces.getInterfaceFirstPage(MEDIUM, player);
-        player.openInventory(inventory);
-    }
-
-    /**
-     * Opens the hard interface.
-     */
-    private void openHard() {
-        if (!player.hasPermission(QuestsPermissions.QUESTS_SHOW_HARD.getPermission())) {
-            noPermissionCategory(player);
-            return;
-        }
-        final Inventory inventory = questsInterfaces.getInterfaceFirstPage(HARD, player);
+        final Inventory inventory = questsInterfaces.getInterfaceFirstPage(category, player);
         player.openInventory(inventory);
     }
 }

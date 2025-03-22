@@ -3,7 +3,6 @@ package com.ordwen.odailyquests.commands.interfaces;
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.commands.interfaces.holder.CategoryHolder;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.Buttons;
-import com.ordwen.odailyquests.configuration.essentials.Modes;
 import com.ordwen.odailyquests.files.ConfigurationFile;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
@@ -37,11 +36,6 @@ public class QuestsInterfaces {
     private String nextPageItemName;
     private String previousPageItemName;
 
-    private String globalQuestsInventoryName;
-    private String easyQuestsInventoryName;
-    private String mediumQuestsInventoryName;
-    private String hardQuestsInventoryName;
-
     private final List<ItemStack> emptyCaseItems = new ArrayList<>();
     private final Map<String, Pair<String, List<Inventory>>> categorizedInterfaces = new HashMap<>();
 
@@ -58,11 +52,7 @@ public class QuestsInterfaces {
         }
 
         initPaginationItemNames(section);
-        initInventoryNames(section);
-
-        if (Modes.getQuestsMode() == 2) {
-            loadCategorizedInterfaces(section);
-        } else loadGlobalInterface(section);
+        loadAllInterfaces(section);
     }
 
     public void initPaginationItemNames(ConfigurationSection section) {
@@ -70,77 +60,23 @@ public class QuestsInterfaces {
         previousPageItemName = TextFormatter.format(section.getString(".previous_item_name"));
     }
 
-    public void initInventoryNames(ConfigurationSection section) {
-        globalQuestsInventoryName = TextFormatter.format(section.getString(".global_quests.inventory_name"));
-        easyQuestsInventoryName = TextFormatter.format(section.getString(".easy_quests.inventory_name"));
-        mediumQuestsInventoryName = TextFormatter.format(section.getString(".medium_quests.inventory_name"));
-        hardQuestsInventoryName = TextFormatter.format(section.getString(".hard_quests.inventory_name"));
-
-        PluginLogger.fine("Interfaces names successfully loaded.");
-    }
-
-    /**
-     * Load the global quests interface.
-     */
-    public void loadGlobalInterface(ConfigurationSection section) {
+    public void loadAllInterfaces(ConfigurationSection section) {
         categorizedInterfaces.clear();
+        emptyCaseItems.clear();
 
-        /* Init empty case items */
-        final ConfigurationSection globalSection = section.getConfigurationSection("global_quests");
-        if (globalSection == null) {
-            PluginLogger.error("Global quests section not found in the configuration file.");
-            return;
+        for (String category : CategoriesLoader.getAllCategories().keySet()) {
+            final ConfigurationSection categorySection = section.getConfigurationSection(category);
+            if (categorySection == null) {
+                PluginLogger.error("Category section not found in the configuration file: " + category);
+                continue;
+            }
+
+            final ItemStack emptyCaseItem = new ItemStack(Material.valueOf(categorySection.getString(EMPTY_ITEM)));
+            emptyCaseItems.add(emptyCaseItem);
+
+            int neededInventories = (int) Math.ceil(CategoriesLoader.getCategoryByName(category).size() / INV_SIZE);
+            loadSelectedInterface(category, TextFormatter.format(categorySection.getString("inventory_name")), emptyCaseItem, neededInventories, CategoriesLoader.getCategoryByName(category));
         }
-
-        final ItemStack globalEmptyCaseItem = new ItemStack(Material.valueOf(globalSection.getString(EMPTY_ITEM)));
-        emptyCaseItems.add(globalEmptyCaseItem);
-
-        /* Global quests inventory */
-        int neededInventories = (int) Math.ceil(CategoriesLoader.getGlobalQuests().size() / INV_SIZE);
-        loadSelectedInterface("global", globalQuestsInventoryName, globalEmptyCaseItem, neededInventories, CategoriesLoader.getGlobalQuests());
-    }
-
-    /**
-     * Load all categorized interfaces.
-     */
-    public void loadCategorizedInterfaces(ConfigurationSection section) {
-        categorizedInterfaces.clear();
-
-        /* Init empty case items */
-        final ConfigurationSection easySection = section.getConfigurationSection("easy_quests");
-        if (easySection == null) {
-            PluginLogger.error("Easy quests section not found in the configuration file.");
-            return;
-        }
-        final ItemStack easyEmptyCaseItem = new ItemStack(Material.valueOf(easySection.getString(EMPTY_ITEM)));
-
-        final ConfigurationSection mediumSection = section.getConfigurationSection("medium_quests");
-        if (mediumSection == null) {
-            PluginLogger.error("Medium quests section not found in the configuration file.");
-            return;
-        }
-        final ItemStack mediumEmptyCaseItem = new ItemStack(Material.valueOf(mediumSection.getString(EMPTY_ITEM)));
-
-        final ConfigurationSection hardSection = section.getConfigurationSection("hard_quests");
-        if (hardSection == null) {
-            PluginLogger.error("Hard quests section not found in the configuration file.");
-            return;
-        }
-        final ItemStack hardEmptyCaseItem = new ItemStack(Material.valueOf(hardSection.getString(EMPTY_ITEM)));
-
-        emptyCaseItems.addAll(Arrays.asList(easyEmptyCaseItem, mediumEmptyCaseItem, hardEmptyCaseItem));
-
-        /* Easy quests inventory */
-        int neededInventories = (int) Math.ceil(CategoriesLoader.getEasyQuests().size() / INV_SIZE);
-        loadSelectedInterface("easy", easyQuestsInventoryName, easyEmptyCaseItem, neededInventories, CategoriesLoader.getEasyQuests());
-
-        /* Medium quests inventory */
-        neededInventories = (int) Math.ceil(CategoriesLoader.getMediumQuests().size() / INV_SIZE);
-        loadSelectedInterface("medium", mediumQuestsInventoryName, mediumEmptyCaseItem, neededInventories, CategoriesLoader.getMediumQuests());
-
-        /* Hard quests inventory */
-        neededInventories = (int) Math.ceil(CategoriesLoader.getHardQuests().size() / INV_SIZE);
-        loadSelectedInterface("hard", hardQuestsInventoryName, hardEmptyCaseItem, neededInventories, CategoriesLoader.getHardQuests());
     }
 
     /**
@@ -303,22 +239,6 @@ public class QuestsInterfaces {
 
     public boolean isEmptyCaseItem(ItemStack itemStack) {
         return emptyCaseItems.contains(itemStack);
-    }
-
-    public String getGlobalQuestsInventoryName() {
-        return globalQuestsInventoryName;
-    }
-
-    public String getEasyQuestsInventoryName() {
-        return easyQuestsInventoryName;
-    }
-
-    public String getMediumQuestsInventoryName() {
-        return mediumQuestsInventoryName;
-    }
-
-    public String getHardQuestsInventoryName() {
-        return hardQuestsInventoryName;
     }
 
     public String getNextPageItemName() {

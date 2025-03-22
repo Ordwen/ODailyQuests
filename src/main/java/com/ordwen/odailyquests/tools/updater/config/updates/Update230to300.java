@@ -4,6 +4,7 @@ import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import com.ordwen.odailyquests.tools.updater.config.ConfigUpdater;
 
+import java.io.File;
 import java.io.IOException;
 
 public class Update230to300 extends ConfigUpdater {
@@ -34,7 +35,12 @@ public class Update230to300 extends ConfigUpdater {
         setDefaultConfigItem("join_message_delay", 1.0, config, configFile);
         setDefaultConfigItem("use_nexo", false, config, configFile);
         setDefaultConfigItem("renew_time", "00:00", config, configFile);
+
         replaceTemporalityMode();
+        replaceQuestsAmount();
+        replaceInterfaceNames();
+        replaceNPCNames();
+        renameQuestFiles();
 
         updateVersion(version);
     }
@@ -49,5 +55,96 @@ public class Update230to300 extends ConfigUpdater {
 
         removeConfigItem(TEMPORALITY_MODE, config, configFile);
         parameterReplaced(TEMPORALITY_MODE, RENEW_INTERVAL);
+    }
+
+    private void replaceQuestsAmount() {
+        final int currentMode = config.getInt("quests_mode");
+
+        if (currentMode == 1) {
+            final int globalAmount = config.getInt("global_quests_amount");
+            setDefaultConfigItem("quests_per_category.global", globalAmount, config, configFile);
+        } else {
+            final int easyAmount = config.getInt("easy_quests_amount");
+            final int mediumAmount = config.getInt("medium_quests_amount");
+            final int hardAmount = config.getInt("hard_quests_amount");
+
+            setDefaultConfigItem("quests_per_category.easy", easyAmount, config, configFile);
+            setDefaultConfigItem("quests_per_category.medium", mediumAmount, config, configFile);
+            setDefaultConfigItem("quests_per_category.hard", hardAmount, config, configFile);
+        }
+
+        removeConfigItem("quests_mode", config, configFile);
+        removeConfigItem("global_quests_amount", config, configFile);
+        removeConfigItem("easy_quests_amount", config, configFile);
+        removeConfigItem("medium_quests_amount", config, configFile);
+        removeConfigItem("hard_quests_amount", config, configFile);
+    }
+
+    private void replaceInterfaceNames() {
+        final String[] oldInterfaceNames = {"global_quests", "easy_quests", "medium_quests", "hard_quests"};
+        final String[] newInterfaceNames = {"global", "easy", "medium", "hard"};
+
+        int i = 0;
+        for (String interfaceName : oldInterfaceNames) {
+            final String inventoryName = config.getString(interfaceName + ".inventory_name");
+            final String emptyItem = config.getString(interfaceName + ".empty_item");
+
+            setDefaultConfigItem(newInterfaceNames[i] + ".inventoryName", inventoryName, config, configFile);
+            setDefaultConfigItem(newInterfaceNames[i] + ".emptyItem", emptyItem, config, configFile);
+
+            removeConfigItem(interfaceName + ".inventory_name", config, configFile);
+            removeConfigItem(interfaceName + ".empty_item", config, configFile);
+
+            parameterReplaced(interfaceName, newInterfaceNames[i]);
+
+            i++;
+        }
+    }
+
+    private void replaceNPCNames() {
+        final String[] oldNPCNames = {"name_player", "name_global", "name_easy", "name_medium", "name_hard"};
+        final String[] newNPCNames = {"player", "global", "easy", "medium", "hard"};
+
+        int i = 0;
+        for (String NPCName : oldNPCNames) {
+            final String name = config.getString("npcs." + NPCName);
+
+            setDefaultConfigItem("npcs." + newNPCNames[i], name, config, configFile);
+            removeConfigItem("npcs." + NPCName, config, configFile);
+
+            parameterReplaced(NPCName, newNPCNames[i]);
+
+            i++;
+        }
+    }
+
+    /**
+     * Renames all quest files in the "quests" folder by removing the "Quests" suffix.
+     */
+    private void renameQuestFiles() {
+        final File questsFolder = new File(ODailyQuests.INSTANCE.getDataFolder(), "quests");
+        if (!questsFolder.exists() || !questsFolder.isDirectory()) {
+            PluginLogger.warn("Quests folder does not exist or is not a directory.");
+            return;
+        }
+
+        final File[] files = questsFolder.listFiles();
+        if (files == null) {
+            PluginLogger.warn("No files found in the quests directory.");
+            return;
+        }
+
+        for (File file : files) {
+            if (file.isFile() && file.getName().endsWith("Quests.yml")) {
+                final String newName = file.getName().replace("Quests", "");
+                final File newFile = new File(questsFolder, newName);
+
+                if (file.renameTo(newFile)) {
+                    PluginLogger.info("Renamed " + file.getName() + " to " + newFile.getName());
+                } else {
+                    PluginLogger.error("Failed to rename " + file.getName());
+                }
+            }
+        }
     }
 }

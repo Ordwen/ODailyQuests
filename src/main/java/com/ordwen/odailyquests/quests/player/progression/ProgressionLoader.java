@@ -3,7 +3,7 @@ package com.ordwen.odailyquests.quests.player.progression;
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.essentials.JoinMessageDelay;
-import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
+import com.ordwen.odailyquests.configuration.essentials.QuestsPerCategory;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.tools.PluginLogger;
@@ -39,7 +39,7 @@ public abstract class ProgressionLoader {
 
     protected void logExcessQuests(String playerName) {
         PluginLogger.warn(PLAYER + playerName + " has more quests than the configuration.");
-        PluginLogger.warn("Only the first " + QuestsAmount.getQuestsAmount() + " quests will be loaded.");
+        PluginLogger.warn("Only the first " + QuestsPerCategory.getTotalQuestsAmount() + " quests will be loaded.");
         PluginLogger.warn("After changing the number of quests, we recommend that you reset the progressions to avoid any problems.");
     }
 

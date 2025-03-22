@@ -1,6 +1,6 @@
 package com.ordwen.odailyquests.tools;
 
-import com.ordwen.odailyquests.configuration.essentials.Modes;
+import com.ordwen.odailyquests.configuration.essentials.TimestampMode;
 import com.ordwen.odailyquests.configuration.essentials.RenewInterval;
 import com.ordwen.odailyquests.configuration.essentials.RenewTime;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
@@ -22,7 +22,7 @@ public class TimeRemain {
         long timestamp = QuestsManager.getActiveQuests().get(playerName).getTimestamp();
         long rest;
 
-        if (Modes.getTimestampMode() == 1) {
+        if (TimestampMode.getTimestampMode() == 1) {
             LocalTime renewTime = RenewTime.getRenewTime();
             LocalDateTime lastRenew = Instant.ofEpochMilli(timestamp).atZone(ZoneId.systemDefault()).toLocalDateTime();
             LocalDateTime nextRenew = lastRenew.toLocalDate().plusDays(1).atTime(renewTime);

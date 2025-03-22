@@ -3,9 +3,13 @@ package com.ordwen.odailyquests.configuration.integrations;
 import com.ordwen.odailyquests.configuration.ConfigFactory;
 import com.ordwen.odailyquests.configuration.IConfigurable;
 import com.ordwen.odailyquests.files.ConfigurationFile;
+import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.tools.TextFormatter;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.configuration.ConfigurationSection;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class NPCNames implements IConfigurable {
 
@@ -16,10 +20,7 @@ public class NPCNames implements IConfigurable {
     }
 
     private String playerNPCName;
-    private String globalNPCName;
-    private String easyNPCName;
-    private String mediumNPCName;
-    private String hardNPCName;
+    private final Map<String, String> categoryNPCNames = new HashMap<>();
 
     @Override
     public void load() {
@@ -30,11 +31,12 @@ public class NPCNames implements IConfigurable {
             return;
         }
 
-        playerNPCName = TextFormatter.format(section.getString(".name_player"));
-        globalNPCName = TextFormatter.format(section.getString(".name_global"));
-        easyNPCName = TextFormatter.format(section.getString(".name_easy"));
-        mediumNPCName = TextFormatter.format(section.getString(".name_medium"));
-        hardNPCName = TextFormatter.format(section.getString(".name_hard"));
+        playerNPCName = TextFormatter.format(section.getString(".player"));
+
+        categoryNPCNames.clear();
+        for (String categoryName : CategoriesLoader.getAllCategories().keySet()) {
+            categoryNPCNames.put(TextFormatter.format(section.getString(categoryName)), categoryName);
+        }
     }
 
     private static NPCNames getInstance() {
@@ -45,19 +47,11 @@ public class NPCNames implements IConfigurable {
         return getInstance().playerNPCName;
     }
 
-    public static String getGlobalNPCName() {
-        return getInstance().globalNPCName;
+    public static String getCategoryByNPCName(String npcName) {
+        return getInstance().categoryNPCNames.get(npcName);
     }
 
-    public static String getEasyNPCName() {
-        return getInstance().easyNPCName;
-    }
-
-    public static String getMediumNPCName() {
-        return getInstance().mediumNPCName;
-    }
-
-    public static String getHardNPCName() {
-        return getInstance().hardNPCName;
+    public static boolean isCategoryForNPCName(String npcName) {
+        return getInstance().categoryNPCNames.containsKey(npcName);
     }
 }

@@ -3,7 +3,7 @@ package com.ordwen.odailyquests.commands.admin.handlers;
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.api.events.QuestCompletedEvent;
 import com.ordwen.odailyquests.commands.admin.ACommandHandler;
-import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
+import com.ordwen.odailyquests.configuration.essentials.QuestsPerCategory;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
@@ -52,7 +52,7 @@ public class CompleteCommand extends ACommandHandler {
      * @param target     the player
      */
     private void complete(int questIndex, Player target) {
-        if (questIndex >= 1 && questIndex <= QuestsAmount.getQuestsAmount()) {
+        if (questIndex >= 1 && questIndex <= QuestsPerCategory.getTotalQuestsAmount()) {
             final Map<AbstractQuest, Progression> playerQuests = QuestsManager.getActiveQuests().get(target.getName()).getQuests();
 
             int index = 0;

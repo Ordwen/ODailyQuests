@@ -36,26 +36,6 @@ public abstract class PlayerMessages {
     }
 
     /**
-     * Sends the categorized disabled message to the sender.
-     *
-     * @param sender the sender.
-     */
-    protected void categorizedDisabled(CommandSender sender) {
-        final String msg = QuestsMessages.CATEGORIZED_DISABLED.toString();
-        if (msg != null) sender.sendMessage(msg);
-    }
-
-    /**
-     * Sends the categorized enabled message to the sender.
-     *
-     * @param sender the sender.
-     */
-    protected void categorizedEnabled(CommandSender sender) {
-        final String msg = QuestsMessages.CATEGORIZED_ENABLED.toString();
-        if (msg != null) sender.sendMessage(msg);
-    }
-
-    /**
      * Sends a message to the sender indicating that the command can only be executed by a player.
      *
      * @param sender the sender.
