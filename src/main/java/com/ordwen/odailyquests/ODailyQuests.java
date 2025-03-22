@@ -13,7 +13,6 @@ import com.ordwen.odailyquests.commands.player.PlayerCompleter;
 import com.ordwen.odailyquests.commands.interfaces.InterfacesManager;
 import com.ordwen.odailyquests.commands.interfaces.InventoryClickListener;
 import com.ordwen.odailyquests.configuration.essentials.Modes;
-import com.ordwen.odailyquests.configuration.essentials.Temporality;
 import com.ordwen.odailyquests.events.EventsManager;
 import com.ordwen.odailyquests.files.*;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
@@ -60,7 +59,7 @@ public final class ODailyQuests extends JavaPlugin {
      */
     private InterfacesManager interfacesManager;
     private FilesManager filesManager;
-    private TimerTask timerTask;
+    public TimerTask timerTask;
     private ReloadService reloadService;
     private CategoriesLoader categoriesLoader;
     private DatabaseManager databaseManager;
@@ -151,7 +150,7 @@ public final class ODailyQuests extends JavaPlugin {
         }
 
         /* Init delayed task to draw new quests */
-        if (Modes.getTimestampMode() == 1 && Temporality.getTemporalityMode() == 1) {
+        if (Modes.getTimestampMode() == 1) {
             if (timerTask != null) {
                 timerTask.stop();
             }
