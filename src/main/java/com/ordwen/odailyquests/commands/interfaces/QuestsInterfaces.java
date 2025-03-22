@@ -67,7 +67,8 @@ public class QuestsInterfaces {
         for (String category : CategoriesLoader.getAllCategories().keySet()) {
             final ConfigurationSection categorySection = section.getConfigurationSection(category);
             if (categorySection == null) {
-                PluginLogger.error("Category section not found in the configuration file: " + category);
+                PluginLogger.error("Impossible to find the interface settings for category " + category + ".");
+                PluginLogger.error("Please check the 'interfaces' section in the configuration file.");
                 continue;
             }
 

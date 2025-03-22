@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.commands.player;
 
 import com.ordwen.odailyquests.configuration.essentials.QuestsPerCategory;
+import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -43,7 +44,7 @@ public class PlayerCompleter implements TabCompleter {
                     return completions;
                 }
                 case "show" -> {
-                    final List<String> allCompletions = new ArrayList<>(Arrays.asList("global", "easy", "medium", "hard"));
+                    final List<String> allCompletions = new ArrayList<>(CategoriesLoader.getAllCategories().keySet());
                     final List<String> completions = new ArrayList<>();
 
                     StringUtil.copyPartialMatches(args[1], allCompletions, completions);
