@@ -22,7 +22,7 @@ public class RenewTime implements IConfigurable {
     private static final String DEFAULT_TIME = "00:00";
 
     private final ConfigurationFile configurationFile;
-    private LocalTime renewTime;
+    private LocalTime time;
 
     public RenewTime(ConfigurationFile configurationFile) {
         this.configurationFile = configurationFile;
@@ -33,10 +33,10 @@ public class RenewTime implements IConfigurable {
         final String timeStr = configurationFile.getConfig().getString("renew_time", DEFAULT_TIME);
 
         try {
-            renewTime = parseTime(timeStr);
+            time = parseTime(timeStr);
         } catch (IllegalArgumentException e) {
             PluginLogger.warn("Invalid time format in config: " + timeStr + ". Using default: " + DEFAULT_TIME);
-            renewTime = parseTime(DEFAULT_TIME);
+            time = parseTime(DEFAULT_TIME);
         }
     }
 
@@ -66,6 +66,6 @@ public class RenewTime implements IConfigurable {
     }
 
     public static LocalTime getRenewTime() {
-        return getInstance().renewTime;
+        return getInstance().time;
     }
 }

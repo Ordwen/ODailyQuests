@@ -69,17 +69,14 @@ timestamp_mode: 1
 # Default is "00:00" (midnight).
 renew_time: "00:00"
 
-# Select the mode of temporality.
-# ===================================
-# 1 : daily quests.
-# ===================================
-# 2 : weekly quests.
-# ===================================
-# 3 : monthly quests.
-# ===================================
-# You need to reset progressions
-# if you change this mode.
-temporality_mode: 1
+# Select the interval at which the quests will be reloaded.
+# Accepted formats are:
+# - "1d"   → 1 day
+# - "2h"   → 2 hours
+# - "30m"  → 30 minutes
+# - "1h30m" → 1 hour and 30 minutes
+# Default is "1d" (1 day).
+renew_interval: "1d"
 
 # Initials that will be displayed
 # between the values on the placeholders.

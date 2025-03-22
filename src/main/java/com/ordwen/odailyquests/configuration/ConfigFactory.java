@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.configuration;
 
+import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.*;
 import com.ordwen.odailyquests.configuration.functionalities.DisabledWorlds;
 import com.ordwen.odailyquests.configuration.functionalities.SpawnerProgression;
@@ -35,7 +36,7 @@ public class ConfigFactory {
         configs.put(QuestsAmount.class, new QuestsAmount(configurationFile));
         configs.put(RerollNotAchieved.class, new RerollNotAchieved(configurationFile));
         configs.put(Synchronization.class, new Synchronization(configurationFile));
-        configs.put(Temporality.class, new Temporality(configurationFile));
+        configs.put(RenewInterval.class, new RenewInterval(configurationFile));
         configs.put(RenewTime.class, new RenewTime(configurationFile));
 
         // functionalities
@@ -59,6 +60,11 @@ public class ConfigFactory {
 
         // load all configs
         configs.values().forEach(IConfigurable::load);
+
+        // reload the timer task
+        if (ODailyQuests.INSTANCE.timerTask != null) {
+            ODailyQuests.INSTANCE.timerTask.reload();
+        }
     }
 
     public static <T extends IConfigurable> T getConfig(Class<T> clazz) {

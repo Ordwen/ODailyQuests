@@ -8,6 +8,9 @@ import java.io.IOException;
 
 public class Update230to300 extends ConfigUpdater {
 
+    private static final String TEMPORALITY_MODE = "temporality_mode";
+    private static final String RENEW_INTERVAL = "renew_interval";
+
     public Update230to300(ODailyQuests plugin) {
         super(plugin);
     }
@@ -31,7 +34,20 @@ public class Update230to300 extends ConfigUpdater {
         setDefaultConfigItem("join_message_delay", 1.0, config, configFile);
         setDefaultConfigItem("use_nexo", false, config, configFile);
         setDefaultConfigItem("renew_time", "00:00", config, configFile);
+        replaceTemporalityMode();
 
         updateVersion(version);
+    }
+
+    private void replaceTemporalityMode() {
+        final int currentMode = config.getInt(TEMPORALITY_MODE);
+        switch (currentMode) {
+            case 2 -> setDefaultConfigItem(RENEW_INTERVAL, "7d", config, configFile);
+            case 3 -> setDefaultConfigItem(RENEW_INTERVAL, "30d", config, configFile);
+            default -> setDefaultConfigItem(RENEW_INTERVAL, "1d", config, configFile);
+        }
+
+        removeConfigItem(TEMPORALITY_MODE, config, configFile);
+        parameterReplaced(TEMPORALITY_MODE, RENEW_INTERVAL);
     }
 }

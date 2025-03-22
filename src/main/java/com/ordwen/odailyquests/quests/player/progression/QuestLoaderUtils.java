@@ -1,9 +1,6 @@
 package com.ordwen.odailyquests.quests.player.progression;
 
-import com.ordwen.odailyquests.configuration.essentials.Debugger;
-import com.ordwen.odailyquests.configuration.essentials.Modes;
-import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
-import com.ordwen.odailyquests.configuration.essentials.Temporality;
+import com.ordwen.odailyquests.configuration.essentials.*;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
@@ -14,8 +11,8 @@ import org.bukkit.ChatColor;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.entity.Player;
 
+import java.time.*;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 public class QuestLoaderUtils {
 
@@ -32,49 +29,30 @@ public class QuestLoaderUtils {
 
         /* check if last quests renewed day before */
         if (Modes.getTimestampMode() == 1) {
+            final LocalTime renewTime = RenewTime.getRenewTime();
+            final LocalDateTime lastRenew = Instant.ofEpochMilli(timestamp).atZone(ZoneId.systemDefault()).toLocalDateTime();
+            final LocalDateTime currentDateTime = LocalDateTime.now();
 
-            final Calendar oldCal = Calendar.getInstance();
-            final Calendar currentCal = Calendar.getInstance();
-            oldCal.setTimeInMillis(timestamp);
+            final LocalDate lastRenewDate = lastRenew.toLocalDate();
+            final LocalDate currentDate = currentDateTime.toLocalDate();
 
-            switch (Temporality.getTemporalityMode()) {
-                case 1 -> {
-                    currentCal.setTimeInMillis(System.currentTimeMillis());
-                    if (oldCal.get(Calendar.YEAR) != currentCal.get(Calendar.YEAR)) return true;
-                    return oldCal.get(Calendar.DAY_OF_YEAR) < currentCal.get(Calendar.DAY_OF_YEAR);
-                }
-                case 2 -> {
-                    currentCal.setTimeInMillis(System.currentTimeMillis());
-                    long diffW = TimeUnit.DAYS.convert(currentCal.getTimeInMillis() - oldCal.getTimeInMillis(), TimeUnit.MILLISECONDS);
-                    return diffW >= 7;
-                }
-                case 3 -> {
-                    currentCal.setTimeInMillis(System.currentTimeMillis());
-                    long diffM = TimeUnit.DAYS.convert(currentCal.getTimeInMillis() - oldCal.getTimeInMillis(), TimeUnit.MILLISECONDS);
-                    return diffM >= 31;
-                }
-                default ->
-                        PluginLogger.error(ChatColor.RED + "Impossible to check player quests timestamp. The selected mode is incorrect.");
-            }
+            return lastRenewDate.isBefore(currentDate) ||
+                    (lastRenewDate.equals(currentDate) && lastRenew.toLocalTime().isBefore(renewTime));
         }
 
         /* check if last quests renewed is older than selected temporality */
         else if (Modes.getTimestampMode() == 2) {
-            switch (Temporality.getTemporalityMode()) {
-                case 1 -> {
-                    return System.currentTimeMillis() - timestamp >= 86400000L;
-                }
-                case 2 -> {
-                    return System.currentTimeMillis() - timestamp >= 604800000L;
-                }
-                case 3 -> {
-                    return System.currentTimeMillis() - timestamp >= 2678400000L;
-                }
-                default ->
-                        PluginLogger.error(ChatColor.RED + "Impossible to check player quests timestamp. The selected mode is incorrect.");
+            final Duration renewDuration = RenewInterval.getRenewInterval();
+
+            if (renewDuration != null) {
+                return System.currentTimeMillis() - timestamp >= renewDuration.toMillis();
+            } else {
+                PluginLogger.error(ChatColor.RED + "Impossible to check player quests timestamp. Renew interval is incorrect.");
             }
-        } else
+        } else {
             PluginLogger.error(ChatColor.RED + "Impossible to load player quests timestamp. The selected mode is incorrect.");
+        }
+
         return false;
     }
 

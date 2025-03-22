@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.tools;
 
+import com.ordwen.odailyquests.configuration.essentials.RenewInterval;
 import com.ordwen.odailyquests.configuration.essentials.RenewTime;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
@@ -10,14 +11,15 @@ import org.bukkit.entity.Player;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class TimerTask {
 
-    final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private ScheduledFuture<?> scheduledTask;
 
     /**
      * Set a runnable to reload quests at midnight.
@@ -30,14 +32,17 @@ public class TimerTask {
 
     private void scheduleNextExecution(LocalDateTime start) {
         final LocalTime renewTime = RenewTime.getRenewTime();
+        final Duration renewInterval = RenewInterval.getRenewInterval();
+
         LocalDateTime nextExecution = start.with(renewTime);
 
-        if (nextExecution.isBefore(start)) {
-            nextExecution = nextExecution.plusDays(1);
+        // add the interval until the next execution is after the start time
+        while (nextExecution.isBefore(start)) {
+            nextExecution = nextExecution.plus(renewInterval);
         }
 
         final long initialDelay = Duration.between(start, nextExecution).toNanos();
-        scheduler.schedule(this::executeAndReschedule, initialDelay, TimeUnit.NANOSECONDS);
+        scheduledTask = scheduler.schedule(this::executeAndReschedule, initialDelay, TimeUnit.NANOSECONDS);
     }
 
     private void executeAndReschedule() {
@@ -51,6 +56,17 @@ public class TimerTask {
         }
 
         scheduleNextExecution(LocalDateTime.now());
+    }
+
+    public void reload() {
+       cancel();
+        scheduleNextExecution(LocalDateTime.now());
+    }
+
+    private void cancel() {
+        if (scheduledTask != null) {
+            scheduledTask.cancel(false);
+        }
     }
 
     public void stop() {
