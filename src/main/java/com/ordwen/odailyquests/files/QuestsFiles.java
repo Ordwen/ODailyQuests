@@ -1,7 +1,6 @@
 package com.ordwen.odailyquests.files;
 
 import com.ordwen.odailyquests.ODailyQuests;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -9,174 +8,76 @@ import com.ordwen.odailyquests.tools.PluginLogger;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class QuestsFiles {
 
-    /**
-     * Getting instance of main class.
-     */
+    private static final Map<String, FileConfiguration> configurations = new HashMap<>();
+
     private final ODailyQuests oDailyQuests;
 
-    /**
-     * Main class instance constructor.
-     * @param oDailyQuests main class.
-     */
     public QuestsFiles(ODailyQuests oDailyQuests) {
         this.oDailyQuests = oDailyQuests;
     }
 
-    private static File globalQuestsFile;
-    private static File easyQuestsFile;
-    private static File mediumQuestsFile;
-    private static File hardQuestsFile;
+    public static FileConfiguration getQuestsConfigurationByCategory(String category) {
+        final FileConfiguration configuration = configurations.get(category);
+        if (configuration == null) {
+            PluginLogger.error("Impossible to find the configuration file for category " + category + ".");
+            PluginLogger.error("Please check that the file exists and is correctly referenced in the configuration file (quests_per_category section).");
+            PluginLogger.error("If the problem persists, please inform the developer.");
+            return null;
+        }
 
-    private static FileConfiguration globalQuestsConfiguration;
-    private static FileConfiguration easyQuestsConfiguration;
-    private static FileConfiguration mediumQuestsConfiguration;
-    private static FileConfiguration hardQuestsConfiguration;
-
-    /**
-     * Get the global quests file.
-     * @return global quests file.
-     */
-    public static File getGlobalQuestsFile() {
-        return globalQuestsFile;
-    }
-
-    /**
-     * Get the easy quests file.
-     * @return easy quests file.
-     */
-    public static File getEasyQuestsFile() {
-        return easyQuestsFile;
-    }
-
-    /**
-     * Get the medium quests file.
-     * @return medium quests file.
-     */
-    public static File getMediumQuestsFile() {
-        return mediumQuestsFile;
-    }
-
-    /**
-     * Get the hard quests file.
-     * @return hard quests file.
-     */
-    public static File getHardQuestsFile() {
-        return hardQuestsFile;
-    }
-
-    /**
-     * Get the global quests configuration.
-     * @return global quests configuration.
-     */
-    public static FileConfiguration getGlobalQuestsConfiguration() {
-        return globalQuestsConfiguration;
-    }
-
-    /**
-     * Get the easy quests configuration.
-     * @return easy quests configuration.
-     */
-    public static FileConfiguration getEasyQuestsConfiguration() {
-        return easyQuestsConfiguration;
-    }
-
-    /**
-     * Get the medium quests configuration.
-     * @return medium quests configuration.
-     */
-    public static FileConfiguration getMediumQuestsConfiguration() {
-        return mediumQuestsConfiguration;
-    }
-
-    /**
-     * Get the hard quests configuration.
-     * @return hard quests configuration.
-     */
-    public static FileConfiguration getHardQuestsConfiguration() {
-        return hardQuestsConfiguration;
+        return configuration;
     }
 
     /**
      * Init quests files.
      */
     public void loadQuestsFiles() {
+        System.out.println("LOAD QUESTS FILES");
+        configurations.clear();
 
-        globalQuestsFile = new File(oDailyQuests.getDataFolder(), "quests/globalQuests.yml");
-        easyQuestsFile = new File(oDailyQuests.getDataFolder(), "quests/easyQuests.yml");
-        mediumQuestsFile = new File(oDailyQuests.getDataFolder(), "quests/mediumQuests.yml");
-        hardQuestsFile = new File(oDailyQuests.getDataFolder(), "quests/hardQuests.yml");
+        final File questsFolder = new File(oDailyQuests.getDataFolder(), "quests");
 
-        /* Global quests */
-        if (!globalQuestsFile.exists()) {
-            oDailyQuests.saveResource("quests/globalQuests.yml", false);
-            PluginLogger.info("Global quests file created.");
+        if (!questsFolder.exists() || questsFolder.listFiles() == null || questsFolder.listFiles().length == 0) {
+            System.out.println("CREATE DEFAULT QUEST FILES");
+            questsFolder.mkdirs();
+            createDefaultQuestFiles();
         }
 
-        /* Easy quests */
-        if (!easyQuestsFile.exists()) {
-            oDailyQuests.saveResource("quests/easyQuests.yml", false);
-            PluginLogger.info("Easy quests file created.");
+        final File[] questFiles = questsFolder.listFiles((dir, name) -> name.endsWith(".yml"));
+        if (questFiles == null) {
+            PluginLogger.error("An error occurred while loading quests files.");
+            PluginLogger.error("Please inform the developer.");
+            return;
         }
 
-        /* Medium quests */
-        if (!mediumQuestsFile.exists()) {
-            oDailyQuests.saveResource("quests/mediumQuests.yml", false);
-            PluginLogger.info("Medium quests file created.");
-        }
+        for (File file : questFiles) {
+            final String category = file.getName().replace(".yml", "");
+            System.out.println("LOAD CATEGORY: " + category);
 
-        /* Hard quests */
-        if (!hardQuestsFile.exists()) {
-            oDailyQuests.saveResource("quests/hardQuests.yml", false);
-            PluginLogger.info("Hard quests file created.");
+            final FileConfiguration config = new YamlConfiguration();
+            try {
+                config.load(file);
+                configurations.put(category, config);
+                PluginLogger.fine(category + " quests file successfully loaded.");
+            } catch (InvalidConfigurationException | IOException e) {
+                PluginLogger.error("An error occurred while loading the " + category + " quests file.");
+                PluginLogger.error("Please inform the developer.");
+                PluginLogger.error(e.getMessage());
+            }
         }
-
-        globalQuestsConfiguration = new YamlConfiguration();
-        easyQuestsConfiguration = new YamlConfiguration();
-        mediumQuestsConfiguration = new YamlConfiguration();
-        hardQuestsConfiguration = new YamlConfiguration();
-
-        /* Global quests */
-        try {
-            globalQuestsConfiguration.load(globalQuestsFile);
-        } catch (InvalidConfigurationException | IOException e) {
-            PluginLogger.error("An error occured on the load of the global quests file.");
-            PluginLogger.error("Please inform the developper.");
-            PluginLogger.error(e.getMessage());
-        }
-        PluginLogger.fine("Global quests file successfully loaded.");
-
-        /* Easy quests */
-        try {
-            easyQuestsConfiguration.load(easyQuestsFile);
-        } catch (InvalidConfigurationException | IOException e) {
-            PluginLogger.error("An error occured on the load of the easy quests file.");
-            PluginLogger.error("Please inform the developper.");
-            PluginLogger.error(e.getMessage());
-        }
-        PluginLogger.fine("Easy quests file successfully loaded.");
-
-        /* Medium quests */
-        try {
-            mediumQuestsConfiguration.load(mediumQuestsFile);
-        } catch (InvalidConfigurationException | IOException e) {
-            PluginLogger.error("An error occured on the load of the medium quests file.");
-            PluginLogger.error("Please inform the developper.");
-            PluginLogger.error(e.getMessage());
-        }
-        PluginLogger.fine("Medium quests file successfully loaded.");
-
-        /* Hard quests */
-        try {
-            hardQuestsConfiguration.load(hardQuestsFile);
-        } catch (InvalidConfigurationException | IOException e) {
-            PluginLogger.error("An error occured on the load of the hard quests file.");
-            PluginLogger.error("Please inform the developper.");
-            PluginLogger.error(e.getMessage());
-        }
-        PluginLogger.fine("Hard quests file successfully loaded.");
     }
 
+    private void createDefaultQuestFiles() {
+        final String[] defaultFiles = {"global.yml", "easy.yml", "medium.yml", "hard.yml"};
+
+        for (String fileName : defaultFiles) {
+            oDailyQuests.saveResource("quests/" + fileName, false);
+            PluginLogger.info(fileName + " created as default.");
+        }
+    }
 }

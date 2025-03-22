@@ -3,6 +3,7 @@ package com.ordwen.odailyquests.quests.player.progression;
 import com.ordwen.odailyquests.configuration.essentials.*;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
+import com.ordwen.odailyquests.quests.categories.Category;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
@@ -28,7 +29,7 @@ public class QuestLoaderUtils {
     public static boolean checkTimestamp(long timestamp) {
 
         /* check if last quests renewed day before */
-        if (Modes.getTimestampMode() == 1) {
+        if (TimestampMode.getTimestampMode() == 1) {
             final LocalTime renewTime = RenewTime.getRenewTime();
             final LocalDateTime lastRenew = Instant.ofEpochMilli(timestamp).atZone(ZoneId.systemDefault()).toLocalDateTime();
             final LocalDateTime currentDateTime = LocalDateTime.now();
@@ -41,7 +42,7 @@ public class QuestLoaderUtils {
         }
 
         /* check if last quests renewed is older than selected temporality */
-        else if (Modes.getTimestampMode() == 2) {
+        else if (TimestampMode.getTimestampMode() == 2) {
             final Duration renewDuration = RenewInterval.getRenewInterval();
 
             if (renewDuration != null) {
@@ -77,7 +78,7 @@ public class QuestLoaderUtils {
         final Map<AbstractQuest, Progression> quests = QuestsManager.selectRandomQuests(player);
         final PlayerQuests playerQuests;
 
-        if (Modes.getTimestampMode() == 1) {
+        if (TimestampMode.getTimestampMode() == 1) {
             playerQuests = new PlayerQuests(Calendar.getInstance().getTimeInMillis(), quests);
         } else {
             playerQuests = new PlayerQuests(System.currentTimeMillis(), quests);
@@ -103,7 +104,7 @@ public class QuestLoaderUtils {
      * @return true if it's time to renew quests.
      */
     public static boolean isTimeToRenew(Player player, Map<String, PlayerQuests> activeQuests) {
-        if (Modes.getTimestampMode() == 1) return false;
+        if (TimestampMode.getTimestampMode() == 1) return false;
         final PlayerQuests playerQuests = activeQuests.get(player.getName());
 
         if (checkTimestamp(playerQuests.getTimestamp())) {
@@ -125,19 +126,23 @@ public class QuestLoaderUtils {
     public static AbstractQuest findQuest(String playerName, int questIndex, int id) {
         AbstractQuest quest = null;
 
-        if (Modes.getQuestsMode() == 1) {
-            quest = getQuestAtIndex(CategoriesLoader.getGlobalQuests(), questIndex, playerName);
-        } else if (Modes.getQuestsMode() == 2) {
-            final int questsAmount = QuestsAmount.getQuestsAmount();
+        final Map<String, Category> categoryMap = CategoriesLoader.getAllCategories();
+        int totalQuestsCount = 0;
 
-            if (id <= (questsAmount - QuestsAmount.getMediumQuestsAmount() - QuestsAmount.getHardQuestsAmount())) {
-                quest = getQuestAtIndex(CategoriesLoader.getEasyQuests(), questIndex, playerName);
-            } else if (id <= (questsAmount - QuestsAmount.getHardQuestsAmount())) {
-                quest = getQuestAtIndex(CategoriesLoader.getMediumQuests(), questIndex, playerName);
-            } else {
-                quest = getQuestAtIndex(CategoriesLoader.getHardQuests(), questIndex, playerName);
+        for (Map.Entry<String, Category> entry : categoryMap.entrySet()) {
+            String categoryName = entry.getKey();
+            Category category = entry.getValue();
+            int categoryQuestsAmount = QuestsPerCategory.getAmountForCategory(categoryName);
+
+            if (id <= totalQuestsCount + categoryQuestsAmount) {
+                quest = getQuestAtIndex(category, questIndex, playerName);
+                break;
             }
-        } else {
+
+            totalQuestsCount += categoryQuestsAmount;
+        }
+
+        if (quest == null) {
             PluginLogger.error("Impossible to load player quests. The selected mode is incorrect.");
         }
 
@@ -147,17 +152,17 @@ public class QuestLoaderUtils {
     /**
      * Try to get quest from index.
      *
-     * @param questsArray the array where find the quest.
+     * @param category the array where find the quest.
      * @param index       the supposed index of the quest in the array.
      * @param playerName  the name of the player for whom the quest is intended.
      * @return the quest.
      */
-    public static AbstractQuest getQuestAtIndex(List<AbstractQuest> questsArray, int index, String playerName) {
+    public static AbstractQuest getQuestAtIndex(Category category, int index, String playerName) {
         AbstractQuest quest = null;
         try {
-            quest = questsArray.get(index);
+            quest = category.get(index);
         } catch (IndexOutOfBoundsException e) {
-            if (!questsArray.isEmpty()) playerQuestMissing(playerName);
+            if (!category.isEmpty()) playerQuestMissing(playerName);
             else noQuestsAvailable();
         }
 

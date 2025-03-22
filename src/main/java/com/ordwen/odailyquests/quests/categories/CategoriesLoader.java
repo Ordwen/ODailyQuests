@@ -1,28 +1,19 @@
 package com.ordwen.odailyquests.quests.categories;
 
 import com.ordwen.odailyquests.ODailyQuests;
-import com.ordwen.odailyquests.configuration.essentials.Modes;
-import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
+import com.ordwen.odailyquests.configuration.essentials.QuestsPerCategory;
 import com.ordwen.odailyquests.files.QuestsFiles;
 import com.ordwen.odailyquests.quests.QuestsLoader;
-import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CategoriesLoader {
 
-    private static final String GLOBAL_QUESTS = "globalQuests";
-    private static final String EASY_QUESTS = "easyQuests";
-    private static final String MEDIUM_QUESTS = "mediumQuests";
-    private static final String HARD_QUESTS = "hardQuests";
-
-    private static final Category globalCategory = new Category(GLOBAL_QUESTS);
-    private static final Category easyCategory = new Category(EASY_QUESTS);
-    private static final Category mediumCategory = new Category(MEDIUM_QUESTS);
-    private static final Category hardCategory = new Category(HARD_QUESTS);
+    private static final Map<String, Category> categories = new HashMap<>();
 
     private final QuestsLoader questsLoader = new QuestsLoader();
 
@@ -30,38 +21,27 @@ public class CategoriesLoader {
      * Load all quests from files.
      */
     public void loadCategories() {
+        categories.clear();
 
-        globalCategory.clear();
-        easyCategory.clear();
-        mediumCategory.clear();
-        hardCategory.clear();
+        for (Map.Entry<String, Integer> entry : QuestsPerCategory.getAllAmounts().entrySet()) {
+            final String categoryName = entry.getKey();
+            int requiredAmount = entry.getValue();
 
-        /* init files */
-        final FileConfiguration globalQuestsFile = QuestsFiles.getGlobalQuestsConfiguration();
-        final FileConfiguration easyQuestsFile = QuestsFiles.getEasyQuestsConfiguration();
-        final FileConfiguration mediumQuestsFile = QuestsFiles.getMediumQuestsConfiguration();
-        final FileConfiguration hardQuestsFile = QuestsFiles.getHardQuestsConfiguration();
+            final Category category = new Category(categoryName);
+            categories.put(categoryName, category);
 
-        if (Modes.getQuestsMode() == 1) {
-
-            /* load global quests */
-            questsLoader.loadQuests(globalQuestsFile, globalCategory, GLOBAL_QUESTS);
-            if (!validateCategory(globalCategory, QuestsAmount.getQuestsAmount(), GLOBAL_QUESTS)) {
+            final FileConfiguration configFile = QuestsFiles.getQuestsConfigurationByCategory(categoryName);
+            if (configFile != null) {
+                questsLoader.loadQuests(configFile, category, categoryName);
+                if (!validateCategory(category, requiredAmount, categoryName)) {
+                    Bukkit.getPluginManager().disablePlugin(ODailyQuests.INSTANCE);
+                    return;
+                }
+            } else {
+                PluginLogger.error("Failed to load configuration file for " + categoryName + ". Plugin will be disabled.");
                 Bukkit.getPluginManager().disablePlugin(ODailyQuests.INSTANCE);
+                return;
             }
-        } else if (Modes.getQuestsMode() == 2) {
-            questsLoader.loadQuests(easyQuestsFile, easyCategory, EASY_QUESTS);
-            questsLoader.loadQuests(mediumQuestsFile, mediumCategory, MEDIUM_QUESTS);
-            questsLoader.loadQuests(hardQuestsFile, hardCategory, HARD_QUESTS);
-
-            if (!validateCategory(easyCategory, QuestsAmount.getEasyQuestsAmount(), EASY_QUESTS) ||
-                    !validateCategory(mediumCategory, QuestsAmount.getMediumQuestsAmount(), MEDIUM_QUESTS) ||
-                    !validateCategory(hardCategory, QuestsAmount.getHardQuestsAmount(), HARD_QUESTS)) {
-                Bukkit.getPluginManager().disablePlugin(ODailyQuests.INSTANCE);
-            }
-        } else {
-            PluginLogger.error("Impossible to load the quests. The selected mode is incorrect.");
-            Bukkit.getPluginManager().disablePlugin(ODailyQuests.INSTANCE);
         }
     }
 
@@ -93,50 +73,19 @@ public class CategoriesLoader {
      * @return category.
      */
     public static Category getCategoryByName(String name) {
-        switch (name) {
-            case GLOBAL_QUESTS -> {
-                return globalCategory;
-            }
-            case EASY_QUESTS -> {
-                return easyCategory;
-            }
-            case MEDIUM_QUESTS -> {
-                return mediumCategory;
-            }
-            case HARD_QUESTS -> {
-                return hardCategory;
-            }
-            default -> {
-                return null;
-            }
-        }
+        return categories.get(name);
     }
 
     /**
-     * Get global quests.
+     * Get all categories.
+     *
+     * @return all categories.
      */
-    public static List<AbstractQuest> getGlobalQuests() {
-        return globalCategory;
+    public static Map<String, Category> getAllCategories() {
+        return categories;
     }
 
-    /**
-     * Get easy quests.
-     */
-    public static List<AbstractQuest> getEasyQuests() {
-        return easyCategory;
-    }
-
-    /**
-     * Get medium quests.
-     */
-    public static List<AbstractQuest> getMediumQuests() {
-        return mediumCategory;
-    }
-
-    /**
-     * Get hard quests.
-     */
-    public static List<AbstractQuest> getHardQuests() {
-        return hardCategory;
+    public static boolean hasCategory(String categoryName) {
+        return categories.containsKey(categoryName);
     }
 }

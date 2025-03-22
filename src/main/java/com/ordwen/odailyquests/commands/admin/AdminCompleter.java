@@ -1,6 +1,6 @@
 package com.ordwen.odailyquests.commands.admin;
 
-import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
+import com.ordwen.odailyquests.configuration.essentials.QuestsPerCategory;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -47,7 +47,7 @@ public class AdminCompleter implements TabCompleter {
             if (args[0].equalsIgnoreCase("convert")) {
                 allCompletions.addAll(List.of("mysql", "sqlite"));
             } else if (args[0].equalsIgnoreCase("reroll") || args[0].equalsIgnoreCase("complete")) {
-                for (int i = 1; i <= QuestsAmount.getQuestsAmount(); i++) {
+                for (int i = 1; i <= QuestsPerCategory.getTotalQuestsAmount(); i++) {
                     allCompletions.add(String.valueOf(i));
                 }
             }

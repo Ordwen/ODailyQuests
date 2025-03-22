@@ -5,11 +5,6 @@ public enum QuestsPermissions {
     QUEST_USE("odailyquests.use"),
     QUEST_SHOW("odailyquests.show"),
     QUEST_REROLL("odailyquests.reroll"),
-    QUESTS_SHOW_PLAYER("odailyquests.player"),
-    QUESTS_SHOW_GLOBAL("odailyquests.global"),
-    QUESTS_SHOW_EASY("odailyquests.easy"),
-    QUESTS_SHOW_MEDIUM("odailyquests.medium"),
-    QUESTS_SHOW_HARD("odailyquests.hard"),
     QUESTS_ADMIN("odailyquests.admin"),
     ;
 

@@ -12,7 +12,7 @@ import com.ordwen.odailyquests.commands.admin.AdminCompleter;
 import com.ordwen.odailyquests.commands.player.PlayerCompleter;
 import com.ordwen.odailyquests.commands.interfaces.InterfacesManager;
 import com.ordwen.odailyquests.commands.interfaces.InventoryClickListener;
-import com.ordwen.odailyquests.configuration.essentials.Modes;
+import com.ordwen.odailyquests.configuration.essentials.TimestampMode;
 import com.ordwen.odailyquests.events.EventsManager;
 import com.ordwen.odailyquests.files.*;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
@@ -150,7 +150,7 @@ public final class ODailyQuests extends JavaPlugin {
         }
 
         /* Init delayed task to draw new quests */
-        if (Modes.getTimestampMode() == 1) {
+        if (TimestampMode.getTimestampMode() == 1) {
             if (timerTask != null) {
                 timerTask.stop();
             }
@@ -226,7 +226,7 @@ public final class ODailyQuests extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        restartHandler.setServerStopping();
+        if (restartHandler != null) restartHandler.setServerStopping();
         if (timerTask != null) {
             timerTask.stop();
             timerTask = null;

@@ -1,6 +1,6 @@
 package com.ordwen.odailyquests.commands.player;
 
-import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
+import com.ordwen.odailyquests.configuration.essentials.QuestsPerCategory;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -33,7 +33,7 @@ public class PlayerCompleter implements TabCompleter {
                     final List<String> allCompletions = new ArrayList<>();
                     final List<String> completions = new ArrayList<>();
 
-                    for (int i = 1; i <= QuestsAmount.getQuestsAmount(); i++) {
+                    for (int i = 1; i <= QuestsPerCategory.getTotalQuestsAmount(); i++) {
                         allCompletions.add(String.valueOf(i));
                     }
 

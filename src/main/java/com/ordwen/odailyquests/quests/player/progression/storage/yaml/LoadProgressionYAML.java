@@ -2,7 +2,7 @@ package com.ordwen.odailyquests.quests.player.progression.storage.yaml;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
-import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
+import com.ordwen.odailyquests.configuration.essentials.QuestsPerCategory;
 import com.ordwen.odailyquests.quests.player.progression.ProgressionLoader;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
@@ -85,7 +85,7 @@ public class LoadProgressionYAML extends ProgressionLoader {
 
         int i = 1;
         for (String key : questsSection.getKeys(false)) {
-            if (i > QuestsAmount.getQuestsAmount()) {
+            if (i > QuestsPerCategory.getTotalQuestsAmount()) {
                 logExcessQuests(playerName);
                 break;
             }

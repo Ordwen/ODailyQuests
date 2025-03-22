@@ -1,9 +1,8 @@
 package com.ordwen.odailyquests.quests.player.progression.storage.sql;
 
-import com.magmaguy.elitemobs.utils.DebugBlockLocation;
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
-import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
+import com.ordwen.odailyquests.configuration.essentials.QuestsPerCategory;
 import com.ordwen.odailyquests.enums.SQLQuery;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
@@ -160,7 +159,7 @@ public class LoadProgressionSQL extends ProgressionLoader {
 
                         quests.put(quest, progression);
                         id++;
-                    } while (resultSet.next() && id <= QuestsAmount.getQuestsAmount());
+                    } while (resultSet.next() && id <= QuestsPerCategory.getTotalQuestsAmount());
 
                     if (resultSet.next()) {
                         logExcessQuests(playerName);

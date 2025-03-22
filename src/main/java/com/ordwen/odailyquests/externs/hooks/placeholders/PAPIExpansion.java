@@ -2,6 +2,7 @@ package com.ordwen.odailyquests.externs.hooks.placeholders;
 
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
+import com.ordwen.odailyquests.quests.categories.Category;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
@@ -85,14 +86,9 @@ public class PAPIExpansion extends PlaceholderExpansion {
     }
 
     private String getQuestNameByCategory(String params) {
-        final Map<String, List<AbstractQuest>> questCategories = Map.of(
-                "global", CategoriesLoader.getGlobalQuests(),
-                "easy", CategoriesLoader.getEasyQuests(),
-                "medium", CategoriesLoader.getMediumQuests(),
-                "hard", CategoriesLoader.getHardQuests()
-        );
+        final Map<String, Category> categoryMap = CategoriesLoader.getAllCategories();
 
-        for (Map.Entry<String, List<AbstractQuest>> entry : questCategories.entrySet()) {
+        for (Map.Entry<String, Category> entry : categoryMap.entrySet()) {
             if (params.startsWith(entry.getKey())) {
                 return getQuestName(params, entry.getValue());
             }

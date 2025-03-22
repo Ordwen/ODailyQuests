@@ -32,8 +32,8 @@ public class ConfigFactory {
         configs.put(Debugger.class, new Debugger(configurationFile));
         configs.put(JoinMessageDelay.class, new JoinMessageDelay(configurationFile));
         configs.put(Logs.class, new Logs(configurationFile));
-        configs.put(Modes.class, new Modes(configurationFile));
-        configs.put(QuestsAmount.class, new QuestsAmount(configurationFile));
+        configs.put(TimestampMode.class, new TimestampMode(configurationFile));
+        configs.put(QuestsPerCategory.class, new QuestsPerCategory(configurationFile));
         configs.put(RerollNotAchieved.class, new RerollNotAchieved(configurationFile));
         configs.put(Synchronization.class, new Synchronization(configurationFile));
         configs.put(RenewInterval.class, new RenewInterval(configurationFile));

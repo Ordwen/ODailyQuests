@@ -2,8 +2,10 @@ package com.ordwen.odailyquests.configuration.functionalities.rewards;
 
 import com.ordwen.odailyquests.configuration.ConfigFactory;
 import com.ordwen.odailyquests.configuration.IConfigurable;
+import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.files.ConfigurationFile;
+import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.rewards.Reward;
 import com.ordwen.odailyquests.rewards.RewardLoader;
 import com.ordwen.odailyquests.rewards.RewardManager;
@@ -11,15 +13,13 @@ import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class CategoriesRewards implements IConfigurable {
 
-    private boolean isEasyRewardEnabled;
-    private boolean isMediumRewardEnabled;
-    private boolean isHardRewardEnabled;
-
-    private Reward easyReward;
-    private Reward mediumReward;
-    private Reward hardReward;
+    private final Map<String, Reward> categoryRewards = new HashMap<>();
+    private final Map<String, Boolean> categoryRewardEnabled = new HashMap<>();
 
     private final ConfigurationFile configurationFile;
     private final RewardLoader rewardLoader = new RewardLoader();
@@ -32,51 +32,25 @@ public class CategoriesRewards implements IConfigurable {
     public void load() {
         final ConfigurationSection categoriesRewards = configurationFile.getConfig().getConfigurationSection("categories_rewards");
         if (categoriesRewards == null) {
-            isEasyRewardEnabled = false;
-            isMediumRewardEnabled = false;
-            isHardRewardEnabled = false;
-
             PluginLogger.error("Categories rewards section is missing in the configuration file.");
             return;
         }
 
-        isEasyRewardEnabled = categoriesRewards.getBoolean("easy.enabled");
-        isMediumRewardEnabled = categoriesRewards.getBoolean("medium.enabled");
-        isHardRewardEnabled = categoriesRewards.getBoolean("hard.enabled");
+        for (String category : CategoriesLoader.getAllCategories().keySet()) {
+            boolean isRewardEnabled = categoriesRewards.getBoolean(category + ".enabled");
+            categoryRewardEnabled.put(category, isRewardEnabled);
 
-        final String file = "config.yml";
+            if (isRewardEnabled) {
+                final ConfigurationSection rewardSection = categoriesRewards.getConfigurationSection(category);
+                if (rewardSection == null) {
+                    PluginLogger.error("Reward section for category " + category + " is missing in the configuration file.");
+                    categoryRewardEnabled.put(category, false);
+                    continue;
+                }
 
-        if (isEasyRewardEnabled) {
-            final ConfigurationSection easyRewardSection = categoriesRewards.getConfigurationSection("easy");
-            if (easyRewardSection == null) {
-                isEasyRewardEnabled = false;
-                PluginLogger.error("Easy reward section is missing in the configuration file.");
-                return;
+                final Reward reward = rewardLoader.getRewardFromSection(rewardSection, "config.yml", null);
+                categoryRewards.put(category, reward);
             }
-
-            easyReward = rewardLoader.getRewardFromSection(easyRewardSection, file, null);
-        }
-
-        if (isMediumRewardEnabled) {
-            final ConfigurationSection mediumRewardSection = categoriesRewards.getConfigurationSection("medium");
-            if (mediumRewardSection == null) {
-                isMediumRewardEnabled = false;
-                PluginLogger.error("Medium reward section is missing in the configuration file.");
-                return;
-            }
-
-            mediumReward = rewardLoader.getRewardFromSection(mediumRewardSection, file, null);
-        }
-
-        if (isHardRewardEnabled) {
-            final ConfigurationSection hardRewardSection = categoriesRewards.getConfigurationSection("hard");
-            if (hardRewardSection == null) {
-                isHardRewardEnabled = false;
-                PluginLogger.error("Hard reward section is missing in the configuration file.");
-                return;
-            }
-
-            hardReward = rewardLoader.getRewardFromSection(hardRewardSection, file, null);
         }
     }
 
@@ -87,53 +61,21 @@ public class CategoriesRewards implements IConfigurable {
      * @param category category.
      */
     public void sendCategoryRewardInternal(Player player, String category) {
-        switch (category) {
-            case "easyQuests" -> sendEasyReward(player);
-            case "mediumQuests" -> sendMediumReward(player);
-            case "hardQuests" -> sendHardReward(player);
-            default -> PluginLogger.error("Category " + category + " is not valid.");
+        if (!categoryRewardEnabled.getOrDefault(category, false)) {
+            Debugger.write("Category " + category + " reward is not enabled.");
+            return;
         }
-    }
 
-    /**
-     * Give reward when players have completed all their easy quests.
-     *
-     * @param player player.
-     */
-    private void sendEasyReward(Player player) {
-        if (isEasyRewardEnabled) {
-            final String msg = QuestsMessages.EASY_QUESTS_ACHIEVED.getMessage(player);
-            if (msg != null) player.sendMessage(msg);
+        final Reward reward = categoryRewards.get(category);
+        if (reward != null) {
+            final String msg = QuestsMessages.CATEGORY_QUESTS_ACHIEVED.toString();
+            if (msg != null) {
+                player.sendMessage(msg.replace("%category%", category));
+            }
 
-            RewardManager.sendQuestReward(player, easyReward);
-        }
-    }
-
-    /**
-     * Give reward when players have completed all their medium quests.
-     *
-     * @param player player.
-     */
-    private void sendMediumReward(Player player) {
-        if (isMediumRewardEnabled) {
-            final String msg = QuestsMessages.MEDIUM_QUESTS_ACHIEVED.getMessage(player);
-            if (msg != null) player.sendMessage(msg);
-
-            RewardManager.sendQuestReward(player, mediumReward);
-        }
-    }
-
-    /**
-     * Give reward when players have completed all their hard quests.
-     *
-     * @param player player.
-     */
-    private void sendHardReward(Player player) {
-        if (isHardRewardEnabled) {
-            final String msg = QuestsMessages.HARD_QUESTS_ACHIEVED.getMessage(player);
-            if (msg != null) player.sendMessage(msg);
-
-            RewardManager.sendQuestReward(player, hardReward);
+            RewardManager.sendQuestReward(player, reward);
+        } else {
+            PluginLogger.error("No reward found for category " + category);
         }
     }
 

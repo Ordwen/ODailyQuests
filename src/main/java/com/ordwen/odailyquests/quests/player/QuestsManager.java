@@ -2,13 +2,12 @@ package com.ordwen.odailyquests.quests.player;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
-import com.ordwen.odailyquests.configuration.essentials.Modes;
-import com.ordwen.odailyquests.configuration.essentials.QuestsAmount;
+import com.ordwen.odailyquests.configuration.essentials.QuestsPerCategory;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
+import com.ordwen.odailyquests.quests.categories.Category;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.tools.PluginLogger;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -96,43 +95,21 @@ public class QuestsManager implements Listener {
     public static Map<AbstractQuest, Progression> selectRandomQuests(Player player) {
         final Map<AbstractQuest, Progression> quests = new LinkedHashMap<>();
 
-        if (Modes.getQuestsMode() == 1) {
-            final List<AbstractQuest> globalQuests = CategoriesLoader.getGlobalQuests();
+        final Map<String, Category> categoryMap = CategoriesLoader.getAllCategories();
 
-            for (int i = 0; i < QuestsAmount.getQuestsAmount(); i++) {
-                final AbstractQuest quest = getRandomQuestForPlayer(quests.keySet(), globalQuests, player);
-                final int requiredAmount = getDynamicRequiredAmount(quest.getRequiredAmountRaw());
-                final Progression progression = new Progression(requiredAmount, 0, false);
+        for (Map.Entry<String, Category> entry : categoryMap.entrySet()) {
+            final String categoryName = entry.getKey();
+            final Category category = entry.getValue();
+
+            int requiredAmount = QuestsPerCategory.getAmountForCategory(categoryName);
+
+            for (int i = 0; i < requiredAmount; i++) {
+                final AbstractQuest quest = getRandomQuestForPlayer(quests.keySet(), category, player);
+                final int questRequiredAmount = getDynamicRequiredAmount(quest.getRequiredAmountRaw());
+                final Progression progression = new Progression(questRequiredAmount, 0, false);
                 quests.put(quest, progression);
             }
-        } else if (Modes.getQuestsMode() == 2) {
-
-            final List<AbstractQuest> easyQuests = CategoriesLoader.getEasyQuests();
-            final List<AbstractQuest> mediumQuests = CategoriesLoader.getMediumQuests();
-            final List<AbstractQuest> hardQuests = CategoriesLoader.getHardQuests();
-
-            for (int i = 0; i < QuestsAmount.getEasyQuestsAmount(); i++) {
-                final AbstractQuest quest = getRandomQuestForPlayer(quests.keySet(), easyQuests, player);
-                final int requiredAmount = getDynamicRequiredAmount(quest.getRequiredAmountRaw());
-                final Progression progression = new Progression(requiredAmount, 0, false);
-                quests.put(quest, progression);
-            }
-
-            for (int i = 0; i < QuestsAmount.getMediumQuestsAmount(); i++) {
-                final AbstractQuest quest = getRandomQuestForPlayer(quests.keySet(), mediumQuests, player);
-                final int requiredAmount = getDynamicRequiredAmount(quest.getRequiredAmountRaw());
-                final Progression progression = new Progression(requiredAmount, 0, false);
-                quests.put(quest, progression);
-            }
-
-            for (int i = 0; i < QuestsAmount.getHardQuestsAmount(); i++) {
-                final AbstractQuest quest = getRandomQuestForPlayer(quests.keySet(), hardQuests, player);
-                final int requiredAmount = getDynamicRequiredAmount(quest.getRequiredAmountRaw());
-                final Progression progression = new Progression(requiredAmount, 0, false);
-                quests.put(quest, progression);
-            }
-        } else
-            PluginLogger.error(ChatColor.RED + "Impossible to select quests for player. The selected mode is incorrect.");
+        }
 
         return quests;
     }
