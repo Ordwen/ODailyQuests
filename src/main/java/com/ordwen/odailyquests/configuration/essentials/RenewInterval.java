@@ -7,7 +7,6 @@ import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -99,10 +98,5 @@ public class RenewInterval implements IConfigurable {
 
     public static Duration getRenewInterval() {
         return getInstance().interval;
-    }
-
-    public static boolean isTimeToRenew(LocalDateTime lastRenew) {
-        LocalDateTime nextRenew = lastRenew.plus(getRenewInterval());
-        return LocalDateTime.now().isAfter(nextRenew);
     }
 }
