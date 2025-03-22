@@ -30,11 +30,6 @@ public class PlayerProgressor {
      * @param questType the quest type to set the progression for
      */
     public void setPlayerQuestProgression(Event event, Player player, int amount, String questType) {
-        if (DisabledWorlds.isWorldDisabled(player.getWorld().getName())) {
-            Debugger.write("PlayerProgressor: setPlayerQuestProgression cancelled due to disabled world.");
-            return;
-        }
-
         if (QuestsManager.getActiveQuests().containsKey(player.getName())) {
             Debugger.write("Active quests contain " + player.getName() + ".");
             checkForProgress(event, player, amount, questType);
@@ -123,6 +118,11 @@ public class PlayerProgressor {
      * @return true if the player is allowed to progress.
      */
     public boolean isAllowedToProgress(Player player, AbstractQuest quest) {
+        if (!player.hasPermission("odailyquests.progress")) {
+            Debugger.write("PlayerProgressor: isAllowedToProgress cancelled due to missing permission.");
+            return false;
+        }
+
         if (DisabledWorlds.isWorldDisabled(player.getWorld().getName())) {
             Debugger.write("PlayerProgressor: isAllowedToProgress cancelled due to disabled world.");
             return false;

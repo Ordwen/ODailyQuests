@@ -7,10 +7,12 @@ authors: [ Ordwen ]
 description: Add more objectives and dynamize your server !
 website: https://www.spigotmc.org/resources/odailyquests-daily-quests-plugin-1-16-1-18.100990/
 softdepend: [ Vault, TokenManager, Citizens, PlaceholderAPI, PlayerPoints, MythicMobs, EliteMobs, WildStacker, RoseStacker, Multiverse-Core, MyWorlds, HeadDatabase, Oraxen, ItemsAdder, Nexo, CoinsEngine, Towny, PyroFishingPro, NuVotifier, KGenerators, CustomCrops, CustomFishing ]
+
 libraries:
   - com.zaxxer:HikariCP:5.0.1
   - org.xerial:sqlite-jdbc:3.49.1.0
   - com.jeff-media:custom-block-data:2.2.3
+
 commands:
   dquests:
     description: default player command
@@ -25,4 +27,10 @@ commands:
       - dquestsadmin
       - dqa
       - qadmin
+
+permissions:
+  odailyquests.progress:
+    description: "Allows the player to progress in ODailyQuests"
+    default: true
+
 folia-supported: true
