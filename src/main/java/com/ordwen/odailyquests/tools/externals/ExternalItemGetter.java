@@ -25,7 +25,7 @@ public abstract class ExternalItemGetter implements IExternalItemGetter {
     @Override
     public Pair<String, ItemStack> getOraxenItem(String namespace) {
         if (!OraxenEnabled.isEnabled()) {
-            return new Pair<>("Oraxen is not enabled.", null);
+            return new Pair<>("Cannot find Oraxen. Is use_oraxen enabled in config?", null);
         }
 
         if (!OraxenItems.exists(namespace)) {
@@ -44,7 +44,7 @@ public abstract class ExternalItemGetter implements IExternalItemGetter {
     @Override
     public Pair<String, ItemStack> getNexoItem(String namespace) {
         if (!NexoEnabled.isEnabled()) {
-            return new Pair<>("Nexo is not enabled.", null);
+            return new Pair<>("Cannot find Nexo. Is use_nexo enabled in config?", null);
         }
 
         if (!NexoItems.exists(namespace)) {
@@ -63,7 +63,7 @@ public abstract class ExternalItemGetter implements IExternalItemGetter {
     @Override
     public Pair<String, ItemStack> getItemsAdderItem(String namespace) {
         if (!ItemsAdderEnabled.isEnabled()) {
-            return new Pair<>("ItemsAdder is not enabled.", null);
+            return new Pair<>("Cannot find ItemsAdder. Is use_itemsadder enabled in config?", null);
         }
 
         if (!namespace.contains(":")) {

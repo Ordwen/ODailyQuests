@@ -1,15 +1,14 @@
 # if the plugin doesn't work as expected, set debug to true and send the log file to the developer.
 debug: false
 
-# never touch this line
+# never touch these lines, used for the plugin auto update system
 version: 3.0.0
 database_version: 2
 
 # plugin prefix for messaging
 prefix: "&7[O'DailyQuests&7]"
 
-# disable the logs when player quests are saved
-# NEVER ask for support with this option enabled
+# disable the logs when player quests are loaded or saved
 disable_logs: false
 
 # storage mode for quests & progression
@@ -42,7 +41,7 @@ quests_per_category:
 
 # Select the mode of timestamp.
 # ============================================================================
-# 1 : quests will be reloaded at midnight for all players.
+# 1 : quests will be reloaded at the defined renew time for all players.
 # ============================================================================
 # 2 : player quests will be reloaded if active quests are older
 # than the duration selected temporality mode.
@@ -71,6 +70,10 @@ renew_time: "00:00"
 # - "1h30m" → 1 hour and 30 minutes
 # Default is "1d" (1 day).
 renew_interval: "1d"
+
+# Delay in seconds before the status message is displayed when a player joins the server.
+# Corresponds to quests_in_progress and all_quests_achieved_connect messages.
+join_message_delay: 1.0
 
 # Initials that will be displayed
 # between the values on the placeholders.
@@ -102,24 +105,19 @@ categories_rewards:
     reward_type: COMMAND
     commands:
       - "eco give %player% 1000"
-      - "give %player% diamond_block 16"
+      - "give %player% gold_block 1"
   medium:
     enabled: true
     reward_type: COMMAND
     commands:
       - "eco give %player% 2000"
-      - "give %player% diamond_block 32"
+      - "give %player% gold_block 2"
   hard:
     enabled: true
     reward_type: COMMAND
     commands:
       - "eco give %player% 3000"
-      - "give %player% diamond_block 64"
-
-# If a player has two quests of the same type and with the same item/entity,
-# choose if they should progress simultaneously
-# or if the first should be completed before the second progresses.
-synchronised_progression: false
+      - "give %player% gold_block 3"
 
 # Set a title that will be displayed when a player completes a quest.
 # Reminder: 20 ticks is equal to one second.
@@ -160,19 +158,6 @@ progress_bar:
   amount_of_symbols: 20
   completed_color: "&a"
   remaining_color: "&7"
-
-# Disables the progression of quests where you have to kill an entity if it comes from a Spawner.
-disable_spawners_progression: false
-
-# Determines if the player loses required items when completing a GET quest.
-take_items_for_get_quests: false
-
-# Determines if the quest can be rerolled even if it has already been completed, when using the reroll command.
-reroll_only_if_not_achieved: true
-
-# Delay in seconds before the status message is displayed when a player joins the server.
-# Corresponds to quests_in_progress and all_quests_achieved_connect messages.
-join_message_delay: 1.0
 
 # ===========================================================
 # ANTI-GLITCH PART
@@ -252,7 +237,7 @@ interfaces:
 
 # You can disable quest progression in certain worlds.
 # You must put here the name of the world (in theory the name of its directory).
-# If you don't want to disable worlds, just put a single line with no name (- "").
+# If you don't want to disable worlds, just put hooks. (disabled_worlds: []).
 # In addition, you can disable some worlds for each quest. Please refer to the Wiki.
 #
 # You can also use prefixes/suffixes to disable multiple worlds at once with the "?" character.
@@ -277,11 +262,26 @@ npcs:
   medium: "&e&lMedium &rQuests"
   hard: "&cHard &b&lQuests"
 
-# If you use WildStacker on your server to group mobs, set this parameter to "true".
-use_wildstacker: false
+# If a player has two quests of the same type and with the same item/entity,
+# choose if they should progress simultaneously
+# or if the first should be completed before the second progresses.
+synchronised_progression: false
+
+# Disables the progression of quests where you have to kill an entity if it comes from a Spawner.
+disable_spawners_progression: false
+
+# Determines if the player loses required items when completing a GET quest.
+take_items_for_get_quests: false
+
+# Determines if the quest can be rerolled even if it has already been completed, when using the reroll command.
+reroll_only_if_not_achieved: true
 
 # If you are using MythicMobs, you can set this parameter to "true" to share the mobs between players.
 #
 # It means that if someone kill a mob, the quest progression will be updated for all players
 # that were involved in the fight and that have the quest.
 shared_mobs: false
+
+# If you use WildStacker on your server to group mobs, set this parameter to "true".
+# Otherwise, quests of type KILL may not progress.
+use_wildstacker: false
