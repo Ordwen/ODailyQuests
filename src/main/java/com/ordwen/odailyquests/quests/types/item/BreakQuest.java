@@ -33,6 +33,8 @@ public class BreakQuest extends ItemQuest {
     @Override
     public boolean canProgress(Event provided) {
         if (provided instanceof BlockBreakEvent event) {
+            if (event.isCancelled()) return false;
+
             final Block block = event.getBlock();
 
             if (!this.isProtectionBypass() && !Protection.canBuild(event.getPlayer(), block, "BLOCK_BREAK"))
