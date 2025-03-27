@@ -8,12 +8,12 @@ import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class CategoriesLoader {
 
-    private static final Map<String, Category> categories = new HashMap<>();
+    private static final Map<String, Category> categories = new LinkedHashMap<>();
 
     private final QuestsLoader questsLoader = new QuestsLoader();
 
