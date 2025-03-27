@@ -25,6 +25,7 @@ public class ConfigFactory {
 
     public static void registerConfigs(ConfigurationFile configurationFile) {
         // essentials
+        configs.put(Prefix.class, new Prefix(configurationFile));
         configs.put(Antiglitch.class, new Antiglitch(configurationFile));
         configs.put(CustomFurnaceResults.class, new CustomFurnaceResults(configurationFile));
         configs.put(CustomTypes.class, new CustomTypes(configurationFile));

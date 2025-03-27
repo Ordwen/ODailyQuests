@@ -36,6 +36,9 @@ public class Update230to300 extends ConfigUpdater {
         setDefaultConfigItem("use_nexo", false, config, configFile);
         setDefaultConfigItem("renew_time", "00:00", config, configFile);
 
+        // as prefix is now used, set it empty for servers that already customized their messages
+        setDefaultConfigItem("prefix", "", config, configFile);
+
         replaceTemporalityMode();
         replaceQuestsAmount();
         replaceInterfaceNames();

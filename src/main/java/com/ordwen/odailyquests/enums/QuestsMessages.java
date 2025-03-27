@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.enums;
 
+import com.ordwen.odailyquests.configuration.essentials.Prefix;
 import com.ordwen.odailyquests.tools.TextFormatter;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -104,14 +105,14 @@ public enum QuestsMessages {
         String msg = lang.getString(this.path, defaultMessage);
 
         if (msg.trim().isEmpty()) return "";
-        else return TextFormatter.format(TextFormatter.format(null, msg));
+        else return TextFormatter.format(null, Prefix.getPrefix() + msg);
     }
 
     public String getMessage(Player player) {
         String msg = lang.getString(this.path, defaultMessage);
 
         if (msg.trim().isEmpty()) return null;
-        else return TextFormatter.format(TextFormatter.format(player, msg));
+        else return TextFormatter.format(player,Prefix.getPrefix() + msg);
     }
 
     public String getMessage(String playerName) {
@@ -121,7 +122,7 @@ public enum QuestsMessages {
         String msg = lang.getString(this.path, defaultMessage);
         if (msg.trim().isEmpty()) return null;
 
-        else return TextFormatter.format(TextFormatter.format(player, msg));
+        else return TextFormatter.format(player,Prefix.getPrefix() + msg);
     }
 
     /**

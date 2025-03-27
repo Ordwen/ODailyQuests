@@ -5,8 +5,8 @@ debug: false
 version: 3.0.0
 database_version: 2
 
-# plugin prefix for messaging
-prefix: "&7[O'DailyQuests&7]"
+# prefix that will be displayed before every message from messages.yml
+prefix: "&7[&6O'DailyQuests&7] "
 
 # disable the logs when player quests are loaded or saved
 disable_logs: false
