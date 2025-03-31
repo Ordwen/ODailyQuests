@@ -37,13 +37,11 @@ public class QuestsFiles {
      * Init quests files.
      */
     public void loadQuestsFiles() {
-        System.out.println("LOAD QUESTS FILES");
         configurations.clear();
 
         final File questsFolder = new File(oDailyQuests.getDataFolder(), "quests");
 
         if (!questsFolder.exists() || questsFolder.listFiles() == null || questsFolder.listFiles().length == 0) {
-            System.out.println("CREATE DEFAULT QUEST FILES");
             questsFolder.mkdirs();
             createDefaultQuestFiles();
         }
@@ -57,7 +55,6 @@ public class QuestsFiles {
 
         for (File file : questFiles) {
             final String category = file.getName().replace(".yml", "");
-            System.out.println("LOAD CATEGORY: " + category);
 
             final FileConfiguration config = new YamlConfiguration();
             try {
