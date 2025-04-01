@@ -1,7 +1,9 @@
 package com.ordwen.odailyquests.commands.admin.handlers;
 
-import com.ordwen.odailyquests.commands.admin.ACommandHandler;
+import com.ordwen.odailyquests.api.commands.admin.IAdminCommand;
+import com.ordwen.odailyquests.commands.admin.AdminMessages;
 import com.ordwen.odailyquests.enums.QuestsMessages;
+import com.ordwen.odailyquests.enums.QuestsPermissions;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.QuestLoaderUtils;
@@ -9,39 +11,45 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
 import java.util.Map;
 
-public class ResetCommand extends ACommandHandler {
+public class ResetCommand extends AdminMessages implements IAdminCommand {
 
-    public ResetCommand(CommandSender sender, String[] args) {
-        super(sender, args);
+    @Override
+    public String getName() {
+        return "reset";
     }
 
     @Override
-    public void handle() {
+    public String getPermission() {
+        return QuestsPermissions.QUESTS_ADMIN.getPermission();
+    }
+
+    @Override
+    public void execute(CommandSender sender, String[] args) {
         if (args.length >= 3 && args[1] != null && args[2] != null) {
 
             final Player target = Bukkit.getPlayerExact(args[2]);
             if (target == null) {
-                invalidPlayer();
+                invalidPlayer(sender);
                 return;
             }
 
             switch (args[1]) {
-                case "quests" -> quests(target);
-                case "total" -> total(target);
-                default -> help();
+                case "quests" -> quests(sender, target);
+                case "total" -> total(sender, target);
+                default -> help(sender);
             }
 
-        } else help();
+        } else help(sender);
     }
 
     /**
      * Resets the current active quests of the player.
+     * @param sender the command sender
      * @param target the player to reset
      */
-    public void quests(Player target) {
+    public void quests(CommandSender sender, Player target) {
         final String playerName = target.getName();
         final Map<String, PlayerQuests> activeQuests = QuestsManager.getActiveQuests();
         int totalAchievedQuests = activeQuests.get(playerName).getTotalAchievedQuests();
@@ -53,9 +61,10 @@ public class ResetCommand extends ACommandHandler {
 
     /**
      * Resets the total amount of quests achieved by the player.
+     * @param sender the command sender
      * @param target the player to reset
      */
-    public void total(Player target) {
+    public void total(CommandSender sender, Player target) {
         QuestsManager.getActiveQuests().get(target.getName()).setTotalAchievedQuests(0);
 
         String msg = QuestsMessages.TOTAL_AMOUNT_RESET_ADMIN.toString();

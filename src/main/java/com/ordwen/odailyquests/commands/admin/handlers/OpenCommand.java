@@ -1,24 +1,35 @@
 package com.ordwen.odailyquests.commands.admin.handlers;
 
-import com.ordwen.odailyquests.commands.admin.ACommandHandler;
+import com.ordwen.odailyquests.api.commands.admin.IAdminCommand;
+import com.ordwen.odailyquests.commands.admin.AdminMessages;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
+import com.ordwen.odailyquests.enums.QuestsPermissions;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
-public class OpenCommand extends ACommandHandler {
+public class OpenCommand extends AdminMessages implements IAdminCommand {
 
     private final PlayerQuestsInterface playerQuestsInterface;
 
-    public OpenCommand(PlayerQuestsInterface playerQuestsInterface, CommandSender sender, String[] args) {
-        super(sender, args);
+    public OpenCommand(PlayerQuestsInterface playerQuestsInterface) {
         this.playerQuestsInterface = playerQuestsInterface;
     }
 
     @Override
-    public void handle() {
+    public String getName() {
+        return "open";
+    }
+
+    @Override
+    public String getPermission() {
+        return QuestsPermissions.QUESTS_ADMIN.getPermission();
+    }
+
+    @Override
+    public void execute(CommandSender sender, String[] args) {
         if (Bukkit.getPlayerExact(args[1]) != null) {
             final Player target = Bukkit.getPlayerExact(args[1]);
             if (target != null) {
@@ -29,7 +40,7 @@ public class OpenCommand extends ACommandHandler {
                     return;
                 }
                 target.openInventory(inventory);
-            } else invalidPlayer();
-        } else help();
+            } else invalidPlayer(sender);
+        } else help(sender);
     }
 }

@@ -1,25 +1,26 @@
 package com.ordwen.odailyquests.commands.admin.convert;
 
-import com.ordwen.odailyquests.ODailyQuests;
-import com.ordwen.odailyquests.commands.admin.ACommandHandler;
+import com.ordwen.odailyquests.api.commands.admin.IAdminCommand;
+import com.ordwen.odailyquests.commands.admin.AdminMessages;
+import com.ordwen.odailyquests.enums.QuestsPermissions;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-public class ConverterManager extends ACommandHandler {
+public class ConvertCommand extends AdminMessages implements IAdminCommand {
 
-    final ODailyQuests oDailyQuests;
-
-    public ConverterManager(CommandSender sender, String[] args) {
-        super(sender, args);
-        this.oDailyQuests = ODailyQuests.INSTANCE;
+    @Override
+    public String getName() {
+        return "convert";
     }
 
-    /**
-     * Handles the conversion of the storage format.
-     */
     @Override
-    public void handle() {
+    public String getPermission() {
+        return QuestsPermissions.QUESTS_ADMIN.getPermission();
+    }
+
+    @Override
+    public void execute(CommandSender sender, String[] args) {
         if (args.length == 3) {
             if (!this.convert(args[1], args[2])) {
                 sender.sendMessage(ChatColor.RED + "Conversion failed! Please check the console for more information.");

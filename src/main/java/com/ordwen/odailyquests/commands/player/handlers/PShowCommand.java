@@ -1,26 +1,35 @@
 package com.ordwen.odailyquests.commands.player.handlers;
 
+import com.ordwen.odailyquests.api.commands.player.IPlayerCommand;
 import com.ordwen.odailyquests.commands.interfaces.QuestsInterfaces;
-import com.ordwen.odailyquests.commands.player.PCommandHandler;
-import com.ordwen.odailyquests.enums.QuestsPermissions;
+import com.ordwen.odailyquests.commands.player.PlayerMessages;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
-public class ShowCommand extends PCommandHandler {
+public class PShowCommand extends PlayerMessages implements IPlayerCommand {
 
     private static final String PERMISSION_PREFIX = "odailyquests.";
 
     private final QuestsInterfaces questsInterfaces;
 
-    public ShowCommand(QuestsInterfaces questsInterfaces, Player player, String[] args) {
-        super(player, args);
+    public PShowCommand(QuestsInterfaces questsInterfaces) {
         this.questsInterfaces = questsInterfaces;
     }
 
     @Override
-    public void handle() {
-        if (!player.hasPermission(QuestsPermissions.QUEST_SHOW.getPermission())) {
+    public String getName() {
+        return "show";
+    }
+
+    @Override
+    public String getPermission() {
+        return "odailyquests.show";
+    }
+
+    @Override
+    public void execute(Player player, String[] args) {
+        if (!player.hasPermission(getPermission())) {
             noPermission(player);
             return;
         }
@@ -30,14 +39,15 @@ public class ShowCommand extends PCommandHandler {
             return;
         }
 
-        openCategory(args[1]);
+        openCategory(player, args[1]);
     }
 
     /**
      * Opens the category interface.
+     * @param player the player who wants to open the category.
      * @param category the category.
      */
-    private void openCategory(String category) {
+    private void openCategory(Player player, String category) {
         if (!CategoriesLoader.hasCategory(category)) {
             invalidCategory(player);
             return;

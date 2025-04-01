@@ -1,8 +1,8 @@
 package com.ordwen.odailyquests.commands.player;
 
+import com.ordwen.odailyquests.api.commands.player.IPlayerCommand;
+import com.ordwen.odailyquests.api.commands.player.PlayerCommandRegistry;
 import com.ordwen.odailyquests.commands.interfaces.InterfacesManager;
-import com.ordwen.odailyquests.commands.player.handlers.PRerollCommand;
-import com.ordwen.odailyquests.commands.player.handlers.ShowCommand;
 import com.ordwen.odailyquests.enums.QuestsPermissions;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -15,9 +15,11 @@ import org.jetbrains.annotations.NotNull;
 public class PlayerCommands extends PlayerMessages implements CommandExecutor {
 
     private final InterfacesManager interfacesManager;
+    private final PlayerCommandRegistry playerCommandRegistry;
 
-    public PlayerCommands(InterfacesManager interfacesManager) {
+    public PlayerCommands(InterfacesManager interfacesManager, PlayerCommandRegistry playerCommandRegistry) {
         this.interfacesManager = interfacesManager;
+        this.playerCommandRegistry = playerCommandRegistry;
     }
 
     @Override
@@ -33,13 +35,19 @@ public class PlayerCommands extends PlayerMessages implements CommandExecutor {
         }
 
         if (args.length >= 1) {
-            switch (args[0]) {
-                case "show" -> new ShowCommand(interfacesManager.getQuestsInterfaces(), player, args).handle();
-                case "reroll" -> new PRerollCommand(player, args).handle();
-                case "me" -> openInventory(player);
-                default -> help(player);
+            final IPlayerCommand handler = playerCommandRegistry.getCommandHandler(args[0]);
+            if (handler != null) {
+                if (player.hasPermission(handler.getPermission())) {
+                    handler.execute(player, args);
+                } else {
+                    noPermission(player);
+                }
+            } else {
+                help(player);
             }
-        } else openInventory(player);
+        } else {
+            openInventory(player);
+        }
 
         return true;
     }

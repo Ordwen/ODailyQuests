@@ -2,7 +2,13 @@ package com.ordwen.odailyquests;
 
 import com.jeff_media.customblockdata.CustomBlockData;
 import com.ordwen.odailyquests.api.ODailyQuestsAPI;
+import com.ordwen.odailyquests.api.commands.admin.AdminCommandRegistry;
+import com.ordwen.odailyquests.api.commands.player.PlayerCommandRegistry;
 import com.ordwen.odailyquests.api.quests.QuestTypeRegistry;
+import com.ordwen.odailyquests.commands.admin.convert.ConvertCommand;
+import com.ordwen.odailyquests.commands.admin.handlers.*;
+import com.ordwen.odailyquests.commands.player.handlers.PRerollCommand;
+import com.ordwen.odailyquests.commands.player.handlers.PShowCommand;
 import com.ordwen.odailyquests.events.restart.RestartHandler;
 import com.ordwen.odailyquests.externs.IntegrationsManager;
 import com.ordwen.odailyquests.commands.admin.AdminCommands;
@@ -121,9 +127,12 @@ public final class ODailyQuests extends JavaPlugin {
         /* Load listeners */
         new EventsManager(this).registerListeners();
 
-        /* Load commands */
-        getCommand("dquests").setExecutor(new PlayerCommands(interfacesManager));
-        getCommand("dqadmin").setExecutor(new AdminCommands(this));
+        /* Register all subcommands, from main plugin or addons */
+        registerSubCommands();
+
+        /* Load main commands */
+        getCommand("dquests").setExecutor(new PlayerCommands(interfacesManager, API.getPlayerCommandRegistry()));
+        getCommand("dqadmin").setExecutor(new AdminCommands(this, API.getAdminCommandRegistry()));
 
         /* Load Tab Completers */
         getCommand("dquests").setTabCompleter(new PlayerCompleter());
@@ -212,6 +221,24 @@ public final class ODailyQuests extends JavaPlugin {
             questTypeRegistry.registerQuestType(entry.getKey(), entry.getValue());
             PluginLogger.info("Registered external quest type: " + entry.getKey());
         }
+    }
+
+    private void registerSubCommands() {
+        final PlayerCommandRegistry playerCommandRegistry = API.getPlayerCommandRegistry();
+
+        playerCommandRegistry.registerCommand(new PShowCommand(interfacesManager.getQuestsInterfaces()));
+        playerCommandRegistry.registerCommand(new PRerollCommand());
+
+        final AdminCommandRegistry adminCommandRegistry = API.getAdminCommandRegistry();
+
+        adminCommandRegistry.registerCommand(new AddCommand());
+        adminCommandRegistry.registerCommand(new ARerollCommand());
+        adminCommandRegistry.registerCommand(new CompleteCommand());
+        adminCommandRegistry.registerCommand(new CustomCompleteCommand());
+        adminCommandRegistry.registerCommand(new ResetCommand());
+        adminCommandRegistry.registerCommand(new ConvertCommand());
+        adminCommandRegistry.registerCommand(new AShowCommand(interfacesManager.getPlayerQuestsInterface()));
+        adminCommandRegistry.registerCommand(new OpenCommand(interfacesManager.getPlayerQuestsInterface()));
     }
 
     /**

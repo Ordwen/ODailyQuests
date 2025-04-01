@@ -1,23 +1,29 @@
 package com.ordwen.odailyquests.commands.player.handlers;
 
-import com.ordwen.odailyquests.commands.player.PCommandHandler;
+import com.ordwen.odailyquests.api.commands.player.IPlayerCommand;
+import com.ordwen.odailyquests.commands.player.PlayerMessages;
 import com.ordwen.odailyquests.enums.QuestsMessages;
-import com.ordwen.odailyquests.enums.QuestsPermissions;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
 
-public class PRerollCommand extends PCommandHandler {
+public class PRerollCommand extends PlayerMessages implements IPlayerCommand {
 
-    public PRerollCommand(Player player, String[] args) {
-        super(player, args);
+    @Override
+    public String getName() {
+        return "reroll";
     }
 
     @Override
-    public void handle() {
-        if (!player.hasPermission(QuestsPermissions.QUEST_REROLL.getPermission())) {
+    public String getPermission() {
+        return "odailyquests.reroll";
+    }
+
+    @Override
+    public void execute(Player player, String[] args) {
+        if (!player.hasPermission(getPermission())) {
             noPermission(player);
             return;
         }
@@ -35,19 +41,20 @@ public class PRerollCommand extends PCommandHandler {
             return;
         }
 
-        reroll(index);
+        reroll(player, index);
     }
 
     /**
      * Rerolls a specific quest for a player.
+     * @param player the player who wants to reroll the quest
      * @param index the index of the quest to reroll
      */
-    private void reroll(int index) {
+    private void reroll(Player player, int index) {
         final String playerName = player.getName();
         final Map<String, PlayerQuests> activeQuests = QuestsManager.getActiveQuests();
 
         if (index < 1 || index > activeQuests.get(playerName).getQuests().size()) {
-            invalidQuest();
+            invalidQuest(player);
             return;
         }
 
@@ -73,7 +80,7 @@ public class PRerollCommand extends PCommandHandler {
     /**
      * Sends the invalid quest message to the sender.
      */
-    protected void invalidQuest() {
+    protected void invalidQuest(Player player) {
         final String msg = QuestsMessages.INVALID_QUEST_INDEX.toString();
         if (msg != null) player.sendMessage(msg);
     }

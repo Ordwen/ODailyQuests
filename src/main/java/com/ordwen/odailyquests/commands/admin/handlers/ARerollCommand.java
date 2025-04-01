@@ -1,7 +1,9 @@
 package com.ordwen.odailyquests.commands.admin.handlers;
 
-import com.ordwen.odailyquests.commands.admin.ACommandHandler;
+import com.ordwen.odailyquests.api.commands.admin.IAdminCommand;
+import com.ordwen.odailyquests.commands.admin.AdminMessages;
 import com.ordwen.odailyquests.enums.QuestsMessages;
+import com.ordwen.odailyquests.enums.QuestsPermissions;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import org.bukkit.Bukkit;
@@ -10,19 +12,25 @@ import org.bukkit.entity.Player;
 
 import java.util.Map;
 
-public class ARerollCommand extends ACommandHandler {
+public class ARerollCommand extends AdminMessages implements IAdminCommand {
 
-    public ARerollCommand(CommandSender sender, String[] args) {
-        super(sender, args);
+    @Override
+    public String getName() {
+        return "reroll";
     }
 
     @Override
-    public void handle() {
+    public String getPermission() {
+        return QuestsPermissions.QUESTS_ADMIN.getPermission();
+    }
+
+    @Override
+    public void execute(CommandSender sender, String[] args) {
         if (args.length >= 3 && args[1] != null && args[2] != null) {
 
             final Player target = Bukkit.getPlayerExact(args[1]);
             if (target == null) {
-                invalidPlayer();
+                invalidPlayer(sender);
                 return;
             }
 
@@ -30,34 +38,35 @@ public class ARerollCommand extends ACommandHandler {
             try {
                 index = Integer.parseInt(args[2]);
             } catch (NumberFormatException e) {
-                help();
+                help(sender);
                 return;
             }
 
-            reroll(target, index);
+            reroll(sender, target, index);
 
-        } else help();
+        } else help(sender);
     }
 
     /**
      * Rerolls a specific quest for a player.
      *
+     * @param sender the command sender
      * @param target the player to reroll the quest for
      * @param index  the index of the quest to reroll
      */
-    private void reroll(Player target, int index) {
+    private void reroll(CommandSender sender, Player target, int index) {
         final String playerName = target.getName();
         final Map<String, PlayerQuests> activeQuests = QuestsManager.getActiveQuests();
 
         if (index < 1 || index > activeQuests.get(playerName).getQuests().size()) {
-            invalidQuest();
+            invalidQuest(sender);
             return;
         }
 
         if (activeQuests.containsKey(playerName)) {
             final PlayerQuests playerQuests = activeQuests.get(playerName);
             if (playerQuests.rerollQuest(index - 1, target)) {
-                confirmationToSender(index, playerName);
+                confirmationToSender(sender, index, playerName);
                 confirmationToTarget(index, target);
             }
         }
@@ -66,10 +75,11 @@ public class ARerollCommand extends ACommandHandler {
     /**
      * Sends the confirmation message to the sender.
      *
+     * @param sender the command sender
      * @param index  the index of the quest that was rerolled
      * @param target the name of the player who had their quest rerolled
      */
-    private void confirmationToSender(int index, String target) {
+    private void confirmationToSender(CommandSender sender, int index, String target) {
         final String msg = QuestsMessages.QUEST_REROLLED_ADMIN.toString();
         if (msg != null) {
             sender.sendMessage(msg
