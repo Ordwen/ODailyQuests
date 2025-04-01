@@ -12,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
@@ -27,7 +28,7 @@ public class InventoryClickListener extends ClickableChecker implements Listener
         this.playerQuestsInterface = playerQuestsInterface;
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onInventoryClickEvent(InventoryClickEvent event) {
         if (event.getClickedInventory() == null) return;
 

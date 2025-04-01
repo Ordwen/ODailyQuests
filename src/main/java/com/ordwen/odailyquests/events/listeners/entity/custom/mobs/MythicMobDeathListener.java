@@ -9,13 +9,14 @@ import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
 import io.lumine.mythic.core.mobs.ActiveMob;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 import java.util.Set;
 
 public class MythicMobDeathListener extends PlayerProgressor implements Listener {
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onMythicMobsDeathEvent(MythicMobDeathEvent event) {
         if (SharedMobs.isEnabled()) {
             final ActiveMob.ThreatTable threatTable = event.getMob().getThreatTable();

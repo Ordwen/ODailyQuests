@@ -6,13 +6,14 @@ import com.ordwen.odailyquests.configuration.essentials.Antiglitch;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 
 public class StructureGrowListener implements Listener {
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onStructureGrowEvent(StructureGrowEvent event) {
         Debugger.write("StructureGrowListener: onStructureGrowEvent summoned.");
 

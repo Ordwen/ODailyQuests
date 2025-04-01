@@ -6,11 +6,12 @@ import com.vexsoftware.votifier.model.VotifierEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 public class VotifierListener extends PlayerProgressor implements Listener {
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onVotifierEvent(VotifierEvent event) {
         final Vote vote = event.getVote();
         final String username = vote.getUsername();

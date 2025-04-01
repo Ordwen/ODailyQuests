@@ -5,23 +5,21 @@ import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityResurrectEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 
 public class PlayerItemConsumeListener extends PlayerProgressor implements Listener {
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onItemConsumeEvent(PlayerItemConsumeEvent event) {
         if (event.isCancelled()) return;
-
-        Debugger.write("=========================================================================================");
         Debugger.write("PlayerItemConsumeListener: onItemConsumeEvent summoned by " + event.getPlayer().getName() + " for " + event.getItem().getType() + ".");
-
         setPlayerQuestProgression(event, event.getPlayer(), 1, "CONSUME");
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onResurrect(EntityResurrectEvent event) {
         if (event.isCancelled()) {
             Debugger.write("PlayerItemConsumeListener: onResurrect cancelled.");

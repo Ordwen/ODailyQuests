@@ -22,7 +22,6 @@ public class PlayerFishListener extends PlayerProgressor implements Listener {
 
         if (event.getState() == PlayerFishEvent.State.CAUGHT_FISH && event.getCaught() instanceof Item item) {
             Debugger.write("PlayerFishListener: onPlayerFishEvent summoned by " + event.getPlayer().getName() + " for " + item.getItemStack().getType() + ".");
-
             setPlayerQuestProgression(event, event.getPlayer(), 1, "FISH");
         }
     }

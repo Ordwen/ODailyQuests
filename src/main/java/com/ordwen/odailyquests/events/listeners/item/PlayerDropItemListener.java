@@ -2,6 +2,7 @@ package com.ordwen.odailyquests.events.listeners.item;
 
 import com.ordwen.odailyquests.configuration.essentials.Antiglitch;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
@@ -11,7 +12,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 public class PlayerDropItemListener implements Listener {
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerDropItemEvent(PlayerDropItemEvent event) {
         if (event.isCancelled()) return;
 

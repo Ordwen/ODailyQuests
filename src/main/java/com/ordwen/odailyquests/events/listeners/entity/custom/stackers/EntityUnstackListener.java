@@ -9,11 +9,12 @@ import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 public class EntityUnstackListener extends PlayerProgressor implements Listener {
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onWildStackerEntityUnstackEvent(EntityUnstackEvent event) {
         if (event.isCancelled()) return;
 

@@ -6,12 +6,14 @@ import net.momirealms.customcrops.api.event.CropBreakEvent;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 public class CropBreakListener extends PlayerProgressor implements Listener {
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onCropBreak(CropBreakEvent event) {
+        if (event.isCancelled()) return;
         final Entity breaker = event.entityBreaker();
 
         if (breaker instanceof Player player) {

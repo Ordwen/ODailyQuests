@@ -13,6 +13,7 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.inventory.ItemStack;
@@ -24,7 +25,7 @@ import java.util.List;
 
 public class BlockDropItemListener extends PlayerProgressor implements Listener {
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockDropItem(BlockDropItemEvent event) {
         Debugger.write("BlockDropItemListener: onBlockDropItemEvent summoned.");
 

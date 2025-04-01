@@ -9,6 +9,7 @@ import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
@@ -18,7 +19,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 public class BlockPlaceListener extends PlayerProgressor implements Listener {
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockPlaceEvent(BlockPlaceEvent event) {
         if (event.isCancelled()) return;
 

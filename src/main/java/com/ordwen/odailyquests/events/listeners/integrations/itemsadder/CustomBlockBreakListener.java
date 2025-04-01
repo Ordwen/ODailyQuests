@@ -10,6 +10,7 @@ import dev.lone.itemsadder.api.Events.CustomBlockBreakEvent;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.persistence.PersistentDataContainer;
 
@@ -17,7 +18,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CustomBlockBreakListener extends PlayerProgressor implements Listener {
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onCustomBlockBreakEvent(CustomBlockBreakEvent event) {
         Debugger.write("CustomBlockBreakListener: onCustomBlockBreakEvent summoned.");
 

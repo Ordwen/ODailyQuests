@@ -6,6 +6,7 @@ import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.SmithItemEvent;
@@ -14,7 +15,7 @@ import org.bukkit.inventory.SmithingInventory;
 
 public class SmithItemListener extends PlayerProgressor implements Listener {
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onSmithItemEvent(SmithItemEvent event) {
 
         if (event.isCancelled()) return;
@@ -60,7 +61,6 @@ public class SmithItemListener extends PlayerProgressor implements Listener {
 
         result.setAmount(recipeAmount);
 
-        Debugger.write("=========================================================================================");
         Debugger.write("SmithItemListener: onSmithItemEvent summoned by " + player.getName() + " for " + result.getType() + ".");
         setPlayerQuestProgression(event, player, result.getAmount(), "CRAFT");
     }

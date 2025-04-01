@@ -5,6 +5,7 @@ import com.ordwen.odailyquests.configuration.integrations.OraxenEnabled;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import io.th0rgal.oraxen.api.events.OraxenItemsLoadedEvent;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 public class OraxenItemsLoadedListener implements Listener {
@@ -15,7 +16,7 @@ public class OraxenItemsLoadedListener implements Listener {
         this.plugin = plugin;
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onOraxenItemsLoaded(OraxenItemsLoadedEvent event) {
         PluginLogger.info("Oraxen updated its data. Reloading...");
         OraxenEnabled.setLoaded(true);

@@ -6,6 +6,7 @@ import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.CraftItemEvent;
@@ -13,7 +14,7 @@ import org.bukkit.inventory.*;
 
 public class CraftItemListener extends PlayerProgressor implements Listener {
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onCraftItemEvent(CraftItemEvent event) {
         if (event.isCancelled()) return;
         if (event.getCurrentItem() == null) return;
