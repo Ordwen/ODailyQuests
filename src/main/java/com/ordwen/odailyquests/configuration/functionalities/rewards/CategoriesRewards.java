@@ -5,7 +5,6 @@ import com.ordwen.odailyquests.configuration.IConfigurable;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.files.ConfigurationFile;
-import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.rewards.Reward;
 import com.ordwen.odailyquests.rewards.RewardLoader;
 import com.ordwen.odailyquests.rewards.RewardManager;
@@ -19,7 +18,6 @@ import java.util.Map;
 public class CategoriesRewards implements IConfigurable {
 
     private final Map<String, Reward> categoryRewards = new HashMap<>();
-    private final Map<String, Boolean> categoryRewardEnabled = new HashMap<>();
 
     private final ConfigurationFile configurationFile;
     private final RewardLoader rewardLoader = new RewardLoader();
@@ -30,27 +28,21 @@ public class CategoriesRewards implements IConfigurable {
 
     @Override
     public void load() {
-        final ConfigurationSection categoriesRewards = configurationFile.getConfig().getConfigurationSection("categories_rewards");
-        if (categoriesRewards == null) {
-            PluginLogger.error("Categories rewards section is missing in the configuration file.");
+        final ConfigurationSection categoriesRewardsConfig = configurationFile.getConfig().getConfigurationSection("categories_rewards");
+        if (categoriesRewardsConfig == null) {
+            PluginLogger.error("categories_rewards section is missing in the configuration file.");
             return;
         }
 
-        for (String category : CategoriesLoader.getAllCategories().keySet()) {
-            boolean isRewardEnabled = categoriesRewards.getBoolean(category + ".enabled");
-            categoryRewardEnabled.put(category, isRewardEnabled);
-
-            if (isRewardEnabled) {
-                final ConfigurationSection rewardSection = categoriesRewards.getConfigurationSection(category);
-                if (rewardSection == null) {
-                    PluginLogger.error("Reward section for category " + category + " is missing in the configuration file.");
-                    categoryRewardEnabled.put(category, false);
-                    continue;
-                }
-
-                final Reward reward = rewardLoader.getRewardFromSection(rewardSection, "config.yml", null);
-                categoryRewards.put(category, reward);
+        for (String category : categoriesRewardsConfig.getKeys(false)) {
+            final ConfigurationSection rewardSection = categoriesRewardsConfig.getConfigurationSection(category);
+            if (rewardSection == null) {
+                PluginLogger.error("Reward section for category " + category + " is missing in the configuration file.");
+                continue;
             }
+
+            final Reward reward = rewardLoader.getRewardFromSection(rewardSection, "config.yml", null);
+            categoryRewards.put(category, reward);
         }
     }
 
@@ -61,8 +53,8 @@ public class CategoriesRewards implements IConfigurable {
      * @param category category.
      */
     public void sendCategoryRewardInternal(Player player, String category) {
-        if (!categoryRewardEnabled.getOrDefault(category, false)) {
-            Debugger.write("Category " + category + " reward is not enabled.");
+        if (!categoryRewards.containsKey(category)) {
+            Debugger.write("Category " + category + " is missing in the categories_rewards section.");
             return;
         }
 
