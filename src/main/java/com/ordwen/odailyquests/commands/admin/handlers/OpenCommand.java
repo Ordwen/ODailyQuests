@@ -9,6 +9,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
+import java.util.Collections;
+import java.util.List;
+
 public class OpenCommand extends AdminCommandBase {
 
     private final PlayerQuestsInterface playerQuestsInterface;
@@ -41,5 +44,14 @@ public class OpenCommand extends AdminCommandBase {
                 target.openInventory(inventory);
             } else invalidPlayer(sender);
         } else help(sender);
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, String[] args) {
+        if (args.length >= 3) {
+            return Collections.emptyList();
+        }
+
+        return null;
     }
 }

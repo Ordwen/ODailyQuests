@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -110,6 +111,10 @@ public class ARerollCommand extends AdminCommandBase {
                 questNumbers.add(String.valueOf(i));
             }
             return questNumbers;
+        }
+
+        if (args.length >= 4) {
+            return Collections.emptyList();
         }
 
         return null;

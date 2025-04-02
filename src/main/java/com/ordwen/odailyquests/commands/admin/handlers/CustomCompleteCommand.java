@@ -1,11 +1,16 @@
 package com.ordwen.odailyquests.commands.admin.handlers;
 
 import com.ordwen.odailyquests.api.commands.admin.AdminCommandBase;
+import com.ordwen.odailyquests.configuration.essentials.CustomTypes;
 import com.ordwen.odailyquests.enums.QuestsPermissions;
 import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class CustomCompleteCommand extends AdminCommandBase {
 
@@ -51,5 +56,18 @@ public class CustomCompleteCommand extends AdminCommandBase {
 
             playerProgressor.setPlayerQuestProgression(null, target, amount, questType);
         } else help(sender);
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, String[] args) {
+        if (args.length == 3) {
+            return new ArrayList<>(CustomTypes.getCustomTypes());
+        }
+
+        if (args.length >= 4) {
+            return Collections.emptyList();
+        }
+
+        return null;
     }
 }

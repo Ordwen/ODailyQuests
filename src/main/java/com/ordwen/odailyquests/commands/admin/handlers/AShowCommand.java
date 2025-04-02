@@ -10,6 +10,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
+import java.util.Collections;
+import java.util.List;
+
 public class AShowCommand extends AdminCommandBase {
 
     private final PlayerQuestsInterface playerQuestsInterface;
@@ -51,5 +54,14 @@ public class AShowCommand extends AdminCommandBase {
             final String msg = QuestsMessages.PLAYER_ONLY.toString();
             if (msg != null) sender.sendMessage(msg);
         }
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, String[] args) {
+        if (args.length >= 3) {
+            return Collections.emptyList();
+        }
+
+        return null;
     }
 }

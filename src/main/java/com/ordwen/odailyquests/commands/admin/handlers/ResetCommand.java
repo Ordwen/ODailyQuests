@@ -11,6 +11,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -80,6 +81,11 @@ public class ResetCommand extends AdminCommandBase {
         if (args.length == 2) {
             return List.of("quests", "total");
         }
+
+        if (args.length >= 4) {
+            return Collections.emptyList();
+        }
+
         return null;
     }
 }

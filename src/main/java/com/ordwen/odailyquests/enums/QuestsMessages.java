@@ -10,19 +10,20 @@ import org.bukkit.entity.Player;
 public enum QuestsMessages {
 
     PLAYER_HELP("player_help", """
-            &a&nPlayer commands:
+            &aPlayer commands:
             &e/dq me &a: see your own quests
             &e/dq reroll <index> &a: reroll a quest (requires permission)
-            &e/dq show <global/easy/medium/hard> &a: see the quests of a category
+            &e/dq show <category> &a: see the quests of a category
             """),
     ADMIN_HELP("admin_help", """
-            &c&nAdmin commands:
+            &cAdmin commands:
             &e/dqa complete <player> <index> &a: complete a player quest
-            &e/dqa customcomplete <player> <index> <amount> &a: complete a player quest from a custom type
+            &e/dqa customcomplete <player> <type> <amount> &a: complete a player quest from a custom type
             &e/dqa reset <quests/total> <player> &a: draw new quests for a player, or reset his total number of achieved quests.
             &e/dqa add total <player> <amount> &a: add a number of achieved quests to a player.
             &e/dqa reroll <player> <index> &a: draw a new quest for a player, at a specific index.
             &e/dqa show <player> &a: see quests of a player
+            &e/dqa open <player> &a: force a player to open the quest interface
             """),
 
     NO_PERMISSION("no_permission", "&cYou don't have permission."),

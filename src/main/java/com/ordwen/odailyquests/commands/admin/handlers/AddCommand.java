@@ -95,6 +95,10 @@ public class AddCommand extends AdminCommandBase {
             return List.of("total");
         }
 
+        if (args.length >= 4) {
+            return Collections.emptyList();
+        }
+
         return null;
     }
 }
