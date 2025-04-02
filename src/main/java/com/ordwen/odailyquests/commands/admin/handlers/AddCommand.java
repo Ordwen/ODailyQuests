@@ -1,7 +1,6 @@
 package com.ordwen.odailyquests.commands.admin.handlers;
 
-import com.ordwen.odailyquests.api.commands.admin.IAdminCommand;
-import com.ordwen.odailyquests.commands.admin.AdminMessages;
+import com.ordwen.odailyquests.api.commands.admin.AdminCommandBase;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.enums.QuestsPermissions;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
@@ -9,8 +8,12 @@ import com.ordwen.odailyquests.quests.player.QuestsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
-public class AddCommand extends AdminMessages implements IAdminCommand {
+import java.util.Collections;
+import java.util.List;
+
+public class AddCommand extends AdminCommandBase {
 
     @Override
     public String getName() {
@@ -84,5 +87,14 @@ public class AddCommand extends AdminMessages implements IAdminCommand {
         final String msg = QuestsMessages.ADD_TOTAL_TARGET.toString();
         if (msg != null) target.sendMessage(msg
                 .replace("%amount%", String.valueOf(amount)));
+    }
+
+    @Override
+    public List<String> onTabComplete(@NotNull CommandSender sender, String[] args) {
+        if (args.length == 2) {
+            return List.of("total");
+        }
+
+        return null;
     }
 }

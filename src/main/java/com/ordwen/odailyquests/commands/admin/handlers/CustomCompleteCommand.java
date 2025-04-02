@@ -1,14 +1,13 @@
 package com.ordwen.odailyquests.commands.admin.handlers;
 
-import com.ordwen.odailyquests.api.commands.admin.IAdminCommand;
-import com.ordwen.odailyquests.commands.admin.AdminMessages;
+import com.ordwen.odailyquests.api.commands.admin.AdminCommandBase;
 import com.ordwen.odailyquests.enums.QuestsPermissions;
 import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class CustomCompleteCommand extends AdminMessages implements IAdminCommand {
+public class CustomCompleteCommand extends AdminCommandBase {
 
     private final PlayerProgressor playerProgressor;
 

@@ -1,7 +1,7 @@
 package com.ordwen.odailyquests.commands.admin.handlers;
 
-import com.ordwen.odailyquests.api.commands.admin.IAdminCommand;
-import com.ordwen.odailyquests.commands.admin.AdminMessages;
+import com.ordwen.odailyquests.api.commands.admin.AdminCommandBase;
+import com.ordwen.odailyquests.configuration.essentials.QuestsPerCategory;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.enums.QuestsPermissions;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
@@ -9,10 +9,13 @@ import com.ordwen.odailyquests.quests.player.QuestsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
-public class ARerollCommand extends AdminMessages implements IAdminCommand {
+public class ARerollCommand extends AdminCommandBase {
 
     @Override
     public String getName() {
@@ -97,5 +100,18 @@ public class ARerollCommand extends AdminMessages implements IAdminCommand {
     private void confirmationToTarget(int index, Player target) {
         final String msg = QuestsMessages.QUEST_REROLLED.toString();
         if (msg != null) target.sendMessage(msg.replace("%index%", String.valueOf(index)));
+    }
+
+    @Override
+    public List<String> onTabComplete(@NotNull CommandSender sender, String[] args) {
+        if (args.length == 3) {
+            List<String> questNumbers = new ArrayList<>();
+            for (int i = 1; i <= QuestsPerCategory.getTotalQuestsAmount(); i++) {
+                questNumbers.add(String.valueOf(i));
+            }
+            return questNumbers;
+        }
+
+        return null;
     }
 }

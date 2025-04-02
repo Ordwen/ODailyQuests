@@ -1,13 +1,16 @@
 package com.ordwen.odailyquests.commands.admin.convert;
 
-import com.ordwen.odailyquests.api.commands.admin.IAdminCommand;
-import com.ordwen.odailyquests.commands.admin.AdminMessages;
+import com.ordwen.odailyquests.api.commands.admin.AdminCommandBase;
 import com.ordwen.odailyquests.enums.QuestsPermissions;
 import com.ordwen.odailyquests.tools.PluginLogger;
+import java.util.Collections;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
-public class ConvertCommand extends AdminMessages implements IAdminCommand {
+import java.util.List;
+
+public class ConvertCommand extends AdminCommandBase {
 
     @Override
     public String getName() {
@@ -62,5 +65,14 @@ public class ConvertCommand extends AdminMessages implements IAdminCommand {
 
         PluginLogger.error("The old format is not supported.");
         return false;
+    }
+
+    @Override
+    public List<String> onTabComplete(@NotNull CommandSender sender, String[] args) {
+        if (args.length == 2 || args.length == 3) {
+            return List.of("mysql", "sqlite");
+        }
+
+        return Collections.emptyList();
     }
 }

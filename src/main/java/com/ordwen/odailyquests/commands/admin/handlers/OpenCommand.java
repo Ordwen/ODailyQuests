@@ -1,7 +1,6 @@
 package com.ordwen.odailyquests.commands.admin.handlers;
 
-import com.ordwen.odailyquests.api.commands.admin.IAdminCommand;
-import com.ordwen.odailyquests.commands.admin.AdminMessages;
+import com.ordwen.odailyquests.api.commands.admin.AdminCommandBase;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
 import com.ordwen.odailyquests.enums.QuestsPermissions;
 import org.bukkit.Bukkit;
@@ -10,7 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
-public class OpenCommand extends AdminMessages implements IAdminCommand {
+public class OpenCommand extends AdminCommandBase {
 
     private final PlayerQuestsInterface playerQuestsInterface;
 

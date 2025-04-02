@@ -1,8 +1,8 @@
 package com.ordwen.odailyquests.api;
 
 import com.ordwen.odailyquests.api.commands.admin.AdminCommandRegistry;
+import com.ordwen.odailyquests.api.commands.player.PlayerCommandBase;
 import com.ordwen.odailyquests.api.commands.player.PlayerCommandRegistry;
-import com.ordwen.odailyquests.api.commands.player.IPlayerCommand;
 import com.ordwen.odailyquests.api.quests.QuestTypeRegistry;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
@@ -71,7 +71,7 @@ public class ODailyQuestsAPI {
      *
      * @param command command to register
      */
-    public void registerCommand(IPlayerCommand command) {
+    public void registerCommand(PlayerCommandBase command) {
         playerCommandRegistry.registerCommand(command);
     }
 

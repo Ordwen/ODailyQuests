@@ -1,13 +1,18 @@
 package com.ordwen.odailyquests.commands.player.handlers;
 
-import com.ordwen.odailyquests.api.commands.player.IPlayerCommand;
+import com.ordwen.odailyquests.api.commands.player.PlayerCommandBase;
 import com.ordwen.odailyquests.commands.interfaces.QuestsInterfaces;
-import com.ordwen.odailyquests.commands.player.PlayerMessages;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.jetbrains.annotations.NotNull;
 
-public class PShowCommand extends PlayerMessages implements IPlayerCommand {
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class PShowCommand extends PlayerCommandBase {
 
     private static final String PERMISSION_PREFIX = "odailyquests.";
 
@@ -60,5 +65,16 @@ public class PShowCommand extends PlayerMessages implements IPlayerCommand {
 
         final Inventory inventory = questsInterfaces.getInterfaceFirstPage(category, player);
         player.openInventory(inventory);
+    }
+
+    @Override
+    public List<String> onTabComplete(@NotNull CommandSender sender, String[] args) {
+        if (args.length == 2) {
+            List<String> categories = new ArrayList<>(CategoriesLoader.getAllCategories().keySet());
+            Collections.sort(categories);
+            return categories;
+        }
+
+        return Collections.emptyList();
     }
 }

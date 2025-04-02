@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.commands.admin;
+package com.ordwen.odailyquests.api.commands.admin;
 
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import org.bukkit.command.CommandSender;

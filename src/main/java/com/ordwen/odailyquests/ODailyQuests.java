@@ -135,8 +135,8 @@ public final class ODailyQuests extends JavaPlugin {
         getCommand("dqadmin").setExecutor(new AdminCommands(this, API.getAdminCommandRegistry()));
 
         /* Load Tab Completers */
-        getCommand("dquests").setTabCompleter(new PlayerCompleter());
-        getCommand("dqadmin").setTabCompleter(new AdminCompleter());
+        getCommand("dquests").setTabCompleter(new PlayerCompleter(API.getPlayerCommandRegistry()));
+        getCommand("dqadmin").setTabCompleter(new AdminCompleter(API.getAdminCommandRegistry()));
 
         /* Register plugin events */
         getServer().getPluginManager().registerEvents(new InventoryClickListener(interfacesManager.getQuestsInterfaces()), this);

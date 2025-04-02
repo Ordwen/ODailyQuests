@@ -1,7 +1,8 @@
 package com.ordwen.odailyquests.commands.player;
 
-import com.ordwen.odailyquests.api.commands.player.IPlayerCommand;
+import com.ordwen.odailyquests.api.commands.player.PlayerCommand;
 import com.ordwen.odailyquests.api.commands.player.PlayerCommandRegistry;
+import com.ordwen.odailyquests.api.commands.player.PlayerMessages;
 import com.ordwen.odailyquests.commands.interfaces.InterfacesManager;
 import com.ordwen.odailyquests.enums.QuestsPermissions;
 import org.bukkit.ChatColor;
@@ -35,7 +36,7 @@ public class PlayerCommands extends PlayerMessages implements CommandExecutor {
         }
 
         if (args.length >= 1) {
-            final IPlayerCommand handler = playerCommandRegistry.getCommandHandler(args[0]);
+            final PlayerCommand handler = playerCommandRegistry.getCommandHandler(args[0]);
             if (handler != null) {
                 if (player.hasPermission(handler.getPermission())) {
                     handler.execute(player, args);

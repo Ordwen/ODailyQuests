@@ -1,7 +1,6 @@
 package com.ordwen.odailyquests.commands.admin.handlers;
 
-import com.ordwen.odailyquests.api.commands.admin.IAdminCommand;
-import com.ordwen.odailyquests.commands.admin.AdminMessages;
+import com.ordwen.odailyquests.api.commands.admin.AdminCommandBase;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.enums.QuestsPermissions;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
@@ -10,10 +9,12 @@ import com.ordwen.odailyquests.quests.player.progression.QuestLoaderUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Map;
 
-public class ResetCommand extends AdminMessages implements IAdminCommand {
+public class ResetCommand extends AdminCommandBase {
 
     @Override
     public String getName() {
@@ -72,5 +73,13 @@ public class ResetCommand extends AdminMessages implements IAdminCommand {
 
         msg = QuestsMessages.TOTAL_AMOUNT_RESET.getMessage(target);
         if (msg != null) target.sendMessage(msg);
+    }
+
+    @Override
+    public List<String> onTabComplete(@NotNull CommandSender sender, String[] args) {
+        if (args.length == 2) {
+            return List.of("quests", "total");
+        }
+        return null;
     }
 }

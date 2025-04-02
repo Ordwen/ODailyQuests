@@ -3,17 +3,17 @@ package com.ordwen.odailyquests.api.commands.player;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PlayerCommandRegistry extends HashMap<String, IPlayerCommand> {
+public class PlayerCommandRegistry extends HashMap<String, PlayerCommandBase> {
 
-    public void registerCommand(IPlayerCommand handler) {
+    public void registerCommand(PlayerCommandBase handler) {
         this.put(handler.getName(), handler);
     }
 
-    public IPlayerCommand getCommandHandler(String name) {
+    public PlayerCommandBase getCommandHandler(String name) {
         return this.get(name);
     }
 
-    public Map<String, IPlayerCommand> getCommandHandlers() {
+    public Map<String, PlayerCommandBase> getCommandHandlers() {
         return this;
     }
 }

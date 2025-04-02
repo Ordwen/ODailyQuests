@@ -3,17 +3,17 @@ package com.ordwen.odailyquests.api.commands.admin;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AdminCommandRegistry extends HashMap<String, IAdminCommand> {
+public class AdminCommandRegistry extends HashMap<String, AdminCommandBase> {
 
-    public void registerCommand(IAdminCommand handler) {
+    public void registerCommand(AdminCommandBase handler) {
         this.put(handler.getName(), handler);
     }
 
-    public IAdminCommand getCommandHandler(String name) {
+    public AdminCommandBase getCommandHandler(String name) {
         return this.get(name);
     }
 
-    public Map<String, IAdminCommand> getCommandHandlers() {
+    public Map<String, AdminCommandBase> getCommandHandlers() {
         return this;
     }
 }
