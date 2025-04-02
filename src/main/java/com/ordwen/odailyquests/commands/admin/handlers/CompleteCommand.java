@@ -9,7 +9,6 @@ import com.ordwen.odailyquests.enums.QuestsPermissions;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -34,9 +33,8 @@ public class CompleteCommand extends AdminCommandBase {
     @Override
     public void execute(CommandSender sender, String[] args) {
 
-        final Player target = Bukkit.getPlayerExact(args[1]);
+        final Player target = getTargetPlayer(sender, args[1]);
         if (target == null) {
-            invalidPlayer(sender);
             return;
         }
 
@@ -45,11 +43,8 @@ public class CompleteCommand extends AdminCommandBase {
             return;
         }
 
-        int questIndex;
-        try {
-            questIndex = Integer.parseInt(args[2]);
-        } catch (NumberFormatException exception) {
-            help(sender);
+        int questIndex = parseQuestIndex(sender, args[2]);
+        if (questIndex == -1) {
             return;
         }
 

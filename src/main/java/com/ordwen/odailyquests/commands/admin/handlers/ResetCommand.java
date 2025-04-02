@@ -6,7 +6,6 @@ import com.ordwen.odailyquests.enums.QuestsPermissions;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.QuestLoaderUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -31,9 +30,8 @@ public class ResetCommand extends AdminCommandBase {
     public void execute(CommandSender sender, String[] args) {
         if (args.length >= 3 && args[1] != null && args[2] != null) {
 
-            final Player target = Bukkit.getPlayerExact(args[2]);
+            final Player target = getTargetPlayer(sender, args[2]);
             if (target == null) {
-                invalidPlayer(sender);
                 return;
             }
 

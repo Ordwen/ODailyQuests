@@ -32,17 +32,13 @@ public class ARerollCommand extends AdminCommandBase {
     public void execute(CommandSender sender, String[] args) {
         if (args.length >= 3 && args[1] != null && args[2] != null) {
 
-            final Player target = Bukkit.getPlayerExact(args[1]);
+            final Player target = getTargetPlayer(sender, args[1]);
             if (target == null) {
-                invalidPlayer(sender);
                 return;
             }
 
-            int index;
-            try {
-                index = Integer.parseInt(args[2]);
-            } catch (NumberFormatException e) {
-                help(sender);
+            int index = parseQuestIndex(sender, args[2]);
+            if (index == -1) {
                 return;
             }
 
