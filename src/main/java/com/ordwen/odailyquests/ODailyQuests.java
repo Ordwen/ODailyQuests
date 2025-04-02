@@ -9,6 +9,7 @@ import com.ordwen.odailyquests.commands.admin.convert.ConvertCommand;
 import com.ordwen.odailyquests.commands.admin.handlers.*;
 import com.ordwen.odailyquests.commands.player.handlers.PRerollCommand;
 import com.ordwen.odailyquests.commands.player.handlers.PShowCommand;
+import com.ordwen.odailyquests.configuration.essentials.CheckForUpdate;
 import com.ordwen.odailyquests.events.restart.RestartHandler;
 import com.ordwen.odailyquests.externs.IntegrationsManager;
 import com.ordwen.odailyquests.commands.admin.AdminCommands;
@@ -99,7 +100,6 @@ public final class ODailyQuests extends JavaPlugin {
 
         /* Check for updates */
         new ConfigUpdateManager(this).runUpdates();
-        checkForSpigotUpdate();
 
         /* Init categories loader */
         this.categoriesLoader = new CategoriesLoader();
@@ -168,6 +168,7 @@ public final class ODailyQuests extends JavaPlugin {
         }
 
         PluginLogger.info("Plugin is started!");
+        checkForSpigotUpdate();
     }
 
     private void registerQuestTypes() {
@@ -270,14 +271,34 @@ public final class ODailyQuests extends JavaPlugin {
      * Check if an update is available.
      */
     private void checkForSpigotUpdate() {
+        if (!CheckForUpdate.isCheckForUpdate()) return;
+
         PluginLogger.info("Checking for update...");
-        new UpdateChecker(this, 100990).getVersion(version -> {
-            if (this.getDescription().getVersion().equals(version)) {
+        new UpdateChecker(100990).getVersion(version -> {
+            String currentVersion = this.getDescription().getVersion();
+            boolean isSnapshot = currentVersion.contains("SNAPSHOT");
+
+            String cleanCurrentVersion = currentVersion.replace("-SNAPSHOT", "");
+            int comparison = UpdateChecker.compareVersions(cleanCurrentVersion, version);
+
+            if (isSnapshot) {
+                PluginLogger.info("You're using a snapshot version: " + currentVersion);
+
+                if (comparison < 0) {
+                    PluginLogger.warn("A new stable update is available!");
+                    PluginLogger.warn("Current snapshot version: " + currentVersion + ", Stable version: " + version);
+                    PluginLogger.warn("Consider updating to the latest stable release:");
+                    PluginLogger.warn("https://www.spigotmc.org/resources/odailyquests.100990/");
+                }
+                return;
+            }
+
+            if (comparison >= 0) {
                 PluginLogger.info("Plugin is up to date.");
             } else {
                 PluginLogger.warn("A new update is available !");
-                PluginLogger.warn("Current version : " + this.getDescription().getVersion() + ", Available version : " + version);
-                PluginLogger.warn("Please download latest version :");
+                PluginLogger.warn("Current version : " + currentVersion + ", Available version : " + version);
+                PluginLogger.warn("Please download the latest version:");
                 PluginLogger.warn("https://www.spigotmc.org/resources/odailyquests.100990/");
             }
         });

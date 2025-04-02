@@ -39,6 +39,7 @@ public class ConfigFactory {
         configs.put(Synchronization.class, new Synchronization(configurationFile));
         configs.put(RenewInterval.class, new RenewInterval(configurationFile));
         configs.put(RenewTime.class, new RenewTime(configurationFile));
+        configs.put(CheckForUpdate.class, new CheckForUpdate(configurationFile));
 
         // functionalities
         configs.put(ActionBar.class, new ActionBar(configurationFile));

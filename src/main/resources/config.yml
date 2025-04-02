@@ -1,6 +1,9 @@
 # if the plugin doesn't work as expected, set debug to true and send the log file to the developer.
 debug: false
 
+# check if the plugin is up to date and send a message to the console if it is not
+check-for-update: true
+
 # never touch these lines, used for the plugin auto update system
 version: 3.0.0
 database_version: 2

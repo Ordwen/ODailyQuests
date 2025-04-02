@@ -1,7 +1,6 @@
 package com.ordwen.odailyquests.tools;
 
 import com.ordwen.odailyquests.ODailyQuests;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,11 +10,9 @@ import java.util.function.Consumer;
 
 public class UpdateChecker {
 
-    private final JavaPlugin plugin;
     private final int resourceId;
 
-    public UpdateChecker(JavaPlugin plugin, int resourceId) {
-        this.plugin = plugin;
+    public UpdateChecker(int resourceId) {
         this.resourceId = resourceId;
     }
 
@@ -29,5 +26,18 @@ public class UpdateChecker {
                 PluginLogger.error("Unable to check for updates: " + exception.getMessage());
             }
         });
+    }
+
+    public static int compareVersions(String v1, String v2) {
+        final String[] parts1 = v1.split("\\.");
+        final String[] parts2 = v2.split("\\.");
+        for (int i = 0; i < Math.max(parts1.length, parts2.length); i++) {
+            int num1 = i < parts1.length ? Integer.parseInt(parts1[i]) : 0;
+            int num2 = i < parts2.length ? Integer.parseInt(parts2[i]) : 0;
+            if (num1 != num2) {
+                return Integer.compare(num1, num2);
+            }
+        }
+        return 0;
     }
 }
