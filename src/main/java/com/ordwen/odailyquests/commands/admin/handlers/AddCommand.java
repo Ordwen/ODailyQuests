@@ -1,29 +1,40 @@
 package com.ordwen.odailyquests.commands.admin.handlers;
 
-import com.ordwen.odailyquests.commands.admin.ACommandHandler;
+import com.ordwen.odailyquests.api.commands.admin.AdminCommandBase;
 import com.ordwen.odailyquests.enums.QuestsMessages;
+import com.ordwen.odailyquests.enums.QuestsPermissions;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
-public class AddCommand extends ACommandHandler {
+import java.util.Collections;
+import java.util.List;
 
-    public AddCommand(CommandSender sender, String[] args) {
-        super(sender, args);
+public class AddCommand extends AdminCommandBase {
+
+    @Override
+    public String getName() {
+        return "add";
     }
 
     @Override
-    public void handle() {
+    public String getPermission() {
+        return QuestsPermissions.QUESTS_ADMIN.getPermission();
+    }
+
+    @Override
+    public void execute(CommandSender sender, String[] args) {
         if (args.length == 4 && args[1] != null && args[2] != null && args[3] != null) {
             if (!args[1].equalsIgnoreCase("total")) {
-                help();
+                help(sender);
             }
 
             final Player target = Bukkit.getPlayer(args[2]);
             if (target == null) {
-                invalidPlayer();
+                invalidPlayer(sender);
                 return;
             }
 
@@ -31,25 +42,26 @@ public class AddCommand extends ACommandHandler {
             try {
                 amount = Integer.parseInt(args[3]);
             } catch (NumberFormatException e) {
-                invalidAmount();
+                invalidAmount(sender);
                 return;
             }
 
-            addAmount(target, amount);
-        } else help();
+            addAmount(sender, target, amount);
+        } else help(sender);
     }
 
     /**
      * Adds the amount of achieved quests to the player.
      *
+     * @param sender the command sender.
      * @param target the player to add the achieved quests.
      * @param amount the amount of achieved quests to add.
      */
-    private void addAmount(Player target, int amount) {
+    private void addAmount(CommandSender sender, Player target, int amount) {
         final PlayerQuests playerQuests = QuestsManager.getActiveQuests().get(target.getName());
         playerQuests.addTotalAchievedQuests(amount);
 
-        sendAdminMessage(amount);
+        sendAdminMessage(sender, amount);
         sendTargetMessage(target, amount);
     }
 
@@ -58,7 +70,7 @@ public class AddCommand extends ACommandHandler {
      *
      * @param amount the amount of quests added.
      */
-    private void sendAdminMessage(int amount) {
+    private void sendAdminMessage(CommandSender sender, int amount) {
         final String msg = QuestsMessages.ADD_TOTAL_ADMIN.toString();
         if (msg != null) sender.sendMessage(msg
                 .replace("%target%", sender.getName())
@@ -75,5 +87,18 @@ public class AddCommand extends ACommandHandler {
         final String msg = QuestsMessages.ADD_TOTAL_TARGET.toString();
         if (msg != null) target.sendMessage(msg
                 .replace("%amount%", String.valueOf(amount)));
+    }
+
+    @Override
+    public List<String> onTabComplete(@NotNull CommandSender sender, String[] args) {
+        if (args.length == 2) {
+            return List.of("total");
+        }
+
+        if (args.length >= 4) {
+            return Collections.emptyList();
+        }
+
+        return null;
     }
 }

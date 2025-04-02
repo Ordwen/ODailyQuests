@@ -1,24 +1,37 @@
 package com.ordwen.odailyquests.commands.admin.handlers;
 
-import com.ordwen.odailyquests.commands.admin.ACommandHandler;
+import com.ordwen.odailyquests.api.commands.admin.AdminCommandBase;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
+import com.ordwen.odailyquests.enums.QuestsPermissions;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
-public class OpenCommand extends ACommandHandler {
+import java.util.Collections;
+import java.util.List;
+
+public class OpenCommand extends AdminCommandBase {
 
     private final PlayerQuestsInterface playerQuestsInterface;
 
-    public OpenCommand(PlayerQuestsInterface playerQuestsInterface, CommandSender sender, String[] args) {
-        super(sender, args);
+    public OpenCommand(PlayerQuestsInterface playerQuestsInterface) {
         this.playerQuestsInterface = playerQuestsInterface;
     }
 
     @Override
-    public void handle() {
+    public String getName() {
+        return "open";
+    }
+
+    @Override
+    public String getPermission() {
+        return QuestsPermissions.QUESTS_ADMIN.getPermission();
+    }
+
+    @Override
+    public void execute(CommandSender sender, String[] args) {
         if (Bukkit.getPlayerExact(args[1]) != null) {
             final Player target = Bukkit.getPlayerExact(args[1]);
             if (target != null) {
@@ -29,7 +42,16 @@ public class OpenCommand extends ACommandHandler {
                     return;
                 }
                 target.openInventory(inventory);
-            } else invalidPlayer();
-        } else help();
+            } else invalidPlayer(sender);
+        } else help(sender);
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, String[] args) {
+        if (args.length >= 3) {
+            return Collections.emptyList();
+        }
+
+        return null;
     }
 }

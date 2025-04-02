@@ -1,5 +1,8 @@
 package com.ordwen.odailyquests.api;
 
+import com.ordwen.odailyquests.api.commands.admin.AdminCommandRegistry;
+import com.ordwen.odailyquests.api.commands.player.PlayerCommandBase;
+import com.ordwen.odailyquests.api.commands.player.PlayerCommandRegistry;
 import com.ordwen.odailyquests.api.quests.QuestTypeRegistry;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
@@ -19,6 +22,9 @@ public class ODailyQuestsAPI {
 
     private final QuestTypeRegistry questTypeRegistry = new QuestTypeRegistry();
 
+    private final PlayerCommandRegistry playerCommandRegistry = new PlayerCommandRegistry();
+    private final AdminCommandRegistry adminCommandRegistry = new AdminCommandRegistry();
+
     /**
      * Get the QuestTypeRegistry object.
      *
@@ -29,13 +35,21 @@ public class ODailyQuestsAPI {
     }
 
     /**
-     * Get the PlayerQuests object of a player.
+     * Get the CommandRegistry object.
      *
-     * @param playerName name of the player
-     * @return PlayerQuests object
+     * @return CommandRegistry object
      */
-    public PlayerQuests getPlayerQuests(String playerName) {
-        return QuestsManager.getActiveQuests().get(playerName);
+    public PlayerCommandRegistry getPlayerCommandRegistry() {
+        return playerCommandRegistry;
+    }
+
+    /**
+     * Get the AdminCommandRegistry object.
+     *
+     * @return AdminCommandRegistry object
+     */
+    public AdminCommandRegistry getAdminCommandRegistry() {
+        return adminCommandRegistry;
     }
 
     /**
@@ -53,6 +67,15 @@ public class ODailyQuestsAPI {
     }
 
     /**
+     * Register a new command.
+     *
+     * @param command command to register
+     */
+    public void registerCommand(PlayerCommandBase command) {
+        playerCommandRegistry.registerCommand(command);
+    }
+
+    /**
      * Disable the registration of new quest types.
      */
     public static void disableRegistration() {
@@ -66,5 +89,15 @@ public class ODailyQuestsAPI {
      */
     public static Map<String, Class<? extends AbstractQuest>> getExternalTypes() {
         return externalTypes;
+    }
+
+    /**
+     * Get the PlayerQuests object of a player.
+     *
+     * @param playerName name of the player
+     * @return PlayerQuests object
+     */
+    public PlayerQuests getPlayerQuests(String playerName) {
+        return QuestsManager.getActiveQuests().get(playerName);
     }
 }

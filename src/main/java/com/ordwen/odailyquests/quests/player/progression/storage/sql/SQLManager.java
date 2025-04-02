@@ -63,7 +63,7 @@ public abstract class SQLManager {
     protected void testConnection() {
         try (Connection con = getConnection()) {
             if (con != null && con.isValid(1)) {
-                PluginLogger.info("Plugin successfully connected to database " + con.getCatalog() + ".");
+                PluginLogger.info("Plugin successfully connected to database.");
             } else {
                 PluginLogger.error("Impossible to connect to database, please check your configuration.");
             }

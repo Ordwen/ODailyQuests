@@ -1,25 +1,29 @@
 package com.ordwen.odailyquests.commands.admin.convert;
 
-import com.ordwen.odailyquests.ODailyQuests;
-import com.ordwen.odailyquests.commands.admin.ACommandHandler;
+import com.ordwen.odailyquests.api.commands.admin.AdminCommandBase;
+import com.ordwen.odailyquests.enums.QuestsPermissions;
 import com.ordwen.odailyquests.tools.PluginLogger;
+import java.util.Collections;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
-public class ConverterManager extends ACommandHandler {
+import java.util.List;
 
-    final ODailyQuests oDailyQuests;
+public class ConvertCommand extends AdminCommandBase {
 
-    public ConverterManager(CommandSender sender, String[] args) {
-        super(sender, args);
-        this.oDailyQuests = ODailyQuests.INSTANCE;
+    @Override
+    public String getName() {
+        return "convert";
     }
 
-    /**
-     * Handles the conversion of the storage format.
-     */
     @Override
-    public void handle() {
+    public String getPermission() {
+        return QuestsPermissions.QUESTS_ADMIN.getPermission();
+    }
+
+    @Override
+    public void execute(CommandSender sender, String[] args) {
         if (args.length == 3) {
             if (!this.convert(args[1], args[2])) {
                 sender.sendMessage(ChatColor.RED + "Conversion failed! Please check the console for more information.");
@@ -61,5 +65,14 @@ public class ConverterManager extends ACommandHandler {
 
         PluginLogger.error("The old format is not supported.");
         return false;
+    }
+
+    @Override
+    public List<String> onTabComplete(@NotNull CommandSender sender, String[] args) {
+        if (args.length == 2 || args.length == 3) {
+            return List.of("mysql", "sqlite");
+        }
+
+        return Collections.emptyList();
     }
 }
