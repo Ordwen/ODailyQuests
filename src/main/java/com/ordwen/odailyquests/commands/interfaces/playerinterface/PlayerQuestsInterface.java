@@ -38,6 +38,9 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
     private static final String PROGRESS = "%progress%";
     private static final String PROGRESS_BAR = "%progressBar%";
     private static final String REQUIRED = "%required%";
+    private static final String ACHIEVED = "%achieved%";
+    private static final String DRAW_IN = "%drawIn%";
+    private static final String STATUS = "%status%";
     private static final String MATERIAL = "material";
 
     /* instances */
@@ -60,10 +63,10 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
     private String interfaceName;
     private Inventory playerQuestsInventoryBase;
     private int size;
-    private String achieved;
-    private String status;
-    private String progression;
-    private String completeGetType;
+    private String achievedStr;
+    private String statusStr;
+    private String progressStr;
+    private String completeGetTypeStr;
     private boolean isGlowingEnabled;
     private boolean isStatusDisabled;
 
@@ -135,10 +138,10 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
         playerQuestsInventoryBase = Bukkit.createInventory(null, size, "BASIC");
 
         /* load all texts */
-        achieved = interfaceConfig.getString(".achieved");
-        status = interfaceConfig.getString(".status");
-        progression = interfaceConfig.getString(".progress");
-        completeGetType = interfaceConfig.getString(".complete_get_type");
+        achievedStr = interfaceConfig.getString(".achieved");
+        statusStr = interfaceConfig.getString(".status");
+        progressStr = interfaceConfig.getString(".progress");
+        completeGetTypeStr = interfaceConfig.getString(".complete_get_type");
     }
 
     /**
@@ -262,8 +265,8 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
     /**
      * Check if the item needs to be loaded with placeholders. If so add it to the placeholders list.
      *
-     * @param slots   slots where the item should be added.
-     * @param item    item to add.
+     * @param slots slots where the item should be added.
+     * @param item  item to add.
      */
     private void loadPlaceholderItem(List<Integer> slots, ItemStack item) {
         boolean hasPlaceholders = false;
@@ -435,8 +438,21 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
      * @param playerQuests      the player quests.
      */
     private void configureItemMeta(ItemMeta itemMeta, AbstractQuest quest, Progression playerProgression, Player player, PlayerQuests playerQuests) {
-        itemMeta.setDisplayName(TextFormatter.format(player, quest.getQuestName()));
-        List<String> lore = generateLore(quest, playerProgression, player, playerQuests);
+        String displayName = quest.getQuestName();
+        if (displayName != null) {
+            displayName = TextFormatter.format(player, displayName)
+                    .replace(PROGRESS, String.valueOf(playerProgression.getAdvancement()))
+                    .replace(PROGRESS_BAR, ProgressBar.getProgressBar(playerProgression.getAdvancement(), playerProgression.getRequiredAmount()))
+                    .replace(REQUIRED, String.valueOf(playerProgression.getRequiredAmount()))
+                    .replace(ACHIEVED, String.valueOf(playerQuests.getAchievedQuests()))
+                    .replace(DRAW_IN, TimeRemain.timeRemain(player.getName()))
+                    .replace(STATUS, getQuestStatus(playerProgression, player));
+
+            itemMeta.setDisplayName(displayName);
+        }
+
+        final List<String> lore = generateLore(quest, playerProgression, player, playerQuests);
+        itemMeta.setLore(lore);
 
         if (playerProgression.isAchieved() && isGlowingEnabled) {
             itemMeta.addEnchant(Enchantment.SILK_TOUCH, 1, false);
@@ -445,7 +461,6 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
         itemMeta.addAttributeModifier(Attribute.GENERIC_MAX_HEALTH,
                 new AttributeModifier(UUID.randomUUID(), "dummy", 0, AttributeModifier.Operation.ADD_NUMBER));
         itemMeta.addItemFlags(ItemFlag.values());
-        itemMeta.setLore(lore);
     }
 
     /**
@@ -464,18 +479,18 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
                 .replace(PROGRESS, String.valueOf(playerProgression.getAdvancement()))
                 .replace(PROGRESS_BAR, ProgressBar.getProgressBar(playerProgression.getAdvancement(), playerProgression.getRequiredAmount()))
                 .replace(REQUIRED, String.valueOf(playerProgression.getRequiredAmount()))
-                .replace("%achieved%", String.valueOf(playerQuests.getAchievedQuests()))
-                .replace("%drawIn%", TimeRemain.timeRemain(player.getName()))
-                .replace("%status%", getQuestStatus(playerProgression, quest, player)));
+                .replace(ACHIEVED, String.valueOf(playerQuests.getAchievedQuests()))
+                .replace(DRAW_IN, TimeRemain.timeRemain(player.getName()))
+                .replace(STATUS, getQuestStatus(playerProgression, player)));
 
-        if (!status.isEmpty() && !isStatusDisabled) {
-            lore.add(TextFormatter.format(TextFormatter.format(player, status)));
+        if (!statusStr.isEmpty() && !isStatusDisabled) {
+            lore.add(TextFormatter.format(TextFormatter.format(player, statusStr)));
         }
 
-        if (playerProgression.isAchieved() && !achieved.isEmpty() && !isStatusDisabled) {
-            lore.add(TextFormatter.format(achieved));
-        } else if (!progression.isEmpty() && !isStatusDisabled) {
-            lore.add(TextFormatter.format(TextFormatter.format(player, progression)
+        if (playerProgression.isAchieved() && !achievedStr.isEmpty() && !isStatusDisabled) {
+            lore.add(TextFormatter.format(achievedStr));
+        } else if (!progressStr.isEmpty() && !isStatusDisabled) {
+            lore.add(TextFormatter.format(TextFormatter.format(player, progressStr)
                     .replace(PROGRESS, String.valueOf(playerProgression.getAdvancement()))
                     .replace(REQUIRED, String.valueOf(playerProgression.getRequiredAmount()))
                     .replace(PROGRESS_BAR, ProgressBar.getProgressBar(playerProgression.getAdvancement(), playerProgression.getRequiredAmount()))));
@@ -484,8 +499,15 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
         return lore;
     }
 
+    /**
+     * Depending on the quest index, place the item in the inventory.
+     *
+     * @param questIndex quest index.
+     * @param itemStack  item stack to place.
+     * @param inventory  inventory to place the item.
+     */
     private void placeItemInInventory(int questIndex, ItemStack itemStack, Inventory inventory) {
-        List<Integer> slots = slotQuests.get(questIndex);
+        final List<Integer> slots = slotQuests.get(questIndex);
         if (slots == null) {
             PluginLogger.error(ERROR_OCCURRED + " Slot not defined for quest " + (questIndex + 1));
             return;
@@ -524,7 +546,9 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
                 final List<String> lore = meta.getLore();
                 if (lore != null) {
                     for (String str : lore) {
-                        lore.set(lore.indexOf(str), TextFormatter.format(player, str).replace("%achieved%", String.valueOf(playerQuests.getAchievedQuests())).replace("%drawIn%", TimeRemain.timeRemain(player.getName())));
+                        lore.set(lore.indexOf(str), TextFormatter.format(player, str)
+                                .replace(ACHIEVED, String.valueOf(playerQuests.getAchievedQuests()))
+                                .replace(DRAW_IN, TimeRemain.timeRemain(player.getName())));
                     }
                 }
 
@@ -566,15 +590,17 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
      * Get the corresponding text for the quest status.
      *
      * @param progression the current progression of the quest.
-     * @param quest       the quest.
      * @param player      the player.
      * @return the achieved message or the progress message.
      */
-    private String getQuestStatus(Progression progression, AbstractQuest quest, Player player) {
+    private String getQuestStatus(Progression progression, Player player) {
         if (progression.isAchieved()) {
-            return TextFormatter.format(player, getAchieved());
+            return TextFormatter.format(player, getAchievedStr());
         } else {
-            return TextFormatter.format(player, getProgression().replace(PROGRESS, String.valueOf(progression.getAdvancement())).replace(REQUIRED, String.valueOf(progression.getRequiredAmount())).replace(PROGRESS_BAR, ProgressBar.getProgressBar(progression.getAdvancement(), progression.getRequiredAmount())));
+            return TextFormatter.format(player, getProgressStr()
+                    .replace(PROGRESS, String.valueOf(progression.getAdvancement()))
+                    .replace(REQUIRED, String.valueOf(progression.getRequiredAmount()))
+                    .replace(PROGRESS_BAR, ProgressBar.getProgressBar(progression.getAdvancement(), progression.getRequiredAmount())));
         }
     }
 
@@ -589,39 +615,90 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
         return TextFormatter.format(player, interfaceName);
     }
 
+    /**
+     * Check if the item is used to fill the inventory.
+     *
+     * @param itemStack item to check.
+     * @return true if the item is used to fill the inventory, false otherwise.
+     */
     public boolean isFillItem(ItemStack itemStack) {
         return fillItems.contains(itemStack);
     }
 
+    /**
+     * Check if the item is used to close the inventory.
+     *
+     * @param itemStack item to check.
+     * @return true if the item is used to close the inventory, false otherwise.
+     */
     public boolean isCloseItem(ItemStack itemStack) {
         return closeItems.contains(itemStack);
     }
 
+    /**
+     * Check if the item is used to execute a command as a player.
+     *
+     * @param slot slot of the item.
+     * @return true if the item is used to execute a player command, false otherwise.
+     */
     public boolean isPlayerCommandItem(int slot) {
         return playerCommandsItems.containsKey(slot);
     }
 
+    /**
+     * Check if the item is used to execute a command as a console.
+     *
+     * @param slot slot of the item.
+     * @return true if the item is used to execute a console command, false otherwise.
+     */
     public boolean isConsoleCommandItem(int slot) {
         return consoleCommandsItems.containsKey(slot);
     }
 
+    /**
+     * Get all player commands that can be executed by the item in the given slot.
+     *
+     * @param slot slot of the item.
+     * @return the player commands of the item.
+     */
     public List<String> getPlayerCommands(int slot) {
         return playerCommandsItems.get(slot);
     }
 
+    /**
+     * Get all console commands that can be executed by the item in the given slot.
+     *
+     * @param slot slot of the item.
+     * @return the console commands of the item.
+     */
     public List<String> getConsoleCommands(int slot) {
         return consoleCommandsItems.get(slot);
     }
 
-    public String getAchieved() {
-        return achieved;
+    /**
+     * Get the achieved string defined in the configuration.
+     *
+     * @return the achieved string.
+     */
+    public String getAchievedStr() {
+        return achievedStr;
     }
 
-    public String getProgression() {
-        return progression;
+    /**
+     * Get the status string defined in the configuration.
+     *
+     * @return the status string.
+     */
+    public String getProgressStr() {
+        return progressStr;
     }
 
-    public String getCompleteGetType() {
-        return completeGetType;
+    /**
+     * Get the complete get type string defined in the configuration.
+     *
+     * @return the complete get type string.
+     */
+    public String getCompleteGetTypeStr() {
+        return completeGetTypeStr;
     }
 }

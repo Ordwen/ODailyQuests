@@ -107,7 +107,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
      */
     private String getInterfaceMessage(String params, OfflinePlayer player, PlayerQuests playerQuests) {
         if (params.equals("interface_complete_get_type")) {
-            return TextFormatter.format((Player) player, playerQuestsInterface.getCompleteGetType());
+            return TextFormatter.format((Player) player, playerQuestsInterface.getCompleteGetTypeStr());
         } else if (params.startsWith("interface_status_")) {
             final String supposedIndex = params.substring("interface_status_".length());
             int index;
@@ -164,7 +164,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
             if (i == index) {
                 final Progression progression = playerQuests.getQuests().get(quest);
 
-                return (playerQuests.getQuests().get(quest).isAchieved() ? playerQuestsInterface.getAchieved() : playerQuestsInterface.getProgression())
+                return (playerQuests.getQuests().get(quest).isAchieved() ? playerQuestsInterface.getAchievedStr() : playerQuestsInterface.getProgressStr())
                         .replace("%progress%", String.valueOf(progression.getAdvancement()))
                         .replace("%required%", String.valueOf(progression.getRequiredAmount()))
                         .replace("%progressBar%", ProgressBar.getProgressBar(progression.getAdvancement(), progression.getRequiredAmount()));

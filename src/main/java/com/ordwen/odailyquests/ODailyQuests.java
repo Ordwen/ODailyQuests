@@ -282,7 +282,8 @@ public final class ODailyQuests extends JavaPlugin {
             int comparison = UpdateChecker.compareVersions(cleanCurrentVersion, version);
 
             if (isSnapshot) {
-                PluginLogger.info("You're using a snapshot version: " + currentVersion);
+                PluginLogger.warn("You're using a snapshot version: " + currentVersion);
+                PluginLogger.warn("This version may contain bugs. Please report any issues to the developer.");
 
                 if (comparison < 0) {
                     PluginLogger.warn("A new stable update is available!");

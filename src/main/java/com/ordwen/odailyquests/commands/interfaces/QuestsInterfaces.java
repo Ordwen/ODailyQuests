@@ -183,6 +183,11 @@ public class QuestsInterfaces {
      * @return inventory for the specified category and page.
      */
     public Inventory getInterfacePage(String category, int page, Player player) {
+        if (!categorizedInterfaces.containsKey(category)) {
+            PluginLogger.error("Impossible to find the interface for category " + category + ". The reason is probably a misconfiguration and should be explicitly mentioned in the plugin startup logs.");
+            return null;
+        }
+
         final Inventory inventory = categorizedInterfaces.get(category).second().get(page);
 
         for (int i = 0; i < inventory.getSize(); i++) {
@@ -190,21 +195,32 @@ public class QuestsInterfaces {
             if (item != null && item.getItemMeta() != null) {
                 final ItemMeta itemMeta = item.getItemMeta();
                 final PersistentDataContainer pdc = itemMeta.getPersistentDataContainer();
-
-                final List<String> lore = itemMeta.getLore();
-                if (lore == null) continue;
-
                 final String required = pdc.get(requiredKey, PersistentDataType.STRING);
 
-                lore.replaceAll(s -> s.replace("%progress%", String.valueOf(0)));
-                lore.replaceAll(s -> s.replace("%progressBar%", getProgressBar(required)));
-                lore.replaceAll(s -> s.replace("%required%", String.valueOf(required)));
-                lore.replaceAll(s -> s.replace("%drawIn%", "~"));
-                lore.replaceAll(s -> TextFormatter.format(player, s));
+                final List<String> lore = itemMeta.getLore();
+                if (lore != null) {
+                    lore.replaceAll(s -> s.replace("%progress%", String.valueOf(0)));
+                    lore.replaceAll(s -> s.replace("%progressBar%", getProgressBar(required)));
+                    lore.replaceAll(s -> s.replace("%required%", required));
+                    lore.replaceAll(s -> s.replace("%drawIn%", "~"));
+                    lore.replaceAll(s -> TextFormatter.format(player, s));
+                    itemMeta.setLore(lore);
+                }
 
-                itemMeta.setLore(lore);
+                if (itemMeta.hasDisplayName()) {
+                    String displayName = itemMeta.getDisplayName();
+
+                    displayName = displayName
+                            .replace("%progress%", String.valueOf(0))
+                            .replace("%progressBar%", getProgressBar(required))
+                            .replace("%required%", required)
+                            .replace("%drawIn%", "~");
+
+                    displayName = TextFormatter.format(player, displayName);
+                    itemMeta.setDisplayName(displayName);
+                }
+
                 item.setItemMeta(itemMeta);
-
             }
         }
         return inventory;
