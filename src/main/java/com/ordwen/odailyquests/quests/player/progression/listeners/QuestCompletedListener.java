@@ -22,7 +22,12 @@ public class QuestCompletedListener implements Listener {
         if (progression.isAchieved()) return;
 
         progression.setAchieved();
-        RewardManager.sendAllRewardItems(TextFormatter.format(player, quest.getQuestName()), player, quest.getReward());
+
+        final String formattedQuestName = TextFormatter
+                .format(player, quest.getQuestName())
+                .replace("%required%", String.valueOf(progression.getRequiredAmount()));
+
+        RewardManager.sendAllRewardItems(formattedQuestName, player, quest.getReward());
         QuestsManager.getActiveQuests().get(player.getName()).increaseCategoryAchievedQuests(quest.getCategoryName(), player);
     }
 }

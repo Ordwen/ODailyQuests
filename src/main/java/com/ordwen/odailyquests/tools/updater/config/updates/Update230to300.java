@@ -3,6 +3,7 @@ package com.ordwen.odailyquests.tools.updater.config.updates;
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import com.ordwen.odailyquests.tools.updater.config.ConfigUpdater;
+import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,6 +36,7 @@ public class Update230to300 extends ConfigUpdater {
         setDefaultConfigItem("join_message_delay", 1.0, config, configFile);
         setDefaultConfigItem("use_nexo", false, config, configFile);
         setDefaultConfigItem("renew_time", "00:00", config, configFile);
+        setDefaultConfigItem("check_for_updates", true, config, configFile);
 
         // as prefix is now used, set it empty for servers that already customized their messages
         setDefaultConfigItem("prefix", "", config, configFile);
@@ -87,18 +89,22 @@ public class Update230to300 extends ConfigUpdater {
         final String[] oldInterfaceNames = {"global_quests", "easy_quests", "medium_quests", "hard_quests"};
         final String[] newInterfaceNames = {"global", "easy", "medium", "hard"};
 
+        final ConfigurationSection section = config.getConfigurationSection("interfaces");
+        if (section == null) {
+            PluginLogger.error("Interfaces section is missing in the configuration file. Disabling.");
+            return;
+        }
+
         int i = 0;
         for (String interfaceName : oldInterfaceNames) {
-            final String inventoryName = config.getString(interfaceName + ".inventory_name");
-            final String emptyItem = config.getString(interfaceName + ".empty_item");
+            final String inventoryName = section.getString(interfaceName + ".inventory_name");
+            final String emptyItem = section.getString(interfaceName + ".empty_item");
 
-            setDefaultConfigItem(newInterfaceNames[i] + ".inventoryName", inventoryName, config, configFile);
-            setDefaultConfigItem(newInterfaceNames[i] + ".emptyItem", emptyItem, config, configFile);
+            setDefaultConfigItem("interfaces." + newInterfaceNames[i] + ".inventory_name", inventoryName, config, configFile);
+            setDefaultConfigItem("interfaces." + newInterfaceNames[i] + ".empty_item", emptyItem, config, configFile);
 
-            removeConfigItem(interfaceName + ".inventory_name", config, configFile);
-            removeConfigItem(interfaceName + ".empty_item", config, configFile);
-
-            parameterReplaced(interfaceName, newInterfaceNames[i]);
+            removeConfigItem("interfaces." + interfaceName, config, configFile);
+            parameterReplaced("interfaces." + interfaceName, "interfaces." + newInterfaceNames[i]);
 
             i++;
         }
@@ -143,7 +149,7 @@ public class Update230to300 extends ConfigUpdater {
                 final File newFile = new File(questsFolder, newName);
 
                 if (file.renameTo(newFile)) {
-                    PluginLogger.info("Renamed " + file.getName() + " to " + newFile.getName());
+                    PluginLogger.warn("Renamed " + file.getName() + " to " + newFile.getName());
                 } else {
                     PluginLogger.error("Failed to rename " + file.getName());
                 }

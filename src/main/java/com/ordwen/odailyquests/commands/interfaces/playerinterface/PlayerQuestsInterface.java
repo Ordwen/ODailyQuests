@@ -438,18 +438,10 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
      * @param playerQuests      the player quests.
      */
     private void configureItemMeta(ItemMeta itemMeta, AbstractQuest quest, Progression playerProgression, Player player, PlayerQuests playerQuests) {
-        String displayName = quest.getQuestName();
-        if (displayName != null) {
-            displayName = TextFormatter.format(player, displayName)
-                    .replace(PROGRESS, String.valueOf(playerProgression.getAdvancement()))
-                    .replace(PROGRESS_BAR, ProgressBar.getProgressBar(playerProgression.getAdvancement(), playerProgression.getRequiredAmount()))
-                    .replace(REQUIRED, String.valueOf(playerProgression.getRequiredAmount()))
-                    .replace(ACHIEVED, String.valueOf(playerQuests.getAchievedQuests()))
-                    .replace(DRAW_IN, TimeRemain.timeRemain(player.getName()))
-                    .replace(STATUS, getQuestStatus(playerProgression, player));
+        final String displayName = TextFormatter.format(player, quest.getQuestName())
+                .replace(REQUIRED, String.valueOf(playerProgression.getRequiredAmount()));
 
-            itemMeta.setDisplayName(displayName);
-        }
+        itemMeta.setDisplayName(displayName);
 
         final List<String> lore = generateLore(quest, playerProgression, player, playerQuests);
         itemMeta.setLore(lore);
@@ -603,7 +595,6 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
                     .replace(PROGRESS_BAR, ProgressBar.getProgressBar(progression.getAdvancement(), progression.getRequiredAmount())));
         }
     }
-
 
     /**
      * Get the corresponding text for the interface name.

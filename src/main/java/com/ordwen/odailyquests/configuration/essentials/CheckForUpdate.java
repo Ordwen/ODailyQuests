@@ -15,7 +15,7 @@ public class CheckForUpdate implements IConfigurable {
 
     @Override
     public void load() {
-        enabled = configurationFile.getConfig().getBoolean("check-for-update", true);
+        enabled = configurationFile.getConfig().getBoolean("check_for_update", true);
     }
 
     private static CheckForUpdate getInstance() {
