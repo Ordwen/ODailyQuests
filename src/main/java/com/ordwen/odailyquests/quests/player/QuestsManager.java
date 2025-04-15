@@ -7,6 +7,8 @@ import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.categories.Category;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
+import com.ordwen.odailyquests.quests.types.shared.EntityQuest;
+import com.ordwen.odailyquests.quests.types.shared.ItemQuest;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -107,6 +109,12 @@ public class QuestsManager implements Listener {
                 final AbstractQuest quest = getRandomQuestForPlayer(quests.keySet(), category, player);
                 final int questRequiredAmount = getDynamicRequiredAmount(quest.getRequiredAmountRaw());
                 final Progression progression = new Progression(questRequiredAmount, 0, false);
+
+                if (quest.isRandomRequired()) {
+                    final int selected = getRandomIndexFrom(quest);
+                    progression.setSelectedRequiredIndex(selected);
+                }
+
                 quests.put(quest, progression);
             }
         }
@@ -126,6 +134,18 @@ public class QuestsManager implements Listener {
 
         int amount = Integer.parseInt(requiredAmountRaw);
         return Math.max(amount, 1);
+    }
+
+    private static int getRandomIndexFrom(AbstractQuest quest) {
+        if (quest instanceof EntityQuest eq) {
+            return random.nextInt(eq.getRequiredEntities().size());
+        }
+
+        if (quest instanceof ItemQuest iq) {
+            return random.nextInt(iq.getRequiredItems().size());
+        }
+
+        return 0;
     }
 
     /**

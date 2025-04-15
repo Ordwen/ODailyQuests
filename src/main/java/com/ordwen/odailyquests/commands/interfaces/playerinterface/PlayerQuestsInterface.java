@@ -9,11 +9,14 @@ import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.player.progression.QuestLoaderUtils;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
+import com.ordwen.odailyquests.quests.types.shared.EntityQuest;
+import com.ordwen.odailyquests.quests.types.shared.ItemQuest;
 import com.ordwen.odailyquests.tools.TextFormatter;
 import com.ordwen.odailyquests.tools.ItemUtils;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import com.ordwen.odailyquests.configuration.functionalities.progression.ProgressBar;
 import com.ordwen.odailyquests.tools.TimeRemain;
+import net.md_5.bungee.api.chat.TranslatableComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -38,6 +41,7 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
     private static final String PROGRESS = "%progress%";
     private static final String PROGRESS_BAR = "%progressBar%";
     private static final String REQUIRED = "%required%";
+    private static final String SELECTED = "%selected%";
     private static final String ACHIEVED = "%achieved%";
     private static final String DRAW_IN = "%drawIn%";
     private static final String STATUS = "%status%";
@@ -439,7 +443,8 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
      */
     private void configureItemMeta(ItemMeta itemMeta, AbstractQuest quest, Progression playerProgression, Player player, PlayerQuests playerQuests) {
         final String displayName = TextFormatter.format(player, quest.getQuestName())
-                .replace(REQUIRED, String.valueOf(playerProgression.getRequiredAmount()));
+                .replace(REQUIRED, String.valueOf(playerProgression.getRequiredAmount()))
+                .replace(SELECTED, getSelectedString(quest, playerProgression, player));
 
         itemMeta.setDisplayName(displayName);
 
@@ -467,13 +472,23 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
     private List<String> generateLore(AbstractQuest quest, Progression playerProgression, Player player, PlayerQuests playerQuests) {
         final List<String> lore = new ArrayList<>(quest.getQuestDesc());
 
+        final String progress = String.valueOf(playerProgression.getAdvancement());
+        final String progressBar = ProgressBar.getProgressBar(playerProgression.getAdvancement(), playerProgression.getRequiredAmount());
+        final String required = String.valueOf(playerProgression.getRequiredAmount());
+        final String achieved = String.valueOf(playerQuests.getAchievedQuests());
+        final String drawIn = TimeRemain.timeRemain(player.getName());
+        final String selected = getSelectedString(quest, playerProgression, player);
+        final String status = getQuestStatus(playerProgression, player);
+
         lore.replaceAll(str -> TextFormatter.format(player, str)
-                .replace(PROGRESS, String.valueOf(playerProgression.getAdvancement()))
-                .replace(PROGRESS_BAR, ProgressBar.getProgressBar(playerProgression.getAdvancement(), playerProgression.getRequiredAmount()))
-                .replace(REQUIRED, String.valueOf(playerProgression.getRequiredAmount()))
-                .replace(ACHIEVED, String.valueOf(playerQuests.getAchievedQuests()))
-                .replace(DRAW_IN, TimeRemain.timeRemain(player.getName()))
-                .replace(STATUS, getQuestStatus(playerProgression, player)));
+                .replace(PROGRESS, progress)
+                .replace(PROGRESS_BAR, progressBar)
+                .replace(REQUIRED, required)
+                .replace(ACHIEVED, achieved)
+                .replace(DRAW_IN, drawIn)
+                .replace(SELECTED, selected)
+                .replace(STATUS, status)
+        );
 
         if (!statusStr.isEmpty() && !isStatusDisabled) {
             lore.add(TextFormatter.format(TextFormatter.format(player, statusStr)));
@@ -483,9 +498,10 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
             lore.add(TextFormatter.format(achievedStr));
         } else if (!progressStr.isEmpty() && !isStatusDisabled) {
             lore.add(TextFormatter.format(TextFormatter.format(player, progressStr)
-                    .replace(PROGRESS, String.valueOf(playerProgression.getAdvancement()))
-                    .replace(REQUIRED, String.valueOf(playerProgression.getRequiredAmount()))
-                    .replace(PROGRESS_BAR, ProgressBar.getProgressBar(playerProgression.getAdvancement(), playerProgression.getRequiredAmount()))));
+                    .replace(PROGRESS, progress)
+                    .replace(REQUIRED, required)
+                    .replace(PROGRESS_BAR, progressBar)
+            ));
         }
 
         return lore;
@@ -594,6 +610,29 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
                     .replace(REQUIRED, String.valueOf(progression.getRequiredAmount()))
                     .replace(PROGRESS_BAR, ProgressBar.getProgressBar(progression.getAdvancement(), progression.getRequiredAmount())));
         }
+    }
+
+    private String getSelectedString(AbstractQuest quest, Progression progression, Player player) {
+        if (!quest.isRandomRequired()) {
+            return ChatColor.RED + "Invalid usage.";
+        }
+
+        if (quest instanceof EntityQuest entityQuest) {
+            final String translationKey = entityQuest.getRequiredEntities().get(progression.getSelectedRequiredIndex()).getTranslationKey();
+            return new TranslatableComponent(translationKey).toPlainText();
+        } else if (quest instanceof ItemQuest itemQuest) {
+            final ItemStack itemStack = itemQuest.getRequiredItems().get(progression.getSelectedRequiredIndex());
+            if (itemStack.hasItemMeta()) {
+                System.out.println("ItemStack: " + itemStack);
+                System.out.println("DisplayName: " + itemStack.getItemMeta().getDisplayName());
+                return itemStack.getItemMeta().getDisplayName();
+            }
+
+            final String translationKey = itemQuest.getRequiredItems().get(progression.getSelectedRequiredIndex()).getTranslationKey();
+            return new TranslatableComponent(translationKey).toPlainText();
+        }
+
+        return ChatColor.RED + "Invalid usage.";
     }
 
     /**

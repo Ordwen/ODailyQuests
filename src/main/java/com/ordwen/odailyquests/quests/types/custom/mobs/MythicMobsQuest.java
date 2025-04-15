@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.quests.types.custom.mobs;
 
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
+import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
@@ -20,7 +21,7 @@ public class MythicMobsQuest extends CustomMobQuest {
     }
 
     @Override
-    public boolean canProgress(Event provided) {
+    public boolean canProgress(Event provided, Progression progression) {
         if (provided instanceof MythicMobDeathEvent event) {
             Debugger.write("MythicMobsQuest: Checking if required entity was killed.");
             Debugger.write("MythicMobsQuest: Killed entity: " + event.getMobType().getInternalName());

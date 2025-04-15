@@ -50,7 +50,7 @@ public class PlayerProgressor {
             final AbstractQuest quest = entry.getKey();
             if (quest.getQuestType().equals(questType)) {
                 final Progression progression = entry.getValue();
-                if (!progression.isAchieved() && quest.canProgress(event)) {
+                if (!progression.isAchieved() && quest.canProgress(event, progression)) {
                     actionQuest(player, progression, quest, amount);
                     if (!Synchronization.isSynchronised()) break;
                 }

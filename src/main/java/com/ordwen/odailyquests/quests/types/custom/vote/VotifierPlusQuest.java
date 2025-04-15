@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.quests.types.custom.vote;
 
+import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
 import com.ordwen.odailyquests.tools.PluginLogger;
@@ -20,7 +21,7 @@ public class VotifierPlusQuest extends AbstractQuest {
         }
 
         @Override
-        public boolean canProgress(Event provided) {
+        public boolean canProgress(Event provided, Progression progression) {
             return provided instanceof VotifierEvent;
         }
 

@@ -2,6 +2,7 @@ package com.ordwen.odailyquests.quests.types.item;
 
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.externs.hooks.Protection;
+import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
 import com.ordwen.odailyquests.quests.types.shared.ItemQuest;
 import org.bukkit.event.Event;
@@ -24,12 +25,12 @@ public class FarmingQuest extends ItemQuest {
     }
 
     @Override
-    public boolean canProgress(Event provided) {
+    public boolean canProgress(Event provided, Progression progression) {
         if (provided instanceof PlayerHarvestBlockEvent event) {
             if (!this.isProtectionBypass()) {
                 if (!Protection.canBuild(event.getPlayer(), event.getHarvestedBlock(), "BLOCK_BREAK")) return false;
             }
-            return super.isRequiredItem(current);
+            return super.isRequiredItem(current, progression);
         }
 
         if (provided instanceof BlockDropItemEvent event) {
@@ -42,7 +43,7 @@ public class FarmingQuest extends ItemQuest {
             if (!this.isProtectionBypass()) {
                 if (!Protection.canBuild(event.getPlayer(), event.getBlock(), "BLOCK_BREAK")) return false;
             }
-            return super.isRequiredItem(current);
+            return super.isRequiredItem(current, progression);
         }
 
         return false;

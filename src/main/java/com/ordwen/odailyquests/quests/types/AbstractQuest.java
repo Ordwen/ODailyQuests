@@ -24,6 +24,7 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
     final List<String> requiredRegions;
     final boolean protectionBypass;
     final String requiredPermission;
+    protected boolean isRandomRequired;
 
     /**
      * Quest constructor.
@@ -186,5 +187,14 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
      */
     public String getRequiredPermission() {
         return this.requiredPermission;
+    }
+
+    /**
+     * Check if the quest is random required.
+     *
+     * @return true if random required, false otherwise.
+     */
+    public boolean isRandomRequired() {
+        return isRandomRequired;
     }
 }

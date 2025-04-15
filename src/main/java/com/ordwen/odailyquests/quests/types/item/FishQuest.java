@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.quests.types.item;
 
+import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
 import com.ordwen.odailyquests.quests.types.shared.ItemQuest;
 import net.momirealms.customfishing.api.event.FishingLootSpawnEvent;
@@ -19,16 +20,16 @@ public class FishQuest extends ItemQuest {
     }
 
     @Override
-    public boolean canProgress(Event provided) {
+    public boolean canProgress(Event provided, Progression progression) {
         if (provided instanceof PlayerFishEvent event) {
             final Item item = (Item) event.getCaught();
             if (item == null) return false;
-            return super.isRequiredItem(item.getItemStack());
+            return super.isRequiredItem(item.getItemStack(), progression);
         }
 
         if (provided instanceof FishingLootSpawnEvent event) {
             if (event.getEntity() instanceof Item item) {
-                return super.isRequiredItem(item.getItemStack());
+                return super.isRequiredItem(item.getItemStack(), progression);
             } else {
                 return false;
             }

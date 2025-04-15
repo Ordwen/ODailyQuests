@@ -9,6 +9,8 @@ import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.player.progression.ProgressionLoader;
 import com.ordwen.odailyquests.quests.player.progression.QuestLoaderUtils;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
+import com.ordwen.odailyquests.quests.types.shared.EntityQuest;
+import com.ordwen.odailyquests.quests.types.shared.ItemQuest;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -22,6 +24,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class LoadProgressionSQL extends ProgressionLoader {
+
+    private static final String NEW_QUESTS = "New quests will be drawn.";
+    private static final String CONFIG_CHANGE = "This can happen if the quest has been modified in the config file.";
 
     /* instance of SQLManager */
     private final SQLManager sqlManager;
@@ -141,20 +146,50 @@ public class LoadProgressionSQL extends ProgressionLoader {
                         final int questIndex = resultSet.getInt("quest_index");
                         final int advancement = resultSet.getInt("advancement");
                         final int requiredAmount = resultSet.getInt("required_amount");
+                        int selectedRequired = resultSet.getInt("selected_required");
+                        if (resultSet.wasNull()) {
+                            selectedRequired = -1;
+                        }
+
+                        final AbstractQuest quest = QuestLoaderUtils.findQuest(playerName, questIndex, id);
+                        if (quest == null) {
+                            Debugger.write("Quest " + id + " does not exist. New quests will be drawn.");
+                            return false;
+                        }
+
+                        // check if random quest have data
+                        if (quest.isRandomRequired()) {
+                            if (selectedRequired == -1) {
+                                PluginLogger.warn("Random required is null for player " + playerName + ". " + NEW_QUESTS);
+                                PluginLogger.warn(CONFIG_CHANGE);
+                                return false;
+                            }
+
+                            if (quest instanceof EntityQuest eq && eq.getRequiredEntities().size() <= selectedRequired) {
+                                    PluginLogger.warn("Selected required index is out of bounds for player " + playerName + ". " + NEW_QUESTS);
+                                    PluginLogger.warn(CONFIG_CHANGE);
+                                    return false;
+                            }
+
+                            if (quest instanceof ItemQuest iq && iq.getRequiredItems().size() <= selectedRequired) {
+                                PluginLogger.warn("Selected required index is out of bounds for player " + playerName + ". " + NEW_QUESTS);
+                                PluginLogger.warn(CONFIG_CHANGE);
+                                return false;
+                            }
+                        }
 
                         // schema update check (1 to 2)
                         if (requiredAmount == 0) {
-                            Debugger.write("Required amount is 0 for player " + playerName + ". New quests will be drawn.");
+                            PluginLogger.warn("Required amount is 0 for player " + playerName + ". " + NEW_QUESTS);
+                            PluginLogger.warn(CONFIG_CHANGE);
                             return false;
                         }
 
                         final boolean isAchieved = resultSet.getBoolean("is_achieved");
 
                         final Progression progression = new Progression(requiredAmount, advancement, isAchieved);
-                        final AbstractQuest quest = QuestLoaderUtils.findQuest(playerName, questIndex, id);
-                        if (quest == null) {
-                            Debugger.write("Quest " + id + " does not exist. New quests will be drawn.");
-                            return false;
+                        if (selectedRequired != -1) {
+                            progression.setSelectedRequiredIndex(selectedRequired);
                         }
 
                         quests.put(quest, progression);

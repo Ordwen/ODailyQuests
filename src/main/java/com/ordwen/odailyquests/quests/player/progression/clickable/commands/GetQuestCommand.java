@@ -63,7 +63,7 @@ public class GetQuestCommand extends QuestCommand<GetQuest> {
         for (ItemStack item : inventory.getContents()) {
             if (item == null) continue;
 
-            if (quest.isRequiredItem(item)) {
+            if (quest.isRequiredItem(item, progression)) {
                 if (inventory.getItemInOffHand().equals(item)) {
                     return -1; // Dupe exploit
                 }
@@ -88,7 +88,7 @@ public class GetQuestCommand extends QuestCommand<GetQuest> {
 
         for (int i = 0; i < inventory.getSize(); i++) {
             final ItemStack item = inventory.getItem(i);
-            if (item == null || !quest.isRequiredItem(item)) continue;
+            if (item == null || !quest.isRequiredItem(item, progression)) continue;
 
             int removable = Math.min(item.getAmount(), amountToRemove - removedAmount);
             backup.put(i, item.clone()); // Backup the item

@@ -2,6 +2,7 @@ package com.ordwen.odailyquests.quests.types.item;
 
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.externs.hooks.Protection;
+import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
 import com.ordwen.odailyquests.quests.types.shared.ItemQuest;
 import org.bukkit.block.Block;
@@ -21,7 +22,7 @@ public class PlaceQuest extends ItemQuest {
     }
 
     @Override
-    public boolean canProgress(Event provided) {
+    public boolean canProgress(Event provided, Progression progression) {
         if (provided instanceof BlockPlaceEvent event) {
             final Block block = event.getBlock();
             if (!this.isProtectionBypass()) {
@@ -31,7 +32,7 @@ public class PlaceQuest extends ItemQuest {
             final ItemStack placedItem = event.getItemInHand();
 
             Debugger.write("BlockPlaceListener: onBlockPlaceEvent summoned by " + event.getPlayer().getName() + " for " + placedItem.getType() + ".");
-            return super.isRequiredItem(new ItemStack(placedItem.getType()));
+            return super.isRequiredItem(new ItemStack(placedItem.getType()), progression);
         }
 
         return false;

@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.quests.types.item;
 
 import com.ordwen.odailyquests.events.customs.CustomFurnaceExtractEvent;
+import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
 import com.ordwen.odailyquests.quests.types.shared.ItemQuest;
 import org.bukkit.event.Event;
@@ -19,13 +20,13 @@ public class CookQuest extends ItemQuest {
     }
 
     @Override
-    public boolean canProgress(Event provided) {
+    public boolean canProgress(Event provided, Progression progression) {
         if (provided instanceof FurnaceExtractEvent event) {
-            return super.isRequiredItem(new ItemStack(event.getItemType()));
+            return super.isRequiredItem(new ItemStack(event.getItemType()), progression);
         }
 
         if (provided instanceof CustomFurnaceExtractEvent event) {
-            return super.isRequiredItem(new ItemStack(event.getResult().getType()));
+            return super.isRequiredItem(new ItemStack(event.getResult().getType()), progression);
         }
 
         return false;

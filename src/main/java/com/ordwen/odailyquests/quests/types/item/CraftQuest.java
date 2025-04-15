@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.quests.types.item;
 
+import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
 import com.ordwen.odailyquests.quests.types.shared.ItemQuest;
 import org.bukkit.Material;
@@ -20,7 +21,7 @@ public class CraftQuest extends ItemQuest {
     }
 
     @Override
-    public boolean canProgress(Event provided) {
+    public boolean canProgress(Event provided, Progression progression) {
         if (provided instanceof CraftItemEvent event) {
             final ItemStack item;
             if (event.getRecipe() instanceof ComplexRecipe complexRecipe) {
@@ -30,12 +31,12 @@ public class CraftQuest extends ItemQuest {
                 if (result == null) return false;
                 item = result.clone();
             }
-            return super.isRequiredItem(item);
+            return super.isRequiredItem(item, progression);
         }
 
         if (provided instanceof SmithItemEvent event) {
             final ItemStack item = event.getCurrentItem();
-            return super.isRequiredItem(item);
+            return super.isRequiredItem(item, progression);
         }
 
         return false;

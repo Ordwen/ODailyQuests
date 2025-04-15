@@ -11,7 +11,7 @@ version="3.0.0"
 def initialVersion = project.hasProperty('version') ? project.version : '1.0.0'
 
 // get the current branch name
-def branchName = System.getenv("GIT_BRANCH") ?: 'local'
+def branchName = System.getenv("GIT_BRANCH") ?: 'SNAPSHOT'
 branchName = branchName.replaceFirst(/^origin\//, '')
 println "Branch: ${branchName}"
 

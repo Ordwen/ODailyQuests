@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.quests.types.shared;
 
+import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.rewards.Reward;
 import org.bukkit.configuration.ConfigurationSection;
@@ -20,7 +21,7 @@ public class BasicQuest extends AbstractQuest {
     }
 
     @Override
-    public boolean canProgress(Event event) {
+    public boolean canProgress(Event event, Progression progression) {
         return false;
     }
 
