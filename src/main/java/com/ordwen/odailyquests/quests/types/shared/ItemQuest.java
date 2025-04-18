@@ -12,6 +12,7 @@ import org.bukkit.inventory.meta.PotionMeta;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public abstract class ItemQuest extends AbstractQuest {
@@ -24,6 +25,7 @@ public abstract class ItemQuest extends AbstractQuest {
     private static final QuestItemGetter itemGetter = new QuestItemGetter();
 
     private final List<ItemStack> requiredItems;
+
     private boolean ignoreNbt = false;
 
     /**
@@ -67,16 +69,49 @@ public abstract class ItemQuest extends AbstractQuest {
      */
     private boolean loadRequiredItems(ConfigurationSection section, String file, String index, String path) {
         if (!section.contains(path)) return true;
+        boolean isRandom = path.contains("random_required");
 
-        final List<String> requiredItemStrings = new ArrayList<>();
-        if (section.isList(path)) requiredItemStrings.addAll(section.getStringList(path));
-        else requiredItemStrings.add(section.getString(path));
+        if (isRandom) {
+            final List<?> rawList = section.getList(path);
+            if (rawList == null || rawList.isEmpty()) {
+                PluginLogger.configurationError(file, index, path, "The list of required items is empty but 'random_required' is set.");
+                return false;
+            }
 
-        for (String type : requiredItemStrings) {
-            final ItemStack requiredItem = getItem(section, type, file, index, path);
-            if (requiredItem == null) return false;
+            for (Object entry : rawList) {
+                if (!(entry instanceof Map<?, ?> mapEntry)) {
+                    PluginLogger.configurationError(file, index, path, "Each entry in 'random_required' must be a map like - MATERIAL: \"Display Name\"");
+                    return false;
+                }
 
-            requiredItems.add(requiredItem);
+                for (Map.Entry<?, ?> element : mapEntry.entrySet()) {
+                    final String key = element.getKey().toString();
+                    final String displayName = element.getValue().toString();
+
+                    final ItemStack requiredItem = getItem(section, key, file, index, path);
+                    if (requiredItem == null) return false;
+
+                    requiredItems.add(requiredItem);
+                    displayNames.add(displayName);
+                }
+            }
+
+        } else {
+            // required / required_item : accepte une liste de strings OU un seul string
+            final List<String> itemStrings = new ArrayList<>();
+            if (section.isList(path)) {
+                itemStrings.addAll(section.getStringList(path));
+            } else {
+                final String single = section.getString(path);
+                if (single != null && !single.isEmpty()) itemStrings.add(single);
+            }
+
+            for (String type : itemStrings) {
+                final ItemStack requiredItem = getItem(section, type, file, index, path);
+                if (requiredItem == null) return false;
+
+                requiredItems.add(requiredItem);
+            }
         }
 
         return true;

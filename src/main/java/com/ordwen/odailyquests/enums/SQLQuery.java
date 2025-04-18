@@ -81,7 +81,7 @@ public enum SQLQuery {
             """),
 
     SQLITE_PROGRESS_UPDATE("""
-                INSERT OR REPLACE INTO `odq_progression` (`player_uuid`, `player_quest_id`, `quest_index`, `advancement`, `required_amount`, `is_achieved`, `selected_required')
+                INSERT OR REPLACE INTO `odq_progression` (`player_uuid`, `player_quest_id`, `quest_index`, `advancement`, `required_amount`, `is_achieved`, `selected_required`)
                 VALUES (?, ?, ?, ?, ?, ?, ?);
             """),
 

@@ -12,7 +12,8 @@ import java.util.List;
 
 public abstract class EntityQuest extends AbstractQuest {
 
-    protected final List<EntityType> requiredEntities;
+    private final List<EntityType> requiredEntities;
+
     protected DyeColor dyeColor;
 
     protected EntityQuest(BasicQuest base) {
@@ -59,12 +60,13 @@ public abstract class EntityQuest extends AbstractQuest {
                 final EntityType entityType = getEntityType(file, index, presumedEntity);
                 if (entityType != null) requiredEntities.add(entityType);
                 else return false;
+
+                if (isDisplayNameMissing(section, file, index, path, presumedEntity)) return false;
             }
         }
 
         return true;
     }
-
 
     /**
      * Get the entity type.

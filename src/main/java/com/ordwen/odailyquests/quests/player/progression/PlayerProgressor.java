@@ -11,6 +11,7 @@ import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.externs.hooks.Protection;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
+import com.ordwen.odailyquests.tools.DisplayName;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -91,8 +92,10 @@ public class PlayerProgressor {
         if (QuestLoaderUtils.isTimeToRenew(player, QuestsManager.getActiveQuests())) return;
         if (!isAllowedToProgress(player, quest)) return;
 
+        final String questName = DisplayName.getDisplayName(quest, progression.getSelectedRequiredIndex());
+
         for (int i = 0; i < amount; i++) {
-            Debugger.write("QuestProgressUtils: increasing progression for " + quest.getQuestName() + " by " + amount + ".");
+            Debugger.write("QuestProgressUtils: increasing progression for " + questName + " by " + amount + ".");
             progression.increaseAdvancement();
         }
 
@@ -107,7 +110,7 @@ public class PlayerProgressor {
             return;
         }
 
-        ProgressionMessage.sendProgressionMessage(player, quest.getQuestName(), progression.getAdvancement(), progression.getRequiredAmount());
+        ProgressionMessage.sendProgressionMessage(player, questName, progression.getAdvancement(), progression.getRequiredAmount());
     }
 
     /**
