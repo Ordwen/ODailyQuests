@@ -63,15 +63,17 @@ timestamp_mode: 1
 # - "15"          → 15:00 (24-hour format without minutes)
 # - "15:30"       → 15:30 (24-hour format with minutes)
 # Default is "00:00" (midnight).
+# Remember to surround the value with double quotes, otherwise it will not work!
 renew_time: "00:00"
 
 # Select the interval at which the quests will be reloaded.
 # Accepted formats are:
-# - "1d"   → 1 day
-# - "2h"   → 2 hours
-# - "30m"  → 30 minutes
+# - "1d"    → 1 day
+# - "2h"    → 2 hours
+# - "30m"   → 30 minutes
 # - "1h30m" → 1 hour and 30 minutes
 # Default is "1d" (1 day).
+# Remember to surround the value with double quotes, otherwise it will not work!
 renew_interval: "1d"
 
 # Delay in seconds before the status message is displayed when a player joins the server.
