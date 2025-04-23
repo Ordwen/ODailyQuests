@@ -1,9 +1,0 @@
-# This file is used to define custom display names for items and entities. The only way to display these names is to use the %selected% placeholder in quest config.
-# It is useful if you use the random_required functionality. If not, you can ignore this file.
-items:
-  coal_ore: "Coal Ore"
-  oraxen:thanos_head: "Thanos Head"
-
-entities:
-  zombie: "Undead Walker"
-  ender_dragon: "The Dragon"
