@@ -27,6 +27,11 @@ database:
   password: "1234"     # Database password
   port: 3306           # Database port
 
+# Delay in seconds before player quest data is loaded after login.
+# Useful when using the same database across multiple servers to avoid sync issues.
+# Do not change this value unless you are sure of what you are doing.
+player_data_load_delay: 0.5
+
 # Define the number of daily quests assigned to the player for each category.
 # Categories that are not listed here will not be loaded.
 #
