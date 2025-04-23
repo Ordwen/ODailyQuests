@@ -27,6 +27,11 @@ database:
   password: "1234"     # Database password
   port: 3306           # Database port
 
+# Delay in seconds before player quest data is loaded after login.
+# Useful when using the same database across multiple servers to avoid sync issues.
+# Do not change this value unless you are sure of what you are doing.
+player_data_load_delay: 0.5
+
 # Define the number of daily quests assigned to the player for each category.
 # Categories that are not listed here will not be loaded.
 #
@@ -63,15 +68,17 @@ timestamp_mode: 1
 # - "15"          → 15:00 (24-hour format without minutes)
 # - "15:30"       → 15:30 (24-hour format with minutes)
 # Default is "00:00" (midnight).
+# Remember to surround the value with double quotes, otherwise it will not work!
 renew_time: "00:00"
 
 # Select the interval at which the quests will be reloaded.
 # Accepted formats are:
-# - "1d"   → 1 day
-# - "2h"   → 2 hours
-# - "30m"  → 30 minutes
+# - "1d"    → 1 day
+# - "2h"    → 2 hours
+# - "30m"   → 30 minutes
 # - "1h30m" → 1 hour and 30 minutes
 # Default is "1d" (1 day).
+# Remember to surround the value with double quotes, otherwise it will not work!
 renew_interval: "1d"
 
 # Delay in seconds before the status message is displayed when a player joins the server.

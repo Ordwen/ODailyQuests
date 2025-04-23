@@ -27,35 +27,45 @@ public class QuestLoaderUtils {
      * @return true if it's time to redraw quests.
      */
     public static boolean checkTimestamp(long timestamp) {
+        final int mode = TimestampMode.getTimestampMode();
+        final Duration renewInterval = RenewInterval.getRenewInterval();
 
-        /* check if last quests renewed day before */
-        if (TimestampMode.getTimestampMode() == 1) {
-            final LocalTime renewTime = RenewTime.getRenewTime();
-            final LocalDateTime lastRenew = Instant.ofEpochMilli(timestamp).atZone(ZoneId.systemDefault()).toLocalDateTime();
-            final LocalDateTime currentDateTime = LocalDateTime.now();
+        switch (mode) {
+            case 1 -> {
+                final LocalTime renewTime = RenewTime.getRenewTime();
 
-            final LocalDate lastRenewDate = lastRenew.toLocalDate();
-            final LocalDate currentDate = currentDateTime.toLocalDate();
+                final LocalDateTime lastRenew = Instant.ofEpochMilli(timestamp)
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDateTime();
 
-            return lastRenewDate.isBefore(currentDate) ||
-                    (lastRenewDate.equals(currentDate) && lastRenew.toLocalTime().isBefore(renewTime));
-        }
+                final LocalDateTime now = LocalDateTime.now();
 
-        /* check if last quests renewed is older than selected temporality */
-        else if (TimestampMode.getTimestampMode() == 2) {
-            final Duration renewDuration = RenewInterval.getRenewInterval();
+                // Moment exact du renouvellement de "aujourd'hui"
+                final LocalDateTime todayRenewDateTime = LocalDateTime.of(now.toLocalDate(), renewTime);
 
-            if (renewDuration != null) {
-                return System.currentTimeMillis() - timestamp >= renewDuration.toMillis();
-            } else {
-                PluginLogger.error(ChatColor.RED + "Impossible to check player quests timestamp. Renew interval is incorrect.");
+                // Si le serveur n’a pas encore atteint l’heure de renouvellement aujourd’hui,
+                // alors on prend la dernière fois où le renouvellement était "atteignable"
+                LocalDateTime effectiveRenewTime = now.isBefore(todayRenewDateTime)
+                        ? todayRenewDateTime.minusDays(1)
+                        : todayRenewDateTime;
+
+                return lastRenew.isBefore(effectiveRenewTime)
+                        && Duration.between(lastRenew, now).compareTo(renewInterval) >= 0;
             }
-        } else {
-            PluginLogger.error(ChatColor.RED + "Impossible to load player quests timestamp. The selected mode is incorrect.");
+            case 2 -> {
+                if (renewInterval != null) {
+                    return System.currentTimeMillis() - timestamp >= renewInterval.toMillis();
+                } else {
+                    PluginLogger.error(ChatColor.RED + "Impossible to check player quests timestamp. Renew interval is incorrect.");
+                }
+            }
+            default ->
+                    PluginLogger.error(ChatColor.RED + "Impossible to load player quests timestamp. The selected mode is incorrect.");
         }
 
         return false;
     }
+
 
     /**
      * Load quests for a player with no data.
@@ -152,9 +162,9 @@ public class QuestLoaderUtils {
     /**
      * Try to get quest from index.
      *
-     * @param category the array where find the quest.
-     * @param index       the supposed index of the quest in the array.
-     * @param playerName  the name of the player for whom the quest is intended.
+     * @param category   the array where find the quest.
+     * @param index      the supposed index of the quest in the array.
+     * @param playerName the name of the player for whom the quest is intended.
      * @return the quest.
      */
     public static AbstractQuest getQuestAtIndex(Category category, int index, String playerName) {

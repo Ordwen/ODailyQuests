@@ -30,6 +30,7 @@ public class ConfigFactory {
         configs.put(CustomFurnaceResults.class, new CustomFurnaceResults(configurationFile));
         configs.put(CustomTypes.class, new CustomTypes(configurationFile));
         configs.put(Database.class, new Database(configurationFile));
+        configs.put(PlayerDataLoadDelay.class, new PlayerDataLoadDelay(configurationFile));
         configs.put(Debugger.class, new Debugger(configurationFile));
         configs.put(JoinMessageDelay.class, new JoinMessageDelay(configurationFile));
         configs.put(Logs.class, new Logs(configurationFile));

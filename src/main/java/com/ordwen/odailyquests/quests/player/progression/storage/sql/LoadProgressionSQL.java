@@ -2,6 +2,7 @@ package com.ordwen.odailyquests.quests.player.progression.storage.sql;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
+import com.ordwen.odailyquests.configuration.essentials.PlayerDataLoadDelay;
 import com.ordwen.odailyquests.configuration.essentials.QuestsPerCategory;
 import com.ordwen.odailyquests.enums.SQLQuery;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
@@ -96,7 +97,7 @@ public class LoadProgressionSQL extends ProgressionLoader {
             } else {
                 QuestLoaderUtils.loadNewPlayerQuests(playerName, activeQuests, 0);
             }
-        }, Duration.ofMillis(500));
+        }, Duration.ofMillis(PlayerDataLoadDelay.getDelay()));
     }
 
     private void loadStoredData(Player player, Map<String, PlayerQuests> activeQuests, long timestamp, int totalAchievedQuests, LinkedHashMap<AbstractQuest, Progression> quests, int achievedQuests) {
