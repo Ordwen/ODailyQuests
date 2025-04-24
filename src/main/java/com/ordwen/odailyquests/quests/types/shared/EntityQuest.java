@@ -9,6 +9,7 @@ import org.bukkit.entity.EntityType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public abstract class EntityQuest extends AbstractQuest {
 
@@ -50,18 +51,45 @@ public abstract class EntityQuest extends AbstractQuest {
      */
     private boolean loadRequiredEntities(ConfigurationSection section, String file, String index, String path) {
         if (!section.contains(path)) return true;
+        boolean isRandom = path.contains("random_required");
 
-        if (section.isString(path)) {
-            final EntityType entityType = getEntityType(file, index, section.getString(path));
-            if (entityType != null) requiredEntities.add(entityType);
-            else return false;
+        if (isRandom) {
+            final List<?> rawList = section.getList(path);
+            if (rawList == null || rawList.isEmpty()) {
+                PluginLogger.configurationError(file, index, path, "The list of required entities is empty but 'random_required' is set.");
+                return false;
+            }
+
+            for (Object entry : rawList) {
+                if (!(entry instanceof Map<?, ?> mapEntry)) {
+                    PluginLogger.configurationError(file, index, path, "Each entry in 'random_required' must be a map like - ZOMBIE: \"Display Name\"");
+                    return false;
+                }
+
+                for (Map.Entry<?, ?> element : mapEntry.entrySet()) {
+                    final String key = element.getKey().toString();
+                    final String displayName = element.getValue().toString();
+
+                    final EntityType entityType = getEntityType(file, index, key);
+                    if (entityType == null) return false;
+
+                    requiredEntities.add(entityType);
+                    displayNames.add(displayName);
+                }
+            }
         } else {
-            for (String presumedEntity : section.getStringList(path)) {
-                final EntityType entityType = getEntityType(file, index, presumedEntity);
+            if (section.isString(path)) {
+                final EntityType entityType = getEntityType(file, index, section.getString(path));
                 if (entityType != null) requiredEntities.add(entityType);
                 else return false;
+            } else {
+                for (String presumedEntity : section.getStringList(path)) {
+                    final EntityType entityType = getEntityType(file, index, presumedEntity);
+                    if (entityType != null) requiredEntities.add(entityType);
+                    else return false;
 
-                if (isDisplayNameMissing(section, file, index, path, presumedEntity)) return false;
+                    if (isDisplayNameMissing(section, file, index, path, presumedEntity)) return false;
+                }
             }
         }
 
