@@ -5,6 +5,7 @@ public class Progression {
     private final int requiredAmount;
     private int advancement;
     private boolean isAchieved;
+    private int selectedRequiredIndex;
 
     /**
      * Progression constructor.
@@ -57,5 +58,23 @@ public class Progression {
      */
     public int getRequiredAmount() {
         return this.requiredAmount;
+    }
+
+    /**
+     * Get random required element index.
+     *
+     * @return random required element.
+     */
+    public int getSelectedRequiredIndex() {
+        return this.selectedRequiredIndex;
+    }
+
+    /**
+     * Set selected random required element index.
+     *
+     * @param selectedRequiredIndex the random required element
+     */
+    public void setSelectedRequiredIndex(int selectedRequiredIndex) {
+        this.selectedRequiredIndex = selectedRequiredIndex;
     }
 }

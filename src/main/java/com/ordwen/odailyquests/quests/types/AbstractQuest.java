@@ -5,8 +5,12 @@ import com.ordwen.odailyquests.api.quests.IQuest;
 import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
 import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
 import com.ordwen.odailyquests.rewards.Reward;
+import com.ordwen.odailyquests.tools.PluginLogger;
+import org.bukkit.ChatColor;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
@@ -24,6 +28,9 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
     final List<String> requiredRegions;
     final boolean protectionBypass;
     final String requiredPermission;
+
+    protected boolean isRandomRequired;
+    protected final List<String> displayNames;
 
     /**
      * Quest constructor.
@@ -48,6 +55,8 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
         this.requiredRegions = requiredRegions;
         this.protectionBypass = protectionBypass;
         this.requiredPermission = requiredPermission;
+
+        this.displayNames = new ArrayList<>();
     }
 
     /**
@@ -69,6 +78,27 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
         this.requiredRegions = basicQuest.getRequiredRegions();
         this.protectionBypass = basicQuest.isProtectionBypass();
         this.requiredPermission = basicQuest.getRequiredPermission();
+
+        this.displayNames = new ArrayList<>();
+    }
+
+    public String getSelectedDisplayName(int index) {
+        if (!isRandomRequired || displayNames.isEmpty()) return ChatColor.RED + "Invalid usage.";
+        if (index < 0 || index >= displayNames.size()) return ChatColor.RED + "Invalid index.";
+
+        return displayNames.get(index);
+    }
+
+    protected boolean isDisplayNameMissing(ConfigurationSection section, String file, String index, String path, String type) {
+        if (path.equals(".random_required")) {
+            final String displayName = section.getString(path + "." + type);
+            if (displayName == null || displayName.isEmpty()) {
+                PluginLogger.configurationError(file, index, path + "." + type, "Missing display name for random required item.");
+                return true;
+            }
+            displayNames.add(displayName);
+        }
+        return false;
     }
 
     /**
@@ -186,5 +216,14 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
      */
     public String getRequiredPermission() {
         return this.requiredPermission;
+    }
+
+    /**
+     * Check if the quest is random required.
+     *
+     * @return true if random required, false otherwise.
+     */
+    public boolean isRandomRequired() {
+        return isRandomRequired;
     }
 }

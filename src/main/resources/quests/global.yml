@@ -360,8 +360,8 @@ quests:
     name: "&aSpeeeed..."
     menu_item: POTION
     description:
-        - "&eGet a speed potion level 1."
-        - "&eWin &b5 EXP levels&e."
+      - "&eGet a speed potion level 1."
+      - "&eWin &b5 EXP levels&e."
     quest_type: GET
     required: POTION
     potion:
@@ -405,7 +405,7 @@ quests:
     required: WITHER
     required_amount: 1
     required_worlds:
-        - world_nether
+      - world_nether
     reward:
       reward_type: MONEY
       amount: 50000
@@ -450,14 +450,14 @@ quests:
     name: "Get some Thanos dust"
     menu_item: "itemsadder:thanos_namespace:thanos_dust"
     description:
-          - "&6Get some Thanos dust."
-          - "&6Win &b50 000 &6$."
+      - "&6Get some Thanos dust."
+      - "&6Win &b50 000 &6$."
     quest_type: GET
     required: "itemsadder:thanos_namespace:thanos_dust"
     required_amount: 1
     reward:
-        reward_type: MONEY
-        amount: 50000
+      reward_type: MONEY
+      amount: 50000
 
   # example quest that is using Oraxen
   28:
@@ -546,3 +546,51 @@ quests:
       currency_label: "quests_coins" # name from the CoinsEngine configuration file
       currency_display_name: "&6&lQuests Coins" # name that will be used in the reward message to the player
       amount: 500
+
+    # example quest that is using required_permission parameter
+    34:
+      name: "&6&l[VIP] &aDiamonds"
+      menu_item: DIAMOND
+      description:
+        - "&bGet 50 diamonds."
+        - "&bWin &c5000$&b."
+      quest_type: GET
+      required: DIAMOND
+      required_amount: 50
+      required_permission: "odailyquests.vip"
+      reward:
+        reward_type: MONEY
+        amount: 5000
+
+    # example quest that is using a dynamic range for the required_amount
+    35:
+      name: "&aStone"
+      menu_item: STONE
+      description:
+        - "&bMine %required% stones."
+        - "&bWin &c500$&b."
+      quest_type: BREAK
+      required: STONE
+      required_amount: 16-64
+      reward:
+        reward_type: MONEY
+        amount: 500
+
+    # example quest that is using the random_required parameter and a dynamic range for the required_amount
+    36:
+      name: "&a%displayName"
+      menu_item: STONE_PICKAXE
+      description:
+        - "&bMine %required% %displayName%."
+        - "&bWin &c500$&b."
+      quest_type: BREAK
+      random_required:
+        - STONE: "stone"
+        - GRANITE: "granite"
+        - DIORITE: "diorite"
+        - COAL_ORE: "coal ore"
+        - IRON_ORE: "iron ore"
+      required_amount: 16-64
+      reward:
+        reward_type: MONEY
+        amount: 500

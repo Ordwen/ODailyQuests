@@ -2,6 +2,7 @@ package com.ordwen.odailyquests.quests.types.entity;
 
 import com.bgsoftware.wildstacker.api.events.EntityUnstackEvent;
 import com.ordwen.odailyquests.configuration.integrations.WildStackerEnabled;
+import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
 import com.ordwen.odailyquests.quests.types.shared.EntityQuest;
 import org.bukkit.event.Event;
@@ -19,13 +20,13 @@ public class KillQuest extends EntityQuest {
     }
 
     @Override
-    public boolean canProgress(Event provided) {
+    public boolean canProgress(Event provided, Progression progression) {
         if (provided instanceof EntityDeathEvent event) {
-            return super.isRequiredEntity(event.getEntity().getType());
+            return super.isRequiredEntity(event.getEntity().getType(), progression);
         }
 
         else if (WildStackerEnabled.isEnabled() && provided instanceof EntityUnstackEvent event) {
-            return super.isRequiredEntity(event.getEntity().getType());
+            return super.isRequiredEntity(event.getEntity().getType(), progression);
         }
 
         return false;

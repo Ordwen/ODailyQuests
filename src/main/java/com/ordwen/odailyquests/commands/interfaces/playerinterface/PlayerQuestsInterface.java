@@ -9,11 +9,8 @@ import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.player.progression.QuestLoaderUtils;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
-import com.ordwen.odailyquests.tools.TextFormatter;
-import com.ordwen.odailyquests.tools.ItemUtils;
-import com.ordwen.odailyquests.tools.PluginLogger;
+import com.ordwen.odailyquests.tools.*;
 import com.ordwen.odailyquests.configuration.functionalities.progression.ProgressBar;
-import com.ordwen.odailyquests.tools.TimeRemain;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -38,6 +35,7 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
     private static final String PROGRESS = "%progress%";
     private static final String PROGRESS_BAR = "%progressBar%";
     private static final String REQUIRED = "%required%";
+    private static final String DISPLAY_NAME = "%displayName%";
     private static final String ACHIEVED = "%achieved%";
     private static final String DRAW_IN = "%drawIn%";
     private static final String STATUS = "%status%";
@@ -433,20 +431,21 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
      *
      * @param itemMeta          the item meta to configure.
      * @param quest             the quest of the item.
-     * @param playerProgression the player progression of the quest.
+     * @param progression the player progression of the quest.
      * @param player            the player.
      * @param playerQuests      the player quests.
      */
-    private void configureItemMeta(ItemMeta itemMeta, AbstractQuest quest, Progression playerProgression, Player player, PlayerQuests playerQuests) {
+    private void configureItemMeta(ItemMeta itemMeta, AbstractQuest quest, Progression progression, Player player, PlayerQuests playerQuests) {
         final String displayName = TextFormatter.format(player, quest.getQuestName())
-                .replace(REQUIRED, String.valueOf(playerProgression.getRequiredAmount()));
+                .replace(REQUIRED, String.valueOf(progression.getRequiredAmount()))
+                .replace(DISPLAY_NAME, DisplayName.getDisplayName(quest, progression.getSelectedRequiredIndex()));
 
         itemMeta.setDisplayName(displayName);
 
-        final List<String> lore = generateLore(quest, playerProgression, player, playerQuests);
+        final List<String> lore = generateLore(quest, progression, player, playerQuests);
         itemMeta.setLore(lore);
 
-        if (playerProgression.isAchieved() && isGlowingEnabled) {
+        if (progression.isAchieved() && isGlowingEnabled) {
             itemMeta.addEnchant(Enchantment.SILK_TOUCH, 1, false);
         }
 
@@ -467,13 +466,23 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
     private List<String> generateLore(AbstractQuest quest, Progression playerProgression, Player player, PlayerQuests playerQuests) {
         final List<String> lore = new ArrayList<>(quest.getQuestDesc());
 
+        final String progress = String.valueOf(playerProgression.getAdvancement());
+        final String progressBar = ProgressBar.getProgressBar(playerProgression.getAdvancement(), playerProgression.getRequiredAmount());
+        final String required = String.valueOf(playerProgression.getRequiredAmount());
+        final String achieved = String.valueOf(playerQuests.getAchievedQuests());
+        final String drawIn = TimeRemain.timeRemain(player.getName());
+        final String selected = DisplayName.getDisplayName(quest, playerProgression.getSelectedRequiredIndex());
+        final String status = getQuestStatus(playerProgression, player);
+
         lore.replaceAll(str -> TextFormatter.format(player, str)
-                .replace(PROGRESS, String.valueOf(playerProgression.getAdvancement()))
-                .replace(PROGRESS_BAR, ProgressBar.getProgressBar(playerProgression.getAdvancement(), playerProgression.getRequiredAmount()))
-                .replace(REQUIRED, String.valueOf(playerProgression.getRequiredAmount()))
-                .replace(ACHIEVED, String.valueOf(playerQuests.getAchievedQuests()))
-                .replace(DRAW_IN, TimeRemain.timeRemain(player.getName()))
-                .replace(STATUS, getQuestStatus(playerProgression, player)));
+                .replace(PROGRESS, progress)
+                .replace(PROGRESS_BAR, progressBar)
+                .replace(REQUIRED, required)
+                .replace(ACHIEVED, achieved)
+                .replace(DRAW_IN, drawIn)
+                .replace(DISPLAY_NAME, selected)
+                .replace(STATUS, status)
+        );
 
         if (!statusStr.isEmpty() && !isStatusDisabled) {
             lore.add(TextFormatter.format(TextFormatter.format(player, statusStr)));
@@ -483,9 +492,10 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
             lore.add(TextFormatter.format(achievedStr));
         } else if (!progressStr.isEmpty() && !isStatusDisabled) {
             lore.add(TextFormatter.format(TextFormatter.format(player, progressStr)
-                    .replace(PROGRESS, String.valueOf(playerProgression.getAdvancement()))
-                    .replace(REQUIRED, String.valueOf(playerProgression.getRequiredAmount()))
-                    .replace(PROGRESS_BAR, ProgressBar.getProgressBar(playerProgression.getAdvancement(), playerProgression.getRequiredAmount()))));
+                    .replace(PROGRESS, progress)
+                    .replace(REQUIRED, required)
+                    .replace(PROGRESS_BAR, progressBar)
+            ));
         }
 
         return lore;

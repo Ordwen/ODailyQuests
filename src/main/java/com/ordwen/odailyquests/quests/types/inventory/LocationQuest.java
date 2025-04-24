@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.quests.types.inventory;
 
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
 import com.ordwen.odailyquests.tools.PluginLogger;
@@ -32,7 +33,7 @@ public class LocationQuest extends AbstractQuest {
     }
 
     @Override
-    public boolean canProgress(Event provided) {
+    public boolean canProgress(Event provided, Progression progression) {
         return false;
     }
 

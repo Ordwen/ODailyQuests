@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.quests.types.item;
 
+import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
 import com.ordwen.odailyquests.quests.types.shared.ItemQuest;
 import org.bukkit.Material;
@@ -21,7 +22,7 @@ public class LaunchQuest extends ItemQuest {
     }
 
     @Override
-    public boolean canProgress(Event provided) {
+    public boolean canProgress(Event provided, Progression progression) {
         if (provided instanceof ProjectileLaunchEvent event) {
             EntityType entityType = event.getEntity().getType();
             ItemStack requiredItem = null;
@@ -36,7 +37,7 @@ public class LaunchQuest extends ItemQuest {
             }
 
             if (requiredItem != null) {
-                return super.isRequiredItem(requiredItem);
+                return super.isRequiredItem(requiredItem, progression);
             }
         }
 
@@ -44,7 +45,7 @@ public class LaunchQuest extends ItemQuest {
             ItemStack item = interactEvent.getItem();
             if (item != null && item.getType() == Material.FIREWORK_ROCKET) {
                 if (interactEvent.getPlayer().isGliding()) {
-                    return super.isRequiredItem(item);
+                    return super.isRequiredItem(item, progression);
                 }
             }
         }

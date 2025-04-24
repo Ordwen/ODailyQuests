@@ -6,6 +6,7 @@ import com.ordwen.odailyquests.configuration.integrations.ItemsAdderEnabled;
 import com.ordwen.odailyquests.configuration.integrations.NexoEnabled;
 import com.ordwen.odailyquests.configuration.integrations.OraxenEnabled;
 import com.ordwen.odailyquests.externs.hooks.Protection;
+import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
 import com.ordwen.odailyquests.quests.types.shared.ItemQuest;
 import dev.lone.itemsadder.api.CustomStack;
@@ -31,7 +32,7 @@ public class BreakQuest extends ItemQuest {
     }
 
     @Override
-    public boolean canProgress(Event provided) {
+    public boolean canProgress(Event provided, Progression progression) {
         if (provided instanceof BlockBreakEvent event) {
             if (event.isCancelled()) return false;
 
@@ -58,11 +59,11 @@ public class BreakQuest extends ItemQuest {
             }
 
             Debugger.write("BreakQuest: canProgress material: " + material);
-            return super.isRequiredItem(new ItemStack(material));
+            return super.isRequiredItem(new ItemStack(material), progression);
         }
 
         if (provided instanceof CustomBlockBreakEvent event) {
-            return super.isRequiredItem(event.getCustomBlockItem());
+            return super.isRequiredItem(event.getCustomBlockItem(), progression);
         }
 
         if (provided instanceof CropBreakEvent event) {
@@ -74,7 +75,7 @@ public class BreakQuest extends ItemQuest {
                 return false;
             }
 
-            return super.isRequiredItem(cropItem);
+            return super.isRequiredItem(cropItem, progression);
         }
 
         return false;

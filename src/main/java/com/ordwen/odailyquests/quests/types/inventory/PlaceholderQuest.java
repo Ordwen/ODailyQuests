@@ -2,6 +2,7 @@ package com.ordwen.odailyquests.quests.types.inventory;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.quests.ConditionType;
+import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
 import com.ordwen.odailyquests.tools.PluginLogger;
@@ -30,7 +31,7 @@ public class PlaceholderQuest extends AbstractQuest {
     }
 
     @Override
-    public boolean canProgress(Event provided) {
+    public boolean canProgress(Event provided, Progression progression) {
         return false;
     }
 

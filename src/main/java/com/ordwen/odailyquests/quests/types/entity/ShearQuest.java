@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.quests.types.entity;
 
+import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
 import com.ordwen.odailyquests.quests.types.shared.EntityQuest;
 import com.ordwen.odailyquests.tools.PluginLogger;
@@ -29,9 +30,9 @@ public class ShearQuest extends EntityQuest {
     }
 
     @Override
-    public boolean canProgress(Event provided) {
+    public boolean canProgress(Event provided, Progression progression) {
         if (provided instanceof PlayerShearEntityEvent event) {
-            if (!isRequiredEntity(event.getEntity().getType())) return false;
+            if (!isRequiredEntity(event.getEntity().getType(), progression)) return false;
 
             if (event.getEntity() instanceof Sheep sheep) {
                 if (dyeColor == null) return true;

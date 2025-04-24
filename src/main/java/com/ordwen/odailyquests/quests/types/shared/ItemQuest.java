@@ -2,7 +2,9 @@ package com.ordwen.odailyquests.quests.types.shared;
 
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.quests.getters.QuestItemGetter;
+import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
+import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
@@ -10,6 +12,7 @@ import org.bukkit.inventory.meta.PotionMeta;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public abstract class ItemQuest extends AbstractQuest {
@@ -22,6 +25,7 @@ public abstract class ItemQuest extends AbstractQuest {
     private static final QuestItemGetter itemGetter = new QuestItemGetter();
 
     private final List<ItemStack> requiredItems;
+
     private boolean ignoreNbt = false;
 
     /**
@@ -38,8 +42,20 @@ public abstract class ItemQuest extends AbstractQuest {
     public boolean loadParameters(ConfigurationSection section, String file, String index) {
         ignoreNbt = section.getBoolean(".ignore_nbt");
 
-        return loadRequiredItems(section, file, index, ".required_item")
-                && loadRequiredItems(section, file, index, ".required");
+        boolean hasRequired = section.contains(".required") || section.contains(".required_item");
+        boolean hasRandomRequired = section.contains(".random_required");
+
+        if (hasRequired && hasRandomRequired) {
+            PluginLogger.configurationError(file, index, "required/random_required", "You can't use 'required' and 'random_required' at the same time.");
+            return false;
+        }
+
+        if (hasRandomRequired) {
+            super.isRandomRequired = true;
+            return loadRequiredItems(section, file, index, ".random_required");
+        } else {
+            return loadRequiredItems(section, file, index, ".required_item") && loadRequiredItems(section, file, index, ".required");
+        }
     }
 
     /**
@@ -53,16 +69,49 @@ public abstract class ItemQuest extends AbstractQuest {
      */
     private boolean loadRequiredItems(ConfigurationSection section, String file, String index, String path) {
         if (!section.contains(path)) return true;
+        boolean isRandom = path.contains("random_required");
 
-        final List<String> requiredItemStrings = new ArrayList<>();
-        if (section.isList(path)) requiredItemStrings.addAll(section.getStringList(path));
-        else requiredItemStrings.add(section.getString(path));
+        if (isRandom) {
+            final List<?> rawList = section.getList(path);
+            if (rawList == null || rawList.isEmpty()) {
+                PluginLogger.configurationError(file, index, path, "The list of required items is empty but 'random_required' is set.");
+                return false;
+            }
 
-        for (String type : requiredItemStrings) {
-            final ItemStack requiredItem = getItem(section, type, file, index, path);
-            if (requiredItem == null) return false;
+            for (Object entry : rawList) {
+                if (!(entry instanceof Map<?, ?> mapEntry)) {
+                    PluginLogger.configurationError(file, index, path, "Each entry in 'random_required' must be a map like - MATERIAL: \"Display Name\"");
+                    return false;
+                }
 
-            requiredItems.add(requiredItem);
+                for (Map.Entry<?, ?> element : mapEntry.entrySet()) {
+                    final String key = element.getKey().toString();
+                    final String displayName = element.getValue().toString();
+
+                    final ItemStack requiredItem = getItem(section, key, file, index, path);
+                    if (requiredItem == null) return false;
+
+                    requiredItems.add(requiredItem);
+                    displayNames.add(displayName);
+                }
+            }
+
+        } else {
+            // required / required_item : accepte une liste de strings OU un seul string
+            final List<String> itemStrings = new ArrayList<>();
+            if (section.isList(path)) {
+                itemStrings.addAll(section.getStringList(path));
+            } else {
+                final String single = section.getString(path);
+                if (single != null && !single.isEmpty()) itemStrings.add(single);
+            }
+
+            for (String type : itemStrings) {
+                final ItemStack requiredItem = getItem(section, type, file, index, path);
+                if (requiredItem == null) return false;
+
+                requiredItems.add(requiredItem);
+            }
         }
 
         return true;
@@ -109,68 +158,81 @@ public abstract class ItemQuest extends AbstractQuest {
         }
     }
 
-    public boolean isRequiredItem(ItemStack provided) {
+    public boolean isRequiredItem(ItemStack provided, Progression progression) {
         if (requiredItems == null || requiredItems.isEmpty()) return true;
 
-        for (ItemStack item : requiredItems) {
-            Debugger.write("ItemQuest:isRequiredItem: Checking if item is required: " + item.getType() + " vs " + provided.getType() + ".");
+        List<ItemStack> itemsToCheck = getItemsToCheck(progression);
+        if (itemsToCheck.isEmpty()) return false;
 
-            if (ignoreNbt && item.getType() == provided.getType()) {
-                Debugger.write("ItemQuest:isRequiredItem: Ignoring NBT data.");
-
-                // check if potion
-                if (POTIONS_TYPES.contains(item.getType())) {
-                    Debugger.write("ItemQuest:isRequiredItem: Required item is a potion.");
-                    boolean canProgress = true;
-
-                    final PotionMeta potionMeta = (PotionMeta) item.getItemMeta();
-                    final PotionMeta providedPotionMeta = (PotionMeta) provided.getItemMeta();
-
-                    // check potion type
-                    if (potionMeta.getBasePotionData().getType() != providedPotionMeta.getBasePotionData().getType()) {
-                        Debugger.write("ItemQuest:isRequiredItem: Potion type is different.");
-                        canProgress = false;
-                    }
-
-                    // check upgraded
-                    if (potionMeta.getBasePotionData().isUpgraded() != providedPotionMeta.getBasePotionData().isUpgraded()) {
-                        Debugger.write("ItemQuest:isRequiredItem: Potion is upgraded.");
-                        canProgress = false;
-                    }
-
-                    // check extended
-                    if (potionMeta.getBasePotionData().isExtended() != providedPotionMeta.getBasePotionData().isExtended()) {
-                        Debugger.write("ItemQuest:isRequiredItem: Potion is extended.");
-                        canProgress = false;
-                    }
-
-                    if (!canProgress) continue;
-                }
-
-                return true;
-            }
-
-            if (item.hasItemMeta() && item.getItemMeta().hasCustomModelData()) {
-                Debugger.write("ItemQuest:isRequiredItem: Required item has custom model data.");
-                if (provided.hasItemMeta() && provided.getItemMeta().hasCustomModelData()) {
-                    Debugger.write("ItemQuest:isRequiredItem: Provided item has custom model data.");
-                    return item.getType() == provided.getType() && item.getItemMeta().getCustomModelData() == provided.getItemMeta().getCustomModelData();
-                }
-                Debugger.write("ItemQuest:isRequiredItem: Provided item does not have custom model data.");
-                return false;
-            }
-
-            if (item.isSimilar(provided)) {
-                Debugger.write("ItemQuest:isRequiredItem: Item is similar.");
-                return true;
-            }
-
-            Debugger.write("ItemQuest:isRequiredItem: Item is not similar.");
+        for (ItemStack item : itemsToCheck) {
+            if (matchesItem(item, provided)) return true;
         }
+
         Debugger.write("ItemQuest:isRequiredItem: Item is not required.");
         return false;
     }
 
+    private List<ItemStack> getItemsToCheck(Progression progression) {
+        if (!isRandomRequired) return requiredItems;
+
+        int index = progression.getSelectedRequiredIndex();
+        if (index < 0 || index >= requiredItems.size()) {
+            Debugger.write("ItemQuest:isRequiredItem: Invalid selectedRequiredIndex: " + index);
+            return List.of();
+        }
+
+        return List.of(requiredItems.get(index));
+    }
+
+    private boolean matchesItem(ItemStack required, ItemStack provided) {
+        Debugger.write("ItemQuest:isRequiredItem: Checking if item is required: " + required.getType() + " vs " + provided.getType() + ".");
+
+        if (ignoreNbt && required.getType() == provided.getType()) {
+            Debugger.write("ItemQuest:isRequiredItem: Ignoring NBT data.");
+            return !POTIONS_TYPES.contains(required.getType()) || potionEquals(required, provided);
+        }
+
+        if (hasMatchingCustomModelData(required, provided)) return true;
+
+        if (required.isSimilar(provided)) {
+            Debugger.write("ItemQuest:isRequiredItem: Item is similar.");
+            return true;
+        }
+
+        Debugger.write("ItemQuest:isRequiredItem: Item is not similar.");
+        return false;
+    }
+
+    private boolean potionEquals(ItemStack required, ItemStack provided) {
+        Debugger.write("ItemQuest:isRequiredItem: Required item is a potion.");
+        PotionMeta reqMeta = (PotionMeta) required.getItemMeta();
+        PotionMeta provMeta = (PotionMeta) provided.getItemMeta();
+
+        boolean sameType = reqMeta.getBasePotionData().getType() == provMeta.getBasePotionData().getType();
+        boolean sameUpgrade = reqMeta.getBasePotionData().isUpgraded() == provMeta.getBasePotionData().isUpgraded();
+        boolean sameExtended = reqMeta.getBasePotionData().isExtended() == provMeta.getBasePotionData().isExtended();
+
+        if (!sameType) Debugger.write("ItemQuest:isRequiredItem: Potion type is different.");
+        if (!sameUpgrade) Debugger.write("ItemQuest:isRequiredItem: Potion is upgraded.");
+        if (!sameExtended) Debugger.write("ItemQuest:isRequiredItem: Potion is extended.");
+
+        return sameType && sameUpgrade && sameExtended;
+    }
+
+    private boolean hasMatchingCustomModelData(ItemStack required, ItemStack provided) {
+        if (!required.hasItemMeta() || !required.getItemMeta().hasCustomModelData()) return false;
+
+        Debugger.write("ItemQuest:isRequiredItem: Required item has custom model data.");
+
+        if (provided.hasItemMeta() && provided.getItemMeta().hasCustomModelData()) {
+            Debugger.write("ItemQuest:isRequiredItem: Provided item has custom model data.");
+            return required.getType() == provided.getType()
+                    && required.getItemMeta().getCustomModelData() == provided.getItemMeta().getCustomModelData();
+        }
+
+        Debugger.write("ItemQuest:isRequiredItem: Provided item does not have custom model data.");
+        return false;
+    }
 
     /**
      * Get the required items.

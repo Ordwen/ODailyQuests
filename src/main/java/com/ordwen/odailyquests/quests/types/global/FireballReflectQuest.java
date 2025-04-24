@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.quests.types.global;
 
+import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
 import org.bukkit.configuration.ConfigurationSection;
@@ -18,7 +19,7 @@ public class FireballReflectQuest extends AbstractQuest {
     }
 
     @Override
-    public boolean canProgress(Event provided) {
+    public boolean canProgress(Event provided, Progression progression) {
         return provided instanceof ProjectileHitEvent;
     }
 

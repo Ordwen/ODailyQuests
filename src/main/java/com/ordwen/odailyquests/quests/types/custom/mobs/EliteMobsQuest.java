@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.quests.types.custom.mobs;
 
 import com.magmaguy.elitemobs.api.EliteMobDeathEvent;
+import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
@@ -19,7 +20,7 @@ public class EliteMobsQuest extends CustomMobQuest {
     }
 
     @Override
-    public boolean canProgress(Event provided) {
+    public boolean canProgress(Event provided, Progression progression) {
         if (provided instanceof EliteMobDeathEvent event) {
             return super.isRequiredEntity(event.getEliteEntity().getName().substring(event.getEliteEntity().getName().indexOf(' ') + 1));
         }
