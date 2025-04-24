@@ -64,7 +64,7 @@ dependencies {
     compileOnly 'org.xerial:sqlite-jdbc:3.49.1.0'
 
     /* Spigot */
-    compileOnly 'org.spigotmc:spigot-api:1.18.1-R0.1-SNAPSHOT'
+    compileOnly 'org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT'
 
     /* Folia */
     implementation 'space.arim.morepaperlib:morepaperlib:0.4.3'

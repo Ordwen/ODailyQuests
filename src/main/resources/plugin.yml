@@ -1,7 +1,7 @@
 name: "ODailyQuests"
 version: '${version}'
 main: com.ordwen.odailyquests.ODailyQuests
-api-version: 1.16
+api-version: 1.18.2
 prefix: "O'DailyQuests"
 authors: [ Ordwen ]
 description: Add more objectives and dynamize your server !
