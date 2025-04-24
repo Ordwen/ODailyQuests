@@ -110,7 +110,7 @@ public class ProgressionMessage implements IConfigurable {
      */
     public void sendProgressionMessageInternal(Player player, String questName, int progression, int required) {
         if (isEnabled) {
-            final String toSend = TextFormatter.format(message
+            final String toSend = TextFormatter.format(player, message
                     .replace("%player%", player.getDisplayName())
                     .replace("%questName%", questName)
                     .replace("%progress%", String.valueOf(progression))

@@ -48,9 +48,12 @@ public class Title implements IConfigurable {
 
     public void sendTitleInternal(Player player, String questName) {
         if (isEnabled) {
+            final String playerMainTitle = TextFormatter.format(player, this.mainTitle);
+            final String playerSubTitle = TextFormatter.format(player, this.subTitle);
+
             player.sendTitle(
-                    mainTitle.replace("%player%", player.getDisplayName()).replace("%questName%", questName),
-                    subTitle.replace("%player%", player.getDisplayName()).replace("%questName%", questName),
+                    playerMainTitle.replace("%player%", player.getDisplayName()).replace("%questName%", questName),
+                    playerSubTitle.replace("%player%", player.getDisplayName()).replace("%questName%", questName),
                     fadeIn, stay, fadeOut);
         }
     }

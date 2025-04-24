@@ -38,7 +38,9 @@ public class ActionBar implements IConfigurable {
 
     public void sendActionbarInternal(Player player, String questName) {
         if (isEnabled) {
-            final String toSend = TextFormatter.format(text
+            final String playerBar = TextFormatter.format(player, this.text);
+
+            final String toSend = TextFormatter.format(playerBar
                     .replace("%player%", player.getDisplayName())
                     .replace("%questName%", questName)
             );

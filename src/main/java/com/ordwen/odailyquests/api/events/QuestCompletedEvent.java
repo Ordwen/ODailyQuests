@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Called when a quest is completed.
  * This method sends the player the rewards of the quest, and increases their total number of completed quests.
+ *
  * @since 2.1.0
  */
 public class QuestCompletedEvent extends Event implements Cancellable {
@@ -24,8 +25,9 @@ public class QuestCompletedEvent extends Event implements Cancellable {
 
     /**
      * Constructor for the QuestCompletedEvent.
-     * @param player player who completed the quest
-     * @param progression current progression of the quest
+     *
+     * @param player        player who completed the quest
+     * @param progression   current progression of the quest
      * @param abstractQuest quest that was completed
      */
     public QuestCompletedEvent(Player player, Progression progression, AbstractQuest abstractQuest) {
@@ -58,6 +60,7 @@ public class QuestCompletedEvent extends Event implements Cancellable {
 
     /**
      * Get the player who completed the quest.
+     *
      * @return Player object
      */
     public Player getPlayer() {
@@ -66,6 +69,7 @@ public class QuestCompletedEvent extends Event implements Cancellable {
 
     /**
      * Get the current progression of the quest.
+     *
      * @return Progression object
      */
     public Progression getProgression() {
@@ -74,6 +78,7 @@ public class QuestCompletedEvent extends Event implements Cancellable {
 
     /**
      * Get the quest that was completed.
+     *
      * @return AbstractQuest object
      */
     public AbstractQuest getAbstractQuest() {
