@@ -6,6 +6,9 @@ import com.ordwen.odailyquests.configuration.essentials.JoinMessageDelay;
 import com.ordwen.odailyquests.configuration.essentials.QuestsPerCategory;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
+import com.ordwen.odailyquests.quests.types.AbstractQuest;
+import com.ordwen.odailyquests.quests.types.shared.EntityQuest;
+import com.ordwen.odailyquests.quests.types.shared.ItemQuest;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -15,6 +18,9 @@ import java.util.Map;
 public abstract class ProgressionLoader {
 
     private static final String PLAYER = "Player ";
+
+    private static final String NEW_QUESTS = "New quests will be drawn.";
+    private static final String CONFIG_CHANGE = "This can happen if the quest has been modified in the config file.";
 
     protected void handleNewPlayer(String playerName, Map<String, PlayerQuests> activeQuests) {
         Debugger.write(PLAYER + playerName + " has no data in progression file.");
@@ -53,5 +59,29 @@ public abstract class ProgressionLoader {
         Debugger.write("An error occurred while loading player " + player + "'s quests.");
         Debugger.write(message);
         PluginLogger.error(message);
+    }
+
+    protected boolean isSelectedRequiredInvalid(AbstractQuest quest, int selectedRequired, String playerName) {
+        if (quest.isRandomRequired()) {
+            if (selectedRequired == -1) {
+                PluginLogger.warn("Random required is null for player " + playerName + ". " + NEW_QUESTS);
+                PluginLogger.warn(CONFIG_CHANGE);
+                return true;
+            }
+
+            if (quest instanceof EntityQuest eq && eq.getRequiredEntities().size() <= selectedRequired) {
+                PluginLogger.warn("Selected required index is out of bounds for player " + playerName + ". " + NEW_QUESTS);
+                PluginLogger.warn(CONFIG_CHANGE);
+                return true;
+            }
+
+            if (quest instanceof ItemQuest iq && iq.getRequiredItems().size() <= selectedRequired) {
+                PluginLogger.warn("Selected required index is out of bounds for player " + playerName + ". " + NEW_QUESTS);
+                PluginLogger.warn(CONFIG_CHANGE);
+                return true;
+            }
+        }
+
+        return false;
     }
 }

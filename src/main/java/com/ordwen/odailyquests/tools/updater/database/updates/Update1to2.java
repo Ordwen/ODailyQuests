@@ -53,6 +53,10 @@ public class Update1to2 extends DatabaseUpdater {
                 if (!questSection.contains("requiredAmount")) {
                     questSection.set("requiredAmount", 0);
                 }
+
+                if (!questSection.contains("selectedRequired")) {
+                    questSection.set("selectedRequired", -1);
+                }
             }
         }
 

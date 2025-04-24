@@ -93,6 +93,7 @@ public class LoadProgressionYAML extends ProgressionLoader {
             int questIndex = questsSection.getInt(key + ".index");
             int advancement = questsSection.getInt(key + ".progression");
             int requiredAmount = questsSection.getInt(key + ".requiredAmount");
+            int selectedRequired = questsSection.getInt(key + ".selectedRequired", -1);
 
             // schema update check (1 to 2)
             if (requiredAmount == 0) {
@@ -108,7 +109,15 @@ public class LoadProgressionYAML extends ProgressionLoader {
                 return null;
             }
 
-            quests.put(quest, new Progression(requiredAmount, advancement, isAchieved));
+            // check if random quest have data
+            if (isSelectedRequiredInvalid(quest, selectedRequired, playerName)) return null;
+
+            final Progression progression = new Progression(requiredAmount, advancement, isAchieved);
+            if (selectedRequired != -1) {
+                progression.setSelectedRequiredIndex(selectedRequired);
+            }
+
+            quests.put(quest, progression);
             i++;
         }
 

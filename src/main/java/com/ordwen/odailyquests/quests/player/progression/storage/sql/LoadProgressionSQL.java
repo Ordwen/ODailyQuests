@@ -10,8 +10,6 @@ import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.player.progression.ProgressionLoader;
 import com.ordwen.odailyquests.quests.player.progression.QuestLoaderUtils;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
-import com.ordwen.odailyquests.quests.types.shared.EntityQuest;
-import com.ordwen.odailyquests.quests.types.shared.ItemQuest;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -159,25 +157,7 @@ public class LoadProgressionSQL extends ProgressionLoader {
                         }
 
                         // check if random quest have data
-                        if (quest.isRandomRequired()) {
-                            if (selectedRequired == -1) {
-                                PluginLogger.warn("Random required is null for player " + playerName + ". " + NEW_QUESTS);
-                                PluginLogger.warn(CONFIG_CHANGE);
-                                return false;
-                            }
-
-                            if (quest instanceof EntityQuest eq && eq.getRequiredEntities().size() <= selectedRequired) {
-                                    PluginLogger.warn("Selected required index is out of bounds for player " + playerName + ". " + NEW_QUESTS);
-                                    PluginLogger.warn(CONFIG_CHANGE);
-                                    return false;
-                            }
-
-                            if (quest instanceof ItemQuest iq && iq.getRequiredItems().size() <= selectedRequired) {
-                                PluginLogger.warn("Selected required index is out of bounds for player " + playerName + ". " + NEW_QUESTS);
-                                PluginLogger.warn(CONFIG_CHANGE);
-                                return false;
-                            }
-                        }
+                        if (isSelectedRequiredInvalid(quest, selectedRequired, playerName)) return false;
 
                         // schema update check (1 to 2)
                         if (requiredAmount == 0) {

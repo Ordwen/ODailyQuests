@@ -43,6 +43,7 @@ public class SaveProgressionYAML {
             questSection.set("index", quest.getQuestIndex());
             questSection.set("progression", progression.getAdvancement());
             questSection.set("requiredAmount", progression.getRequiredAmount());
+            questSection.set("selectedRequired", progression.getSelectedRequiredIndex());
             questSection.set("isAchieved", progression.isAchieved());
 
             index++;
