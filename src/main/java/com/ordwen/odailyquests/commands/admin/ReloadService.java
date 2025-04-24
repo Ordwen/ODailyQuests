@@ -64,24 +64,29 @@ public class ReloadService {
      * Execute all required actions when the command /qadmin reload is performed.
      */
     public void reload() {
-        /* load files */
-        plugin.getFilesManager().load();
+        try {
+            /* load files */
+            plugin.getFilesManager().load();
 
-        /* load configurations */
-        ConfigFactory.registerConfigs(plugin.getFilesManager().getConfigurationFile());
+            /* load configurations */
+            ConfigFactory.registerConfigs(plugin.getFilesManager().getConfigurationFile());
 
-        /* load database */
-        plugin.getDatabaseManager().load();
+            /* load database */
+            plugin.getDatabaseManager().load();
 
-        /* load quests & interface */
-        if ((!ItemsAdderEnabled.isEnabled() || ItemsAdderEnabled.isLoaded())
-                && (!OraxenEnabled.isEnabled() || OraxenEnabled.isLoaded())
-                && (!NexoEnabled.isEnabled() || NexoEnabled.isLoaded())) {
-            categoriesLoader.loadCategories();
-            plugin.getInterfacesManager().initAllObjects();
+            /* load quests & interface */
+            if ((!ItemsAdderEnabled.isEnabled() || ItemsAdderEnabled.isLoaded())
+                    && (!OraxenEnabled.isEnabled() || OraxenEnabled.isLoaded())
+                    && (!NexoEnabled.isEnabled() || NexoEnabled.isLoaded())) {
+
+                categoriesLoader.loadCategories();
+                plugin.getInterfacesManager().initAllObjects();
+            }
+
+            saveConnectedPlayerQuests();
+            ODailyQuests.morePaperLib.scheduling().globalRegionalScheduler().runDelayed(this::loadConnectedPlayerQuests, 20L);
+        } catch (IllegalStateException e) {
+            PluginLogger.error("An error occurred while reloading the plugin. Please check the logs for details.");
         }
-
-        saveConnectedPlayerQuests();
-        ODailyQuests.morePaperLib.scheduling().globalRegionalScheduler().runDelayed(this::loadConnectedPlayerQuests, 20L);
     }
 }

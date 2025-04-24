@@ -48,7 +48,6 @@ import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.tools.updater.config.ConfigUpdateManager;
 import com.ordwen.odailyquests.tools.updater.database.DatabaseUpdateManager;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 import space.arim.morepaperlib.MorePaperLib;
 
@@ -120,6 +119,11 @@ public final class ODailyQuests extends JavaPlugin {
         /* Load all config elements */
         this.reloadService = new ReloadService(this);
         reloadService.reload();
+
+        // stop loading if errors where detected on reload
+        if (!this.isEnabled()) {
+            return;
+        }
 
         /* Apply database migrations if necessary */
         new DatabaseUpdateManager(this).runUpdates();
@@ -264,7 +268,7 @@ public final class ODailyQuests extends JavaPlugin {
         reloadService.saveConnectedPlayerQuests();
 
         databaseManager.close();
-        PluginLogger.info(ChatColor.RED + "Plugin is shutting down...");
+        PluginLogger.info("Plugin is shutting down...");
     }
 
     /**

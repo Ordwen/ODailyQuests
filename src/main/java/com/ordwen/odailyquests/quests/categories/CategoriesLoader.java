@@ -60,7 +60,7 @@ public class CategoriesLoader {
         if (totalQuests < requiredAmount || noPermQuests < requiredAmount) {
             PluginLogger.error("Impossible to enable the plugin.");
             PluginLogger.error("You need at least " + requiredAmount + " quests in your " + categoryName + ".yml file.");
-            PluginLogger.error("Also, at least " + requiredAmount + " quests must be accessible without permission.");
+            PluginLogger.error("Also, at least " + requiredAmount + " quest(s) must be accessible without permission.");
             return false;
         }
         return true;

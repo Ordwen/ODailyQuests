@@ -113,7 +113,7 @@ public class QuestsLoader extends QuestItemGetter {
     public void loadQuests(FileConfiguration file, List<AbstractQuest> quests, String fileName) {
         final ConfigurationSection allQuestsSection = file.getConfigurationSection("quests");
         if (allQuestsSection == null) {
-            PluginLogger.error("Impossible to load " + fileName + " : there is no quests in " + fileName + " file !");
+            PluginLogger.error("Impossible to load " + fileName + ": there is no quests in " + fileName + " file!");
             return;
         }
 
