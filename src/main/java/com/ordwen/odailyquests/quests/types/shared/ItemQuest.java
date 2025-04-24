@@ -97,7 +97,7 @@ public abstract class ItemQuest extends AbstractQuest {
             }
 
         } else {
-            // required / required_item : accepte une liste de strings OU un seul string
+            // required / required_item : accept list of strings or single string
             final List<String> itemStrings = new ArrayList<>();
             if (section.isList(path)) {
                 itemStrings.addAll(section.getStringList(path));

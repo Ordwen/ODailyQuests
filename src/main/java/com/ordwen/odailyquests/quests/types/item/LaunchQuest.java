@@ -24,8 +24,8 @@ public class LaunchQuest extends ItemQuest {
     @Override
     public boolean canProgress(Event provided, Progression progression) {
         if (provided instanceof ProjectileLaunchEvent event) {
-            EntityType entityType = event.getEntity().getType();
-            ItemStack requiredItem = null;
+            final EntityType entityType = event.getEntity().getType();
+            final ItemStack requiredItem;
 
             switch (entityType) {
                 case ENDER_PEARL -> requiredItem = new ItemStack(Material.ENDER_PEARL);
@@ -34,19 +34,18 @@ public class LaunchQuest extends ItemQuest {
                 case SNOWBALL -> requiredItem = new ItemStack(Material.SNOWBALL);
                 case THROWN_EXP_BOTTLE -> requiredItem = new ItemStack(Material.EXPERIENCE_BOTTLE);
                 case FIREWORK -> requiredItem = new ItemStack(Material.FIREWORK_ROCKET);
+                default -> {
+                    return false;
+                }
             }
 
-            if (requiredItem != null) {
-                return super.isRequiredItem(requiredItem, progression);
-            }
+            return super.isRequiredItem(requiredItem, progression);
         }
 
         if (provided instanceof PlayerInteractEvent interactEvent) {
-            ItemStack item = interactEvent.getItem();
-            if (item != null && item.getType() == Material.FIREWORK_ROCKET) {
-                if (interactEvent.getPlayer().isGliding()) {
-                    return super.isRequiredItem(item, progression);
-                }
+            final ItemStack item = interactEvent.getItem();
+            if (item != null && item.getType() == Material.FIREWORK_ROCKET && interactEvent.getPlayer().isGliding()) {
+                return super.isRequiredItem(item, progression);
             }
         }
 
