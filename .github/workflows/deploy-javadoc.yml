@@ -33,15 +33,19 @@ jobs:
       - name: Install SSH client
         run: sudo apt-get install -y openssh-client
 
-      - name: Deploy Javadoc via SCP
+      - name: Deploy Javadoc via rsync over SSH
         env:
           FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
-          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
           FTP_HOST: ${{ secrets.FTP_HOST }}
           FTP_TARGET_PATH: ${{ secrets.FTP_TARGET_PATH }}
           FTP_PORT: ${{ secrets.FTP_PORT }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
         run: |
+          sudo apt-get update && sudo apt-get install -y rsync sshpass
+
           mkdir -p ~/.ssh
           echo "StrictHostKeyChecking no" >> ~/.ssh/config
 
-          sshpass -p "$FTP_PASSWORD" scp -o StrictHostKeyChecking=no -P $FTP_PORT -r build/docs/javadoc/* $FTP_USERNAME@$FTP_HOST:$FTP_TARGET_PATH
+          sshpass -p "$FTP_PASSWORD" rsync -avz -e "ssh -p $FTP_PORT -o StrictHostKeyChecking=no" \
+            build/docs/javadoc/ \
+            $FTP_USERNAME@$FTP_HOST:$FTP_TARGET_PATH
