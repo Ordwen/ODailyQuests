@@ -1,0 +1,44 @@
+name: Generate and Deploy Javadoc
+
+on:
+  push:
+    branches:
+      - 3.0.0
+    paths:
+      - 'src/**'
+      - 'build.gradle'
+      - 'settings.gradle'
+      - '.github/workflows/deploy-javadoc.yml'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Generate Javadoc
+        run: ./gradlew javadoc
+
+      - name: Install SSH client
+        run: sudo apt-get install -y openssh-client
+
+      - name: Deploy Javadoc via SCP
+        env:
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+          FTP_TARGET_PATH: ${{ secrets.FTP_TARGET_PATH }}
+          FTP_PORT: ${{ secrets.FTP_PORT }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "StrictHostKeyChecking no" >> ~/.ssh/config
+
+          sshpass -p "$FTP_PASSWORD" scp -o StrictHostKeyChecking=no -P $FTP_PORT -r build/docs/javadoc/* $FTP_USERNAME@$FTP_HOST:$FTP_TARGET_PATH
