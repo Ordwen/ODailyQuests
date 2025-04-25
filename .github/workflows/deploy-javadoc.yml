@@ -41,6 +41,11 @@ jobs:
       - name: Install SSH client
         run: sudo apt-get install -y openssh-client
 
+      - name: Install rsync and sshpass
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y rsync sshpass
+
       - name: Deploy Javadoc via rsync over SSH
         env:
           FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
@@ -49,8 +54,6 @@ jobs:
           FTP_PORT: ${{ secrets.FTP_PORT }}
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
         run: |
-          sudo apt-get update && sudo apt-get install -y rsync sshpass
-
           mkdir -p ~/.ssh
           echo "StrictHostKeyChecking no" >> ~/.ssh/config
 
