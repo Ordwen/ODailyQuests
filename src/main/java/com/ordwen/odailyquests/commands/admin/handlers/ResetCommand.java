@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.commands.admin.handlers;
 
+import com.ordwen.odailyquests.api.ODailyQuestsAPI;
 import com.ordwen.odailyquests.api.commands.admin.AdminCommandBase;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.enums.QuestsPermissions;
@@ -65,7 +66,7 @@ public class ResetCommand extends AdminCommandBase {
      * @param target the player to reset
      */
     public void total(CommandSender sender, Player target) {
-        QuestsManager.getActiveQuests().get(target.getName()).setTotalAchievedQuests(0);
+        ODailyQuestsAPI.getPlayerQuests(target.getName()).setTotalAchievedQuests(0);
 
         String msg = QuestsMessages.TOTAL_AMOUNT_RESET_ADMIN.toString();
         if (msg != null) sender.sendMessage(msg.replace("%target%", target.getName()));

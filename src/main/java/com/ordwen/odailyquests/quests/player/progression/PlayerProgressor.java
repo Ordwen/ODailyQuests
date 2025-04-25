@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.quests.player.progression;
 
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.api.ODailyQuestsAPI;
 import com.ordwen.odailyquests.api.events.QuestCompletedEvent;
 import com.ordwen.odailyquests.api.events.QuestProgressEvent;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
@@ -46,7 +47,7 @@ public class PlayerProgressor {
      * @param questType the quest type to check for
      */
     private void checkForProgress(Event event, Player player, int amount, String questType) {
-        final Map<AbstractQuest, Progression> playerQuests = QuestsManager.getActiveQuests().get(player.getName()).getQuests();
+        final Map<AbstractQuest, Progression> playerQuests = ODailyQuestsAPI.getPlayerQuests(player.getName()).getQuests();
         for (Map.Entry<AbstractQuest, Progression> entry : playerQuests.entrySet()) {
             final AbstractQuest quest = entry.getKey();
             if (quest.getQuestType().equals(questType)) {

@@ -1,12 +1,12 @@
 package com.ordwen.odailyquests.commands.admin.handlers;
 
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.api.ODailyQuestsAPI;
 import com.ordwen.odailyquests.api.commands.admin.AdminCommandBase;
 import com.ordwen.odailyquests.api.events.QuestCompletedEvent;
 import com.ordwen.odailyquests.configuration.essentials.QuestsPerCategory;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.enums.QuestsPermissions;
-import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import org.bukkit.command.CommandSender;
@@ -60,7 +60,7 @@ public class CompleteCommand extends AdminCommandBase {
      */
     private void complete(CommandSender sender, int questIndex, Player target) {
         if (questIndex >= 1 && questIndex <= QuestsPerCategory.getTotalQuestsAmount()) {
-            final Map<AbstractQuest, Progression> playerQuests = QuestsManager.getActiveQuests().get(target.getName()).getQuests();
+            final Map<AbstractQuest, Progression> playerQuests = ODailyQuestsAPI.getPlayerQuests(target.getName()).getQuests();
 
             int index = 0;
             for (Map.Entry<AbstractQuest, Progression> entry : playerQuests.entrySet()) {

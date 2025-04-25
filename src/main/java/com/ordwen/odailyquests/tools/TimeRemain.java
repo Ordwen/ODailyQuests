@@ -1,9 +1,9 @@
 package com.ordwen.odailyquests.tools;
 
+import com.ordwen.odailyquests.api.ODailyQuestsAPI;
 import com.ordwen.odailyquests.configuration.essentials.TimestampMode;
 import com.ordwen.odailyquests.configuration.essentials.RenewInterval;
 import com.ordwen.odailyquests.configuration.essentials.RenewTime;
-import com.ordwen.odailyquests.quests.player.QuestsManager;
 
 import java.time.*;
 
@@ -19,7 +19,7 @@ public class TimeRemain {
      * @return the time remain before the next quests draw, in String.
      */
     public static String timeRemain(String playerName) {
-        long timestamp = QuestsManager.getActiveQuests().get(playerName).getTimestamp();
+        long timestamp = ODailyQuestsAPI.getPlayerQuests(playerName).getTimestamp();
         long rest;
 
         if (TimestampMode.getTimestampMode() == 1) {

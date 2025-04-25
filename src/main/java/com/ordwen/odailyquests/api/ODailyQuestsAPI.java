@@ -1,7 +1,6 @@
 package com.ordwen.odailyquests.api;
 
 import com.ordwen.odailyquests.api.commands.admin.AdminCommandRegistry;
-import com.ordwen.odailyquests.api.commands.player.PlayerCommandBase;
 import com.ordwen.odailyquests.api.commands.player.PlayerCommandRegistry;
 import com.ordwen.odailyquests.api.quests.QuestTypeRegistry;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
@@ -24,6 +23,16 @@ public class ODailyQuestsAPI {
 
     private final PlayerCommandRegistry playerCommandRegistry = new PlayerCommandRegistry();
     private final AdminCommandRegistry adminCommandRegistry = new AdminCommandRegistry();
+
+    /**
+     * Get the PlayerQuests object of a player.
+     *
+     * @param playerName name of the player
+     * @return PlayerQuests object
+     */
+    public static PlayerQuests getPlayerQuests(String playerName) {
+        return QuestsManager.getActiveQuests().get(playerName);
+    }
 
     /**
      * Get the QuestTypeRegistry object.
@@ -67,15 +76,6 @@ public class ODailyQuestsAPI {
     }
 
     /**
-     * Register a new command.
-     *
-     * @param command command to register
-     */
-    public void registerCommand(PlayerCommandBase command) {
-        playerCommandRegistry.registerCommand(command);
-    }
-
-    /**
      * Disable the registration of new quest types.
      */
     public static void disableRegistration() {
@@ -89,15 +89,5 @@ public class ODailyQuestsAPI {
      */
     public static Map<String, Class<? extends AbstractQuest>> getExternalTypes() {
         return externalTypes;
-    }
-
-    /**
-     * Get the PlayerQuests object of a player.
-     *
-     * @param playerName name of the player
-     * @return PlayerQuests object
-     */
-    public PlayerQuests getPlayerQuests(String playerName) {
-        return QuestsManager.getActiveQuests().get(playerName);
     }
 }

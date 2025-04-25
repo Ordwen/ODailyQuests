@@ -1,7 +1,7 @@
 package com.ordwen.odailyquests.quests.player.progression.listeners;
 
+import com.ordwen.odailyquests.api.ODailyQuestsAPI;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
-import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.api.events.QuestCompletedEvent;
 import com.ordwen.odailyquests.rewards.RewardManager;
 import com.ordwen.odailyquests.tools.DisplayName;
@@ -30,6 +30,6 @@ public class QuestCompletedListener implements Listener {
                 .replace("%displayName%", DisplayName.getDisplayName(quest, progression.getSelectedRequiredIndex()));
 
         RewardManager.sendAllRewardItems(formattedQuestName, player, quest.getReward());
-        QuestsManager.getActiveQuests().get(player.getName()).increaseCategoryAchievedQuests(quest.getCategoryName(), player);
+        ODailyQuestsAPI.getPlayerQuests(player.getName()).increaseCategoryAchievedQuests(quest.getCategoryName(), player);
     }
 }

@@ -1,10 +1,10 @@
 package com.ordwen.odailyquests.commands.admin.handlers;
 
+import com.ordwen.odailyquests.api.ODailyQuestsAPI;
 import com.ordwen.odailyquests.api.commands.admin.AdminCommandBase;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.enums.QuestsPermissions;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
-import com.ordwen.odailyquests.quests.player.QuestsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -58,7 +58,7 @@ public class AddCommand extends AdminCommandBase {
      * @param amount the amount of achieved quests to add.
      */
     private void addAmount(CommandSender sender, Player target, int amount) {
-        final PlayerQuests playerQuests = QuestsManager.getActiveQuests().get(target.getName());
+        final PlayerQuests playerQuests = ODailyQuestsAPI.getPlayerQuests(target.getName());
         playerQuests.addTotalAchievedQuests(amount);
 
         sendAdminMessage(sender, amount);

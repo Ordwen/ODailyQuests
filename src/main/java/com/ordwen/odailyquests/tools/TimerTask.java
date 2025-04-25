@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.tools;
 
+import com.ordwen.odailyquests.api.ODailyQuestsAPI;
 import com.ordwen.odailyquests.configuration.essentials.RenewInterval;
 import com.ordwen.odailyquests.configuration.essentials.RenewTime;
 import com.ordwen.odailyquests.enums.QuestsMessages;
@@ -51,7 +52,7 @@ public class TimerTask {
             final String msg = QuestsMessages.NEW_DAY.toString();
             if (!msg.isEmpty()) player.sendMessage(msg);
 
-            int totalAchievedQuests = QuestsManager.getActiveQuests().get(player.getName()).getTotalAchievedQuests();
+            int totalAchievedQuests = ODailyQuestsAPI.getPlayerQuests(player.getName()).getTotalAchievedQuests();
             QuestLoaderUtils.loadNewPlayerQuests(player.getName(), QuestsManager.getActiveQuests(), totalAchievedQuests);
         }
 

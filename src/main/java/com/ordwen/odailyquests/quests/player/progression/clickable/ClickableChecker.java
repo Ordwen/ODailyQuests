@@ -1,8 +1,8 @@
 package com.ordwen.odailyquests.quests.player.progression.clickable;
 
+import com.ordwen.odailyquests.api.ODailyQuestsAPI;
 import com.ordwen.odailyquests.configuration.functionalities.DisabledWorlds;
 import com.ordwen.odailyquests.enums.QuestsMessages;
-import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.player.progression.clickable.commands.*;
@@ -27,7 +27,7 @@ public abstract class ClickableChecker extends PlayerProgressor {
 
         if (isWorldDisabled(player)) return;
 
-        final Map<AbstractQuest, Progression> playerQuests = QuestsManager.getActiveQuests().get(player.getName()).getQuests();
+        final Map<AbstractQuest, Progression> playerQuests = ODailyQuestsAPI.getPlayerQuests(player.getName()).getQuests();
 
         for (Map.Entry<AbstractQuest, Progression> entry : playerQuests.entrySet()) {
             final AbstractQuest abstractQuest = entry.getKey();

@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.externs.hooks.placeholders;
 
+import com.ordwen.odailyquests.api.ODailyQuestsAPI;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.categories.Category;
@@ -62,7 +63,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
         if (!QuestsManager.getActiveQuests().containsKey(player.getName())) return null;
         if (QuestLoaderUtils.isTimeToRenew((Player) player, QuestsManager.getActiveQuests())) return null;
 
-        final PlayerQuests playerQuests = QuestsManager.getActiveQuests().get(player.getName());
+        final PlayerQuests playerQuests = ODailyQuestsAPI.getPlayerQuests(player.getName());
 
         final Map<String, Function<String, String>> placeholders = new HashMap<>();
         placeholders.put("total", p -> String.valueOf(playerQuests.getTotalAchievedQuests()));

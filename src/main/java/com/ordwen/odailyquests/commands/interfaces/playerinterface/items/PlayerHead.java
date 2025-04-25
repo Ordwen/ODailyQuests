@@ -1,8 +1,8 @@
 package com.ordwen.odailyquests.commands.interfaces.playerinterface.items;
 
+import com.ordwen.odailyquests.api.ODailyQuestsAPI;
 import com.ordwen.odailyquests.files.PlayerInterfaceFile;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
-import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.tools.TextFormatter;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import com.ordwen.odailyquests.tools.TimeRemain;
@@ -90,7 +90,7 @@ public class PlayerHead {
             string = TextFormatter.format(player, string);
 
 
-            final PlayerQuests playerQuests = QuestsManager.getActiveQuests().get(player.getName());
+            final PlayerQuests playerQuests = ODailyQuestsAPI.getPlayerQuests(player.getName());
             lore.set(index, TextFormatter.format(string)
                     .replace("%achieved%", String.valueOf(playerQuests.getAchievedQuests()))
                     .replace("%drawIn%", TimeRemain.timeRemain(player.getName())));
