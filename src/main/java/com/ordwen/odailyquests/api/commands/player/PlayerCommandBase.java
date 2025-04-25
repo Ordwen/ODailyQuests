@@ -6,6 +6,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Base class providing common functionality for player-related commands.
+ * <p>
+ * This abstract class implements the {@link PlayerCommand} and {@link PlayerCommandCompleter} interfaces,
+ * offering default behaviors for both command execution and tab-completion handling.
+ * Subclasses of this class can implement specific command logic and customize tab-completion behavior.
+ */
 public abstract class PlayerCommandBase extends PlayerMessages implements PlayerCommand, PlayerCommandCompleter {
 
     /**

@@ -22,6 +22,12 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Map;
 
+/**
+ * Manages the progression of a player's quests.
+ * <p>
+ * This class provides methods to track and update the progression of quests for players, including checking progress,
+ * executing actions when a quest is completed, and handling various conditions like world, region, and permissions for progression.
+ */
 public class PlayerProgressor {
 
     /**

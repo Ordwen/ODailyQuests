@@ -5,6 +5,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+/**
+ * This is an abstract base class for admin commands in the O'DailyQuests plugin.
+ * It provides common functionality for retrieving players and parsing quest indices,
+ * which can be used by any specific admin command that extends this class.
+ * <p>
+ * This class implements the {@link AdminCommand} and {@link AdminCommandCompleter} interfaces,
+ * enabling it to handle both the command execution and tab-completion features.
+ */
 public abstract class AdminCommandBase extends AdminMessages implements AdminCommand, AdminCommandCompleter {
 
     /**

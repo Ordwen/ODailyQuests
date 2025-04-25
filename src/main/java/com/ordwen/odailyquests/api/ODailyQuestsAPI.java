@@ -12,60 +12,81 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This class is used to access the API of ODailyQuests.
+ * This class provides access to the ODailyQuests API, allowing interaction with quest types, player quests,
+ * and command registries for both players and admins.
  */
 public class ODailyQuestsAPI {
 
+    /**
+     * Indicates whether quest type registration is allowed.
+     * Set to false after the plugin has been enabled to prevent further registration.
+     */
     private static boolean canRegister = true;
+
+    /**
+     * A map holding the registered external quest types, mapped by their type name.
+     * The values are the corresponding quest class types.
+     */
     private static final Map<String, Class<? extends AbstractQuest>> externalTypes = new HashMap<>();
 
+    /**
+     * The registry for quest types.
+     */
     private final QuestTypeRegistry questTypeRegistry = new QuestTypeRegistry();
 
+    /**
+     * The registry for player commands.
+     */
     private final PlayerCommandRegistry playerCommandRegistry = new PlayerCommandRegistry();
+
+    /**
+     * The registry for admin commands.
+     */
     private final AdminCommandRegistry adminCommandRegistry = new AdminCommandRegistry();
 
     /**
-     * Get the PlayerQuests object of a player.
+     * Retrieves the active quests for a specific player.
      *
-     * @param playerName name of the player
-     * @return PlayerQuests object
+     * @param playerName the name of the player
+     * @return the PlayerQuests object representing the player's active quests
      */
     public static PlayerQuests getPlayerQuests(String playerName) {
         return QuestsManager.getActiveQuests().get(playerName);
     }
 
     /**
-     * Get the QuestTypeRegistry object.
+     * Retrieves the QuestTypeRegistry used to manage quest types.
      *
-     * @return QuestTypeRegistry object
+     * @return the QuestTypeRegistry object
      */
     public QuestTypeRegistry getQuestTypeRegistry() {
         return questTypeRegistry;
     }
 
     /**
-     * Get the CommandRegistry object.
+     * Retrieves the PlayerCommandRegistry used to manage player commands.
      *
-     * @return CommandRegistry object
+     * @return the PlayerCommandRegistry object
      */
     public PlayerCommandRegistry getPlayerCommandRegistry() {
         return playerCommandRegistry;
     }
 
     /**
-     * Get the AdminCommandRegistry object.
+     * Retrieves the AdminCommandRegistry used to manage admin commands.
      *
-     * @return AdminCommandRegistry object
+     * @return the AdminCommandRegistry object
      */
     public AdminCommandRegistry getAdminCommandRegistry() {
         return adminCommandRegistry;
     }
 
     /**
-     * Register a new quest type.
+     * Registers a new quest type.
+     * The registration is only allowed if the plugin is in a state that permits it.
      *
-     * @param type       type of the quest
-     * @param questClass class of the quest
+     * @param type the type of the quest to be registered
+     * @param questClass the class of the quest type
      */
     public static void registerQuestType(String type, Class<? extends AbstractQuest> questClass) {
         if (canRegister) {
@@ -76,16 +97,16 @@ public class ODailyQuestsAPI {
     }
 
     /**
-     * Disable the registration of new quest types.
+     * Disables further registration of new quest types.
      */
     public static void disableRegistration() {
         canRegister = false;
     }
 
     /**
-     * Get the external quest types.
+     * Retrieves a map of external quest types that have been registered.
      *
-     * @return external quest types
+     * @return a map of external quest types, where the key is the type name and the value is the quest class
      */
     public static Map<String, Class<? extends AbstractQuest>> getExternalTypes() {
         return externalTypes;

@@ -3,6 +3,12 @@ package com.ordwen.odailyquests.api.commands.admin;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import org.bukkit.command.CommandSender;
 
+/**
+ * Base class providing common message sending functionality for admin commands.
+ * <p>
+ * This class includes helper methods for sending predefined messages to the command sender (admin).
+ * These messages are typically used for error handling and feedback when interacting with commands.
+ */
 public abstract class AdminMessages {
 
     /**

@@ -4,6 +4,13 @@ import org.bukkit.command.CommandSender;
 
 import java.util.List;
 
+/**
+ * Interface for providing tab-completion suggestions for admin commands in the O'DailyQuests plugin.
+ * <p>
+ * This interface defines the method {@link #onTabComplete(CommandSender, String[])},
+ * which is used to provide dynamic suggestions during command argument entry.
+ * It allows for context-aware tab-completion, such as subcommands, player names, or other dynamic options.
+ */
 public interface AdminCommandCompleter {
 
     /**
