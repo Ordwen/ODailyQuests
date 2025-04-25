@@ -18,6 +18,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +56,29 @@ public class PAPIExpansion extends PlaceholderExpansion {
     @Override
     public boolean persist() {
         return true;
+    }
+
+    @NotNull
+    @Override
+    public List<String> getPlaceholders() {
+        final List<String> placeholdersList = new ArrayList<>();
+        placeholdersList.add("%odailyquests_total%");
+        placeholdersList.add("%odailyquests_achieved%");
+        placeholdersList.add("%odailyquests_drawin%");
+
+        placeholdersList.add("%odailyquests_name_");
+        placeholdersList.add("%odailyquests_desc_");
+        placeholdersList.add("%odailyquests_progress_");
+        placeholdersList.add("%odailyquests_progressbar_");
+        placeholdersList.add("%odailyquests_iscompleted_");
+        placeholdersList.add("%odailyquests_requiredamount_");
+
+        final Map<String, Category> categoryMap = CategoriesLoader.getAllCategories();
+        for (String categoryKey : categoryMap.keySet()) {
+            placeholdersList.add("%odailyquests_" + categoryKey + "_");
+        }
+
+        return placeholdersList;
     }
 
     @Override
