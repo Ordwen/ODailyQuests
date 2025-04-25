@@ -41,28 +41,15 @@ jobs:
       - name: Install SSH client
         run: sudo apt-get install -y openssh-client
 
-      - name: Install rsync and sshpass
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y rsync sshpass
-
-      - name: Check where rsync is installed
-        run: which rsync
-
-      - name: Deploy Javadoc via rsync over SSH
+      - name: Deploy Javadoc via SCP
         env:
           FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
           FTP_HOST: ${{ secrets.FTP_HOST }}
           FTP_TARGET_PATH: ${{ secrets.FTP_TARGET_PATH }}
           FTP_PORT: ${{ secrets.FTP_PORT }}
-          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
         run: |
-          # Use the full path for rsync
-          RSYNC_PATH=$(which rsync)
           mkdir -p ~/.ssh
           echo "StrictHostKeyChecking no" >> ~/.ssh/config
 
-          # Use full path to rsync
-          $RSYNC_PATH -avz -e "ssh -p $FTP_PORT -o StrictHostKeyChecking=no" \
-            build/docs/javadoc/ \
-            $FTP_USERNAME@$FTP_HOST:$FTP_TARGET_PATH
+          sshpass -p "$FTP_PASSWORD" scp -o StrictHostKeyChecking=no -P $FTP_PORT -r build/docs/javadoc/* $FTP_USERNAME@$FTP_HOST:$FTP_TARGET_PATH
