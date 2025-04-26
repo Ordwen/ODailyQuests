@@ -28,7 +28,7 @@ public class PlayerInterfaceFile {
 
         if (!file.exists()) {
             oDailyQuests.saveResource("playerInterface.yml", false);
-            PluginLogger.warn("Player interface file created (YAML).");
+            PluginLogger.info("Player interface file created (YAML).");
         }
 
         config = new YamlConfiguration();

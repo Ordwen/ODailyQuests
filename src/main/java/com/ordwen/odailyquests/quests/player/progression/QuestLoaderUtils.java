@@ -13,6 +13,7 @@ import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.entity.Player;
 
 import java.time.*;
+import java.time.chrono.ChronoZonedDateTime;
 import java.util.*;
 
 public class QuestLoaderUtils {
@@ -33,23 +34,18 @@ public class QuestLoaderUtils {
         switch (mode) {
             case 1 -> {
                 final LocalTime renewTime = RenewTime.getRenewTime();
+                final ZoneId zone = RenewTime.getZoneId();
 
-                final LocalDateTime lastRenew = Instant.ofEpochMilli(timestamp)
-                        .atZone(ZoneId.systemDefault())
-                        .toLocalDateTime();
+                final ZonedDateTime lastRenew = Instant.ofEpochMilli(timestamp).atZone(zone);
+                final ZonedDateTime now = ZonedDateTime.now(zone);
 
-                final LocalDateTime now = LocalDateTime.now();
+                final ZonedDateTime todayRenewZonedDateTime = ZonedDateTime.of(now.toLocalDate(), renewTime, zone);
 
-                // Moment exact du renouvellement de "aujourd'hui"
-                final LocalDateTime todayRenewDateTime = LocalDateTime.of(now.toLocalDate(), renewTime);
+                final ZonedDateTime effectiveRenewZonedDateTime = now.isBefore(todayRenewZonedDateTime)
+                        ? todayRenewZonedDateTime.minusDays(1)
+                        : todayRenewZonedDateTime;
 
-                // Si le serveur n’a pas encore atteint l’heure de renouvellement aujourd’hui,
-                // alors on prend la dernière fois où le renouvellement était "atteignable"
-                LocalDateTime effectiveRenewTime = now.isBefore(todayRenewDateTime)
-                        ? todayRenewDateTime.minusDays(1)
-                        : todayRenewDateTime;
-
-                return lastRenew.isBefore(effectiveRenewTime)
+                return lastRenew.isBefore(ChronoZonedDateTime.from(effectiveRenewZonedDateTime))
                         && Duration.between(lastRenew, now).compareTo(renewInterval) >= 0;
             }
             case 2 -> {

@@ -5,7 +5,9 @@ import com.ordwen.odailyquests.configuration.IConfigurable;
 import com.ordwen.odailyquests.files.ConfigurationFile;
 import com.ordwen.odailyquests.tools.PluginLogger;
 
+import java.time.DateTimeException;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -20,9 +22,11 @@ public class RenewTime implements IConfigurable {
     );
 
     private static final String DEFAULT_TIME = "00:00";
+    private static final String DEFAULT_ZONE = "SystemDefault";
 
     private final ConfigurationFile configurationFile;
     private LocalTime time;
+    private ZoneId zoneId;
 
     public RenewTime(ConfigurationFile configurationFile) {
         this.configurationFile = configurationFile;
@@ -31,9 +35,11 @@ public class RenewTime implements IConfigurable {
     @Override
     public void load() {
         final String timeStr = configurationFile.getConfig().getString("renew_time", DEFAULT_TIME);
+        final String zoneStr = configurationFile.getConfig().getString("renew_time_zone", DEFAULT_ZONE);
 
         try {
             time = parseTime(timeStr);
+            zoneId = parseZone(zoneStr);
         } catch (IllegalArgumentException e) {
             PluginLogger.warn("Invalid time format in config: " + timeStr + ". Using default: " + DEFAULT_TIME);
             time = parseTime(DEFAULT_TIME);
@@ -47,7 +53,7 @@ public class RenewTime implements IConfigurable {
      * @return LocalTime representing the parsed time.
      * @throws IllegalArgumentException if the format is invalid.
      */
-    public static LocalTime parseTime(String time) {
+    private LocalTime parseTime(String time) {
         time = time.toUpperCase().trim();
 
         for (DateTimeFormatter formatter : FORMATTERS) {
@@ -61,11 +67,34 @@ public class RenewTime implements IConfigurable {
         throw new IllegalArgumentException("Invalid time format: " + time);
     }
 
+    /**
+     * Parses a zone string (e.g., "UTC", "America/New_York").
+     *
+     * @param zone the input zone string.
+     * @return ZoneId representing the parsed zone.
+     */
+    private ZoneId parseZone(String zone) {
+        if (zone.equalsIgnoreCase(DEFAULT_ZONE)) {
+            return ZoneId.systemDefault();
+        }
+
+        try {
+            return ZoneId.of(zone);
+        } catch (DateTimeException e) {
+            PluginLogger.warn("Invalid zone format in config: " + zone + ". Using system default.");
+            return ZoneId.systemDefault();
+        }
+    }
+
     private static RenewTime getInstance() {
         return ConfigFactory.getConfig(RenewTime.class);
     }
 
     public static LocalTime getRenewTime() {
         return getInstance().time;
+    }
+
+    public static ZoneId getZoneId() {
+        return getInstance().zoneId;
     }
 }

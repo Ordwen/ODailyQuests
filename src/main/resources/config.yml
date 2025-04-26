@@ -71,6 +71,11 @@ timestamp_mode: 1
 # Remember to surround the value with double quotes, otherwise it will not work!
 renew_time: "00:00"
 
+# Set the time zone for the renew_time. (e.g., "UTC", "Europe/Paris", "America/New_York")
+# You can find the list of time zones here: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+# If you want to use the server time zone, set it to "SystemDefault".
+renew_time_zone: "SystemDefault"
+
 # Select the interval at which the quests will be reloaded.
 # Accepted formats are:
 # - "1d"    → 1 day

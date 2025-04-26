@@ -9,9 +9,7 @@ import com.ordwen.odailyquests.quests.player.progression.QuestLoaderUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -34,15 +32,18 @@ public class TimerTask {
     private void scheduleNextExecution(LocalDateTime start) {
         final LocalTime renewTime = RenewTime.getRenewTime();
         final Duration renewInterval = RenewInterval.getRenewInterval();
+        final ZoneId renewZoneId = RenewTime.getZoneId();
 
-        LocalDateTime nextExecution = start.with(renewTime);
+        final ZonedDateTime zonedStart = start.atZone(ZoneId.systemDefault()).withZoneSameInstant(renewZoneId);
+        ZonedDateTime nextExecution = zonedStart.with(renewTime);
 
         // add the interval until the next execution is after the start time
-        while (nextExecution.isBefore(start)) {
+        while (nextExecution.isBefore(zonedStart)) {
             nextExecution = nextExecution.plus(renewInterval);
         }
 
-        final long initialDelay = Duration.between(start, nextExecution).toNanos();
+        final long initialDelay = Duration.between(ZonedDateTime.now(ZoneId.systemDefault()), nextExecution.withZoneSameInstant(ZoneId.systemDefault())).toNanos();
+
         scheduledTask = scheduler.schedule(this::executeAndReschedule, initialDelay, TimeUnit.NANOSECONDS);
     }
 

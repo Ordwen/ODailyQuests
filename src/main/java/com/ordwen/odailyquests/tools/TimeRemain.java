@@ -23,15 +23,18 @@ public class TimeRemain {
         long rest;
 
         if (TimestampMode.getTimestampMode() == 1) {
-            LocalTime renewTime = RenewTime.getRenewTime();
-            LocalDateTime lastRenew = Instant.ofEpochMilli(timestamp).atZone(ZoneId.systemDefault()).toLocalDateTime();
-            LocalDateTime nextRenew = lastRenew.toLocalDate().plusDays(1).atTime(renewTime);
+            final LocalTime renewTime = RenewTime.getRenewTime();
+            final ZoneId zone = RenewTime.getZoneId();
 
-            if (nextRenew.isBefore(LocalDateTime.now())) {
+            final ZonedDateTime lastRenew = Instant.ofEpochMilli(timestamp).atZone(zone);
+            final ZonedDateTime now = ZonedDateTime.now(zone);
+            ZonedDateTime nextRenew = lastRenew.toLocalDate().plusDays(1).atTime(renewTime).atZone(zone);
+
+            if (nextRenew.isBefore(now)) {
                 nextRenew = nextRenew.plusDays(1);
             }
 
-            rest = Duration.between(LocalDateTime.now(), nextRenew).toMillis();
+            rest = Duration.between(now, nextRenew).toMillis();
         } else {
             Duration renewDuration = RenewInterval.getRenewInterval();
             rest = (renewDuration != null) ? (timestamp + renewDuration.toMillis()) - System.currentTimeMillis() : 0;
