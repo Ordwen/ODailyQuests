@@ -2,6 +2,7 @@ package com.ordwen.odailyquests.commands.player.handlers;
 
 import com.ordwen.odailyquests.api.commands.player.PlayerCommandBase;
 import com.ordwen.odailyquests.commands.interfaces.QuestsInterfaces;
+import com.ordwen.odailyquests.enums.QuestsPermissions;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -30,16 +31,11 @@ public class PShowCommand extends PlayerCommandBase {
 
     @Override
     public String getPermission() {
-        return "odailyquests.show";
+        return QuestsPermissions.QUESTS_PLAYER_SHOW.getPermission();
     }
 
     @Override
     public void execute(Player player, String[] args) {
-        if (!player.hasPermission(getPermission())) {
-            noPermission(player);
-            return;
-        }
-
         if (args.length != 2) {
             help(player);
             return;

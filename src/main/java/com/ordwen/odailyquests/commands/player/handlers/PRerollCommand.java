@@ -3,6 +3,7 @@ package com.ordwen.odailyquests.commands.player.handlers;
 import com.ordwen.odailyquests.api.commands.player.PlayerCommandBase;
 import com.ordwen.odailyquests.configuration.essentials.QuestsPerCategory;
 import com.ordwen.odailyquests.enums.QuestsMessages;
+import com.ordwen.odailyquests.enums.QuestsPermissions;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import org.bukkit.command.CommandSender;
@@ -23,16 +24,11 @@ public class PRerollCommand extends PlayerCommandBase {
 
     @Override
     public String getPermission() {
-        return "odailyquests.reroll";
+        return QuestsPermissions.QUESTS_PLAYER_REROLL.getPermission();
     }
 
     @Override
     public void execute(Player player, String[] args) {
-        if (!player.hasPermission(getPermission())) {
-            noPermission(player);
-            return;
-        }
-
         if (args.length != 2) {
             help(player);
             return;
