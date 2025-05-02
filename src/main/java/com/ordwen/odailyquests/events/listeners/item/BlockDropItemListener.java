@@ -38,6 +38,8 @@ public class BlockDropItemListener extends PlayerProgressor implements Listener 
         final BlockData data = event.getBlockState().getBlockData();
         final Material dataMaterial = data.getMaterial();
 
+        Debugger.write("BlockDropItemListener: onBlockDropItemEvent block data: " + dataMaterial.name() + ".");
+
         final List<Item> drops = event.getItems();
         if (drops.isEmpty()) {
             Debugger.write("BlockDropItemListener: onBlockDropItemEvent no drops.");
@@ -72,7 +74,7 @@ public class BlockDropItemListener extends PlayerProgressor implements Listener 
      * @param material the material of the block
      * @return true if the block has been placed by the player
      */
-    private static boolean isPlayerPlacedBlock(BlockDropItemEvent event, Material material) {
+    private boolean isPlayerPlacedBlock(BlockDropItemEvent event, Material material) {
         if (material.isBlock() && Antiglitch.isStorePlacedBlocks()) {
             final PersistentDataContainer pdc = new CustomBlockData(event.getBlock(), ODailyQuests.INSTANCE);
             // check if type has changed
@@ -92,7 +94,7 @@ public class BlockDropItemListener extends PlayerProgressor implements Listener 
      *
      * @param event the event that triggered the listener
      */
-    private static void handleStoreBrokenBlocks(Material material, BlockDropItemEvent event) {
+    private void handleStoreBrokenBlocks(Material material, BlockDropItemEvent event) {
         if (material.isBlock() && Antiglitch.isStoreBrokenBlocks()) {
             Debugger.write("BlockDropItemListener: onBlockDropItemEvent storing broken block.");
             for (Item item : event.getItems()) {
@@ -118,9 +120,9 @@ public class BlockDropItemListener extends PlayerProgressor implements Listener 
     private void handleDrops(BlockDropItemEvent event, Player player, List<Item> drops) {
         Debugger.write("BlockDropItemListener: handleDrops summoned.");
         for (Item item : drops) {
-            Debugger.write("BlockDropItemListener: handling drop: " + item.getItemStack().getType() + ".");
             final ItemStack droppedItem = item.getItemStack();
             final Material droppedMaterial = droppedItem.getType();
+            Debugger.write("BlockDropItemListener: handling drop: " + droppedMaterial + ".");
 
             FarmingQuest.setCurrent(new ItemStack(droppedMaterial));
             setPlayerQuestProgression(event, player, droppedItem.getAmount(), "FARMING");

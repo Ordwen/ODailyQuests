@@ -8,7 +8,9 @@ import com.ordwen.odailyquests.configuration.integrations.ItemsAdderEnabled;
 import com.ordwen.odailyquests.externs.hooks.items.KGeneratorsHook;
 import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
 import dev.lone.itemsadder.api.CustomBlock;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,11 +19,20 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 
+import java.util.Set;
+
 public class BlockBreakListener extends PlayerProgressor implements Listener {
+
+    private static final Set<Material> VERTICAL_PLANTS = Set.of(
+            Material.SUGAR_CANE,
+            Material.CACTUS,
+            Material.BAMBOO,
+            Material.KELP_PLANT,
+            Material.TWISTING_VINES_PLANT
+    );
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockBreakEvent(BlockBreakEvent event) {
-
         Debugger.write("BlockBreakListener: onBlockBreakEvent summoned.");
         if (event.isCancelled()) {
             Debugger.write("BlockBreakListener: onBlockBreakEvent cancelled.");
@@ -30,6 +41,15 @@ public class BlockBreakListener extends PlayerProgressor implements Listener {
 
         final Player player = event.getPlayer();
         final Block block = event.getBlock();
+        final Material material = block.getType();
+
+        Debugger.write("BlockBreakListener: onBlockBreakEvent block type: " + material.name() + ".");
+
+        if (VERTICAL_PLANTS.contains(material)) {
+            Debugger.write("BlockBreakListener: onBlockBreakEvent vertical plant detected.");
+            handleVerticalPlant(event, material);
+            return;
+        }
 
         if (ItemsAdderEnabled.isEnabled()) {
             final CustomBlock customBlock = CustomBlock.byAlreadyPlaced(block);
@@ -54,7 +74,7 @@ public class BlockBreakListener extends PlayerProgressor implements Listener {
      * @param block the block that is being broken
      * @return true if th quest progression can continue, false otherwise
      */
-    private static boolean canProgress(Block block) {
+    private boolean canProgress(Block block) {
         if (Antiglitch.isStorePlacedBlocks()) {
             Debugger.write("BlockBreakListener: onBlockBreakEvent checking for placed blocks.");
             if (block.getBlockData() instanceof Ageable ageable && ageable.getAge() != ageable.getMaximumAge()) {
@@ -75,6 +95,39 @@ public class BlockBreakListener extends PlayerProgressor implements Listener {
         }
 
         return true;
+    }
+
+    /**
+     * Handles FARMING quest progression for vertical plants (such as sugar cane, bamboo, or cactus).
+     * <p>
+     * This method counts how many vertically stacked blocks of the same type exist starting from
+     * the broken block, and triggers the corresponding quest progression.
+     * <p>
+     * It addresses the behavior in Minecraft where breaking the bottom block of a vertical plant causes
+     * the rest to break or fall without triggering separate events for the upper blocks.
+     *
+     * @param event     the block break event triggered by the player
+     * @param plantType the type of vertical plant being handled (e.g., SUGAR_CANE, BAMBOO, CACTUS)
+     */
+    private void handleVerticalPlant(BlockBreakEvent event, Material plantType) {
+        Block base = event.getBlock();
+        int count = 0;
+
+        while (base.getType() == plantType) {
+            count++;
+            base = base.getRelative(BlockFace.UP);
+        }
+
+        Debugger.write("BlockBreakListener: handleVerticalPlant found " + count + " vertical plant blocks.");
+
+        if (count > 0) {
+            if (Antiglitch.isStorePlacedBlocks() && count < 2) {
+                Debugger.write("BlockBreakListener: handleVerticalPlant cancelled due to single vertical plant block.");
+                return;
+            }
+
+            setPlayerQuestProgression(event, event.getPlayer(), count, "FARMING");
+        }
     }
 }
 
