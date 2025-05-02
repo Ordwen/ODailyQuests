@@ -22,6 +22,6 @@ public class DisplayName {
         }
 
         if (displayName == null) return ChatColor.RED + "Invalid usage.";
-        return TextFormatter.format(displayName);
+        return displayName;
     }
 }

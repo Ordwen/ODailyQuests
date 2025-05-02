@@ -99,7 +99,7 @@ public class PlayerProgressor {
         if (QuestLoaderUtils.isTimeToRenew(player, QuestsManager.getActiveQuests())) return;
         if (!isAllowedToProgress(player, quest)) return;
 
-        final String questName = DisplayName.getDisplayName(quest, progression.getSelectedRequiredIndex());
+        final String questName = quest.getQuestName().replace("%displayName%", DisplayName.getDisplayName(quest, progression.getSelectedRequiredIndex()));
 
         for (int i = 0; i < amount; i++) {
             Debugger.write("QuestProgressUtils: increasing progression for " + questName + " by " + amount + ".");
