@@ -23,7 +23,11 @@ public class PlayerCompleter implements TabCompleter {
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
         if (args.length == 1) {
-            final List<String> subCommands = new ArrayList<>(commandRegistry.keySet());
+            final List<String> subCommands = commandRegistry.getCommandHandlers().stream()
+                    .filter(cmd -> sender.hasPermission(cmd.getPermission()))
+                    .map(PlayerCommandBase::getName)
+                    .toList();
+
             return StringUtil.copyPartialMatches(args[0], subCommands, new ArrayList<>());
         } else {
             final PlayerCommandBase subCommand = commandRegistry.getCommandHandler(args[0]);

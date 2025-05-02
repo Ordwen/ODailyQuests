@@ -27,7 +27,7 @@ public class PlayerCommands extends PlayerMessages implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!(sender instanceof Player player)) {
             playerOnly(sender);
-            return false;
+            return true;
         }
 
         if (!sender.hasPermission(QuestsPermissions.QUESTS_PLAYER_USE.getPermission())) {

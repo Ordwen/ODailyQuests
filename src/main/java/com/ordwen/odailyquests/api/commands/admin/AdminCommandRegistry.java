@@ -1,7 +1,9 @@
 package com.ordwen.odailyquests.api.commands.admin;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Registry for all admin subcommands in the plugin.
@@ -11,7 +13,9 @@ import java.util.Map;
  * <p>
  * Addons can use this registry to register their own administrative commands.
  */
-public class AdminCommandRegistry extends HashMap<String, AdminCommandBase> {
+public class AdminCommandRegistry {
+
+    private final Map<String, AdminCommandBase> handlers = new HashMap<>();
 
     /**
      * Registers a new admin subcommand handler.
@@ -21,7 +25,7 @@ public class AdminCommandRegistry extends HashMap<String, AdminCommandBase> {
      * @param handler the admin command handler to register
      */
     public void registerCommand(AdminCommandBase handler) {
-        this.put(handler.getName(), handler);
+        handlers.put(handler.getName(), handler);
     }
 
     /**
@@ -31,7 +35,7 @@ public class AdminCommandRegistry extends HashMap<String, AdminCommandBase> {
      * @return the corresponding {@link AdminCommandBase}, or {@code null} if not found
      */
     public AdminCommandBase getCommandHandler(String name) {
-        return this.get(name);
+        return handlers.get(name);
     }
 
     /**
@@ -39,7 +43,17 @@ public class AdminCommandRegistry extends HashMap<String, AdminCommandBase> {
      *
      * @return a map of subcommand names to their handlers
      */
-    public Map<String, AdminCommandBase> getCommandHandlers() {
-        return this;
+    public Collection<AdminCommandBase> getCommandHandlers() {
+        return handlers.values();
+    }
+
+    /**
+     * Gets a set of all registered command names.
+     *
+     *
+     * @return a set of subcommand names
+     */
+    public Set<String> getCommandNames() {
+        return handlers.keySet();
     }
 }

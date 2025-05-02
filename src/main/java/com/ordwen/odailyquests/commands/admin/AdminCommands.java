@@ -25,6 +25,7 @@ public class AdminCommands implements CommandExecutor {
     public boolean onCommand(CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!sender.hasPermission(QuestsPermissions.QUESTS_ADMIN.getPermission())) {
             noPermission(sender);
+            return true;
         }
 
         if (args.length == 1) {

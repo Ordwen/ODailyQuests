@@ -2,6 +2,7 @@ package com.ordwen.odailyquests.commands.admin;
 
 import com.ordwen.odailyquests.api.commands.admin.AdminCommandBase;
 import com.ordwen.odailyquests.api.commands.admin.AdminCommandRegistry;
+import com.ordwen.odailyquests.enums.QuestsPermissions;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -22,9 +23,14 @@ public class AdminCompleter implements TabCompleter {
 
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
+        if (!sender.hasPermission(QuestsPermissions.QUESTS_ADMIN.getPermission())) {
+            return Collections.emptyList();
+        }
+
         if (args.length == 1) {
-            final List<String> subCommands = new ArrayList<>(commandRegistry.keySet());
+            final List<String> subCommands = new ArrayList<>(commandRegistry.getCommandNames());
             subCommands.add("reload");
+
             return StringUtil.copyPartialMatches(args[0], subCommands, new ArrayList<>());
         } else {
             final AdminCommandBase subCommand = commandRegistry.getCommandHandler(args[0]);

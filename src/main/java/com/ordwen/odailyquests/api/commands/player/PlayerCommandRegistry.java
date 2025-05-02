@@ -1,7 +1,9 @@
 package com.ordwen.odailyquests.api.commands.player;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Registry for all player subcommands in the plugin.
@@ -11,7 +13,9 @@ import java.util.Map;
  * <p>
  * Addons can use this registry to register their own player commands.
  */
-public class PlayerCommandRegistry extends HashMap<String, PlayerCommandBase> {
+public class PlayerCommandRegistry {
+
+    private final Map<String, PlayerCommandBase> handlers = new HashMap<>();
 
     /**
      * Registers a new player subcommand handler.
@@ -21,7 +25,7 @@ public class PlayerCommandRegistry extends HashMap<String, PlayerCommandBase> {
      * @param handler the player command handler to register
      */
     public void registerCommand(PlayerCommandBase handler) {
-        this.put(handler.getName(), handler);
+        handlers.put(handler.getName(), handler);
     }
 
     /**
@@ -31,15 +35,25 @@ public class PlayerCommandRegistry extends HashMap<String, PlayerCommandBase> {
      * @return the corresponding {@link PlayerCommandBase}, or {@code null} if not found
      */
     public PlayerCommandBase getCommandHandler(String name) {
-        return this.get(name);
+        return handlers.get(name);
     }
 
     /**
-     * Gets a map of all registered player command handlers.
+     * Gets a collection of all registered player command handlers.
      *
-     * @return a map of subcommand names to their handlers
+     * @return a collection of subcommand names to their handlers
      */
-    public Map<String, PlayerCommandBase> getCommandHandlers() {
-        return this;
+    public Collection<PlayerCommandBase> getCommandHandlers() {
+        return handlers.values();
+    }
+
+    /**
+     * Gets a set of all registered command names.
+     *
+     *
+     * @return a set of subcommand names
+     */
+    public Set<String> getCommandNames() {
+        return handlers.keySet();
     }
 }

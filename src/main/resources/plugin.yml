@@ -32,5 +32,17 @@ permissions:
   odailyquests.progress:
     description: "Allows the player to progress in ODailyQuests"
     default: true
+  odailyquests.admin:
+    description: "Allows the player to use the admin commands"
+    default: op
+  odailyquests.use:
+    description: "Allows the player to use commands and see the player interface"
+    default: op
+  odailyquests.show:
+    description: "Allows the player to see all category interfarces"
+    default: op
+  odailyquests.reroll:
+    description: "Allows the player to reroll quests"
+    default: op
 
 folia-supported: true
