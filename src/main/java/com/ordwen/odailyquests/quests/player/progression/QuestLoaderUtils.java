@@ -13,7 +13,6 @@ import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.entity.Player;
 
 import java.time.*;
-import java.time.chrono.ChronoZonedDateTime;
 import java.util.*;
 
 public class QuestLoaderUtils {
@@ -39,14 +38,13 @@ public class QuestLoaderUtils {
                 final ZonedDateTime lastRenew = Instant.ofEpochMilli(timestamp).atZone(zone);
                 final ZonedDateTime now = ZonedDateTime.now(zone);
 
-                final ZonedDateTime todayRenewZonedDateTime = ZonedDateTime.of(now.toLocalDate(), renewTime, zone);
+                final ZonedDateTime todayRenew = ZonedDateTime.of(now.toLocalDate(), renewTime, zone);
 
-                final ZonedDateTime effectiveRenewZonedDateTime = now.isBefore(todayRenewZonedDateTime)
-                        ? todayRenewZonedDateTime.minusDays(1)
-                        : todayRenewZonedDateTime;
+                final ZonedDateTime lastEffectiveRenew = now.isBefore(todayRenew)
+                        ? todayRenew.minusDays(1)
+                        : todayRenew;
 
-                return lastRenew.isBefore(ChronoZonedDateTime.from(effectiveRenewZonedDateTime))
-                        && Duration.between(lastRenew, now).compareTo(renewInterval) >= 0;
+                return lastRenew.isBefore(lastEffectiveRenew);
             }
             case 2 -> {
                 if (renewInterval != null) {
@@ -61,7 +59,6 @@ public class QuestLoaderUtils {
 
         return false;
     }
-
 
     /**
      * Load quests for a player with no data.
