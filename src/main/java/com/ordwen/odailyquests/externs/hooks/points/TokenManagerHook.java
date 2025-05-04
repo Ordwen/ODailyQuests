@@ -5,6 +5,8 @@ import org.bukkit.Bukkit;
 
 public class TokenManagerHook {
 
+    private TokenManagerHook() {}
+
     private static TokenManager tokenManagerAPI;
 
     /**

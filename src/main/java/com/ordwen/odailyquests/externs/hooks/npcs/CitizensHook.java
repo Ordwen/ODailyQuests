@@ -3,8 +3,8 @@ package com.ordwen.odailyquests.externs.hooks.npcs;
 import com.ordwen.odailyquests.commands.interfaces.InterfacesManager;
 import com.ordwen.odailyquests.configuration.integrations.NPCNames;
 import com.ordwen.odailyquests.enums.QuestsMessages;
+import com.ordwen.odailyquests.tools.PluginUtils;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -56,6 +56,6 @@ public class CitizensHook implements Listener {
     }
 
     public static boolean isCitizensEnabled() {
-        return Bukkit.getPluginManager().isPluginEnabled("Citizens");
+        return PluginUtils.isPluginEnabled("Citizens");
     }
 }

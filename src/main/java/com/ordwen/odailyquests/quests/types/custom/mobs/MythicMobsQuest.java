@@ -4,8 +4,8 @@ import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
 import com.ordwen.odailyquests.tools.PluginLogger;
+import com.ordwen.odailyquests.tools.PluginUtils;
 import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.Event;
 
@@ -32,7 +32,7 @@ public class MythicMobsQuest extends CustomMobQuest {
 
     @Override
     public boolean loadParameters(ConfigurationSection section, String file, String index) {
-        if (!Bukkit.getServer().getPluginManager().isPluginEnabled("MythicMobs")) {
+        if (!PluginUtils.isPluginEnabled("MythicMobs")) {
             PluginLogger.configurationError(file, index, null, "MythicMobs is not enabled on the server.");
             return false;
         }

@@ -1,6 +1,6 @@
 package com.ordwen.odailyquests.externs.hooks.mobs;
 
-import org.bukkit.Bukkit;
+import com.ordwen.odailyquests.tools.PluginUtils;
 
 public class EliteMobsHook {
 
@@ -11,7 +11,7 @@ public class EliteMobsHook {
      * @return true if EliteMobs is enabled.
      */
     public static boolean isEnabled() {
-        return Bukkit.getServer().getPluginManager().isPluginEnabled("EliteMobs");
+        return PluginUtils.isPluginEnabled("EliteMobs");
     }
 }
 

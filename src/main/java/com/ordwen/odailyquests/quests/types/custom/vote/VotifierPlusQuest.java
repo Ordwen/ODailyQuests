@@ -4,8 +4,8 @@ import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
 import com.ordwen.odailyquests.tools.PluginLogger;
+import com.ordwen.odailyquests.tools.PluginUtils;
 import com.vexsoftware.votifier.model.VotifierEvent;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.Event;
 
@@ -27,7 +27,7 @@ public class VotifierPlusQuest extends AbstractQuest {
 
         @Override
         public boolean loadParameters(ConfigurationSection section, String file, String index) {
-            if (!Bukkit.getPluginManager().isPluginEnabled("VotifierPlus")) {
+            if (!PluginUtils.isPluginEnabled("VotifierPlus")) {
                 PluginLogger.configurationError(file, index, null, "You must have VotifierPlus installed to use this quest.");
                 return false;
             }

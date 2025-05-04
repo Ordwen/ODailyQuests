@@ -42,8 +42,8 @@ public abstract class ItemQuest extends AbstractQuest {
     public boolean loadParameters(ConfigurationSection section, String file, String index) {
         ignoreNbt = section.getBoolean(".ignore_nbt");
 
-        boolean hasRequired = section.contains(".required") || section.contains(".required_item");
-        boolean hasRandomRequired = section.contains(".random_required");
+        final boolean hasRequired = section.contains(".required") || section.contains(".required_item");
+        final boolean hasRandomRequired = section.contains(".random_required");
 
         if (hasRequired && hasRandomRequired) {
             PluginLogger.configurationError(file, index, "required/random_required", "You can't use 'required' and 'random_required' at the same time.");
@@ -69,7 +69,7 @@ public abstract class ItemQuest extends AbstractQuest {
      */
     private boolean loadRequiredItems(ConfigurationSection section, String file, String index, String path) {
         if (!section.contains(path)) return true;
-        boolean isRandom = path.contains("random_required");
+        final boolean isRandom = path.contains("random_required");
 
         if (isRandom) {
             final List<?> rawList = section.getList(path);
@@ -161,7 +161,7 @@ public abstract class ItemQuest extends AbstractQuest {
     public boolean isRequiredItem(ItemStack provided, Progression progression) {
         if (requiredItems == null || requiredItems.isEmpty()) return true;
 
-        List<ItemStack> itemsToCheck = getItemsToCheck(progression);
+        final List<ItemStack> itemsToCheck = getItemsToCheck(progression);
         if (itemsToCheck.isEmpty()) return false;
 
         for (ItemStack item : itemsToCheck) {
@@ -175,7 +175,7 @@ public abstract class ItemQuest extends AbstractQuest {
     private List<ItemStack> getItemsToCheck(Progression progression) {
         if (!isRandomRequired) return requiredItems;
 
-        int index = progression.getSelectedRequiredIndex();
+        final int index = progression.getSelectedRequiredIndex();
         if (index < 0 || index >= requiredItems.size()) {
             Debugger.write("ItemQuest:isRequiredItem: Invalid selectedRequiredIndex: " + index);
             return List.of();
@@ -205,12 +205,12 @@ public abstract class ItemQuest extends AbstractQuest {
 
     private boolean potionEquals(ItemStack required, ItemStack provided) {
         Debugger.write("ItemQuest:isRequiredItem: Required item is a potion.");
-        PotionMeta reqMeta = (PotionMeta) required.getItemMeta();
-        PotionMeta provMeta = (PotionMeta) provided.getItemMeta();
+        final PotionMeta reqMeta = (PotionMeta) required.getItemMeta();
+        final PotionMeta provMeta = (PotionMeta) provided.getItemMeta();
 
-        boolean sameType = reqMeta.getBasePotionData().getType() == provMeta.getBasePotionData().getType();
-        boolean sameUpgrade = reqMeta.getBasePotionData().isUpgraded() == provMeta.getBasePotionData().isUpgraded();
-        boolean sameExtended = reqMeta.getBasePotionData().isExtended() == provMeta.getBasePotionData().isExtended();
+        final boolean sameType = reqMeta.getBasePotionData().getType() == provMeta.getBasePotionData().getType();
+        final boolean sameUpgrade = reqMeta.getBasePotionData().isUpgraded() == provMeta.getBasePotionData().isUpgraded();
+        final boolean sameExtended = reqMeta.getBasePotionData().isExtended() == provMeta.getBasePotionData().isExtended();
 
         if (!sameType) Debugger.write("ItemQuest:isRequiredItem: Potion type is different.");
         if (!sameUpgrade) Debugger.write("ItemQuest:isRequiredItem: Potion is upgraded.");

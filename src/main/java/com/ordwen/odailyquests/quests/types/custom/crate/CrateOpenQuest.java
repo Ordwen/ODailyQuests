@@ -4,7 +4,7 @@ import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
 import com.ordwen.odailyquests.tools.PluginLogger;
-import org.bukkit.Bukkit;
+import com.ordwen.odailyquests.tools.PluginUtils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
@@ -40,7 +40,7 @@ public class CrateOpenQuest extends AbstractQuest {
     public boolean loadParameters(ConfigurationSection section, String file, String index) {
         expectedCrate.clear();
 
-        if (!Bukkit.getPluginManager().isPluginEnabled("ExcellentCrates")) {
+        if (!PluginUtils.isPluginEnabled("ExcellentCrates")) {
             PluginLogger.configurationError(file, index, null, "You must have ExcellentCrates installed to use this quest.");
             return false;
         }

@@ -1,6 +1,6 @@
 package com.ordwen.odailyquests.externs.hooks.stackers;
 
-import org.bukkit.Bukkit;
+import com.ordwen.odailyquests.tools.PluginUtils;
 
 public class WildStackerHook {
 
@@ -11,6 +11,6 @@ public class WildStackerHook {
      * @return true if WildStacker is enabled.
      */
     public static boolean isEnabled() {
-        return Bukkit.getServer().getPluginManager().isPluginEnabled("WildStacker");
+        return PluginUtils.isPluginEnabled("WildStacker");
     }
 }

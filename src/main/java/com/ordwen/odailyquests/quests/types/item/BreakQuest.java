@@ -9,6 +9,7 @@ import com.ordwen.odailyquests.externs.hooks.Protection;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
 import com.ordwen.odailyquests.quests.types.shared.ItemQuest;
+import com.ordwen.odailyquests.tools.PluginUtils;
 import dev.lone.itemsadder.api.CustomStack;
 import dev.lone.itemsadder.api.Events.CustomBlockBreakEvent;
 import io.th0rgal.oraxen.api.OraxenItems;
@@ -62,11 +63,11 @@ public class BreakQuest extends ItemQuest {
             return super.isRequiredItem(new ItemStack(material), progression);
         }
 
-        if (provided instanceof CustomBlockBreakEvent event) {
+        if (PluginUtils.isPluginEnabled("ItemsAdder") && provided instanceof CustomBlockBreakEvent event) {
             return super.isRequiredItem(event.getCustomBlockItem(), progression);
         }
 
-        if (provided instanceof CropBreakEvent event) {
+        if (PluginUtils.isPluginEnabled("CustomCrops") && provided instanceof CropBreakEvent event) {
             final String cropNamespace = event.cropStageItemID();
 
             final ItemStack cropItem = getCustomItemStack(cropNamespace);

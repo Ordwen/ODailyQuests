@@ -1,6 +1,6 @@
 package com.ordwen.odailyquests.externs.hooks.mobs;
 
-import org.bukkit.Bukkit;
+import com.ordwen.odailyquests.tools.PluginUtils;
 
 public class MythicMobsHook {
 
@@ -11,6 +11,6 @@ public class MythicMobsHook {
      * @return true if MythicMobs is enabled.
      */
     public static boolean isEnabled() {
-         return Bukkit.getServer().getPluginManager().isPluginEnabled("MythicMobs");
+         return PluginUtils.isPluginEnabled("MythicMobs");
     }
 }

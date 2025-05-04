@@ -4,7 +4,7 @@ import com.magmaguy.elitemobs.api.EliteMobDeathEvent;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
 import com.ordwen.odailyquests.tools.PluginLogger;
-import org.bukkit.Bukkit;
+import com.ordwen.odailyquests.tools.PluginUtils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.Event;
 
@@ -29,7 +29,7 @@ public class EliteMobsQuest extends CustomMobQuest {
 
     @Override
     public boolean loadParameters(ConfigurationSection section, String file, String index) {
-        if (!Bukkit.getServer().getPluginManager().isPluginEnabled("EliteMobs")) {
+        if (!PluginUtils.isPluginEnabled("EliteMobs")) {
             PluginLogger.configurationError(file, index, null, "EliteMobs is not enabled on the server.");
             return false;
         }

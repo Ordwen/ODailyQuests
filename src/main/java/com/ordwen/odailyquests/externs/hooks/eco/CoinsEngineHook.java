@@ -1,8 +1,10 @@
 package com.ordwen.odailyquests.externs.hooks.eco;
 
-import org.bukkit.Bukkit;
+import com.ordwen.odailyquests.tools.PluginUtils;
 
 public class CoinsEngineHook {
+
+    private CoinsEngineHook() {}
 
     private static boolean isHooked;
 
@@ -10,7 +12,7 @@ public class CoinsEngineHook {
      * Setup CoinsEngineAPI.
      */
     public static boolean setupCoinsEngineAPI() {
-        if (Bukkit.getPluginManager().isPluginEnabled("CoinsEngine")) {
+        if (PluginUtils.isPluginEnabled("CoinsEngine")) {
             isHooked = true;
             return true;
         }

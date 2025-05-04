@@ -2,6 +2,7 @@ package com.ordwen.odailyquests.externs.hooks;
 
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.tools.PluginLogger;
+import com.ordwen.odailyquests.tools.PluginUtils;
 import com.palmergames.bukkit.towny.object.TownyPermission;
 import com.palmergames.bukkit.towny.utils.PlayerCacheUtil;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
@@ -29,12 +30,12 @@ public class Protection {
     private static WorldGuardPlatform wgPlatform = null;
 
     public void load() {
-        if (Bukkit.getPluginManager().isPluginEnabled("Towny")) {
+        if (PluginUtils.isPluginEnabled("Towny")) {
             setTownyEnabled();
             PluginLogger.info("Towny detected, hook enabled.");
         }
 
-        if (Bukkit.getPluginManager().isPluginEnabled("WorldGuard")) {
+        if (PluginUtils.isPluginEnabled("WorldGuard")) {
             setWorldGuardPlatform(WorldGuard.getInstance().getPlatform());
             setWorldGuardEnabled();
             PluginLogger.info("WorldGuard detected, hook enabled.");

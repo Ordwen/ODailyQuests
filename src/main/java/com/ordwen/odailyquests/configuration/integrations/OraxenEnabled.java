@@ -5,7 +5,7 @@ import com.ordwen.odailyquests.configuration.IConfigurable;
 import com.ordwen.odailyquests.configuration.essentials.CustomFurnaceResults;
 import com.ordwen.odailyquests.files.ConfigurationFile;
 import com.ordwen.odailyquests.tools.PluginLogger;
-import org.bukkit.Bukkit;
+import com.ordwen.odailyquests.tools.PluginUtils;
 
 public class OraxenEnabled implements IConfigurable {
 
@@ -23,7 +23,7 @@ public class OraxenEnabled implements IConfigurable {
     public void load() {
         final String path = "use_oraxen";
         isEnabled = configurationFile.getConfig().getBoolean(path);
-        if (isEnabled && !Bukkit.getPluginManager().isPluginEnabled("Oraxen")) {
+        if (isEnabled && !PluginUtils.isPluginEnabled("Oraxen")) {
             PluginLogger.warn("Oraxen is not installed on the server but the option is enabled in the config.");
             PluginLogger.warn("Disabling 'use_oraxen' option, otherwise quests will not load.");
             isEnabled = false;
