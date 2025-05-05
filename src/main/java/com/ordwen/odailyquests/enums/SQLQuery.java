@@ -29,7 +29,16 @@ public enum SQLQuery {
                 );
             """),
 
-    MYSQL_PLAYER_QUERY("""
+    MYSQL_CREATE_PLAYER_CATEGORY_STATS_TABLE("""
+                CREATE TABLE IF NOT EXISTS `odq_player_category_stats` (
+                    `player_uuid` CHAR(36) NOT NULL,
+                    `category` VARCHAR(50) NOT NULL,
+                    `total_achieved_quests` INT NOT NULL,
+                    PRIMARY KEY (`player_uuid`, `category`)
+                );
+            """),
+
+    MYSQL_SAVE_PLAYER("""
                 INSERT INTO `odq_player` (`player_uuid`, `player_timestamp`, `achieved_quests`, `total_achieved_quests`)
                 VALUES (?, ?, ?, ?)
                 ON DUPLICATE KEY UPDATE
@@ -38,7 +47,7 @@ public enum SQLQuery {
                     `total_achieved_quests` = VALUES(`total_achieved_quests`);
             """),
 
-    MYSQL_PROGRESS_UPDATE("""
+    MYSQL_SAVE_PROGRESS("""
                 INSERT INTO `odq_progression` (`player_uuid`, `player_quest_id`, `quest_index`, `advancement`, `required_amount`, `is_achieved`, `selected_required`)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
                 ON DUPLICATE KEY UPDATE
@@ -47,6 +56,13 @@ public enum SQLQuery {
                     `required_amount` = VALUES(`required_amount`),
                     `is_achieved` = VALUES(`is_achieved`),
                     `selected_required` = VALUES(`selected_required`);
+            """),
+
+    MYSQL_SAVE_PLAYER_CATEGORY_STATS("""
+                INSERT INTO `odq_player_category_stats` (`player_uuid`, `category`, `total_achieved_quests`)
+                VALUES (?, ?, ?)
+                ON DUPLICATE KEY UPDATE
+                    `total_achieved_quests` = VALUES(`total_achieved_quests`);
             """),
 
     // SQLite queries //
@@ -75,26 +91,45 @@ public enum SQLQuery {
                 );
             """),
 
-    SQLITE_PLAYER_QUERY("""
+    SQLITE_CREATE_PLAYER_CATEGORY_STATS_TABLE("""
+                CREATE TABLE IF NOT EXISTS `odq_player_category_stats` (
+                    `player_uuid` TEXT NOT NULL,
+                    `category` TEXT NOT NULL,
+                    `total_achieved_quests` INTEGER NOT NULL,
+                    PRIMARY KEY (`player_uuid`, `category`)
+                );
+            """),
+
+    SQLITE_SAVE_PLAYER("""
                 INSERT OR REPLACE INTO `odq_player` (`player_uuid`, `player_timestamp`, `achieved_quests`, `total_achieved_quests`)
                 VALUES (?, ?, ?, ?);
             """),
 
-    SQLITE_PROGRESS_UPDATE("""
+    SQLITE_SAVE_PROGRESS("""
                 INSERT OR REPLACE INTO `odq_progression` (`player_uuid`, `player_quest_id`, `quest_index`, `advancement`, `required_amount`, `is_achieved`, `selected_required`)
                 VALUES (?, ?, ?, ?, ?, ?, ?);
             """),
 
+    SQLITE_SAVE_PLAYER_CATEGORY_STATS("""
+                INSERT OR REPLACE INTO `odq_player_category_stats` (`player_uuid`, `category`, `total_achieved_quests`)
+                VALUES (?, ?, ?);
+            """),
+
     // Common queries //
 
-    TIMESTAMP_QUERY("""
+    LOAD_PLAYER("""
                 SELECT player_timestamp, achieved_quests, total_achieved_quests FROM `odq_player`
                 WHERE player_uuid = ?;
             """),
 
-    QUEST_PROGRESSION_QUERY("""
+    LOAD_PROGRESS("""
                 SELECT * FROM `odq_progression`
                 WHERE player_uuid = ?;
+            """),
+
+    LOAD_PLAYER_CATEGORY_STATS("""
+                SELECT `total_achieved_quests` FROM `odq_player_category_stats`
+                WHERE `player_uuid` = ? AND `category` = ?;
             """),
 
     ;

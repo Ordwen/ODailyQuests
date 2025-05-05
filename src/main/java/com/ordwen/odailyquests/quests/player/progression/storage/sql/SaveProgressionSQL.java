@@ -82,8 +82,8 @@ public class SaveProgressionSQL {
             }
 
             final String playerQuery = (Database.getMode() == StorageMode.MYSQL)
-                    ? SQLQuery.MYSQL_PLAYER_QUERY.getQuery()
-                    : SQLQuery.SQLITE_PLAYER_QUERY.getQuery();
+                    ? SQLQuery.MYSQL_SAVE_PLAYER.getQuery()
+                    : SQLQuery.SQLITE_SAVE_PLAYER.getQuery();
 
             try (PreparedStatement playerStatement = conn.prepareStatement(playerQuery)) {
                 playerStatement.setString(1, playerUuid);
@@ -96,8 +96,8 @@ public class SaveProgressionSQL {
             }
 
             final String progressQuery = (Database.getMode() == StorageMode.MYSQL)
-                    ? SQLQuery.MYSQL_PROGRESS_UPDATE.getQuery()
-                    : SQLQuery.SQLITE_PROGRESS_UPDATE.getQuery();
+                    ? SQLQuery.MYSQL_SAVE_PROGRESS.getQuery()
+                    : SQLQuery.SQLITE_SAVE_PROGRESS.getQuery();
 
             try (PreparedStatement progressionStatement = conn.prepareStatement(progressQuery)) {
                 progressionStatement.setString(1, playerUuid);

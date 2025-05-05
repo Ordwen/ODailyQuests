@@ -66,12 +66,12 @@ public class LoadProgressionSQL extends ProgressionLoader {
             int totalAchievedQuests = 0;
 
             try (final Connection connection = sqlManager.getConnection();
-                 final PreparedStatement preparedStatement = connection.prepareStatement(SQLQuery.TIMESTAMP_QUERY.getQuery())) {
+                 final PreparedStatement preparedStatement = connection.prepareStatement(SQLQuery.LOAD_PLAYER.getQuery())) {
 
                 preparedStatement.setString(1, playerUuid);
 
                 try (final ResultSet resultSet = preparedStatement.executeQuery()) {
-                    Debugger.write("Executing query for player " + playerName + ": " + SQLQuery.TIMESTAMP_QUERY.getQuery());
+                    Debugger.write("Executing query for player " + playerName + ": " + SQLQuery.LOAD_PLAYER.getQuery());
 
                     if (resultSet.next()) {
                         hasStoredData = true;
@@ -134,7 +134,7 @@ public class LoadProgressionSQL extends ProgressionLoader {
         Debugger.write("Entering loadPlayerQuests method for player " + playerName + ".");
 
         try (final Connection connection = sqlManager.getConnection();
-             final PreparedStatement preparedStatement = connection.prepareStatement(SQLQuery.QUEST_PROGRESSION_QUERY.getQuery())) {
+             final PreparedStatement preparedStatement = connection.prepareStatement(SQLQuery.LOAD_PROGRESS.getQuery())) {
 
             preparedStatement.setString(1, player.getUniqueId().toString());
 
