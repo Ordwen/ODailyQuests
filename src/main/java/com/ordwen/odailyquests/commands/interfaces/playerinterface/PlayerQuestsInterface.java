@@ -474,15 +474,21 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
         final String selected = DisplayName.getDisplayName(quest, playerProgression.getSelectedRequiredIndex());
         final String status = getQuestStatus(playerProgression, player);
 
-        lore.replaceAll(str -> TextFormatter.format(player, str)
-                .replace(PROGRESS, progress)
-                .replace(PROGRESS_BAR, progressBar)
-                .replace(REQUIRED, required)
-                .replace(ACHIEVED, achieved)
-                .replace(DRAW_IN, drawIn)
-                .replace(DISPLAY_NAME, selected)
-                .replace(STATUS, status)
-        );
+        final ListIterator<String> it = lore.listIterator();
+        while (it.hasNext()) {
+            final String str = it.next();
+            String formatted = str
+                    .replace(PROGRESS, progress)
+                    .replace(PROGRESS_BAR, progressBar)
+                    .replace(REQUIRED, required)
+                    .replace(ACHIEVED, achieved)
+                    .replace(DRAW_IN, drawIn)
+                    .replace(DISPLAY_NAME, selected)
+                    .replace(STATUS, status);
+
+            formatted = TextFormatter.format(player, formatted);
+            it.set(formatted);
+        }
 
         if (!statusStr.isEmpty() && !isStatusDisabled) {
             lore.add(TextFormatter.format(TextFormatter.format(player, statusStr)));
