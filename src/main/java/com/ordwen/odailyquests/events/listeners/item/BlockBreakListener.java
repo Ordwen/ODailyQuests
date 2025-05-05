@@ -23,12 +23,17 @@ import java.util.Set;
 
 public class BlockBreakListener extends PlayerProgressor implements Listener {
 
-    private static final Set<Material> VERTICAL_PLANTS = Set.of(
+    private static final Set<Material> VERTICAL_PLANTS_UP = Set.of(
             Material.SUGAR_CANE,
             Material.CACTUS,
             Material.BAMBOO,
             Material.KELP_PLANT,
             Material.TWISTING_VINES_PLANT
+    );
+
+    private static final Set<Material> VERTICAL_PLANTS_DOWN = Set.of(
+            Material.WEEPING_VINES_PLANT,
+            Material.CAVE_VINES_PLANT
     );
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -45,9 +50,15 @@ public class BlockBreakListener extends PlayerProgressor implements Listener {
 
         Debugger.write("BlockBreakListener: onBlockBreakEvent block type: " + material.name() + ".");
 
-        if (VERTICAL_PLANTS.contains(material)) {
-            Debugger.write("BlockBreakListener: onBlockBreakEvent vertical plant detected.");
-            handleVerticalPlant(event, material);
+        if (VERTICAL_PLANTS_UP.contains(material)) {
+            Debugger.write("BlockBreakListener: onBlockBreakEvent vertical plant detected (UP).");
+            handleVerticalPlant(event, material, BlockFace.UP);
+            return;
+        }
+
+        if (VERTICAL_PLANTS_DOWN.contains(material)) {
+            Debugger.write("BlockBreakListener: onBlockBreakEvent vertical plant detected (DOWN).");
+            handleVerticalPlant(event, material, BlockFace.DOWN);
             return;
         }
 
@@ -108,14 +119,15 @@ public class BlockBreakListener extends PlayerProgressor implements Listener {
      *
      * @param event     the block break event triggered by the player
      * @param plantType the type of vertical plant being handled (e.g., SUGAR_CANE, BAMBOO, CACTUS)
+     * @param blockFace the direction to check for vertical plant blocks (UP or DOWN)
      */
-    private void handleVerticalPlant(BlockBreakEvent event, Material plantType) {
+    private void handleVerticalPlant(BlockBreakEvent event, Material plantType, BlockFace blockFace) {
         Block base = event.getBlock();
         int count = 0;
 
         while (base.getType() == plantType) {
             count++;
-            base = base.getRelative(BlockFace.UP);
+            base = base.getRelative(blockFace);
         }
 
         Debugger.write("BlockBreakListener: handleVerticalPlant found " + count + " vertical plant blocks.");
