@@ -47,14 +47,17 @@ public class ResetCommand extends AdminCommandBase {
 
     /**
      * Resets the current active quests of the player.
+     *
      * @param sender the command sender
      * @param target the player to reset
      */
     public void quests(CommandSender sender, Player target) {
         final String playerName = target.getName();
-        final Map<String, PlayerQuests> activeQuests = QuestsManager.getActiveQuests();
-        int totalAchievedQuests = activeQuests.get(playerName).getTotalAchievedQuests();
-        QuestLoaderUtils.loadNewPlayerQuests(playerName, QuestsManager.getActiveQuests(), totalAchievedQuests);
+        final PlayerQuests playerQuests = QuestsManager.getActiveQuests().get(playerName);
+        final Map<String, Integer> totalAchievedQuestsByCategory = playerQuests.getTotalAchievedQuestsByCategory();
+        final int totalAchievedQuests = playerQuests.getTotalAchievedQuests();
+
+        QuestLoaderUtils.loadNewPlayerQuests(playerName, QuestsManager.getActiveQuests(), totalAchievedQuestsByCategory, totalAchievedQuests);
 
         String msg = QuestsMessages.QUESTS_RENEWED_ADMIN.toString();
         if (msg != null) sender.sendMessage(msg.replace("%target%", target.getName()));
@@ -62,6 +65,7 @@ public class ResetCommand extends AdminCommandBase {
 
     /**
      * Resets the total amount of quests achieved by the player.
+     *
      * @param sender the command sender
      * @param target the player to reset
      */

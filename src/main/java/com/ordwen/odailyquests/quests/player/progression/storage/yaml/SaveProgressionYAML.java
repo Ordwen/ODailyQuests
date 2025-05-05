@@ -49,6 +49,13 @@ public class SaveProgressionYAML {
             index++;
         }
 
+        final ConfigurationSection statsSection = progressionFile.createSection(playerUuid + ".totalAchievedQuestsByCategory");
+        for (Map.Entry<String, Integer> entry : playerQuests.getTotalAchievedQuestsByCategory().entrySet()) {
+            final String category = entry.getKey();
+            final int amount = entry.getValue();
+            statsSection.set(category, amount);
+        }
+
         if (Logs.isEnabled()) {
             PluginLogger.info(playerName + "'s data saved.");
         }

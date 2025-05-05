@@ -31,12 +31,13 @@ public class PlayerQuests {
     private int totalAchievedQuests;
     private final Map<AbstractQuest, Progression> quests;
     private final Map<String, Integer> achievedQuestsByCategory = new HashMap<>();
+    private final Map<String, Integer> totalAchievedQuestsByCategory = new HashMap<>();
 
     /**
      * Constructs a new PlayerQuests object with the provided timestamp and a map of quests with their progress.
      *
      * @param timestamp the last time the player's quests were renewed.
-     * @param quests a map of quests and their respective progression.
+     * @param quests    a map of quests and their respective progression.
      */
     public PlayerQuests(Long timestamp, Map<AbstractQuest, Progression> quests) {
         this.timestamp = timestamp;
@@ -80,7 +81,7 @@ public class PlayerQuests {
      * If the player has completed all quests, the {@link AllQuestsCompletedEvent} is triggered.
      *
      * @param category the category of the quest completed.
-     * @param player the player who achieved the quest.
+     * @param player   the player who achieved the quest.
      */
     public void increaseCategoryAchievedQuests(String category, Player player) {
 
@@ -93,6 +94,12 @@ public class PlayerQuests {
             this.achievedQuestsByCategory.put(category, this.achievedQuestsByCategory.get(category) + 1);
         } else {
             this.achievedQuestsByCategory.put(category, 1);
+        }
+
+        if (this.totalAchievedQuestsByCategory.containsKey(category)) {
+            this.totalAchievedQuestsByCategory.put(category, this.totalAchievedQuestsByCategory.get(category) + 1);
+        } else {
+            this.totalAchievedQuestsByCategory.put(category, 1);
         }
 
         Debugger.write("PlayerQuests: increaseAchievedQuests: " + player.getName() + " has completed " + this.achievedQuestsByCategory.get(category) + " quests in category " + category + ".");
@@ -119,7 +126,7 @@ public class PlayerQuests {
      * <p>
      * If the player has achieved the quest, rerolling is prevented, and a message is sent to the player.
      *
-     * @param index the index of the quest to reroll.
+     * @param index  the index of the quest to reroll.
      * @param player the player for whom the quest is being rerolled.
      * @return {@code true} if the reroll was successful, {@code false} otherwise.
      */
@@ -236,5 +243,34 @@ public class PlayerQuests {
      */
     public Map<AbstractQuest, Progression> getQuests() {
         return this.quests;
+    }
+
+    /**
+     * Get total achieved quests for all categories.
+     *
+     * @return a map of total achieved quests by category.
+     */
+    public Map<String, Integer> getTotalAchievedQuestsByCategory() {
+        return this.totalAchievedQuestsByCategory;
+    }
+
+    /**
+     * Set total achieved quests for all categories.
+     *
+     * @param totals a map of total achieved quests by category.
+     */
+    public void setTotalAchievedQuestsByCategory(Map<String, Integer> totals) {
+        this.totalAchievedQuestsByCategory.clear();
+        this.totalAchievedQuestsByCategory.putAll(totals);
+    }
+
+    /**
+     * Get the number of total achieved quests for a specific category.
+     *
+     * @param category the category name.
+     * @return the number of total achieved quests for the specified category.
+     */
+    public int getTotalAchievedQuestsByCategory(String category) {
+        return this.totalAchievedQuestsByCategory.getOrDefault(category, 0);
     }
 }

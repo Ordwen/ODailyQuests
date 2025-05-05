@@ -51,15 +51,16 @@ public class SaveProgressionSQL {
         int totalAchievedQuests = playerQuests.getTotalAchievedQuests();
 
         final Map<AbstractQuest, Progression> quests = playerQuests.getQuests();
+        final Map<String, Integer> totalAchievedByCategory = playerQuests.getTotalAchievedQuestsByCategory();
 
         if (isServerStopping) {
             Debugger.write("Saving player " + playerName + " progression (server is stopping).");
-            saveDatas(playerName, playerUuid, timestamp, achievedQuests, totalAchievedQuests, quests);
+            saveDatas(playerName, playerUuid, timestamp, achievedQuests, totalAchievedQuests, quests, totalAchievedByCategory);
         } else {
             ODailyQuests.morePaperLib.scheduling().asyncScheduler().run(() -> {
                 Debugger.write("Saving player " + playerName + " progression asynchronously");
 
-                saveDatas(playerName, playerUuid, timestamp, achievedQuests, totalAchievedQuests, quests);
+                saveDatas(playerName, playerUuid, timestamp, achievedQuests, totalAchievedQuests, quests, totalAchievedByCategory);
             });
         }
     }
@@ -74,7 +75,7 @@ public class SaveProgressionSQL {
      * @param totalAchievedQuests total achieved quests.
      * @param quests              quests.
      */
-    private void saveDatas(String playerName, String playerUuid, long timestamp, int achievedQuests, int totalAchievedQuests, Map<AbstractQuest, Progression> quests) {
+    private void saveDatas(String playerName, String playerUuid, long timestamp, int achievedQuests, int totalAchievedQuests, Map<AbstractQuest, Progression> quests, Map<String, Integer> totalAchievedByCategory) {
         try (Connection conn = sqlManager.getConnection()) {
             if (conn == null) {
                 PluginLogger.error("Database connection unavailable");
@@ -121,6 +122,23 @@ public class SaveProgressionSQL {
 
                 progressionStatement.executeBatch();
                 Debugger.write(playerName + " quests progression saved");
+            }
+
+            final String categoryQuery = (Database.getMode() == StorageMode.MYSQL)
+                    ? SQLQuery.MYSQL_SAVE_PLAYER_CATEGORY_STATS.getQuery()
+                    : SQLQuery.SQLITE_SAVE_PLAYER_CATEGORY_STATS.getQuery();
+
+            try (PreparedStatement categoryStatement = conn.prepareStatement(categoryQuery)) {
+                categoryStatement.setString(1, playerUuid);
+
+                for (Map.Entry<String, Integer> entry : totalAchievedByCategory.entrySet()) {
+                    categoryStatement.setString(2, entry.getKey());
+                    categoryStatement.setInt(3, entry.getValue());
+                    categoryStatement.addBatch();
+                }
+
+                categoryStatement.executeBatch();
+                Debugger.write(playerName + "'s category stats saved.");
             }
 
             if (Logs.isEnabled()) {

@@ -66,7 +66,7 @@ public class QuestLoaderUtils {
      * @param playerName   player name.
      * @param activeQuests all active quests.
      */
-    public static void loadNewPlayerQuests(String playerName, Map<String, PlayerQuests> activeQuests, int totalAchievedQuests) {
+    public static void loadNewPlayerQuests(String playerName, Map<String, PlayerQuests> activeQuests, Map<String, Integer> totalAchievedQuestsByCategory, int totalAchievedQuests) {
         Debugger.write("Entering loadNewPlayerQuests method for player " + playerName + ".");
         activeQuests.remove(playerName);
 
@@ -88,6 +88,7 @@ public class QuestLoaderUtils {
         }
 
         playerQuests.setTotalAchievedQuests(totalAchievedQuests);
+        playerQuests.setTotalAchievedQuestsByCategory(totalAchievedQuestsByCategory);
 
         final String msg = QuestsMessages.QUESTS_RENEWED.getMessage(player);
         if (msg != null) player.sendMessage(msg);
@@ -111,7 +112,7 @@ public class QuestLoaderUtils {
         final PlayerQuests playerQuests = activeQuests.get(player.getName());
 
         if (checkTimestamp(playerQuests.getTimestamp())) {
-            loadNewPlayerQuests(player.getName(), activeQuests, playerQuests.getTotalAchievedQuests());
+            loadNewPlayerQuests(player.getName(), activeQuests, playerQuests.getTotalAchievedQuestsByCategory(), playerQuests.getTotalAchievedQuests());
             return true;
         }
 

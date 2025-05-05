@@ -13,6 +13,7 @@ import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public abstract class ProgressionLoader {
@@ -24,7 +25,7 @@ public abstract class ProgressionLoader {
 
     protected void handleNewPlayer(String playerName, Map<String, PlayerQuests> activeQuests) {
         Debugger.write(PLAYER + playerName + " has no data in progression file.");
-        QuestLoaderUtils.loadNewPlayerQuests(playerName, activeQuests, 0);
+        QuestLoaderUtils.loadNewPlayerQuests(playerName, activeQuests, new HashMap<>(), 0);
     }
 
     protected void sendQuestStatusMessage(Player player, int achievedQuests, PlayerQuests playerQuests) {

@@ -19,13 +19,17 @@ public abstract class SQLManager {
     public void setupTables() {
         try (final Connection connection = getConnection();
              final PreparedStatement playerStatement = connection.prepareStatement(Database.getMode() == StorageMode.MYSQL ? SQLQuery.MYSQL_CREATE_PLAYER_TABLE.getQuery() : SQLQuery.SQLITE_CREATE_PLAYER_TABLE.getQuery());
-             final PreparedStatement progressionStatement = connection.prepareStatement(Database.getMode() == StorageMode.MYSQL ? SQLQuery.MYSQL_CREATE_PROGRESSION_TABLE.getQuery() : SQLQuery.SQLITE_CREATE_PROGRESSION_TABLE.getQuery())) {
+             final PreparedStatement progressionStatement = connection.prepareStatement(Database.getMode() == StorageMode.MYSQL ? SQLQuery.MYSQL_CREATE_PROGRESSION_TABLE.getQuery() : SQLQuery.SQLITE_CREATE_PROGRESSION_TABLE.getQuery());
+             final PreparedStatement categoryStatsStatement = connection.prepareStatement(Database.getMode() == StorageMode.MYSQL ? SQLQuery.MYSQL_CREATE_PLAYER_CATEGORY_STATS_TABLE.getQuery() : SQLQuery.SQLITE_CREATE_PLAYER_CATEGORY_STATS_TABLE.getQuery())) {
 
             playerStatement.execute();
             Debugger.write("Table odq_player created or found in database.");
 
             progressionStatement.execute();
             Debugger.write("Table odq_progression created or found in database.");
+
+            categoryStatsStatement.execute();
+            Debugger.write("Table odq_player_category_stats created or found in database.");
 
         } catch (SQLException e) {
             PluginLogger.error(e.getMessage());

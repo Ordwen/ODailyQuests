@@ -128,8 +128,8 @@ public enum SQLQuery {
             """),
 
     LOAD_PLAYER_CATEGORY_STATS("""
-                SELECT `total_achieved_quests` FROM `odq_player_category_stats`
-                WHERE `player_uuid` = ? AND `category` = ?;
+                SELECT total_achieved_quests, category FROM `odq_player_category_stats`
+                WHERE `player_uuid` = ?;
             """),
 
     ;

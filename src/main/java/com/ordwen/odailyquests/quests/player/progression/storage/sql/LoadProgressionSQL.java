@@ -19,6 +19,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -93,7 +94,7 @@ public class LoadProgressionSQL extends ProgressionLoader {
             if (hasStoredData) {
                 loadStoredData(player, activeQuests, timestamp, totalAchievedQuests, quests, achievedQuests);
             } else {
-                QuestLoaderUtils.loadNewPlayerQuests(playerName, activeQuests, 0);
+                QuestLoaderUtils.loadNewPlayerQuests(playerName, activeQuests, new HashMap<>(), 0);
             }
         }, Duration.ofMillis(PlayerDataLoadDelay.getDelay()));
     }
@@ -103,17 +104,21 @@ public class LoadProgressionSQL extends ProgressionLoader {
 
         Debugger.write(playerName + " has data in the database.");
 
+        final Map<String, Integer> categoryStats = loadCategoryStats(player.getUniqueId().toString());
+
         if (QuestLoaderUtils.checkTimestamp(timestamp)) {
-            QuestLoaderUtils.loadNewPlayerQuests(playerName, activeQuests, totalAchievedQuests);
+            QuestLoaderUtils.loadNewPlayerQuests(playerName, activeQuests, categoryStats, totalAchievedQuests);
         } else {
             if (!loadPlayerQuests(player, quests)) {
-                QuestLoaderUtils.loadNewPlayerQuests(playerName, activeQuests, totalAchievedQuests);
+                QuestLoaderUtils.loadNewPlayerQuests(playerName, activeQuests, categoryStats, totalAchievedQuests);
                 return;
             }
 
             final PlayerQuests playerQuests = new PlayerQuests(timestamp, quests);
+
             playerQuests.setAchievedQuests(achievedQuests);
             playerQuests.setTotalAchievedQuests(totalAchievedQuests);
+            playerQuests.setTotalAchievedQuestsByCategory(categoryStats);
 
             activeQuests.put(playerName, playerQuests);
             PluginLogger.info(playerName + "'s quests have been loaded.");
@@ -188,5 +193,33 @@ public class LoadProgressionSQL extends ProgressionLoader {
 
         Debugger.write("Quests of player " + playerName + " have been loaded.");
         return true;
+    }
+
+    /**
+     * Load player category stats.
+     *
+     * @param playerUuid UUID of the player.
+     * @return Map of category stats.
+     */
+    private Map<String, Integer> loadCategoryStats(String playerUuid) {
+        final Map<String, Integer> categoryStats = new HashMap<>();
+
+        try (final Connection connection = sqlManager.getConnection();
+             final PreparedStatement statement = connection.prepareStatement(SQLQuery.LOAD_PLAYER_CATEGORY_STATS.getQuery())) {
+
+            statement.setString(1, playerUuid);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    final String category = resultSet.getString("category");
+                    final int count = resultSet.getInt("total_achieved_quests");
+                    categoryStats.put(category, count);
+                }
+            }
+        } catch (SQLException e) {
+            PluginLogger.error("Failed to load category stats for player " + playerUuid + ": " + e.getMessage());
+        }
+
+        return categoryStats;
     }
 }

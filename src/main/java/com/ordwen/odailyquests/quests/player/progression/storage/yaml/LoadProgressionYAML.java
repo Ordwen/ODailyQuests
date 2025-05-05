@@ -15,6 +15,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -48,25 +49,34 @@ public class LoadProgressionYAML extends ProgressionLoader {
     private void loadExistingPlayerData(String playerName, Map<String, PlayerQuests> activeQuests, Player player, ConfigurationSection playerSection) {
         Debugger.write("Player " + playerName + " has data in progression file.");
 
-        long timestamp = playerSection.getLong(".timestamp");
-        int achievedQuests = playerSection.getInt(".achievedQuests");
-        int totalAchievedQuests = playerSection.getInt(".totalAchievedQuests");
+        final long timestamp = playerSection.getLong(".timestamp");
+        final int achievedQuests = playerSection.getInt(".achievedQuests");
+        final int totalAchievedQuests = playerSection.getInt(".totalAchievedQuests");
+
+        final Map<String, Integer> totalAchievedQuestsByCategory = new HashMap<>();
+        final ConfigurationSection statsSection = playerSection.getConfigurationSection("totalAchievedQuestsByCategory");
+        if (statsSection != null) {
+            for (String category : statsSection.getKeys(false)) {
+                totalAchievedQuestsByCategory.put(category, statsSection.getInt(category));
+            }
+        }
 
         if (QuestLoaderUtils.checkTimestamp(timestamp)) {
             Debugger.write("Timestamp is too old for player " + playerName + ". Loading new quests.");
-            QuestLoaderUtils.loadNewPlayerQuests(playerName, activeQuests, totalAchievedQuests);
+            QuestLoaderUtils.loadNewPlayerQuests(playerName, activeQuests, totalAchievedQuestsByCategory, totalAchievedQuests);
             return;
         }
 
         final LinkedHashMap<AbstractQuest, Progression> quests = loadPlayerQuestsFromConfig(playerName, playerSection);
         if (quests == null) {
-            QuestLoaderUtils.loadNewPlayerQuests(playerName, activeQuests, totalAchievedQuests);
+            QuestLoaderUtils.loadNewPlayerQuests(playerName, activeQuests, totalAchievedQuestsByCategory, totalAchievedQuests);
             return;
         }
 
         final PlayerQuests playerQuests = new PlayerQuests(timestamp, quests);
         playerQuests.setAchievedQuests(achievedQuests);
         playerQuests.setTotalAchievedQuests(totalAchievedQuests);
+        playerQuests.setTotalAchievedQuestsByCategory(totalAchievedQuestsByCategory);
 
         activeQuests.put(playerName, playerQuests);
         PluginLogger.info(playerName + "'s quests have been loaded.");

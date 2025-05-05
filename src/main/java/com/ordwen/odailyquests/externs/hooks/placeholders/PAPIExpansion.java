@@ -72,6 +72,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
         placeholdersList.add("%odailyquests_progressbar_");
         placeholdersList.add("%odailyquests_iscompleted_");
         placeholdersList.add("%odailyquests_requiredamount_");
+        placeholdersList.add("%odailyquests_total_category_");
 
         final Map<String, Category> categoryMap = CategoriesLoader.getAllCategories();
         for (String categoryKey : categoryMap.keySet()) {
@@ -100,6 +101,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
         placeholders.put("desc", p -> getPlayerQuestDescription(p, playerQuests));
         placeholders.put("iscompleted", p -> isPlayerQuestCompleted(p, playerQuests));
         placeholders.put("requiredamount", p -> getPlayerQuestRequiredAmount(p, playerQuests));
+        placeholders.put("total_category", p -> getTotalAchievedQuestsByCategory(p, playerQuests));
 
         for (Map.Entry<String, Function<String, String>> entry : placeholders.entrySet()) {
             if (params.startsWith(entry.getKey())) {
@@ -108,6 +110,15 @@ public class PAPIExpansion extends PlaceholderExpansion {
         }
 
         return getQuestNameByCategory(params);
+    }
+
+    private String getTotalAchievedQuestsByCategory(String p, PlayerQuests playerQuests) {
+        final String categoryName = p.substring(15);
+        if (CategoriesLoader.getAllCategories().containsKey(categoryName)) {
+            return String.valueOf(playerQuests.getTotalAchievedQuestsByCategory(categoryName));
+        } else {
+            return ChatColor.RED + "Invalid category.";
+        }
     }
 
     private String getQuestNameByCategory(String params) {
