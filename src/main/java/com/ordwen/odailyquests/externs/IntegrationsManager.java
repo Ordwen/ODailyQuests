@@ -57,7 +57,7 @@ public class IntegrationsManager {
      * Load RoseStacker.
      */
     private void loadRoseStacker() {
-        if (RoseStackerHook.isRoseStackerSetup()) {
+        if (RoseStackerHook.isEnabled()) {
             PluginLogger.info("RoseStacker successfully hooked.");
         }
     }

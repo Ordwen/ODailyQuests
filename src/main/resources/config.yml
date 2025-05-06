@@ -300,3 +300,7 @@ shared_mobs: false
 # If you use WildStacker on your server to group mobs, set this parameter to "true".
 # Otherwise, quests of type KILL may not progress.
 use_wildstacker: false
+
+# If you use RoseStacker on your server to group mobs, set this parameter to "true".
+# Otherwise, quests of type KILL may not progress.
+use_rosestacker: false

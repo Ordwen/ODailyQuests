@@ -5,6 +5,7 @@ import com.ordwen.odailyquests.configuration.integrations.WildStackerEnabled;
 import com.ordwen.odailyquests.events.antiglitch.EntitySource;
 
 import com.ordwen.odailyquests.externs.hooks.mobs.MythicMobsHook;
+import com.ordwen.odailyquests.externs.hooks.stackers.RoseStackerHook;
 import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.core.mobs.ActiveMob;
@@ -31,6 +32,7 @@ public class EntityDeathListener extends PlayerProgressor implements Listener {
         }
 
         if (WildStackerEnabled.isEnabled()) return;
+        if (RoseStackerHook.isEnabled()) return;
         if (entity.getKiller() == null) return;
 
         Debugger.write("EntityDeathListener: onEntityDeathEvent summoned by " + entity.getKiller().getName() + " for " + entity.getType() + ".");

@@ -60,6 +60,7 @@ public class ConfigFactory {
         configs.put(NexoEnabled.class, new NexoEnabled(configurationFile));
         configs.put(SharedMobs.class, new SharedMobs(configurationFile));
         configs.put(WildStackerEnabled.class, new WildStackerEnabled(configurationFile));
+        configs.put(RoseStackerEnabled.class, new RoseStackerEnabled(configurationFile));
 
         // load all configs
         configs.values().forEach(IConfigurable::load);

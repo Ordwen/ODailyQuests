@@ -12,10 +12,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
-public class EntityUnstackListener extends PlayerProgressor implements Listener {
+public class WildStackerListener extends PlayerProgressor implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onWildStackerEntityUnstackEvent(EntityUnstackEvent event) {
+        if (!WildStackerEnabled.isEnabled()) return;
         if (event.isCancelled()) return;
 
         final Entity entity = event.getEntity().getLivingEntity();
@@ -25,7 +26,6 @@ public class EntityUnstackListener extends PlayerProgressor implements Listener 
             return;
         }
 
-        if (!WildStackerEnabled.isEnabled()) return;
         if (event.getUnstackSource() == null) return;
 
         if (event.getUnstackSource() instanceof Player player) {

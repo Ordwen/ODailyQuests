@@ -7,6 +7,7 @@ import com.ordwen.odailyquests.configuration.integrations.NexoEnabled;
 import com.ordwen.odailyquests.configuration.integrations.OraxenEnabled;
 import com.ordwen.odailyquests.events.listeners.crate.CrateOpenListener;
 import com.ordwen.odailyquests.events.listeners.customs.CustomFurnaceExtractListener;
+import com.ordwen.odailyquests.events.listeners.entity.custom.stackers.RoseStackerListener;
 import com.ordwen.odailyquests.events.listeners.integrations.customsuite.CropBreakListener;
 import com.ordwen.odailyquests.events.listeners.integrations.customsuite.FishingLootSpawnListener;
 import com.ordwen.odailyquests.events.listeners.integrations.itemsadder.CustomBlockBreakListener;
@@ -16,10 +17,11 @@ import com.ordwen.odailyquests.events.listeners.integrations.oraxen.OraxenItemsL
 import com.ordwen.odailyquests.events.listeners.vote.VotifierListener;
 import com.ordwen.odailyquests.externs.hooks.mobs.EliteMobsHook;
 import com.ordwen.odailyquests.externs.hooks.mobs.MythicMobsHook;
+import com.ordwen.odailyquests.externs.hooks.stackers.RoseStackerHook;
 import com.ordwen.odailyquests.externs.hooks.stackers.WildStackerHook;
 import com.ordwen.odailyquests.events.listeners.entity.*;
 import com.ordwen.odailyquests.events.listeners.entity.custom.mobs.EliteMobDeathListener;
-import com.ordwen.odailyquests.events.listeners.entity.custom.stackers.EntityUnstackListener;
+import com.ordwen.odailyquests.events.listeners.entity.custom.stackers.WildStackerListener;
 import com.ordwen.odailyquests.events.listeners.entity.custom.mobs.MythicMobDeathListener;
 import com.ordwen.odailyquests.events.listeners.global.*;
 import com.ordwen.odailyquests.events.listeners.inventory.InventoryClickListener;
@@ -59,7 +61,11 @@ public class EventsManager {
         }
 
         if (WildStackerHook.isEnabled()) {
-            pluginManager.registerEvents(new EntityUnstackListener(), oDailyQuests);
+            pluginManager.registerEvents(new WildStackerListener(), oDailyQuests);
+        }
+
+        if (RoseStackerHook.isEnabled()) {
+            pluginManager.registerEvents(new RoseStackerListener(), oDailyQuests);
         }
 
         // global events
