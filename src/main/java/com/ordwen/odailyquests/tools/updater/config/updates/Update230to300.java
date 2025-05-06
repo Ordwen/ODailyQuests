@@ -36,7 +36,7 @@ public class Update230to300 extends ConfigUpdater {
         setDefaultConfigItem("join_message_delay", 1.0, config, configFile);
         setDefaultConfigItem("use_nexo", false, config, configFile);
         setDefaultConfigItem("renew_time", "00:00", config, configFile);
-        setDefaultConfigItem("check_for_updates", true, config, configFile);
+        setDefaultConfigItem("check_for_update", true, config, configFile);
         setDefaultConfigItem("player_data_load_delay", 0.5, config, configFile);
         setDefaultConfigItem("use_rosestacker", false, config, configFile);
 
