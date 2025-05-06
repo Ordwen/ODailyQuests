@@ -72,11 +72,11 @@ public class PAPIExpansion extends PlaceholderExpansion {
         placeholdersList.add("%odailyquests_progressbar_");
         placeholdersList.add("%odailyquests_iscompleted_");
         placeholdersList.add("%odailyquests_requiredamount_");
-        placeholdersList.add("%odailyquests_total_category_");
 
         final Map<String, Category> categoryMap = CategoriesLoader.getAllCategories();
         for (String categoryKey : categoryMap.keySet()) {
             placeholdersList.add("%odailyquests_" + categoryKey + "_");
+            placeholdersList.add("%odailyquests_total_" + categoryKey + "%");
         }
 
         return placeholdersList;
@@ -91,7 +91,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
         final PlayerQuests playerQuests = ODailyQuestsAPI.getPlayerQuests(player.getName());
 
         final Map<String, Function<String, String>> placeholders = new HashMap<>();
-        placeholders.put("total", p -> String.valueOf(playerQuests.getTotalAchievedQuests()));
+        placeholders.put("total", p -> getTotalAchievedQuests(p, playerQuests));
         placeholders.put("achieved", p -> String.valueOf(playerQuests.getAchievedQuests()));
         placeholders.put("drawin", p -> TimeRemain.timeRemain(player.getName()));
         placeholders.put("interface", p -> getInterfaceMessage(p, player, playerQuests));
@@ -101,7 +101,6 @@ public class PAPIExpansion extends PlaceholderExpansion {
         placeholders.put("desc", p -> getPlayerQuestDescription(p, playerQuests));
         placeholders.put("iscompleted", p -> isPlayerQuestCompleted(p, playerQuests));
         placeholders.put("requiredamount", p -> getPlayerQuestRequiredAmount(p, playerQuests));
-        placeholders.put("total_category", p -> getTotalAchievedQuestsByCategory(p, playerQuests));
 
         for (Map.Entry<String, Function<String, String>> entry : placeholders.entrySet()) {
             if (params.startsWith(entry.getKey())) {
@@ -112,13 +111,21 @@ public class PAPIExpansion extends PlaceholderExpansion {
         return getQuestNameByCategory(params);
     }
 
-    private String getTotalAchievedQuestsByCategory(String p, PlayerQuests playerQuests) {
-        final String categoryName = p.substring(15);
-        if (CategoriesLoader.getAllCategories().containsKey(categoryName)) {
-            return String.valueOf(playerQuests.getTotalAchievedQuestsByCategory(categoryName));
-        } else {
-            return ChatColor.RED + "Invalid category.";
+    private String getTotalAchievedQuests(String p, PlayerQuests playerQuests) {
+        if (p.equals("total")) {
+            return String.valueOf(playerQuests.getTotalAchievedQuests());
         }
+
+        if (p.startsWith("total_")) {
+            final String categoryName = p.substring("total_".length());
+            if (CategoriesLoader.getAllCategories().containsKey(categoryName)) {
+                return String.valueOf(playerQuests.getTotalAchievedQuestsByCategory(categoryName));
+            } else {
+                return ChatColor.RED + "Invalid category.";
+            }
+        }
+
+        return ChatColor.RED + "Invalid placeholder.";
     }
 
     private String getQuestNameByCategory(String params) {
