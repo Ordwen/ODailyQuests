@@ -273,4 +273,18 @@ public class PlayerQuests {
     public int getTotalAchievedQuestsByCategory(String category) {
         return this.totalAchievedQuestsByCategory.getOrDefault(category, 0);
     }
+
+    /**
+     * Add the number of achieved quests for a specific category.
+     *
+     * @param category the category name.
+     * @param amount   the number of quests to add.
+     */
+    public void addCategoryAchievedQuests(String category, int amount) {
+        if (this.totalAchievedQuestsByCategory.containsKey(category)) {
+            this.totalAchievedQuestsByCategory.put(category, this.totalAchievedQuestsByCategory.get(category) + amount);
+        } else {
+            this.totalAchievedQuestsByCategory.put(category, amount);
+        }
+    }
 }
