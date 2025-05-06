@@ -7,6 +7,8 @@ import com.ordwen.odailyquests.events.antiglitch.EntitySource;
 import com.ordwen.odailyquests.externs.hooks.mobs.MythicMobsHook;
 import com.ordwen.odailyquests.externs.hooks.stackers.RoseStackerHook;
 import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
+import dev.rosewood.rosestacker.api.RoseStackerAPI;
+import dev.rosewood.rosestacker.stack.StackedEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.core.mobs.ActiveMob;
 import org.bukkit.entity.LivingEntity;
@@ -32,7 +34,12 @@ public class EntityDeathListener extends PlayerProgressor implements Listener {
         }
 
         if (WildStackerEnabled.isEnabled()) return;
-        if (RoseStackerHook.isEnabled()) return;
+
+        if (RoseStackerHook.isEnabled()) {
+            final StackedEntity stacked = RoseStackerAPI.getInstance().getStackedEntity(entity);
+            if (stacked == null || stacked.areMultipleEntitiesDying(event)) return;
+        }
+
         if (entity.getKiller() == null) return;
 
         Debugger.write("EntityDeathListener: onEntityDeathEvent summoned by " + entity.getKiller().getName() + " for " + entity.getType() + ".");

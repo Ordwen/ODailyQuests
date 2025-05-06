@@ -89,7 +89,7 @@ dependencies {
     compileOnly 'com.magmaguy:EliteMobs:9.1.11'
 
     /* stackers */
-    compileOnly 'dev.rosewood:rosestacker:1.4.13'
+    compileOnly 'dev.rosewood:rosestacker:1.5.33'
     compileOnly 'com.bgsoftware:WildStackerAPI:3.8.0'
 
     /* guis */

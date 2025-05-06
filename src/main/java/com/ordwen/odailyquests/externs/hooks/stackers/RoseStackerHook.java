@@ -11,6 +11,6 @@ public class RoseStackerHook {
      * @return true if RoseStacker is enabled.
      */
     public static boolean isEnabled() {
-        return PluginUtils.isPluginEnabled("WildStacker");
+        return PluginUtils.isPluginEnabled("RoseStacker");
     }
 }
