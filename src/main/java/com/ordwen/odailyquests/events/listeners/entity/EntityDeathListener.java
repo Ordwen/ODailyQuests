@@ -19,7 +19,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 
 public class EntityDeathListener extends PlayerProgressor implements Listener {
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onEntityDeathEvent(EntityDeathEvent event) {
         final LivingEntity entity = event.getEntity();
 
@@ -37,7 +37,7 @@ public class EntityDeathListener extends PlayerProgressor implements Listener {
 
         if (RoseStackerEnabled.isEnabled()) {
             final StackedEntity stacked = RoseStackerAPI.getInstance().getStackedEntity(entity);
-            if (stacked == null || stacked.areMultipleEntitiesDying(event)) return;
+            if (stacked != null && stacked.areMultipleEntitiesDying(event)) return;
         }
 
         if (entity.getKiller() == null) return;
