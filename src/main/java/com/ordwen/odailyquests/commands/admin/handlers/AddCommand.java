@@ -33,10 +33,10 @@ public class AddCommand extends AdminCommandBase {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if (args.length == 3) {
+        if (args.length == 4 && args[1].equalsIgnoreCase(TOTAL)) {
             // Command: /dqa add total <player> <amount>
-            final String playerName = args[1];
-            final String amountStr = args[2];
+            final String playerName = args[2];
+            final String amountStr = args[3];
 
             final Pair<Player, Integer> playerAmount = getPlayerAndAmount(sender, playerName, amountStr);
             if (playerAmount == null) return;
@@ -45,11 +45,11 @@ public class AddCommand extends AdminCommandBase {
             final int amount = playerAmount.second();
 
             addTotalAmount(sender, target, amount);
-        } else if (args.length == 4) {
+        } else if (args.length == 5  && args[1].equalsIgnoreCase(TOTAL)) {
             // Command: /dqa add total <category> <player> <amount>
-            final String category = args[1];
-            final String playerName = args[2];
-            final String amountStr = args[3];
+            final String category = args[2];
+            final String playerName = args[3];
+            final String amountStr = args[4];
 
             if (CategoriesLoader.getAllCategories().containsKey(category)) {
                 final Pair<Player, Integer> playerAmount = getPlayerAndAmount(sender, playerName, amountStr);
@@ -60,7 +60,7 @@ public class AddCommand extends AdminCommandBase {
 
                 addCategoryAmount(sender, target, category, amount);
             } else {
-                help(sender);
+                invalidCategory(sender);
             }
         } else {
             help(sender);
@@ -96,8 +96,8 @@ public class AddCommand extends AdminCommandBase {
         final PlayerQuests playerQuests = ODailyQuestsAPI.getPlayerQuests(target.getName());
         playerQuests.addTotalAchievedQuests(amount);
 
-        sendAdminMessage(sender, target.getName(), amount, TOTAL);
-        sendTargetMessage(target, amount, TOTAL);
+        sendAdminTotalMessage(sender, target.getName(), amount);
+        sendTargetTotalMessage(target, amount);
     }
 
     /**
@@ -112,8 +112,8 @@ public class AddCommand extends AdminCommandBase {
         final PlayerQuests playerQuests = ODailyQuestsAPI.getPlayerQuests(target.getName());
         playerQuests.addCategoryAchievedQuests(category, amount);
 
-        sendAdminMessage(sender, target.getName(), amount, category);
-        sendTargetMessage(target, amount, category);
+        sendAdminTotalCategoryMessage(sender, target.getName(), amount, category);
+        sendTargetTotalCategoryMessage(target, amount, category);
     }
 
     /**
@@ -121,8 +121,32 @@ public class AddCommand extends AdminCommandBase {
      *
      * @param amount the amount of quests added.
      */
-    private void sendAdminMessage(CommandSender sender, String targetName, int amount, String context) {
+    private void sendAdminTotalMessage(CommandSender sender, String targetName, int amount) {
         final String msg = QuestsMessages.ADD_TOTAL_ADMIN.toString();
+        if (msg != null) sender.sendMessage(msg
+                .replace("%target%", targetName)
+                .replace("%amount%", String.valueOf(amount)));
+    }
+
+    /**
+     * Sends the confirmation message to the target.
+     *
+     * @param target the target player.
+     * @param amount the amount of quests added.
+     */
+    private void sendTargetTotalMessage(Player target, int amount) {
+        final String msg = QuestsMessages.ADD_TOTAL_TARGET.toString();
+        if (msg != null) target.sendMessage(msg
+                .replace("%amount%", String.valueOf(amount)));
+    }
+
+    /**
+     * Sends the confirmation message to the sender.
+     *
+     * @param amount the amount of quests added.
+     */
+    private void sendAdminTotalCategoryMessage(CommandSender sender, String targetName, int amount, String context) {
+        final String msg = QuestsMessages.ADD_TOTAL_CATEGORY_ADMIN.toString();
         if (msg != null) sender.sendMessage(msg
                 .replace("%target%", targetName)
                 .replace("%amount%", String.valueOf(amount))
@@ -135,8 +159,8 @@ public class AddCommand extends AdminCommandBase {
      * @param target the target player.
      * @param amount the amount of quests added.
      */
-    private void sendTargetMessage(Player target, int amount, String context) {
-        final String msg = QuestsMessages.ADD_TOTAL_TARGET.toString();
+    private void sendTargetTotalCategoryMessage(Player target, int amount, String context) {
+        final String msg = QuestsMessages.ADD_TOTAL_CATEGORY_TARGET.toString();
         if (msg != null) target.sendMessage(msg
                 .replace("%amount%", String.valueOf(amount))
                 .replace("%category%", context));
@@ -144,7 +168,11 @@ public class AddCommand extends AdminCommandBase {
 
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, String[] args) {
-        if (args.length == 2 && args[0].equalsIgnoreCase("add") && args[1].equalsIgnoreCase(TOTAL)) {
+        if (args.length == 2 && args[0].equalsIgnoreCase("add")) {
+            return Collections.singletonList(TOTAL);
+        }
+
+        if (args.length == 3 && args[0].equalsIgnoreCase("add") && args[1].equalsIgnoreCase(TOTAL)) {
             final Set<String> categories = CategoriesLoader.getAllCategories().keySet();
             final List<String> completions = new ArrayList<>(categories);
 
@@ -152,7 +180,7 @@ public class AddCommand extends AdminCommandBase {
             return completions;
         }
 
-        if (args.length == 3 && args[0].equalsIgnoreCase("add") && args[1].equalsIgnoreCase(TOTAL)) {
+        if (args.length == 4 && args[0].equalsIgnoreCase("add") && args[1].equalsIgnoreCase(TOTAL) && CategoriesLoader.hasCategory(args[2])) {
             return null;
         }
 

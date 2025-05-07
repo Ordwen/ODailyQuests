@@ -44,6 +44,8 @@ public enum QuestsMessages {
     QUEST_REROLLED_ADMIN("quest_rerolled_admin", "&eYou have rerolled the quest number %index% of %target%."),
     ADD_TOTAL_ADMIN("add_total_admin", "&eYou have added %amount% to %target%'s total number of completed quests."),
     ADD_TOTAL_TARGET("add_total_target", "&eAn admin has added %amount% to your total number of completed quests."),
+    ADD_TOTAL_CATEGORY_ADMIN("add_total_category_admin", "&eYou have added %amount% to %target%'s total number of completed quests in the category %category%."),
+    ADD_TOTAL_CATEGORY_TARGET("add_total_category_target", "&eAn admin has added %amount% to your total number of completed quests in the category %category%."),
     QUEST_ACHIEVED("quest_achieved", "&aYou finished the quest &e%questName%&a, well done !"),
     ALL_QUESTS_ACHIEVED("all_quests_achieved", "&aYou have finished all your daily quests, well done !"),
     CATEGORY_QUESTS_ACHIEVED("category_quests_achieved", "&aYou have completed all your %category% quests!"),

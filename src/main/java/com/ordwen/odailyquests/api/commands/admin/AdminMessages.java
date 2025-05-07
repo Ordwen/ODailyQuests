@@ -42,4 +42,12 @@ public abstract class AdminMessages {
         final String msg = QuestsMessages.INVALID_AMOUNT.toString();
         if (msg != null) sender.sendMessage(msg);
     }
+
+    /**
+     * Sends the invalid category message to the sender.
+     */
+    protected void invalidCategory(CommandSender sender) {
+        final String msg = QuestsMessages.INVALID_CATEGORY.toString();
+        if (msg != null) sender.sendMessage(msg);
+    }
 }
