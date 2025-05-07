@@ -6,6 +6,7 @@ import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.enums.QuestsPermissions;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
+import com.ordwen.odailyquests.tools.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -17,6 +18,8 @@ import java.util.List;
 import java.util.Set;
 
 public class AddCommand extends AdminCommandBase {
+
+    private static final String TOTAL = "total";
 
     @Override
     public String getName() {
@@ -30,35 +33,56 @@ public class AddCommand extends AdminCommandBase {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if (args.length == 4) {
-            final String typeOrCategory = args[1];
+        if (args.length == 3) {
+            // Command: /dqa add total <player> <amount>
+            final String playerName = args[1];
+            final String amountStr = args[2];
+
+            final Pair<Player, Integer> playerAmount = getPlayerAndAmount(sender, playerName, amountStr);
+            if (playerAmount == null) return;
+
+            final Player target = playerAmount.first();
+            final int amount = playerAmount.second();
+
+            addTotalAmount(sender, target, amount);
+        } else if (args.length == 4) {
+            // Command: /dqa add total <category> <player> <amount>
+            final String category = args[1];
             final String playerName = args[2];
             final String amountStr = args[3];
 
-            final Player target = Bukkit.getPlayer(playerName);
-            if (target == null) {
-                invalidPlayer(sender);
-                return;
-            }
+            if (CategoriesLoader.getAllCategories().containsKey(category)) {
+                final Pair<Player, Integer> playerAmount = getPlayerAndAmount(sender, playerName, amountStr);
+                if (playerAmount == null) return;
 
-            final int amount;
-            try {
-                amount = Integer.parseInt(amountStr);
-            } catch (NumberFormatException e) {
-                invalidAmount(sender);
-                return;
-            }
+                final Player target = playerAmount.first();
+                final int amount = playerAmount.second();
 
-            if (typeOrCategory.equalsIgnoreCase("total")) {
-                addTotalAmount(sender, target, amount);
-            } else if (CategoriesLoader.getAllCategories().containsKey(typeOrCategory)) {
-                addCategoryAmount(sender, target, typeOrCategory, amount);
+                addCategoryAmount(sender, target, category, amount);
             } else {
                 help(sender);
             }
         } else {
             help(sender);
         }
+    }
+
+    private Pair<Player, Integer> getPlayerAndAmount(CommandSender sender, String playerName, String amountStr) {
+        final Player target = Bukkit.getPlayer(playerName);
+        if (target == null) {
+            invalidPlayer(sender);
+            return null;
+        }
+
+        final int amount;
+        try {
+            amount = Integer.parseInt(amountStr);
+        } catch (NumberFormatException e) {
+            invalidAmount(sender);
+            return null;
+        }
+
+        return new Pair<>(target, amount);
     }
 
     /**
@@ -72,8 +96,8 @@ public class AddCommand extends AdminCommandBase {
         final PlayerQuests playerQuests = ODailyQuestsAPI.getPlayerQuests(target.getName());
         playerQuests.addTotalAchievedQuests(amount);
 
-        sendAdminMessage(sender, target.getName(), amount, "total");
-        sendTargetMessage(target, amount, "total");
+        sendAdminMessage(sender, target.getName(), amount, TOTAL);
+        sendTargetMessage(target, amount, TOTAL);
     }
 
     /**
@@ -120,14 +144,15 @@ public class AddCommand extends AdminCommandBase {
 
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, String[] args) {
-        if (args.length == 2) {
+        if (args.length == 2 && args[0].equalsIgnoreCase("add") && args[1].equalsIgnoreCase(TOTAL)) {
             final Set<String> categories = CategoriesLoader.getAllCategories().keySet();
-            final List<String> completions = new ArrayList<>(categories.stream().toList());
-            completions.add("total");
+            final List<String> completions = new ArrayList<>(categories);
+
+            Bukkit.getOnlinePlayers().forEach(player -> completions.add(player.getName()));
             return completions;
         }
 
-        if (args.length == 3) {
+        if (args.length == 3 && args[0].equalsIgnoreCase("add") && args[1].equalsIgnoreCase(TOTAL)) {
             return null;
         }
 
