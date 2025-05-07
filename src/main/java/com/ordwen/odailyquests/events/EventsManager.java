@@ -15,10 +15,6 @@ import com.ordwen.odailyquests.events.listeners.integrations.itemsadder.ItemsAdd
 import com.ordwen.odailyquests.events.listeners.integrations.nexo.NexoItemsLoadedListener;
 import com.ordwen.odailyquests.events.listeners.integrations.oraxen.OraxenItemsLoadedListener;
 import com.ordwen.odailyquests.events.listeners.vote.VotifierListener;
-import com.ordwen.odailyquests.externs.hooks.mobs.EliteMobsHook;
-import com.ordwen.odailyquests.externs.hooks.mobs.MythicMobsHook;
-import com.ordwen.odailyquests.externs.hooks.stackers.RoseStackerHook;
-import com.ordwen.odailyquests.externs.hooks.stackers.WildStackerHook;
 import com.ordwen.odailyquests.events.listeners.entity.*;
 import com.ordwen.odailyquests.events.listeners.entity.custom.mobs.EliteMobDeathListener;
 import com.ordwen.odailyquests.events.listeners.entity.custom.stackers.WildStackerListener;
@@ -52,19 +48,19 @@ public class EventsManager {
         pluginManager.registerEvents(new EntityDeathListener(), oDailyQuests);
         pluginManager.registerEvents(new SpawnerSpawnListener(), oDailyQuests);
 
-        if (EliteMobsHook.isEnabled()) {
+        if (PluginUtils.isPluginEnabled("EliteMobs")) {
             pluginManager.registerEvents(new EliteMobDeathListener(), oDailyQuests);
         }
 
-        if (MythicMobsHook.isEnabled()) {
+        if (PluginUtils.isPluginEnabled("MythicMobs")) {
             pluginManager.registerEvents(new MythicMobDeathListener(), oDailyQuests);
         }
 
-        if (WildStackerHook.isEnabled()) {
+        if (PluginUtils.isPluginEnabled("WildStacker")) {
             pluginManager.registerEvents(new WildStackerListener(), oDailyQuests);
         }
 
-        if (RoseStackerHook.isEnabled()) {
+        if (PluginUtils.isPluginEnabled("RoseStacker")) {
             pluginManager.registerEvents(new RoseStackerListener(), oDailyQuests);
         }
 

@@ -1,9 +1,8 @@
-package com.ordwen.odailyquests.externs.hooks.npcs;
+package com.ordwen.odailyquests.events.listeners.integrations.citizens;
 
 import com.ordwen.odailyquests.commands.interfaces.InterfacesManager;
 import com.ordwen.odailyquests.configuration.integrations.NPCNames;
 import com.ordwen.odailyquests.enums.QuestsMessages;
-import com.ordwen.odailyquests.tools.PluginUtils;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -53,9 +52,5 @@ public class CitizensHook implements Listener {
             final String msg = QuestsMessages.NO_PERMISSION_CATEGORY.toString();
             if (msg != null) player.sendMessage(msg);
         }
-    }
-
-    public static boolean isCitizensEnabled() {
-        return PluginUtils.isPluginEnabled("Citizens");
     }
 }

@@ -1,12 +1,12 @@
 package com.ordwen.odailyquests.events.listeners.entity;
 
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
+import com.ordwen.odailyquests.configuration.integrations.RoseStackerEnabled;
 import com.ordwen.odailyquests.configuration.integrations.WildStackerEnabled;
 import com.ordwen.odailyquests.events.antiglitch.EntitySource;
 
-import com.ordwen.odailyquests.externs.hooks.mobs.MythicMobsHook;
-import com.ordwen.odailyquests.externs.hooks.stackers.RoseStackerHook;
 import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
+import com.ordwen.odailyquests.tools.PluginUtils;
 import dev.rosewood.rosestacker.api.RoseStackerAPI;
 import dev.rosewood.rosestacker.stack.StackedEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
@@ -23,7 +23,7 @@ public class EntityDeathListener extends PlayerProgressor implements Listener {
     public void onEntityDeathEvent(EntityDeathEvent event) {
         final LivingEntity entity = event.getEntity();
 
-        if (MythicMobsHook.isEnabled()) {
+        if (PluginUtils.isPluginEnabled("MythicMobs")) {
             final ActiveMob mythicMob = MythicBukkit.inst().getMobManager().getActiveMob(entity.getUniqueId()).orElse(null);
             if (mythicMob != null) return;
         }
@@ -35,7 +35,7 @@ public class EntityDeathListener extends PlayerProgressor implements Listener {
 
         if (WildStackerEnabled.isEnabled()) return;
 
-        if (RoseStackerHook.isEnabled()) {
+        if (RoseStackerEnabled.isEnabled()) {
             final StackedEntity stacked = RoseStackerAPI.getInstance().getStackedEntity(entity);
             if (stacked == null || stacked.areMultipleEntitiesDying(event)) return;
         }

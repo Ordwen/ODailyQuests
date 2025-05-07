@@ -2,13 +2,13 @@ package com.ordwen.odailyquests.rewards;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
-import com.ordwen.odailyquests.externs.hooks.eco.CoinsEngineHook;
 import com.ordwen.odailyquests.externs.hooks.points.PlayerPointsHook;
 import com.ordwen.odailyquests.externs.hooks.points.TokenManagerHook;
 import com.ordwen.odailyquests.externs.hooks.eco.VaultHook;
 import com.ordwen.odailyquests.configuration.functionalities.progression.ActionBar;
 import com.ordwen.odailyquests.configuration.functionalities.progression.Title;
 import com.ordwen.odailyquests.enums.QuestsMessages;
+import com.ordwen.odailyquests.tools.PluginUtils;
 import com.ordwen.odailyquests.tools.TextFormatter;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
@@ -51,7 +51,6 @@ public class RewardManager {
 
         String msg;
         switch (reward.getRewardType()) {
-
             case COMMAND -> {
                 for (String cmd : reward.getRewardCommands()) {
                     cmd = TextFormatter.format(TextFormatter.format(player, cmd));
@@ -113,7 +112,7 @@ public class RewardManager {
             }
 
             case COINS_ENGINE -> {
-                if (!CoinsEngineHook.isCoinsEngineHooked()) {
+                if (!PluginUtils.isPluginEnabled("CoinsEngine")) {
                     rewardTypeError(player, reward.getRewardType());
                     return;
                 }

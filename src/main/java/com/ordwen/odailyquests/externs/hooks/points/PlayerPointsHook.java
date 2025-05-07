@@ -13,12 +13,10 @@ public class PlayerPointsHook {
     /**
      * Setup TokenManagerAPI.
      */
-    public static boolean setupPlayerPointsAPI() {
+    public static void setupPlayerPointsAPI() {
         if (PluginUtils.isPluginEnabled("PlayerPoints")) {
             playerPointsAPI = PlayerPoints.getInstance().getAPI();
-            return true;
         }
-        return false;
     }
 
     public static boolean isPlayerPointsSetup() {

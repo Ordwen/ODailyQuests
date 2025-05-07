@@ -8,22 +8,20 @@ public class KGeneratorsHook {
 
     private KGeneratorsHook() {}
 
-    private static boolean isHooked;
+    private static boolean isHooked = false;
 
     /**
      * Setup KGeneratorsAPI.
      */
-    public static boolean setupKGeneratorsAPI() {
+    public static void setupKGeneratorsAPI() {
         if (PluginUtils.isPluginEnabled("KGenerators")) {
             isHooked = true;
-            return true;
         }
-
-        return false;
     }
 
     /**
      * Check if location is a KGenerators generator.
+     *
      * @param location - location to check.
      * @return true if location is a KGenerators generator - false if not.
      */

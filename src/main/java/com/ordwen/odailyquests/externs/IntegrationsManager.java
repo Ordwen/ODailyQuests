@@ -2,19 +2,13 @@ package com.ordwen.odailyquests.externs;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.externs.hooks.Protection;
-import com.ordwen.odailyquests.externs.hooks.eco.CoinsEngineHook;
 import com.ordwen.odailyquests.externs.hooks.eco.VaultHook;
 import com.ordwen.odailyquests.externs.hooks.items.KGeneratorsHook;
-import com.ordwen.odailyquests.externs.hooks.mobs.EliteMobsHook;
-import com.ordwen.odailyquests.externs.hooks.mobs.MythicMobsHook;
-import com.ordwen.odailyquests.externs.hooks.npcs.CitizensHook;
+import com.ordwen.odailyquests.events.listeners.integrations.citizens.CitizensHook;
 import com.ordwen.odailyquests.externs.hooks.placeholders.PAPIExpansion;
 import com.ordwen.odailyquests.externs.hooks.points.PlayerPointsHook;
 import com.ordwen.odailyquests.externs.hooks.points.TokenManagerHook;
-import com.ordwen.odailyquests.externs.hooks.stackers.RoseStackerHook;
-import com.ordwen.odailyquests.externs.hooks.stackers.WildStackerHook;
-import com.ordwen.odailyquests.tools.PluginLogger;
-import org.bukkit.Bukkit;
+import com.ordwen.odailyquests.tools.PluginUtils;
 
 import static org.bukkit.Bukkit.getServer;
 
@@ -31,94 +25,35 @@ public class IntegrationsManager {
      */
     public void loadAllDependencies() {
         loadVault();
-        loadCoinsEngine();
-        loadEliteMobs();
-        loadMythicMobs();
         loadPointsPlugin();
         loadCitizens();
         loadPAPI();
-        loadWildStacker();
-        loadRoseStacker();
         loadKGenerators();
 
         new Protection().load();
     }
 
     /**
-     * Load WildStacker.
-     */
-    private void loadWildStacker() {
-        if (WildStackerHook.isEnabled()) {
-            PluginLogger.info("WildStacker successfully hooked.");
-        }
-    }
-
-    /**
-     * Load RoseStacker.
-     */
-    private void loadRoseStacker() {
-        if (RoseStackerHook.isEnabled()) {
-            PluginLogger.info("RoseStacker successfully hooked.");
-        }
-    }
-
-    /**
-     * Hook - MythicMobs
-     */
-    private void loadMythicMobs() {
-        if (MythicMobsHook.isEnabled()) {
-            PluginLogger.info("MythicMobs successfully hooked.");
-        }
-    }
-
-    /**
-     * Hook - EliteMobs
-     */
-    private void loadEliteMobs() {
-        if (EliteMobsHook.isEnabled()) {
-            PluginLogger.info("EliteMobs successfully hooked.");
-        }
-    }
-
-    /**
      * Hook - TokenManager / PlayerPoints
      */
     private void loadPointsPlugin() {
-        if (TokenManagerHook.setupTokenManager()) {
-            PluginLogger.info("TokenManager successfully hooked.");
-            return;
-        }
-
-        if (PlayerPointsHook.setupPlayerPointsAPI()) {
-            PluginLogger.info("PlayerPoints successfully hooked.");
-        }
-    }
-
-    /**
-     * Hook - CoinsEngine
-     */
-    private void loadCoinsEngine() {
-        if (CoinsEngineHook.setupCoinsEngineAPI()) {
-            PluginLogger.info("CoinsEngine successfully hooked.");
-        }
+        TokenManagerHook.setupTokenManager();
+        PlayerPointsHook.setupPlayerPointsAPI();
     }
 
     /**
      * Hook - Vault
      */
     private void loadVault() {
-        if (VaultHook.setupEconomy()) {
-            PluginLogger.info("Vault successfully hooked.");
-        }
+        VaultHook.setupEconomy();
     }
 
     /**
      * Hook - Citizens
      */
     private void loadCitizens() {
-        if (CitizensHook.isCitizensEnabled()) {
+        if (PluginUtils.isPluginEnabled("Citizens")) {
             getServer().getPluginManager().registerEvents(new CitizensHook(oDailyQuests.getInterfacesManager()), oDailyQuests);
-            PluginLogger.info("Citizens successfully hooked.");
         }
     }
 
@@ -126,9 +61,8 @@ public class IntegrationsManager {
      * Hook - PlaceholderAPI
      */
     private void loadPAPI() {
-        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+        if (PluginUtils.isPluginEnabled("PlaceholderAPI")) {
             new PAPIExpansion(oDailyQuests.getInterfacesManager().getPlayerQuestsInterface()).register();
-            PluginLogger.info("PlaceholderAPI successfully hooked.");
         }
     }
 
@@ -136,8 +70,6 @@ public class IntegrationsManager {
      * Hook - KGenerators
      */
     private void loadKGenerators() {
-        if (KGeneratorsHook.setupKGeneratorsAPI()) {
-            PluginLogger.info("KGenerators successfully hooked.");
-        }
+        KGeneratorsHook.setupKGeneratorsAPI();
     }
 }

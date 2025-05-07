@@ -12,9 +12,8 @@ public class TokenManagerHook {
     /**
      * Setup TokenManagerAPI.
      */
-    public static boolean setupTokenManager() {
+    public static void setupTokenManager() {
         tokenManagerAPI = (TokenManager) Bukkit.getServer().getPluginManager().getPlugin("TokenManager");
-        return tokenManagerAPI != null;
     }
 
     /**
