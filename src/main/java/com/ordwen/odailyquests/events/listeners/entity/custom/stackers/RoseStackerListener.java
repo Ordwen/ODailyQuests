@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 public class RoseStackerListener extends PlayerProgressor implements Listener {
 
@@ -52,10 +53,9 @@ public class RoseStackerListener extends PlayerProgressor implements Listener {
             return;
         }
 
-        final Player player = event.getStack().getEntity().getKiller();
-        if (player == null) return;
-
-        Debugger.write("EntityStackMultipleDeathEvent: onEntityUnstackEvent summoned by " + player.getName() + " for " + entity.getType() + ".");
-        setPlayerQuestProgression(event, player, event.getEntityKillCount(), "KILL");
+        if (entity.getLastDamageCause() instanceof EntityDamageByEntityEvent damageEvent && damageEvent.getDamager() instanceof Player player) {
+            Debugger.write("EntityStackMultipleDeathEvent: onEntityUnstackEvent summoned by " + player.getName() + " for " + entity.getType() + ".");
+            setPlayerQuestProgression(event, player, event.getEntityKillCount(), "KILL");
+        }
     }
 }
