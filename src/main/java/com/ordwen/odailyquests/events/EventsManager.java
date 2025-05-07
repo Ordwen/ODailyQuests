@@ -8,6 +8,7 @@ import com.ordwen.odailyquests.configuration.integrations.OraxenEnabled;
 import com.ordwen.odailyquests.events.listeners.crate.CrateOpenListener;
 import com.ordwen.odailyquests.events.listeners.customs.CustomFurnaceExtractListener;
 import com.ordwen.odailyquests.events.listeners.entity.custom.stackers.RoseStackerListener;
+import com.ordwen.odailyquests.events.listeners.integrations.citizens.CitizensHook;
 import com.ordwen.odailyquests.events.listeners.integrations.customsuite.CropBreakListener;
 import com.ordwen.odailyquests.events.listeners.integrations.customsuite.FishingLootSpawnListener;
 import com.ordwen.odailyquests.events.listeners.integrations.itemsadder.CustomBlockBreakListener;
@@ -129,6 +130,10 @@ public class EventsManager {
 
         if (PluginUtils.isPluginEnabled("ExcellentCrates")) {
             pluginManager.registerEvents(new CrateOpenListener(), oDailyQuests);
+        }
+
+        if (PluginUtils.isPluginEnabled("Citizens")) {
+            pluginManager.registerEvents(new CitizensHook(oDailyQuests.getInterfacesManager()), oDailyQuests);
         }
     }
 }

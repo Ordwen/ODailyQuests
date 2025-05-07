@@ -4,13 +4,10 @@ import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.externs.hooks.Protection;
 import com.ordwen.odailyquests.externs.hooks.eco.VaultHook;
 import com.ordwen.odailyquests.externs.hooks.items.KGeneratorsHook;
-import com.ordwen.odailyquests.events.listeners.integrations.citizens.CitizensHook;
 import com.ordwen.odailyquests.externs.hooks.placeholders.PAPIExpansion;
 import com.ordwen.odailyquests.externs.hooks.points.PlayerPointsHook;
 import com.ordwen.odailyquests.externs.hooks.points.TokenManagerHook;
 import com.ordwen.odailyquests.tools.PluginUtils;
-
-import static org.bukkit.Bukkit.getServer;
 
 public class IntegrationsManager {
 
@@ -26,7 +23,6 @@ public class IntegrationsManager {
     public void loadAllDependencies() {
         loadVault();
         loadPointsPlugin();
-        loadCitizens();
         loadPAPI();
         loadKGenerators();
 
@@ -46,15 +42,6 @@ public class IntegrationsManager {
      */
     private void loadVault() {
         VaultHook.setupEconomy();
-    }
-
-    /**
-     * Hook - Citizens
-     */
-    private void loadCitizens() {
-        if (PluginUtils.isPluginEnabled("Citizens")) {
-            getServer().getPluginManager().registerEvents(new CitizensHook(oDailyQuests.getInterfacesManager()), oDailyQuests);
-        }
     }
 
     /**
