@@ -25,19 +25,28 @@ public class EntityDeathListener extends PlayerProgressor implements Listener {
 
         if (PluginUtils.isPluginEnabled("MythicMobs")) {
             final ActiveMob mythicMob = MythicBukkit.inst().getMobManager().getActiveMob(entity.getUniqueId()).orElse(null);
-            if (mythicMob != null) return;
+            if (mythicMob != null) {
+                Debugger.write("EntityDeathListener: Entity is a MythicMob, must be handled by MythicMobs.");
+                return;
+            }
         }
 
         if (EntitySource.isEntityFromSpawner(entity)) {
-            Debugger.write("[EntityDeathEvent] Entity is from spawner, cancelling progression.");
+            Debugger.write("EntityDeathListener: Entity is from spawner, cancelling progression.");
             return;
         }
 
-        if (WildStackerEnabled.isEnabled()) return;
+        if (WildStackerEnabled.isEnabled()) {
+            Debugger.write("EntityDeathListener: Entity is from WildStacker, must be handled by WildStacker.");
+            return;
+        }
 
         if (RoseStackerEnabled.isEnabled()) {
             final StackedEntity stacked = RoseStackerAPI.getInstance().getStackedEntity(entity);
-            if (stacked != null && stacked.areMultipleEntitiesDying(event)) return;
+            if (stacked != null && stacked.areMultipleEntitiesDying(event)) {
+                Debugger.write("EntityDeathListener: Entity is stacked and several are dying, must be handled by RoseStacker.");
+                return;
+            }
         }
 
         if (entity.getKiller() == null) return;

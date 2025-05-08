@@ -147,7 +147,8 @@ public class QuestLoaderUtils {
         }
 
         if (quest == null) {
-            PluginLogger.error("Impossible to load player quests. The selected mode is incorrect.");
+            PluginLogger.warn("Quest ID " + id + " was not found. Player quests will be reset.");
+            PluginLogger.warn("This can happen after a server reload or if the quest was deleted from the file.");
         }
 
         return quest;
