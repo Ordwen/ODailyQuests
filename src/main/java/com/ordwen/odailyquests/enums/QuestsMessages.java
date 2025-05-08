@@ -52,6 +52,8 @@ public enum QuestsMessages {
     NOT_ENOUGH_ITEM("not_enough_items", "&cYou don't have the required amount to complete this quest."),
     TOTAL_AMOUNT_RESET("total_amount_reset", "&eYour total number of completed quests has been reset by an admin."),
     TOTAL_AMOUNT_RESET_ADMIN("total_amount_reset_admin", "&e%target%'s total number of completed quests has been reset by an admin."),
+    TOTAL_CATEGORY_RESET_ADMIN("total_category_reset_admin", "&e%target%'s total number of completed quests in the category %category% has been reset by an admin."),
+    TOTAL_CATEGORY_RESET_TARGET("total_category_reset_target", "&eYour total number of completed quests in the category %category% has been reset by an admin."),
 
     WORLD_DISABLED("world_disabled", "&cYou can't complete quests in this world."),
     NOT_REQUIRED_WORLD("not_required_world", "&cYou can't complete this quest in this world."),

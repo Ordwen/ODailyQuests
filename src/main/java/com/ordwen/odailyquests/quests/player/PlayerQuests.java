@@ -214,6 +214,16 @@ public class PlayerQuests {
     }
 
     /**
+     * Set total number of achieved quests for a specific category.
+     *
+     * @param category the category name.
+     * @param i        number of achieved quests to set.
+     */
+    public void setTotalCategoryAchievedQuests(String category, int i) {
+        this.totalAchievedQuestsByCategory.put(category, i);
+    }
+
+    /**
      * Add number of achieved quests.
      *
      * @param i number of achieved quests to add.

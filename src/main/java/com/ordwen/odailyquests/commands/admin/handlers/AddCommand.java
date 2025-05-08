@@ -68,11 +68,8 @@ public class AddCommand extends AdminCommandBase {
     }
 
     private Pair<Player, Integer> getPlayerAndAmount(CommandSender sender, String playerName, String amountStr) {
-        final Player target = Bukkit.getPlayer(playerName);
-        if (target == null) {
-            invalidPlayer(sender);
-            return null;
-        }
+        final Player target = getTargetPlayer(sender, playerName);
+        if (target == null) return null;
 
         final int amount;
         try {
