@@ -224,12 +224,60 @@ public class PlayerQuests {
     }
 
     /**
+     * Set total achieved quests for all categories.
+     *
+     * @param totals a map of total achieved quests by category.
+     */
+    public void setTotalAchievedQuestsByCategory(Map<String, Integer> totals) {
+        this.totalAchievedQuestsByCategory.clear();
+        this.totalAchievedQuestsByCategory.putAll(totals);
+    }
+
+    /**
      * Add number of achieved quests.
      *
      * @param i number of achieved quests to add.
      */
     public void addTotalAchievedQuests(int i) {
         this.totalAchievedQuests += i;
+    }
+
+    /**
+     * Add the number of achieved quests for a specific category.
+     *
+     * @param category the category name.
+     * @param amount   the number of quests to add.
+     */
+    public void addTotalCategoryAchievedQuests(String category, int amount) {
+        if (this.totalAchievedQuestsByCategory.containsKey(category)) {
+            this.totalAchievedQuestsByCategory.put(category, this.totalAchievedQuestsByCategory.get(category) + amount);
+        } else {
+            this.totalAchievedQuestsByCategory.put(category, amount);
+        }
+    }
+
+    /**
+     * Remove number of achieved quests.
+     *
+     * @param i number of achieved quests to remove.
+     */
+    public void removeTotalAchievedQuests(int i) {
+        this.totalAchievedQuests = Math.max(this.totalAchievedQuests - i, 0);
+    }
+
+    /**
+     * Subtract the number of achieved quests for a specific category.
+     *
+     * @param category the category name.
+     * @param amount   the number of quests to subtract.
+     */
+    public void removeTotalCategoryAchievedQuests(String category, int amount) {
+        if (this.totalAchievedQuestsByCategory.containsKey(category)) {
+            final int toSet = Math.max(totalAchievedQuestsByCategory.get(category) - amount, 0);
+            this.totalAchievedQuestsByCategory.put(category, toSet);
+        } else {
+            this.totalAchievedQuestsByCategory.put(category, 0);
+        }
     }
 
     /**
@@ -265,16 +313,6 @@ public class PlayerQuests {
     }
 
     /**
-     * Set total achieved quests for all categories.
-     *
-     * @param totals a map of total achieved quests by category.
-     */
-    public void setTotalAchievedQuestsByCategory(Map<String, Integer> totals) {
-        this.totalAchievedQuestsByCategory.clear();
-        this.totalAchievedQuestsByCategory.putAll(totals);
-    }
-
-    /**
      * Get the number of total achieved quests for a specific category.
      *
      * @param category the category name.
@@ -282,19 +320,5 @@ public class PlayerQuests {
      */
     public int getTotalAchievedQuestsByCategory(String category) {
         return this.totalAchievedQuestsByCategory.getOrDefault(category, 0);
-    }
-
-    /**
-     * Add the number of achieved quests for a specific category.
-     *
-     * @param category the category name.
-     * @param amount   the number of quests to add.
-     */
-    public void addCategoryAchievedQuests(String category, int amount) {
-        if (this.totalAchievedQuestsByCategory.containsKey(category)) {
-            this.totalAchievedQuestsByCategory.put(category, this.totalAchievedQuestsByCategory.get(category) + amount);
-        } else {
-            this.totalAchievedQuestsByCategory.put(category, amount);
-        }
     }
 }

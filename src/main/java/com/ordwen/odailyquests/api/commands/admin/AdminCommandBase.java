@@ -15,6 +15,12 @@ import org.bukkit.entity.Player;
  */
 public abstract class AdminCommandBase extends AdminMessages implements AdminCommand, AdminCommandCompleter {
 
+    protected static final String TOTAL = "total";
+    protected static final String QUESTS = "quests";
+    protected static final String AMOUNT = "%amount%";
+    protected static final String TARGET = "%target%";
+    protected static final String CATEGORY = "%category%";
+
     /**
      * Retrieves a player instance by their exact name.
      * <p>

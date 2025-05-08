@@ -237,10 +237,11 @@ public final class ODailyQuests extends JavaPlugin {
         final AdminCommandRegistry adminCommandRegistry = API.getAdminCommandRegistry();
 
         adminCommandRegistry.registerCommand(new AddCommand());
+        adminCommandRegistry.registerCommand(new RemoveCommand());
+        adminCommandRegistry.registerCommand(new ResetCommand());
         adminCommandRegistry.registerCommand(new ARerollCommand());
         adminCommandRegistry.registerCommand(new CompleteCommand());
         adminCommandRegistry.registerCommand(new CustomCompleteCommand());
-        adminCommandRegistry.registerCommand(new ResetCommand());
         adminCommandRegistry.registerCommand(new ConvertCommand());
         adminCommandRegistry.registerCommand(new AShowCommand(interfacesManager.getPlayerQuestsInterface()));
         adminCommandRegistry.registerCommand(new OpenCommand(interfacesManager.getPlayerQuestsInterface()));

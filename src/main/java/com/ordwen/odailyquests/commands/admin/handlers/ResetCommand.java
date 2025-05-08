@@ -17,13 +17,11 @@ import java.util.*;
 
 public class ResetCommand extends AdminCommandBase {
 
-    private static final String TOTAL = "total";
-    private static final String QUESTS = "quests";
-    private static final String TARGET = "%target%";
+    private static final String RESET = "reset";
 
     @Override
     public String getName() {
-        return "reset";
+        return RESET;
     }
 
     @Override
@@ -114,16 +112,16 @@ public class ResetCommand extends AdminCommandBase {
         String msg = QuestsMessages.TOTAL_CATEGORY_RESET_ADMIN.toString();
         if (msg != null) sender.sendMessage(
                 msg.replace(TARGET, target.getName())
-                        .replace("%category%", category)
+                        .replace(CATEGORY, category)
         );
 
         msg = QuestsMessages.TOTAL_CATEGORY_RESET_TARGET.getMessage(target);
-        if (msg != null) target.sendMessage(msg.replace("%category%", category));
+        if (msg != null) target.sendMessage(msg.replace(CATEGORY, category));
     }
 
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, String[] args) {
-        if (args.length == 2 && args[0].equalsIgnoreCase("reset")) {
+        if (args.length == 2 && args[0].equalsIgnoreCase(RESET)) {
             return List.of(QUESTS, TOTAL);
         }
 
