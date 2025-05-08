@@ -20,8 +20,8 @@ public abstract class ProgressionLoader {
 
     private static final String PLAYER = "Player ";
 
-    private static final String NEW_QUESTS = "New quests will be drawn.";
-    private static final String CONFIG_CHANGE = "This can happen if the quest has been modified in the config file.";
+    protected static final String NEW_QUESTS = "New quests will be drawn.";
+    protected static final String CONFIG_CHANGE = "This can happen if the quest has been modified in the config file.";
 
     protected void handleNewPlayer(String playerName, Map<String, PlayerQuests> activeQuests) {
         Debugger.write(PLAYER + playerName + " has no data in progression file.");
@@ -53,6 +53,16 @@ public abstract class ProgressionLoader {
     protected void handlePlayerDisconnected(String playerName) {
         Debugger.write(PLAYER + playerName + " is null. Impossible to load quests.");
         PluginLogger.warn("It looks like " + playerName + " has disconnected before their quests were loaded.");
+    }
+
+    protected void requiredAmountIsZero(String playerName) {
+        PluginLogger.warn("Required amount is 0 for player " + playerName + ". " + NEW_QUESTS);
+        PluginLogger.warn(CONFIG_CHANGE);
+    }
+
+    protected void requiredAmountNotEqual(String playerName) {
+        PluginLogger.warn("Required amount is not equal to quest required amount for player " + playerName + ". " + NEW_QUESTS);
+        PluginLogger.warn(CONFIG_CHANGE);
     }
 
     protected void error(String player, String message) {

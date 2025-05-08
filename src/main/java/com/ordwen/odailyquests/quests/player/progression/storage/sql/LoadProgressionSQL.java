@@ -25,9 +25,6 @@ import java.util.Map;
 
 public class LoadProgressionSQL extends ProgressionLoader {
 
-    private static final String NEW_QUESTS = "New quests will be drawn.";
-    private static final String CONFIG_CHANGE = "This can happen if the quest has been modified in the config file.";
-
     /* instance of SQLManager */
     private final SQLManager sqlManager;
 
@@ -155,23 +152,27 @@ public class LoadProgressionSQL extends ProgressionLoader {
                             selectedRequired = -1;
                         }
 
+                        // schema update check (1 to 2)
+                        if (requiredAmount == 0) {
+                           requiredAmountIsZero(playerName);
+                            return false;
+                        }
+
+                        final boolean isAchieved = resultSet.getBoolean("is_achieved");
+
                         final AbstractQuest quest = QuestLoaderUtils.findQuest(playerName, questIndex, id);
                         if (quest == null) {
                             Debugger.write("Quest " + id + " does not exist. New quests will be drawn.");
                             return false;
                         }
 
-                        // check if random quest have data
-                        if (isSelectedRequiredInvalid(quest, selectedRequired, playerName)) return false;
-
-                        // schema update check (1 to 2)
-                        if (requiredAmount == 0) {
-                            PluginLogger.warn("Required amount is 0 for player " + playerName + ". " + NEW_QUESTS);
-                            PluginLogger.warn(CONFIG_CHANGE);
+                        if (!quest.isRandomRequired() && requiredAmount != Integer.parseInt(quest.getRequiredAmountRaw())) {
+                            requiredAmountNotEqual(playerName);
                             return false;
                         }
 
-                        final boolean isAchieved = resultSet.getBoolean("is_achieved");
+                        // check if random quest have data
+                        if (isSelectedRequiredInvalid(quest, selectedRequired, playerName)) return false;
 
                         final Progression progression = new Progression(requiredAmount, advancement, isAchieved);
                         if (selectedRequired != -1) {

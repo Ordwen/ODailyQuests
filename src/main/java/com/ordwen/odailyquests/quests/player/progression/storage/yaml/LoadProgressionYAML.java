@@ -62,7 +62,7 @@ public class LoadProgressionYAML extends ProgressionLoader {
         }
 
         if (QuestLoaderUtils.checkTimestamp(timestamp)) {
-            Debugger.write("Timestamp is too old for player " + playerName + ". Loading new quests.");
+            Debugger.write("Timestamp is too old for player " + playerName + ". " + NEW_QUESTS);
             QuestLoaderUtils.loadNewPlayerQuests(playerName, activeQuests, totalAchievedQuestsByCategory, totalAchievedQuests);
             return;
         }
@@ -107,7 +107,7 @@ public class LoadProgressionYAML extends ProgressionLoader {
 
             // schema update check (1 to 2)
             if (requiredAmount == 0) {
-                Debugger.write("Required amount is 0 for player " + playerName + ". New quests will be drawn.");
+                requiredAmountIsZero(playerName);
                 return null;
             }
 
@@ -115,7 +115,12 @@ public class LoadProgressionYAML extends ProgressionLoader {
 
             final AbstractQuest quest = QuestLoaderUtils.findQuest(playerName, questIndex, Integer.parseInt(key));
             if (quest == null) {
-                Debugger.write("Quest " + questIndex + " does not exist. New quests will be drawn.");
+                Debugger.write("Quest " + questIndex + " does not exist. " + NEW_QUESTS);
+                return null;
+            }
+
+            if (!quest.isRandomRequired() && requiredAmount != Integer.parseInt(quest.getRequiredAmountRaw())) {
+                requiredAmountNotEqual(playerName);
                 return null;
             }
 
