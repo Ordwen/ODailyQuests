@@ -101,12 +101,19 @@ public class PlayerProgressor {
 
         final String questName = quest.getQuestName().replace("%displayName%", DisplayName.getDisplayName(quest, progression.getSelectedRequiredIndex()));
 
-        for (int i = 0; i < amount; i++) {
+        final int current = progression.getAdvancement();
+        final int required = progression.getRequiredAmount();
+
+        // never exceed the required amount
+        final int remaining = required - current;
+        final int toAdd = Math.min(amount, remaining);
+
+        for (int i = 0; i < toAdd; i++) {
             Debugger.write("QuestProgressUtils: increasing progression for " + questName + " by " + amount + ".");
             progression.increaseAdvancement();
         }
 
-        if (progression.getAdvancement() >= progression.getRequiredAmount()) {
+        if (progression.getAdvancement() >= required) {
             Debugger.write("QuestProgressUtils: progression " + progression.getAdvancement() + " is greater than or equal to amount required " + progression.getRequiredAmount() + ".");
             ODailyQuests.morePaperLib.scheduling().globalRegionalScheduler().runDelayed(() -> {
                 Debugger.write("QuestProgressUtils: QuestCompletedEvent is called.");
