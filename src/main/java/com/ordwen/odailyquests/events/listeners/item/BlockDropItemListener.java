@@ -77,10 +77,13 @@ public class BlockDropItemListener extends PlayerProgressor implements Listener 
     private boolean isPlayerPlacedBlock(BlockDropItemEvent event, Material material) {
         if (material.isBlock() && Antiglitch.isStorePlacedBlocks()) {
             final PersistentDataContainer pdc = new CustomBlockData(event.getBlock(), ODailyQuests.INSTANCE);
+            System.out.println("BLOCKDROPEVENT BLOCK EQUAL: " + event.getBlock().equals(BlockPlaceListener.test));
+            System.out.println("BLOCKDROPEVENT PDC EQUAL: " + pdc.equals(BlockPlaceListener.pdc));
+            System.out.println("BLOCKDROPEVENT HAS KEY: " + pdc.has(Antiglitch.PLACED_KEY));
             // check if type has changed
-            final String previousType = pdc.getOrDefault(Antiglitch.PLACED_KEY, PersistentDataType.STRING, material.name());
-            if (previousType.equals(material.name())) {
-                Debugger.write("BlockDropItemListener: onBlockDropItemEvent cancelled due to placed block.");
+            final String previousType = pdc.get(Antiglitch.PLACED_KEY, PersistentDataType.STRING);
+            if (previousType != null && previousType.equals(material.name())) {
+                Debugger.write("BlockDropItemListener: onBlockDropItemEvent cancelled, material equal to previous type. Maybe BREAK type should be used instead?");
                 return true;
             } else {
                 Debugger.write("BlockDropItemListener: onBlockDropItemEvent block type has changed (" + previousType + " -> " + material.name() + ").");

@@ -94,6 +94,9 @@ public class BlockBreakListener extends PlayerProgressor implements Listener {
             }
 
             final PersistentDataContainer pdc = new CustomBlockData(block, ODailyQuests.INSTANCE);
+            System.out.println("BLOCKBREAKEVENT BLOCK EQUAL: " + block.equals(BlockPlaceListener.test));
+            System.out.println("BLOCKBREAKEVENT PDC EQUAL: " + pdc.equals(BlockPlaceListener.pdc));
+            System.out.println("BLOCKBREAKEVENT HAS KEY: " + pdc.has(Antiglitch.PLACED_KEY));
             if (pdc.has(Antiglitch.PLACED_KEY)) {
                 if (KGeneratorsHook.isKGeneratorsLocation(block.getLocation())) {
                     Debugger.write("BlockBreakListener: onBlockBreakEvent processing KGenerators generator.");

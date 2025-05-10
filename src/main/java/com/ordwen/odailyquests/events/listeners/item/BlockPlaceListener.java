@@ -53,8 +53,16 @@ public class BlockPlaceListener extends PlayerProgressor implements Listener {
         if (Antiglitch.isStorePlacedBlocks()) {
             Debugger.write("BlockPlaceListener: onBlockPlaceEvent storing placed block.");
             final PersistentDataContainer pdc = new CustomBlockData(block, ODailyQuests.INSTANCE);
+            System.out.println(block.getType().name());
             pdc.set(Antiglitch.PLACED_KEY, PersistentDataType.STRING, block.getType().name());
+            System.out.println(pdc.has(Antiglitch.PLACED_KEY, PersistentDataType.STRING));
+            System.out.println(pdc.get(Antiglitch.PLACED_KEY, PersistentDataType.STRING));
+            test = block;
+            BlockPlaceListener.pdc = pdc;
         }
     }
+
+    public static Block test;
+    public static PersistentDataContainer pdc;
 }
 
