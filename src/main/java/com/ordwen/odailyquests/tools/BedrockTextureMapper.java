@@ -5,82 +5,107 @@ import org.bukkit.Material;
 public class BedrockTextureMapper {
 
     public static String getTexturePath(Material material) {
-        String base = "textures/items/";
+        boolean isBlock = material.isBlock();
+        String base = isBlock ? "textures/blocks/" : "textures/items/";
+        if (material == Material.CAKE) { base = "textures/items/";}
         String name = material.name().toLowerCase();
         String filename;
 
-        // Handle special cases first
-        switch(material) {
-            case GOLDEN_APPLE:
-                filename = "apple_golden.png";
-                break;
-            case ENCHANTED_BOOK:
-                filename = "book_enchanted.png";
-                break;
-            case WRITTEN_BOOK:
-                filename = "book_written.png";
-                break;
-            case BOW:
-                filename = "bow_standby.png";
-                break;
-            case CROSSBOW:
-                filename = "crossbow_standby.png";
-                break;
-            case OAK_DOOR:
-                filename = "door_wood.png";
-                break;
-            case IRON_DOOR:
-                filename = "door_iron.png";
-                break;
-            case ACACIA_BOAT:
-            case BIRCH_BOAT:
-            case DARK_OAK_BOAT:
-            case JUNGLE_BOAT:
-            case SPRUCE_BOAT:
-                filename = "boat_" + name.replace("_boat", "") + ".png";
-                break;
-            case MAP:
-                filename = "map_empty.png";
-                break;
-            case FILLED_MAP:
-                filename = "map_filled.png";
-                break;
-            case TOTEM_OF_UNDYING:
-                filename = "totem.png";
-                break;
-            case PLAYER_HEAD:
-                filename = "skull_pottery_sherd.png";  // Not exact, just example
-                break;
-            default:
-                filename = handleDefaultCases(name, material);
+        // Handle special cases that differ between blocks and items
+        if (isBlock) {
+            filename = handleBlockCases(name, material);
+        } else {
+            filename = handleItemCases(name, material);
         }
 
         return base + filename;
     }
 
-    private static String handleDefaultCases(String name, Material material) {
-        // Handle colored items
-        if (name.endsWith("_bed")) {
-            return "bed_" + name.replace("_bed", "") + ".png";
+
+
+    private static String handleItemCases(String name, Material material) {
+        // Existing item handling from previous implementation
+        switch(material) {
+            case CAKE:
+                return "cake_top.png"; // Same texture for cake item in Bedrock
+            case GOLDEN_APPLE:
+                return "apple_golden.png";
+            case ENCHANTED_BOOK:
+                return "book_enchanted.png";
+            case WRITTEN_BOOK:
+                return "book_written.png";
+            case BOW:
+                return "bow_standby.png";
+            case CROSSBOW:
+                return "crossbow_standby.png";
+            case MAP:
+                return "map_empty.png";
+            case FILLED_MAP:
+                return "map_filled.png";
+            case TOTEM_OF_UNDYING:
+                return "totem.png";
         }
-        if (name.contains("_dye")) {
-            return "dye_powder_" + name.replace("_dye", "") + ".png";
-        }
-        if (name.endsWith("_sign")) {
-            return "sign_" + name.replace("_sign", "") + ".png";
-        }
-        if (name.endsWith("_door")) {
-            return "door_" + name.replace("_door", "") + ".png";
-        }
+
         if (name.endsWith("_boat")) {
             return "boat_" + name.replace("_boat", "") + ".png";
         }
 
-        // Handle special patterns
-        if (name.startsWith("music_disc_")) {
-            return "music_disc_" + name.split("_")[2] + ".png";
+        return name + ".png";
+    }
+
+    private static String handleBlockCases(String name, Material material) {
+        // Block-specific transformations
+        switch(material) {
+            case WHITE_BED:
+            case BLACK_BED:
+            case BLUE_BED:
+            case RED_BED:
+            case GREEN_BED:
+            case PURPLE_BED:
+            case YELLOW_BED:
+            case BROWN_BED:
+            case CYAN_BED:
+            case LIGHT_BLUE_BED:
+            case LIME_BED:
+            case MAGENTA_BED:
+            case PINK_BED:
+            case GRAY_BED:
+            case LIGHT_GRAY_BED:
+                return "bed_" + name.replace("_bed", "") + ".png";
+            case BIRCH_DOOR:
+            case JUNGLE_DOOR:
+            case SPRUCE_DOOR:
+            case DARK_OAK_DOOR:
+            case ACACIA_DOOR:
+            case CRIMSON_DOOR:
+            case WARPED_DOOR:
+            case CHERRY_DOOR:
+            case MANGROVE_DOOR:
+                return "door_" + name.replace("_door", "") + ".png";
+            case OAK_SIGN:
+            case BIRCH_SIGN:
+            case JUNGLE_SIGN:
+            case SPRUCE_SIGN:
+            case DARK_OAK_SIGN:
+            case ACACIA_SIGN:
+            case CRIMSON_SIGN:
+            case WARPED_SIGN:
+            case CHERRY_SIGN:
+            case MANGROVE_SIGN:
+                return "sign_" + name.replace("_sign", "") + ".png";
         }
 
+        if (name.startsWith("potted_")) {
+            return "flower_pot_" + name.replace("potted_", "") + ".png";
+        }
+        if (name.endsWith("_planks")) {
+            return "planks_" + name.replace("_planks", "") + ".png";
+        }
+        if (name.endsWith("_log")) {
+            return "log_" + name.replace("_log", "") + ".png";
+        }
+
+        // Add more block patterns here
         return name + ".png";
     }
 }
