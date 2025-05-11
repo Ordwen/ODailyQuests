@@ -4,12 +4,14 @@ import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsI
 import com.ordwen.odailyquests.commands.player.handlers.PRerollCommand;
 import com.ordwen.odailyquests.commands.player.handlers.ShowCommand;
 import com.ordwen.odailyquests.enums.QuestsPermissions;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.geysermc.floodgate.api.FloodgateApi;
 import org.jetbrains.annotations.NotNull;
 
 public class PlayerCommands extends PlayerMessages implements CommandExecutor {
@@ -51,6 +53,16 @@ public class PlayerCommands extends PlayerMessages implements CommandExecutor {
             return;
         }
 
-        player.openInventory(inventory);
+        if (Bukkit.getPluginManager().isPluginEnabled("floodgate")) {
+            FloodgateApi api = FloodgateApi.getInstance();
+            if (api.isFloodgatePlayer(player.getUniqueId())) {
+                api.sendForm(player.getUniqueId(), PlayerQuestsInterface.getPlayerQuestsForm(player));
+            } else {
+                player.openInventory(inventory);
+            }
+        } else {
+            player.openInventory(inventory);
+        }
+
     }
 }

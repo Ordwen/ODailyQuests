@@ -8,6 +8,8 @@
 player_interface:
   size: 27
   inventory_name: "&bMy quests"
+  bedrock_name: "&bMy quests"
+  bedrock_description: "All my available quests"
   # disable the status of the quest if you want to handle it manually by placeholders
   disable_status: false
   # the 3 following lines will not be used if disable_status is set to true
