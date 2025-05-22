@@ -31,7 +31,6 @@ if (version.contains("SNAPSHOT") && buildNumber != "local") {
     version = "${version}-b${buildNumber}"
 }
 
-
 println "Current version: ${version}"
 
 repositories {

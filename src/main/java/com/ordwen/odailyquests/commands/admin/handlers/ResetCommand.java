@@ -105,7 +105,6 @@ public class ResetCommand extends AdminCommandBase {
     }
 
     private void resetCategory(CommandSender sender, Player target, String category) {
-        System.out.println("1");
         final PlayerQuests playerQuests = ODailyQuestsAPI.getPlayerQuests(target.getName());
         playerQuests.setTotalCategoryAchievedQuests(category, 0);
 

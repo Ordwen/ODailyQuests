@@ -43,6 +43,7 @@ public class EntityDeathListener extends PlayerProgressor implements Listener {
 
         if (RoseStackerEnabled.isEnabled()) {
             final StackedEntity stacked = RoseStackerAPI.getInstance().getStackedEntity(entity);
+            Debugger.write("EntityDeathListener: RoseStacker enabled, checking if it is stacked.");
             if (stacked != null && stacked.areMultipleEntitiesDying(event)) {
                 Debugger.write("EntityDeathListener: Entity is stacked and several are dying, must be handled by RoseStacker.");
                 return;
