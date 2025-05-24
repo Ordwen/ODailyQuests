@@ -94,9 +94,6 @@ public class BlockBreakListener extends PlayerProgressor implements Listener {
             }
 
             final PersistentDataContainer pdc = new CustomBlockData(block, ODailyQuests.INSTANCE);
-            System.out.println("BLOCKBREAKEVENT BLOCK EQUAL: " + block.equals(BlockPlaceListener.test));
-            System.out.println("BLOCKBREAKEVENT PDC EQUAL: " + pdc.equals(BlockPlaceListener.pdc));
-            System.out.println("BLOCKBREAKEVENT HAS KEY: " + pdc.has(Antiglitch.PLACED_KEY));
             if (pdc.has(Antiglitch.PLACED_KEY)) {
                 if (KGeneratorsHook.isKGeneratorsLocation(block.getLocation())) {
                     Debugger.write("BlockBreakListener: onBlockBreakEvent processing KGenerators generator.");
@@ -125,26 +122,41 @@ public class BlockBreakListener extends PlayerProgressor implements Listener {
      * @param blockFace the direction to check for vertical plant blocks (UP or DOWN)
      */
     private void handleVerticalPlant(BlockBreakEvent event, Material plantType, BlockFace blockFace) {
-        Block base = event.getBlock();
+        Block relativeBlock = event.getBlock();
         int count = 0;
 
-        while (base.getType() == plantType) {
-            count++;
-            base = base.getRelative(blockFace);
+        while (relativeBlock.getType() == plantType) {
+            if (isValidForQuestProgression(relativeBlock)) count++;
+            relativeBlock = relativeBlock.getRelative(blockFace);
         }
 
         Debugger.write("BlockBreakListener: handleVerticalPlant found " + count + " vertical plant blocks.");
 
         if (count > 0) {
-            if (Antiglitch.isStorePlacedBlocks() && count < 2) {
-                Debugger.write("BlockBreakListener: handleVerticalPlant cancelled due to single vertical plant block.");
-                return;
-            }
-
             setPlayerQuestProgression(event, event.getPlayer(), count, "FARMING");
+        } else {
+            Debugger.write("BlockBreakListener: handleVerticalPlant cancelled due to placed blocks.");
         }
     }
+
+    /**
+     * Check if the block is valid for quest progression.
+     * This method checks if the block is a placed block and if it is valid for quest progression.
+     *
+     * @param block the block to check
+     * @return true if the block is valid for quest progression, false otherwise
+     */
+    private boolean isValidForQuestProgression(Block block) {
+        if (!Antiglitch.isStorePlacedBlocks()) {
+            return true;
+        }
+
+        final PersistentDataContainer pdc = new CustomBlockData(block, ODailyQuests.INSTANCE);
+        if (pdc.has(Antiglitch.PLACED_KEY)) {
+            Debugger.write("BlockBreakListener: isBlockCountable cancelled due to placed block.");
+            return false;
+        }
+
+        return true;
+    }
 }
-
-
-
