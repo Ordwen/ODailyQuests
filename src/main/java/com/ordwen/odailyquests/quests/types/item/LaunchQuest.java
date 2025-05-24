@@ -4,13 +4,19 @@ import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
 import com.ordwen.odailyquests.quests.types.shared.ItemQuest;
 import org.bukkit.Material;
-import org.bukkit.entity.EntityType;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Map;
+
 public class LaunchQuest extends ItemQuest {
+
+    private static final Map<String, String> ENTITY_TO_MATERIAL = Map.of(
+            "THROWN_EXP_BOTTLE", "EXPERIENCE_BOTTLE",
+            "FIREWORK", "FIREWORK_ROCKET"
+    );
 
     public LaunchQuest(BasicQuest base) {
         super(base);
@@ -24,22 +30,16 @@ public class LaunchQuest extends ItemQuest {
     @Override
     public boolean canProgress(Event provided, Progression progression) {
         if (provided instanceof ProjectileLaunchEvent event) {
-            final EntityType entityType = event.getEntity().getType();
-            final ItemStack requiredItem;
+            final String entityName = event.getEntity().getType().name();
+            final String materialName = ENTITY_TO_MATERIAL.getOrDefault(entityName, entityName);
 
-            switch (entityType) {
-                case ENDER_PEARL -> requiredItem = new ItemStack(Material.ENDER_PEARL);
-                case EGG -> requiredItem = new ItemStack(Material.EGG);
-                case ARROW -> requiredItem = new ItemStack(Material.ARROW);
-                case SNOWBALL -> requiredItem = new ItemStack(Material.SNOWBALL);
-                case THROWN_EXP_BOTTLE -> requiredItem = new ItemStack(Material.EXPERIENCE_BOTTLE);
-                case FIREWORK -> requiredItem = new ItemStack(Material.FIREWORK_ROCKET);
-                default -> {
-                    return false;
-                }
+            try {
+                final Material material = Material.valueOf(materialName);
+                return super.isRequiredItem(new ItemStack(material), progression);
+            } catch (IllegalArgumentException e) {
+                // Unknown material in this context, do not progress
+                return false;
             }
-
-            return super.isRequiredItem(requiredItem, progression);
         }
 
         if (provided instanceof PlayerInteractEvent interactEvent) {
@@ -51,6 +51,4 @@ public class LaunchQuest extends ItemQuest {
 
         return false;
     }
-
-
 }
