@@ -15,6 +15,7 @@ import com.ordwen.odailyquests.tools.ColorConvert;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import com.ordwen.odailyquests.configuration.functionalities.progression.ProgressBar;
 import com.ordwen.odailyquests.tools.TimeRemain;
+import com.ordwen.odailyquests.tools.BedrockTextureMapper;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -27,6 +28,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.geysermc.cumulus.form.SimpleForm;
+import org.geysermc.cumulus.util.FormImage;
 
 import java.util.*;
 
@@ -44,6 +47,8 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
     private static final Map<Integer, ItemStack> papiItems = new HashMap<>();
     /* init variables */
     private static String interfaceName;
+    private static String formName;
+    private static String formDescription;
     private static Inventory playerQuestsInventoryBase;
     private static int size;
     private static String achieved;
@@ -228,6 +233,39 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
     }
 
     /**
+     * Get player quests inventory.
+     *
+     * @return player quests form.
+     */
+    public static SimpleForm getPlayerQuestsForm(Player player) {
+        SimpleForm.Builder form = SimpleForm.builder();
+        final Map<String, PlayerQuests> activeQuests = QuestsManager.getActiveQuests();
+
+        if (!activeQuests.containsKey(player.getName())) {
+            PluginLogger.error("Impossible to find the player " + player.getName() + " in the active quests.");
+            PluginLogger.error("It can happen if the player try to open the interface while the server/plugin is reloading.");
+            PluginLogger.error("If the problem persist, please contact the developer.");
+            return null;
+        }
+
+        final PlayerQuests playerQuests = activeQuests.get(player.getName());
+
+        if (QuestLoaderUtils.isTimeToRenew(player, activeQuests)) return getPlayerQuestsForm(player);
+
+        final Map<AbstractQuest, Progression> questsMap = playerQuests.getPlayerQuests();
+
+        /* load quests */
+        for (AbstractQuest quest : questsMap.keySet()) {
+            form.button(quest.getQuestName(), FormImage.Type.PATH, BedrockTextureMapper.getTexturePath(quest.getMenuItem().getType()));
+        }
+
+        form.title(formName);
+        form.content(formDescription);
+
+        return form.build();
+    }
+
+    /**
      * Get the corresponding text for the quest status.
      *
      * @param progression the current progression of the quest.
@@ -372,6 +410,8 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
 
         /* get inventory name */
         interfaceName = ColorConvert.convertColorCode(interfaceConfig.getString(".inventory_name"));
+        formName = ColorConvert.convertColorCode(interfaceConfig.getString(".bedrock_name"));
+        formDescription = ColorConvert.convertColorCode(interfaceConfig.getString(".bedrock_description"));
 
         /* get booleans */
         isPlayerHeadEnabled = interfaceConfig.getConfigurationSection("player_head").getBoolean(".enabled");
