@@ -54,11 +54,19 @@ public class FarmingQuest extends ItemQuest {
 
             String blockType = event.getBlock().getType().name();
             if (blockType.endsWith("_PLANT")) {
+                Debugger.write("FarmingQuest:canProgress: Block is a plant: " + blockType + ".");
                 blockType = blockType.substring(0, blockType.length() - 6);
             }
 
-            Debugger.write("FarmingQuest:canProgress: Potential vertical plant. Checking for type " + event.getBlock().getType() + ".");
-            return super.isRequiredItem(new ItemStack(Material.valueOf(blockType)), progression);
+            Debugger.write("FarmingQuest:canProgress: Potential vertical plant. Checking for type " + blockType + ".");
+
+            final Material material = Material.getMaterial(blockType);
+            if (material == null  || !material.isItem()) {
+                Debugger.write("FarmingQuest:canProgress: Material " + blockType + " is not valid.");
+                return false;
+            }
+
+            return super.isRequiredItem(new ItemStack(material), progression);
         }
 
         return false;
