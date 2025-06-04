@@ -187,6 +187,11 @@ public class LoadProgressionSQL extends ProgressionLoader {
                         logExcessQuests(playerName);
                     }
                 }
+
+                if (id - 1 < QuestsPerCategory.getTotalQuestsAmount()) {
+                    PluginLogger.warn("Player " + playerName + " has less quests than expected. New quests will be drawn.");
+                    return false;
+                }
             }
         } catch (final SQLException e) {
             error(playerName, e.getMessage());
