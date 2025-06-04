@@ -75,9 +75,9 @@ public class Update230to300 extends ConfigUpdater {
             final int mediumAmount = config.getInt("medium_quests_amount");
             final int hardAmount = config.getInt("hard_quests_amount");
 
-            setDefaultConfigItem("quests_per_category.easy", easyAmount, config, configFile);
-            setDefaultConfigItem("quests_per_category.medium", mediumAmount, config, configFile);
-            setDefaultConfigItem("quests_per_category.hard", hardAmount, config, configFile);
+            if (easyAmount > 0) setDefaultConfigItem("quests_per_category.easy", easyAmount, config, configFile);
+            if (mediumAmount > 0) setDefaultConfigItem("quests_per_category.medium", mediumAmount, config, configFile);
+            if (hardAmount > 0) setDefaultConfigItem("quests_per_category.hard", hardAmount, config, configFile);
         }
 
         removeConfigItem("quests_mode", config, configFile);

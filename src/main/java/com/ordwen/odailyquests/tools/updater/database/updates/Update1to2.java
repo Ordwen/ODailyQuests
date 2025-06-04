@@ -9,7 +9,8 @@ import com.ordwen.odailyquests.tools.updater.database.DatabaseUpdater;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
-public class Update1to2 extends DatabaseUpdater {
+public class
+Update1to2 extends DatabaseUpdater {
 
     public Update1to2(ODailyQuests plugin) {
         super(plugin);

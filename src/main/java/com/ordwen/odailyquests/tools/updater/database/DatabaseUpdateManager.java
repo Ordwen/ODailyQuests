@@ -2,6 +2,7 @@ package com.ordwen.odailyquests.tools.updater.database;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.tools.PluginLogger;
+import com.ordwen.odailyquests.tools.updater.database.updates.Update0to1;
 import com.ordwen.odailyquests.tools.updater.database.updates.Update1to2;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -16,12 +17,13 @@ public class DatabaseUpdateManager {
     public DatabaseUpdateManager(ODailyQuests plugin) {
         this.plugin = plugin;
 
+        updaters.put("1", new Update0to1(plugin));
         updaters.put("2", new Update1to2(plugin));
     }
 
     public void runUpdates() {
         final FileConfiguration configFile = plugin.getFilesManager().getConfigurationFile().getConfig();
-        final String currentVersion = configFile.getString("database_version", "1");
+        final String currentVersion = configFile.getString("database_version", "0");
 
         for (Map.Entry<String, IDatabaseUpdater> entry : updaters.entrySet()) {
             final String updateVersion = entry.getKey();
