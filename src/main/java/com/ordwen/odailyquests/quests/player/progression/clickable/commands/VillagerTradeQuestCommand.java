@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.quests.player.progression.clickable.commands;
 
+import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.events.antiglitch.OpenedRecipes;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.player.progression.clickable.QuestCommand;
@@ -20,16 +21,31 @@ public class VillagerTradeQuestCommand extends QuestCommand<VillagerQuest> {
      */
     @Override
     public void execute() {
-        if (!quest.isAllowedToProgress(context.getPlayer(), quest)) return;
+        Debugger.write("Executing VillagerTradeQuestCommand for quest: " + quest.getQuestName());
+
+        if (!quest.isAllowedToProgress(context.getPlayer(), quest)) {
+            Debugger.write("Player " + context.getPlayer().getName() + " is not allowed to progress the quest: " + quest.getQuestName());
+            return;
+        }
 
         final MerchantRecipe selectedRecipe = context.getSelectedRecipe();
-        if (selectedRecipe == null) return;
+        if (selectedRecipe == null) {
+            Debugger.write("No selected recipe for villager trade quest: " + quest.getQuestName());
+            return;
+        }
 
-        if (!isValidTrade(selectedRecipe)) return;
+        if (!isValidTrade(selectedRecipe)) {
+            Debugger.write(selectedRecipe + " is not a valid villager trade quest");
+            return;
+        }
 
         final Villager villager = context.getVillager();
-        if (villager != null && !isValidVillager(villager)) return;
+        if (villager != null && !isValidVillager(villager)) {
+            Debugger.write("Villager " + villager.getName() + " does not match the quest requirements for profession or level.");
+            return;
+        }
 
+        Debugger.write("Villager trade quest is valid for player: " + context.getPlayer().getName() + ", proceeding with quest action.");
         quest.actionQuest(context.getPlayer(), progression, quest, context.getQuantity());
     }
 
@@ -37,7 +53,7 @@ public class VillagerTradeQuestCommand extends QuestCommand<VillagerQuest> {
      * Check if the trade is valid based on required items and usage limit.
      */
     private boolean isValidTrade(MerchantRecipe selectedRecipe) {
-        if (quest.getRequiredItems() != null && !isValidRequiredItem(selectedRecipe)) {
+        if (!quest.getRequiredItems().isEmpty() && !isValidRequiredItem(selectedRecipe)) {
             return false;
         }
 

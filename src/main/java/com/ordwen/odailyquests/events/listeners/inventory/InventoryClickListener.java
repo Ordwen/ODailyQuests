@@ -53,7 +53,9 @@ public class InventoryClickListener extends ClickableChecker implements Listener
         if (handleCustomFurnaceResult(event, action, clickedItem, player)) return;
 
         final QuestContext.Builder contextBuilder = new QuestContext.Builder(player).clickedItem(clickedItem);
-        if (handleVillagerTrading(event, clickedItem, contextBuilder)) return;
+        if (handleVillagerTrading(event, clickedItem, contextBuilder)) {
+            return;
+        }
 
         // do action related to the clicked item
         if (isPlayerInterface) {
@@ -90,12 +92,10 @@ public class InventoryClickListener extends ClickableChecker implements Listener
      */
     private boolean handleVillagerTrading(InventoryClickEvent event, ItemStack clickedItem, QuestContext.Builder contextBuilder) {
         if (event.getInventory().getType() == InventoryType.MERCHANT && event.getSlotType() == InventoryType.SlotType.RESULT) {
-
             final MerchantInventory merchantInventory = (MerchantInventory) event.getClickedInventory();
             if (merchantInventory == null) return false;
 
             if (event.getClickedInventory().getHolder() instanceof Villager villager) {
-
                 int amount = getTradeAmount(event, clickedItem, merchantInventory);
                 if (amount == 0) return true;
 

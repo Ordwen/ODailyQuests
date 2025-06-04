@@ -28,7 +28,6 @@ public abstract class ClickableChecker extends PlayerProgressor {
         if (isWorldDisabled(player)) return;
 
         final Map<AbstractQuest, Progression> playerQuests = ODailyQuestsAPI.getPlayerQuests(player.getName()).getQuests();
-
         for (Map.Entry<AbstractQuest, Progression> entry : playerQuests.entrySet()) {
             final AbstractQuest abstractQuest = entry.getKey();
             final Progression progression = entry.getValue();
