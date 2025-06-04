@@ -54,7 +54,7 @@ public class SaveProgressionSQL {
         final Map<String, Integer> totalAchievedByCategory = playerQuests.getTotalAchievedQuestsByCategory();
 
         if (isServerStopping) {
-            Debugger.write("Saving player " + playerName + " progression (server is stopping).");
+            Debugger.write("Saving player " + playerName + " progression (server is stopping or migration is in progress).");
             saveDatas(playerName, playerUuid, timestamp, achievedQuests, totalAchievedQuests, quests, totalAchievedByCategory);
         } else {
             ODailyQuests.morePaperLib.scheduling().asyncScheduler().run(() -> {
