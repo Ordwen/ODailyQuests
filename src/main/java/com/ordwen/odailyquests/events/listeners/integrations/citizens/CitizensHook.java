@@ -22,7 +22,7 @@ public class CitizensHook implements Listener {
 
     @EventHandler
     public void onNPCClickEvent(NPCRightClickEvent event) {
-        final String npcName = event.getNPC().getName();
+        final String npcName = event.getNPC().getRawName();
         final Player player = event.getClicker();
 
         /* Player interface */

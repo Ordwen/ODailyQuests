@@ -4,7 +4,6 @@ import com.ordwen.odailyquests.configuration.ConfigFactory;
 import com.ordwen.odailyquests.configuration.IConfigurable;
 import com.ordwen.odailyquests.files.ConfigurationFile;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
-import com.ordwen.odailyquests.tools.TextFormatter;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -31,13 +30,13 @@ public class NPCNames implements IConfigurable {
             return;
         }
 
-        final String playerNpc = section.getString("playerNPCName");
-        if (playerNpc != null) playerNPCName = TextFormatter.format(playerNpc);
+        final String playerNpc = section.getString("player");
+        if (playerNpc != null) playerNPCName = playerNpc;
 
         categoryNPCNames.clear();
         for (String categoryName : CategoriesLoader.getAllCategories().keySet()) {
             final String categoryNpc = section.getString(categoryName);
-            if (categoryNpc != null) categoryNPCNames.put(TextFormatter.format(categoryNpc), categoryName);
+            if (categoryNpc != null) categoryNPCNames.put(categoryNpc, categoryName);
         }
     }
 
