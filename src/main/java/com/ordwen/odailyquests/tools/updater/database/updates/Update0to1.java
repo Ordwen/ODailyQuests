@@ -198,6 +198,9 @@ public class Update0to1 extends DatabaseUpdater {
             PluginLogger.error("An error occurred while saving the converted YAML data.");
             PluginLogger.error(e.getMessage());
         }
+
+        Debugger.write("YAML data conversion completed successfully.");
+        PluginLogger.warn("YAML data conversion completed successfully.");
     }
 
     private void updateSQLPlayerData(String playerName, String playerUuid, long timestamp, int achievedQuests, int totalAchievedQuests) {
