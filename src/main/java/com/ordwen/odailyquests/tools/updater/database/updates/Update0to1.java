@@ -57,6 +57,14 @@ public class Update0to1 extends DatabaseUpdater {
         Debugger.write("Starting SQL data conversion...");
         final StorageMode currentMode = Database.getMode();
 
+        try {
+            Class.forName("org.h2.Driver");
+            Debugger.write("H2 driver loaded successfully.");
+        } catch (ClassNotFoundException e) {
+            PluginLogger.error("Failed to load H2 driver.");
+            PluginLogger.error(e.getMessage());
+        }
+
         // get the count of players in the old table
         int oldPlayerCount = 0;
         try (final Connection connection = (currentMode == StorageMode.SQLITE) ? DriverManager.getConnection("jdbc:h2:./plugins/ODailyQuests/database", "odq", "") : databaseManager.getSqlManager().getConnection(); final PreparedStatement statement = connection.prepareStatement(COUNT_PLAYER_OLD)) {
@@ -107,7 +115,7 @@ public class Update0to1 extends DatabaseUpdater {
 
         // get the count of players in the new table
         int newPlayerCount = 0;
-        try (final Connection connection = (currentMode == StorageMode.SQLITE) ? DriverManager.getConnection("jdbc:h2:./plugins/ODailyQuests/database", "odq", "") : databaseManager.getSqlManager().getConnection(); final PreparedStatement statement = connection.prepareStatement(COUNT_PLAYER_NEW)) {
+        try (final Connection connection = databaseManager.getSqlManager().getConnection(); final PreparedStatement statement = connection.prepareStatement(COUNT_PLAYER_NEW)) {
             try (final ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     newPlayerCount = resultSet.getInt(1);
