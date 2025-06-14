@@ -5,7 +5,6 @@ import com.ordwen.odailyquests.api.commands.admin.AdminCommandRegistry;
 import com.ordwen.odailyquests.api.commands.admin.AdminCommand;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.enums.QuestsPermissions;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -31,7 +30,7 @@ public class AdminCommands implements CommandExecutor {
         if (args.length == 1) {
             if (args[0].equals("reload")) {
                 plugin.getReloadService().reload();
-                sender.sendMessage(ChatColor.GREEN + "Plugin successfully reloaded!");
+                sender.sendMessage(QuestsMessages.PLUGIN_RELOADED.toString());
             } else help(sender);
         } else if (args.length >= 2) {
             final AdminCommand handler = adminCommandRegistry.getCommandHandler(args[0]);

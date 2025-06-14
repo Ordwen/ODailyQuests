@@ -4,7 +4,6 @@ import com.ordwen.odailyquests.commands.interfaces.InterfacesManager;
 import com.ordwen.odailyquests.configuration.integrations.NPCNames;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -43,7 +42,7 @@ public class CitizensHook implements Listener {
         if (player.hasPermission(PERMISSION_PREFIX + category)) {
             final Inventory inventory = interfacesManager.getQuestsInterfaces().getInterfaceFirstPage(category, player);
             if (inventory == null) {
-                player.sendMessage(ChatColor.RED + "A configuration error prevents the interface from being displayed. Please inform an administrator.");
+                player.sendMessage(QuestsMessages.CONFIGURATION_ERROR.toString());
                 return;
             }
 

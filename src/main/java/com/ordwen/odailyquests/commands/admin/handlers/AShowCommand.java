@@ -5,7 +5,6 @@ import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsI
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.enums.QuestsPermissions;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -43,8 +42,8 @@ public class AShowCommand extends AdminCommandBase {
 
             final Inventory inventory = playerQuestsInterface.getPlayerQuestsInterface(target);
             if (inventory == null) {
-                player.sendMessage(ChatColor.RED + "An error occurred while opening the inventory.");
-                player.sendMessage(ChatColor.RED + "Please check the console for more information.");
+                player.sendMessage(QuestsMessages.ERROR_INVENTORY.toString());
+                player.sendMessage(QuestsMessages.CHECK_CONSOLE.toString());
                 return;
             }
 

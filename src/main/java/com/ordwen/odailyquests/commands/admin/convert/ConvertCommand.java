@@ -1,10 +1,10 @@
 package com.ordwen.odailyquests.commands.admin.convert;
 
 import com.ordwen.odailyquests.api.commands.admin.AdminCommandBase;
+import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.enums.QuestsPermissions;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import java.util.Collections;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,12 +26,11 @@ public class ConvertCommand extends AdminCommandBase {
     public void execute(CommandSender sender, String[] args) {
         if (args.length == 3) {
             if (!this.convert(args[1], args[2])) {
-                sender.sendMessage(ChatColor.RED + "Conversion failed! Please check the console for more information.");
+                sender.sendMessage(QuestsMessages.CONVERSION_FAILED.toString());
             } else {
-                sender.sendMessage(ChatColor.GREEN + "Conversion successful!");
-                sender.sendMessage(ChatColor.GREEN + "Please select the new storage mode in config file and restart the server to apply changes.");
+                sender.sendMessage(QuestsMessages.CONVERSION_SUCCESS.toString());
             }
-        } else sender.sendMessage(ChatColor.RED + "Usage: /dqa convert <old format> <new format>");
+        } else sender.sendMessage(QuestsMessages.ADMIN_HELP.toString());
     }
 
     /**
@@ -42,7 +41,6 @@ public class ConvertCommand extends AdminCommandBase {
      * @return true if the conversion was successful, false otherwise.
      */
     public boolean convert(String oldFormat, String newFormat) {
-
         if (oldFormat.equalsIgnoreCase(newFormat)) {
             PluginLogger.error("The old and new format are the same.");
             return false;

@@ -2,9 +2,9 @@ package com.ordwen.odailyquests.commands.player.handlers;
 
 import com.ordwen.odailyquests.api.commands.player.PlayerCommandBase;
 import com.ordwen.odailyquests.commands.interfaces.QuestsInterfaces;
+import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.enums.QuestsPermissions;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -62,7 +62,7 @@ public class PShowCommand extends PlayerCommandBase {
 
         final Inventory inventory = questsInterfaces.getInterfaceFirstPage(category, player);
         if (inventory == null) {
-            player.sendMessage(ChatColor.RED + "A configuration error prevents the interface from being displayed. Please inform an administrator.");
+            player.sendMessage(QuestsMessages.CONFIGURATION_ERROR.toString());
             return;
         }
 

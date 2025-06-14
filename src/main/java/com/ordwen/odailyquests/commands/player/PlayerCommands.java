@@ -4,8 +4,8 @@ import com.ordwen.odailyquests.api.commands.player.PlayerCommand;
 import com.ordwen.odailyquests.api.commands.player.PlayerCommandRegistry;
 import com.ordwen.odailyquests.api.commands.player.PlayerMessages;
 import com.ordwen.odailyquests.commands.interfaces.InterfacesManager;
+import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.enums.QuestsPermissions;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -61,8 +61,8 @@ public class PlayerCommands extends PlayerMessages implements CommandExecutor {
     private void openInventory(Player player) {
         final Inventory inventory = interfacesManager.getPlayerQuestsInterface().getPlayerQuestsInterface(player);
         if (inventory == null) {
-            player.sendMessage(ChatColor.RED + "Impossible to open the quests interface. Is the plugin still loading?");
-            player.sendMessage(ChatColor.RED + "If the problem persists, please contact the server administrator.");
+            player.sendMessage(QuestsMessages.IMPOSSIBLE_TO_OPEN_INVENTORY.toString());
+            player.sendMessage(QuestsMessages.CONTACT_ADMIN.toString());
             return;
         }
 

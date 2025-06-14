@@ -35,9 +35,10 @@ public abstract class ConfigUpdater implements IConfigUpdater {
      * @param value             default value of the parameter to add
      * @param fileConfiguration file configuration where add the parameter
      * @param file              file to save the configuration
+     * @param replace           whether to replace the parameter if it already exists
      */
-    protected void setDefaultConfigItem(String path, Object value, FileConfiguration fileConfiguration, File file) {
-        if (fileConfiguration.contains(path)) {
+    protected void setDefaultConfigItem(String path, Object value, FileConfiguration fileConfiguration, File file, boolean replace) {
+        if (fileConfiguration.contains(path) && !replace) {
             return;
         }
 
@@ -45,7 +46,11 @@ public abstract class ConfigUpdater implements IConfigUpdater {
 
         try {
             fileConfiguration.save(file);
-            PluginLogger.warn("Parameter \"" + path + "\" was missing in one of your configuration files. It has been added automatically.");
+            if (replace) {
+                PluginLogger.warn("Parameter \"" + path + "\" was replaced in one of your configuration files.");
+            } else {
+                PluginLogger.warn("Parameter \"" + path + "\" was missing in one of your configuration files. It has been added automatically.");
+            }
         } catch (IOException e) {
             PluginLogger.error(SAVE_ERROR);
         }

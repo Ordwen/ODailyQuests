@@ -24,6 +24,7 @@ public enum QuestsMessages {
             &e/dqa reroll <player> <index> &a: draw a new quest for a player, at a specific index.
             &e/dqa show <player> &a: see quests of a player
             &e/dqa open <player> &a: force a player to open the quest interface
+            &e/dqa convert <old format> <new format> &a: convert the storage format of the plugin.
             """),
 
     NO_PERMISSION("no_permission", "&cYou don't have permission."),
@@ -79,6 +80,15 @@ public enum QuestsMessages {
 
     CANNOT_COMPLETE_QUEST_WITH_OFF_HAND("cannot_complete_quest_with_off_hand", "&cAll required items must be in your inventory, not in your off hand."),
     CANNOT_REROLL_IF_ACHIEVED("cannot_reroll_if_achieved", "&cYou can't reroll a quest that you have already achieved!"),
+
+    PLUGIN_RELOADED("plugin_reloaded", "&aThe plugin has been reloaded successfully!"),
+    ERROR_INVENTORY("error_inventory", "&cAn error occurred while opening the inventory."),
+    CONVERSION_FAILED("conversion_failed", "&cConversion failed! Please check the console for more information."),
+    CONVERSION_SUCCESS("conversion_success", "&aConversion successful! Please select the new storage mode in the config file and restart the server to apply changes."),
+    CHECK_CONSOLE("check_console", "&cPlease check the console for more information."),
+    IMPOSSIBLE_TO_OPEN_INVENTORY("impossible_to_open_inventory", "&cImpossible to open the quests interface. Is the plugin still loading?"),
+    CONTACT_ADMIN("contact_admin", "&cIf the problem persists, please contact the server administrator."),
+    CONFIGURATION_ERROR("configuration_error", "&cA configuration error prevents the interface from being displayed. Please inform an administrator.")
     ;
 
     private final String path;

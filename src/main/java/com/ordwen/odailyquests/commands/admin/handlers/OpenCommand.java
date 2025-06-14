@@ -2,6 +2,7 @@ package com.ordwen.odailyquests.commands.admin.handlers;
 
 import com.ordwen.odailyquests.api.commands.admin.AdminCommandBase;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
+import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.enums.QuestsPermissions;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -37,8 +38,8 @@ public class OpenCommand extends AdminCommandBase {
             if (target != null) {
                 final Inventory inventory = playerQuestsInterface.getPlayerQuestsInterface(target);
                 if (inventory == null) {
-                    sender.sendMessage(ChatColor.RED + "An error occurred while opening the inventory.");
-                    sender.sendMessage(ChatColor.RED + "Please check the console for more information.");
+                    sender.sendMessage(QuestsMessages.ERROR_INVENTORY.toString());
+                    sender.sendMessage(QuestsMessages.CHECK_CONSOLE.toString());
                     return;
                 }
                 target.openInventory(inventory);
