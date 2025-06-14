@@ -23,9 +23,7 @@ import com.ordwen.odailyquests.configuration.essentials.TimestampMode;
 import com.ordwen.odailyquests.events.EventsManager;
 import com.ordwen.odailyquests.files.*;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
-import com.ordwen.odailyquests.quests.player.progression.listeners.AllCategoryQuestsCompletedListener;
-import com.ordwen.odailyquests.quests.player.progression.listeners.AllQuestsCompletedListener;
-import com.ordwen.odailyquests.quests.player.progression.listeners.QuestCompletedListener;
+import com.ordwen.odailyquests.quests.player.progression.listeners.*;
 import com.ordwen.odailyquests.quests.player.progression.storage.DatabaseManager;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.types.custom.crate.CrateOpenQuest;
@@ -148,6 +146,8 @@ public final class ODailyQuests extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new QuestCompletedListener(), this);
         getServer().getPluginManager().registerEvents(new AllQuestsCompletedListener(), this);
         getServer().getPluginManager().registerEvents(new AllCategoryQuestsCompletedListener(), this);
+        getServer().getPluginManager().registerEvents(new TotalRewardReachedListener(), this);
+        getServer().getPluginManager().registerEvents(new CategoryTotalRewardReachedListener(), this);
 
         /* Register server restart related events */
         restartHandler = new RestartHandler(this);

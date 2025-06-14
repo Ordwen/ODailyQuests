@@ -33,7 +33,7 @@ public class QuestsLoader extends QuestItemGetter {
      * @return the reward of the quest.
      */
     private Reward createReward(ConfigurationSection questSection, String fileName, String questIndex) {
-        if (!questSection.isConfigurationSection(".reward")) return new Reward(RewardType.NONE, 0);
+        if (!questSection.isConfigurationSection(".reward")) return new Reward(RewardType.NONE, 0, null);
         final ConfigurationSection rewardSection = questSection.getConfigurationSection(".reward");
 
         return rewardLoader.getRewardFromSection(rewardSection, fileName, questIndex);

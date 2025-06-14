@@ -9,13 +9,15 @@ import com.ordwen.odailyquests.rewards.RewardLoader;
 import com.ordwen.odailyquests.rewards.RewardManager;
 import com.ordwen.odailyquests.rewards.RewardType;
 import com.ordwen.odailyquests.tools.PluginLogger;
+import com.ordwen.odailyquests.tools.TextFormatter;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-public class GlobalReward extends RewardLoader implements IConfigurable {
+public class GlobalReward implements IConfigurable {
 
     private final ConfigurationFile configurationFile;
+    private final RewardLoader rewardLoader = new RewardLoader();
 
     public GlobalReward(ConfigurationFile configurationFile) {
         this.configurationFile = configurationFile;
@@ -37,14 +39,15 @@ public class GlobalReward extends RewardLoader implements IConfigurable {
 
         if (isEnabled) {
             final RewardType rewardType = RewardType.valueOf(globalRewardSection.getString(".reward_type"));
+            final String message = TextFormatter.format(globalRewardSection.getString(".message"));
 
             if (rewardType == RewardType.COMMAND) {
-                reward = new Reward(rewardType, globalRewardSection.getStringList(".commands"));
+                reward = new Reward(rewardType, globalRewardSection.getStringList(".commands"), message);
             } else {
-                reward = new Reward(rewardType, globalRewardSection.getInt(".amount"));
+                reward = new Reward(rewardType, globalRewardSection.getInt(".amount"), message);
             }
 
-            reward = new RewardLoader().getRewardFromSection(globalRewardSection, "config.yml", null);
+            reward = rewardLoader.getRewardFromSection(globalRewardSection, "config.yml", null);
 
             PluginLogger.fine("Global reward successfully loaded.");
         } else PluginLogger.fine("Global reward is disabled.");
@@ -61,7 +64,7 @@ public class GlobalReward extends RewardLoader implements IConfigurable {
             final String msg = QuestsMessages.ALL_QUESTS_ACHIEVED.getMessage(playerName);
             if (msg != null) player.sendMessage(msg);
 
-            RewardManager.sendQuestReward(Bukkit.getPlayer(playerName), reward);
+            RewardManager.sendReward(Bukkit.getPlayer(playerName), reward);
         }
     }
 

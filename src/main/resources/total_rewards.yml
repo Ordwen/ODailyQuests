@@ -1,0 +1,73 @@
+# ========================================================
+# TOTAL REWARDS CONFIGURATION
+# This configuration file defines rewards for players
+# based on the total number of quests they have completed.
+# It includes both global total rewards and category-specific
+# total rewards.
+# ========================================================
+enabled: false # Set to true to enable total rewards functionality
+
+# ========================================================
+# GLOBAL TOTAL QUEST REWARDS
+# Rewards granted when a player completes a total number
+# of quests, regardless of category.
+# ========================================================
+global_total_rewards:
+  50:
+    reward_type: COMMAND
+    message: "&aCongrats %player%! You have completed 50 quests and earned a reward!"
+    commands:
+      - "eco give %player% 1000"
+  100:
+    reward_type: COMMAND
+    message: "&aCongrats %player%! You have completed 100 quests and earned a reward!"
+    commands:
+      - "eco give %player% 2500"
+  200:
+    reward_type: COMMAND
+    message: "&aCongrats %player%! You have completed 200 quests and earned a reward!"
+    commands:
+      - "eco give %player% 5000"
+
+# ========================================================
+# CATEGORY-SPECIFIC TOTAL QUEST REWARDS
+# Rewards granted when a player completes a total number
+# of quests within a specific category.
+# ========================================================
+category_total_rewards:
+
+  easy:
+    10:
+      reward_type: COMMAND
+      message: "&aCongrats %player%! You have completed 10 quests in category easy and earned a reward!"
+      commands:
+        - "eco give %player% 500"
+    50:
+      reward_type: COMMAND
+      message: "&aCongrats %player%! You have completed 50 quests in category easy and earned a reward!"
+      commands:
+        - "eco give %player% 1000"
+
+  medium:
+    10:
+      reward_type: COMMAND
+      message: "&aCongrats %player%! You have completed 10 quests in category medium and earned a reward!"
+      commands:
+        - "eco give %player% 1000"
+    50:
+      reward_type: COMMAND
+      message: "&aCongrats %player%! You have completed 50 quests in category medium and earned a reward!"
+      commands:
+        - "eco give %player% 2000"
+
+  hard:
+    10:
+      reward_type: COMMAND
+      message: "&aCongrats %player%! You have completed 10 quests in category hard and earned a reward!"
+      commands:
+        - "eco give %player% 2000"
+    50:
+      reward_type: COMMAND
+      message: "&aCongrats %player%! You have completed 50 quests in category hard and earned a reward!"
+      commands:
+        - "eco give %player% 4000"

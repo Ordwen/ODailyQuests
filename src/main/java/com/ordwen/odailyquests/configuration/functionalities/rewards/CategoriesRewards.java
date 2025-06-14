@@ -65,7 +65,7 @@ public class CategoriesRewards implements IConfigurable {
                 player.sendMessage(msg.replace("%category%", category));
             }
 
-            RewardManager.sendQuestReward(player, reward);
+            RewardManager.sendReward(player, reward);
         } else {
             PluginLogger.error("No reward found for category " + category);
         }

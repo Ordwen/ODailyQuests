@@ -8,15 +8,17 @@ public class Reward {
     final List<String> commands;
     final String currencyLabel;
     final String currencyDisplayName;
+    final String message;
     double amount;
 
     /**
      * Constructor for a reward with a command.
      * @param commands the reward-command.
      */
-    public Reward(RewardType rewardType, List<String> commands) {
+    public Reward(RewardType rewardType, List<String> commands, String message) {
         this.rewardType = rewardType;
         this.commands = commands;
+        this.message = message;
 
         this.currencyLabel = null;
         this.currencyDisplayName = null;
@@ -26,9 +28,10 @@ public class Reward {
      * Constructor for other reward.
      * @param amount the reward amount.
      */
-    public Reward(RewardType rewardType, double amount) {
+    public Reward(RewardType rewardType, double amount, String message) {
         this.rewardType = rewardType;
         this.amount = amount;
+        this.message = message;
 
         this.commands = null;
         this.currencyLabel = null;
@@ -41,11 +44,12 @@ public class Reward {
      * @param currencyDisplayName the name of the currency that will be displayed to the player.
      * @param amount the reward amount.
      */
-    public Reward(RewardType rewardType, String currencyLabel, String currencyDisplayName, int amount) {
+    public Reward(RewardType rewardType, String currencyLabel, String currencyDisplayName, int amount, String message) {
         this.rewardType = rewardType;
         this.currencyLabel = currencyLabel;
         this.currencyDisplayName = currencyDisplayName;
         this.amount = amount;
+        this.message = message;
 
         this.commands = null;
     }
@@ -88,5 +92,13 @@ public class Reward {
      */
     public RewardType getRewardType() {
         return this.rewardType;
+    }
+
+    /**
+     * Get the message of a reward.
+     * @return the message to send to the player.
+     */
+    public String getMessage() {
+        return this.message;
     }
 }

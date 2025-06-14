@@ -27,7 +27,6 @@ public class RewardManager {
     private static final String REWARD_AMOUNT = "%rewardAmount%";
     
     public static void sendAllRewardItems(String questName, Player player, Reward reward) {
-
         Debugger.write("RewardManager: sendAllRewardItems summoned by " + player.getName() + " for " + questName + ".");
 
         final String msg = QuestsMessages.QUEST_ACHIEVED.getMessage(player);
@@ -35,7 +34,7 @@ public class RewardManager {
 
         Title.sendTitle(player, questName);
         ActionBar.sendActionbar(player, questName);
-        sendQuestReward(player, reward);
+        sendReward(player, reward);
     }
 
     /**
@@ -44,7 +43,7 @@ public class RewardManager {
      * @param player to give the reward.
      * @param reward     quest reward.
      */
-    public static void sendQuestReward(Player player, Reward reward) {
+    public static void sendReward(Player player, Reward reward) {
         if (reward.getRewardType() == RewardType.NONE) return;
 
         Debugger.write("RewardManager: sendQuestReward summoned by " + player.getName() + " for " + reward.getRewardType());
@@ -129,6 +128,10 @@ public class RewardManager {
                                 .replace(REWARD_AMOUNT, String.valueOf(reward.getRewardAmount()))
                                 .replace("%currencyName%", TextFormatter.format(reward.getRewardCurrencyDisplayName())));
             }
+        }
+
+        if (reward.getMessage() != null && !reward.getMessage().isEmpty()) {
+            player.sendMessage(TextFormatter.format(reward.getMessage().replace("%player%", player.getName())));
         }
     }
 

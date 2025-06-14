@@ -2,10 +2,13 @@ package com.ordwen.odailyquests.quests.player;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.api.events.AllCategoryQuestsCompletedEvent;
+import com.ordwen.odailyquests.api.events.CategoryTotalRewardReachedEvent;
+import com.ordwen.odailyquests.api.events.TotalRewardReachedEvent;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.essentials.QuestsPerCategory;
 import com.ordwen.odailyquests.api.events.AllQuestsCompletedEvent;
 import com.ordwen.odailyquests.configuration.essentials.RerollNotAchieved;
+import com.ordwen.odailyquests.configuration.functionalities.rewards.TotalRewards;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.categories.Category;
@@ -115,6 +118,18 @@ public class PlayerQuests {
             Debugger.write("PlayerQuests: AllQuestsCompletedEvent is called.");
 
             final AllQuestsCompletedEvent event = new AllQuestsCompletedEvent(player);
+            ODailyQuests.INSTANCE.getServer().getPluginManager().callEvent(event);
+        }
+
+        if (TotalRewards.isGlobalStep(this.totalAchievedQuests)) {
+            Debugger.write("PlayerQuests: TotalRewardReachedEvent is called for " + player.getName() + " with total achieved quests: " + this.totalAchievedQuests + ".");
+            final TotalRewardReachedEvent event = new TotalRewardReachedEvent(player, this.totalAchievedQuests);
+            ODailyQuests.INSTANCE.getServer().getPluginManager().callEvent(event);
+        }
+
+        if (TotalRewards.isCategoryStep(category, this.totalAchievedQuestsByCategory.get(category))) {
+            Debugger.write("PlayerQuests: CategoryTotalRewardReachedEvent is called for " + player.getName() + " in category " + category + " with total achieved quests: " + this.totalAchievedQuestsByCategory.get(category) + ".");
+            final CategoryTotalRewardReachedEvent event = new CategoryTotalRewardReachedEvent(player, category, this.totalAchievedQuestsByCategory.get(category));
             ODailyQuests.INSTANCE.getServer().getPluginManager().callEvent(event);
         }
     }
@@ -250,7 +265,8 @@ public class PlayerQuests {
      */
     public void addTotalCategoryAchievedQuests(String category, int amount) {
         if (this.totalAchievedQuestsByCategory.containsKey(category)) {
-            this.totalAchievedQuestsByCategory.put(category, this.totalAchievedQuestsByCategory.get(category) + amount);
+            final int newAmount = this.totalAchievedQuestsByCategory.get(category) + amount;
+            this.totalAchievedQuestsByCategory.put(category, newAmount);
         } else {
             this.totalAchievedQuestsByCategory.put(category, amount);
         }

@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.rewards;
 
 import com.ordwen.odailyquests.tools.PluginLogger;
+import com.ordwen.odailyquests.tools.TextFormatter;
 import org.bukkit.configuration.ConfigurationSection;
 
 public class RewardLoader {
@@ -21,9 +22,12 @@ public class RewardLoader {
             rewardType = RewardType.NONE;
         }
 
+        final String message = TextFormatter.format(section.getString(".message"));
+
+
         return switch (rewardType) {
-            case NONE -> new Reward(RewardType.NONE, 0);
-            case COMMAND -> new Reward(RewardType.COMMAND, section.getStringList(".commands"));
+            case NONE -> new Reward(RewardType.NONE, 0, message);
+            case COMMAND -> new Reward(RewardType.COMMAND, section.getStringList(".commands"), message);
 
             case COINS_ENGINE -> {
                 final String currencyLabel = section.getString(".currency_label");
@@ -31,13 +35,13 @@ public class RewardLoader {
 
                 if (currencyLabel == null || currencyDisplayName == null) {
                     PluginLogger.error("Currency label or currency display name is missing in the configuration file.");
-                    yield new Reward(RewardType.NONE, 0);
+                    yield new Reward(RewardType.NONE, 0, message);
                 }
 
-                yield new Reward(RewardType.COINS_ENGINE, currencyLabel, currencyDisplayName, section.getInt(".amount"));
+                yield new Reward(RewardType.COINS_ENGINE, currencyLabel, currencyDisplayName, section.getInt(".amount"), message);
             }
 
-            default -> new Reward(rewardType, section.getDouble(".amount"));
+            default -> new Reward(rewardType, section.getDouble(".amount"), message);
         };
     }
 

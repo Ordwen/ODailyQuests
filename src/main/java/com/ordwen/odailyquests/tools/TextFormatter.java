@@ -39,6 +39,7 @@ public class TextFormatter {
      * @param message message to format
      */
     public static String format(String message) {
+        if (message == null) return null;
         return replaceAll(message);
     }
 

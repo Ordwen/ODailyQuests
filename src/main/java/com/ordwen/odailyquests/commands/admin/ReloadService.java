@@ -69,7 +69,7 @@ public class ReloadService {
             plugin.getFilesManager().load();
 
             /* load configurations */
-            ConfigFactory.registerConfigs(plugin.getFilesManager().getConfigurationFile());
+            ConfigFactory.registerConfigs(plugin.getFilesManager());
 
             /* load database */
             plugin.getDatabaseManager().load();
