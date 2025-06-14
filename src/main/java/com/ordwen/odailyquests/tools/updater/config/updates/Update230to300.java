@@ -33,15 +33,15 @@ public class Update230to300 extends ConfigUpdater {
             }
         }
 
-        setDefaultConfigItem("join_message_delay", 1.0, config, configFile);
-        setDefaultConfigItem("use_nexo", false, config, configFile);
-        setDefaultConfigItem("renew_time", "00:00", config, configFile);
-        setDefaultConfigItem("check_for_update", true, config, configFile);
-        setDefaultConfigItem("player_data_load_delay", 0.5, config, configFile);
-        setDefaultConfigItem("use_rosestacker", false, config, configFile);
+        setDefaultConfigItem("join_message_delay", 1.0, config, configFile, false);
+        setDefaultConfigItem("use_nexo", false, config, configFile, false);
+        setDefaultConfigItem("renew_time", "00:00", config, configFile, false);
+        setDefaultConfigItem("check_for_update", true, config, configFile, false);
+        setDefaultConfigItem("player_data_load_delay", 0.5, config, configFile, false);
+        setDefaultConfigItem("use_rosestacker", false, config, configFile, false);
 
         // as prefix is now used, set it empty for servers that already customized their messages
-        setDefaultConfigItem("prefix", "", config, configFile);
+        setDefaultConfigItem("prefix", "", config, configFile, true);
 
         replaceTemporalityMode();
         replaceQuestsAmount();
@@ -55,9 +55,9 @@ public class Update230to300 extends ConfigUpdater {
     private void replaceTemporalityMode() {
         final int currentMode = config.getInt(TEMPORALITY_MODE);
         switch (currentMode) {
-            case 2 -> setDefaultConfigItem(RENEW_INTERVAL, "7d", config, configFile);
-            case 3 -> setDefaultConfigItem(RENEW_INTERVAL, "30d", config, configFile);
-            default -> setDefaultConfigItem(RENEW_INTERVAL, "1d", config, configFile);
+            case 2 -> setDefaultConfigItem(RENEW_INTERVAL, "7d", config, configFile, false);
+            case 3 -> setDefaultConfigItem(RENEW_INTERVAL, "30d", config, configFile, false);
+            default -> setDefaultConfigItem(RENEW_INTERVAL, "1d", config, configFile, false);
         }
 
         removeConfigItem(TEMPORALITY_MODE, config, configFile);
@@ -69,15 +69,15 @@ public class Update230to300 extends ConfigUpdater {
 
         if (currentMode == 1) {
             final int globalAmount = config.getInt("global_quests_amount");
-            setDefaultConfigItem("quests_per_category.global", globalAmount, config, configFile);
+            setDefaultConfigItem("quests_per_category.global", globalAmount, config, configFile, false);
         } else {
             final int easyAmount = config.getInt("easy_quests_amount");
             final int mediumAmount = config.getInt("medium_quests_amount");
             final int hardAmount = config.getInt("hard_quests_amount");
 
-            if (easyAmount > 0) setDefaultConfigItem("quests_per_category.easy", easyAmount, config, configFile);
-            if (mediumAmount > 0) setDefaultConfigItem("quests_per_category.medium", mediumAmount, config, configFile);
-            if (hardAmount > 0) setDefaultConfigItem("quests_per_category.hard", hardAmount, config, configFile);
+            if (easyAmount > 0) setDefaultConfigItem("quests_per_category.easy", easyAmount, config, configFile, false);
+            if (mediumAmount > 0) setDefaultConfigItem("quests_per_category.medium", mediumAmount, config, configFile, false);
+            if (hardAmount > 0) setDefaultConfigItem("quests_per_category.hard", hardAmount, config, configFile, false);
         }
 
         removeConfigItem("quests_mode", config, configFile);
@@ -102,8 +102,8 @@ public class Update230to300 extends ConfigUpdater {
             final String inventoryName = section.getString(interfaceName + ".inventory_name");
             final String emptyItem = section.getString(interfaceName + ".empty_item");
 
-            setDefaultConfigItem("interfaces." + newInterfaceNames[i] + ".inventory_name", inventoryName, config, configFile);
-            setDefaultConfigItem("interfaces." + newInterfaceNames[i] + ".empty_item", emptyItem, config, configFile);
+            setDefaultConfigItem("interfaces." + newInterfaceNames[i] + ".inventory_name", inventoryName, config, configFile, false);
+            setDefaultConfigItem("interfaces." + newInterfaceNames[i] + ".empty_item", emptyItem, config, configFile, false);
 
             removeConfigItem("interfaces." + interfaceName, config, configFile);
             parameterReplaced("interfaces." + interfaceName, "interfaces." + newInterfaceNames[i]);
@@ -120,7 +120,7 @@ public class Update230to300 extends ConfigUpdater {
         for (String NPCName : oldNPCNames) {
             final String name = config.getString("npcs." + NPCName);
 
-            setDefaultConfigItem("npcs." + newNPCNames[i], name, config, configFile);
+            setDefaultConfigItem("npcs." + newNPCNames[i], name, config, configFile, false);
             removeConfigItem("npcs." + NPCName, config, configFile);
 
             parameterReplaced(NPCName, newNPCNames[i]);
