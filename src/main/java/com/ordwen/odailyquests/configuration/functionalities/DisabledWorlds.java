@@ -2,7 +2,7 @@ package com.ordwen.odailyquests.configuration.functionalities;
 
 import com.ordwen.odailyquests.configuration.ConfigFactory;
 import com.ordwen.odailyquests.configuration.IConfigurable;
-import com.ordwen.odailyquests.files.ConfigurationFile;
+import com.ordwen.odailyquests.files.implementations.ConfigurationFile;
 
 import java.util.HashSet;
 import java.util.Set;

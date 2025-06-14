@@ -3,7 +3,7 @@ package com.ordwen.odailyquests.commands.interfaces;
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.Buttons;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
-import com.ordwen.odailyquests.files.ConfigurationFile;
+import com.ordwen.odailyquests.files.implementations.ConfigurationFile;
 import org.bukkit.event.Listener;
 
 public class InterfacesManager implements Listener {

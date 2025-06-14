@@ -5,7 +5,6 @@ import com.ordwen.odailyquests.configuration.essentials.Database;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.enums.SQLQuery;
 import com.ordwen.odailyquests.enums.StorageMode;
-import com.ordwen.odailyquests.files.ProgressionFile;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
@@ -144,10 +143,10 @@ public class Update0to1 extends DatabaseUpdater {
 
     @Override
     public void applyYAML() {
-        final FileConfiguration progressionFile = ProgressionFile.getProgressionFileConfiguration();
+        final FileConfiguration config = progressionFile.getConfig();
         Debugger.write("Starting YAML data conversion...");
 
-        for (String playerName : progressionFile.getKeys(false)) {
+        for (String playerName : config.getKeys(false)) {
             Debugger.write("Trying to convert data for player " + playerName + ".");
 
             final OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(playerName);
@@ -160,19 +159,19 @@ public class Update0to1 extends DatabaseUpdater {
             final String playerUuid = offlinePlayer.getUniqueId().toString();
             Debugger.write("Found UUID for player " + playerName + " : " + playerUuid + ".");
 
-            if (progressionFile.contains(playerUuid)) {
+            if (config.contains(playerUuid)) {
                 Debugger.write("Player " + playerName + " data already exists in the new format. Skipping.");
                 continue;
             }
 
             // copy data in new format
-            progressionFile.set(playerUuid + ".timestamp", progressionFile.getLong(playerName + ".timestamp"));
-            progressionFile.set(playerUuid + ".achievedQuests", progressionFile.getInt(playerName + ".achievedQuests"));
-            progressionFile.set(playerUuid + ".totalAchievedQuests", progressionFile.getInt(playerName + ".totalAchievedQuests"));
+            config.set(playerUuid + ".timestamp", config.getLong(playerName + ".timestamp"));
+            config.set(playerUuid + ".achievedQuests", config.getInt(playerName + ".achievedQuests"));
+            config.set(playerUuid + ".totalAchievedQuests", config.getInt(playerName + ".totalAchievedQuests"));
 
-            final ConfigurationSection oldQuestsSection = progressionFile.getConfigurationSection(playerName + ".quests");
+            final ConfigurationSection oldQuestsSection = config.getConfigurationSection(playerName + ".quests");
             if (oldQuestsSection != null) {
-                final ConfigurationSection newQuestsSection = progressionFile.createSection(playerUuid + ".quests");
+                final ConfigurationSection newQuestsSection = config.createSection(playerUuid + ".quests");
 
                 for (String key : oldQuestsSection.getKeys(false)) {
                     final ConfigurationSection questSection = oldQuestsSection.getConfigurationSection(key);
@@ -187,12 +186,12 @@ public class Update0to1 extends DatabaseUpdater {
             }
 
             // delete old entry
-            progressionFile.set(playerName, null);
+            config.set(playerName, null);
             Debugger.write("Conversion completed for player " + playerName + " -> " + playerUuid);
         }
 
         try {
-            progressionFile.save(ProgressionFile.getProgressionFile());
+            config.save(progressionFile.getFile());
             Debugger.write("YAML data conversion completed successfully.");
         } catch (IOException e) {
             PluginLogger.error("An error occurred while saving the converted YAML data.");

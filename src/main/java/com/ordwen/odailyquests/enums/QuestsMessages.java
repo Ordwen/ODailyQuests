@@ -1,9 +1,9 @@
 package com.ordwen.odailyquests.enums;
 
 import com.ordwen.odailyquests.configuration.essentials.Prefix;
+import com.ordwen.odailyquests.files.implementations.MessagesFile;
 import com.ordwen.odailyquests.tools.TextFormatter;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 @SuppressWarnings("SpellCheckingInspection")
@@ -93,42 +93,22 @@ public enum QuestsMessages {
 
     private final String path;
     private final String defaultMessage;
-    private static FileConfiguration lang;
 
-    /**
-     * Message constructor.
-     *
-     * @param message message (String).
-     */
     QuestsMessages(String path, String message) {
         this.path = path;
         this.defaultMessage = message;
     }
 
-    /**
-     * Set the {@code YamlConfiguration} to use.
-     *
-     * @param messagesFile the config to set.
-     */
-    public static void setFile(FileConfiguration messagesFile) {
-        lang = messagesFile;
-    }
-
-    /**
-     * Get message.
-     *
-     * @return message.
-     */
     @Override
     public String toString() {
-        String msg = lang.getString(this.path, defaultMessage);
+        String msg = MessagesFile.getInstance().get(this.path, defaultMessage);
 
         if (msg.trim().isEmpty()) return "";
         else return TextFormatter.format(null, Prefix.getPrefix() + msg);
     }
 
     public String getMessage(Player player) {
-        String msg = lang.getString(this.path, defaultMessage);
+        String msg = MessagesFile.getInstance().get(this.path, defaultMessage);
 
         if (msg.trim().isEmpty()) return null;
         else return TextFormatter.format(player,Prefix.getPrefix() + msg);
@@ -138,27 +118,9 @@ public enum QuestsMessages {
         final Player player = Bukkit.getPlayer(playerName);
         if (player == null) return null;
 
-        String msg = lang.getString(this.path, defaultMessage);
+        String msg = MessagesFile.getInstance().get(this.path, defaultMessage);
         if (msg.trim().isEmpty()) return null;
 
         else return TextFormatter.format(player,Prefix.getPrefix() + msg);
-    }
-
-    /**
-     * Get the default value of the path.
-     *
-     * @return the default value of the path.
-     */
-    public String getDefault() {
-        return this.defaultMessage;
-    }
-
-    /**
-     * Get the path to the string.
-     *
-     * @return the path to the string.
-     */
-    public String getPath() {
-        return this.path;
     }
 }

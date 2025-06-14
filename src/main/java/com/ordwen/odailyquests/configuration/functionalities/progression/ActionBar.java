@@ -7,7 +7,7 @@ import com.ordwen.odailyquests.tools.PluginLogger;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 
-import com.ordwen.odailyquests.files.ConfigurationFile;
+import com.ordwen.odailyquests.files.implementations.ConfigurationFile;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 

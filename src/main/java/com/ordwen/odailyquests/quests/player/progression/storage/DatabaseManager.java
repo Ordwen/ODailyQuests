@@ -34,7 +34,7 @@ public class DatabaseManager {
                 this.yamlManager = null;
             }
             case YAML -> {
-                this.yamlManager = new YamlManager();
+                this.yamlManager = new YamlManager(plugin.getFilesManager().getProgressionFile());
                 this.sqlManager = null;
             }
         }

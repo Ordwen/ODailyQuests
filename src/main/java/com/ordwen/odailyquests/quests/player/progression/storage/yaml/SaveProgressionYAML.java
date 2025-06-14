@@ -2,7 +2,7 @@ package com.ordwen.odailyquests.quests.player.progression.storage.yaml;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.Logs;
-import com.ordwen.odailyquests.files.ProgressionFile;
+import com.ordwen.odailyquests.files.implementations.ProgressionFile;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
@@ -15,14 +15,19 @@ import java.util.Map;
 
 public class SaveProgressionYAML {
 
-    public void saveProgression(String playerName, String playerUuid, PlayerQuests playerQuests, boolean isServerStopping) {
+    private final ProgressionFile progressionFile;
 
+    public SaveProgressionYAML(ProgressionFile progressionFile) {
+        this.progressionFile = progressionFile;
+    }
+
+    public void saveProgression(String playerName, String playerUuid, PlayerQuests playerQuests, boolean isServerStopping) {
         if (isServerStopping) updateFile(playerName, playerUuid, playerQuests);
         else ODailyQuests.morePaperLib.scheduling().asyncScheduler().run(() -> updateFile(playerName, playerUuid, playerQuests));
     }
 
     private void updateFile(String playerName, String playerUuid, PlayerQuests playerQuests) {
-        final FileConfiguration progressionFile = ProgressionFile.getProgressionFileConfiguration();
+        final FileConfiguration config = progressionFile.getConfig();
 
         long timestamp = playerQuests.getTimestamp();
         int achievedQuests = playerQuests.getAchievedQuests();
@@ -30,16 +35,16 @@ public class SaveProgressionYAML {
 
         final Map<AbstractQuest, Progression> quests = playerQuests.getQuests();
 
-        progressionFile.set(playerUuid + ".timestamp", timestamp);
-        progressionFile.set(playerUuid + ".achievedQuests", achievedQuests);
-        progressionFile.set(playerUuid + ".totalAchievedQuests", totalAchievedQuests);
+        config.set(playerUuid + ".timestamp", timestamp);
+        config.set(playerUuid + ".achievedQuests", achievedQuests);
+        config.set(playerUuid + ".totalAchievedQuests", totalAchievedQuests);
 
         int index = 1;
         for (Map.Entry<AbstractQuest, Progression> entry : quests.entrySet()) {
             final AbstractQuest quest = entry.getKey();
             final Progression progression = entry.getValue();
 
-            final ConfigurationSection questSection = progressionFile.createSection(playerUuid + ".quests." + index);
+            final ConfigurationSection questSection = config.createSection(playerUuid + ".quests." + index);
             questSection.set("index", quest.getQuestIndex());
             questSection.set("progression", progression.getAdvancement());
             questSection.set("requiredAmount", progression.getRequiredAmount());
@@ -49,7 +54,7 @@ public class SaveProgressionYAML {
             index++;
         }
 
-        final ConfigurationSection statsSection = progressionFile.createSection(playerUuid + ".totalAchievedQuestsByCategory");
+        final ConfigurationSection statsSection = config.createSection(playerUuid + ".totalAchievedQuestsByCategory");
         for (Map.Entry<String, Integer> entry : playerQuests.getTotalAchievedQuestsByCategory().entrySet()) {
             final String category = entry.getKey();
             final int amount = entry.getValue();
@@ -61,7 +66,7 @@ public class SaveProgressionYAML {
         }
 
         try {
-            progressionFile.save(ProgressionFile.getProgressionFile());
+            config.save(progressionFile.getFile());
         } catch (IOException e) {
             PluginLogger.error("An error happened on the save of the progression file.");
             PluginLogger.error("If the problem persists, contact the developer.");

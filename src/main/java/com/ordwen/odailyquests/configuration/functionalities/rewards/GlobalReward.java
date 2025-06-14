@@ -3,7 +3,7 @@ package com.ordwen.odailyquests.configuration.functionalities.rewards;
 import com.ordwen.odailyquests.configuration.ConfigFactory;
 import com.ordwen.odailyquests.configuration.IConfigurable;
 import com.ordwen.odailyquests.enums.QuestsMessages;
-import com.ordwen.odailyquests.files.ConfigurationFile;
+import com.ordwen.odailyquests.files.implementations.ConfigurationFile;
 import com.ordwen.odailyquests.rewards.Reward;
 import com.ordwen.odailyquests.rewards.RewardLoader;
 import com.ordwen.odailyquests.rewards.RewardManager;

@@ -3,7 +3,7 @@ package com.ordwen.odailyquests.configuration.integrations;
 import com.ordwen.odailyquests.configuration.ConfigFactory;
 import com.ordwen.odailyquests.configuration.IConfigurable;
 import com.ordwen.odailyquests.configuration.essentials.CustomFurnaceResults;
-import com.ordwen.odailyquests.files.ConfigurationFile;
+import com.ordwen.odailyquests.files.implementations.ConfigurationFile;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import com.ordwen.odailyquests.tools.PluginUtils;
 

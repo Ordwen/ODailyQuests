@@ -4,7 +4,7 @@ import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.ConfigFactory;
 import com.ordwen.odailyquests.configuration.IConfigurable;
 import com.ordwen.odailyquests.enums.ProgressionMessageType;
-import com.ordwen.odailyquests.files.ConfigurationFile;
+import com.ordwen.odailyquests.files.implementations.ConfigurationFile;
 import com.ordwen.odailyquests.tools.TextFormatter;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import net.md_5.bungee.api.ChatMessageType;

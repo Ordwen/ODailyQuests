@@ -2,7 +2,7 @@ package com.ordwen.odailyquests.quests.categories;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.QuestsPerCategory;
-import com.ordwen.odailyquests.files.QuestsFiles;
+import com.ordwen.odailyquests.files.implementations.QuestsFiles;
 import com.ordwen.odailyquests.quests.QuestsLoader;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;

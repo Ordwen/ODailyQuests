@@ -3,7 +3,7 @@ package com.ordwen.odailyquests.commands.interfaces.playerinterface;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.ItemType;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.PlayerHead;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.getters.InterfaceItemGetter;
-import com.ordwen.odailyquests.files.PlayerInterfaceFile;
+import com.ordwen.odailyquests.files.implementations.PlayerInterfaceFile;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;

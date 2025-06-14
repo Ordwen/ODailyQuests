@@ -3,7 +3,7 @@ package com.ordwen.odailyquests.configuration.essentials;
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.ConfigFactory;
 import com.ordwen.odailyquests.configuration.IConfigurable;
-import com.ordwen.odailyquests.files.ConfigurationFile;
+import com.ordwen.odailyquests.files.implementations.ConfigurationFile;
 import com.ordwen.odailyquests.quests.types.global.CustomQuest;
 
 import java.util.HashSet;

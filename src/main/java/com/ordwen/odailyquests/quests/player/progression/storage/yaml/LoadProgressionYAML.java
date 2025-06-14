@@ -8,7 +8,7 @@ import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.player.progression.QuestLoaderUtils;
-import com.ordwen.odailyquests.files.ProgressionFile;
+import com.ordwen.odailyquests.files.implementations.ProgressionFile;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -21,12 +21,18 @@ import java.util.Map;
 
 public class LoadProgressionYAML extends ProgressionLoader {
 
+    private final ProgressionFile progressionFile;
+
+    public LoadProgressionYAML(ProgressionFile progressionFile) {
+        this.progressionFile = progressionFile;
+    }
+
     public void loadPlayerQuests(String playerName, Map<String, PlayerQuests> activeQuests) {
         Debugger.write("Entering loadPlayerQuests (YAML) method for player " + playerName + ".");
 
         ODailyQuests.morePaperLib.scheduling().asyncScheduler().run(() -> {
             Debugger.write("Running async task to load progression of " + playerName + " from YAML file.");
-            final FileConfiguration progressionFile = ProgressionFile.getProgressionFileConfiguration();
+            final FileConfiguration config = progressionFile.getConfig();
             final Player player = Bukkit.getPlayer(playerName);
 
             if (player == null) {
@@ -35,7 +41,7 @@ public class LoadProgressionYAML extends ProgressionLoader {
             }
 
             final String playerUuid = player.getUniqueId().toString();
-            final ConfigurationSection playerSection = progressionFile.getConfigurationSection(playerUuid);
+            final ConfigurationSection playerSection = config.getConfigurationSection(playerUuid);
 
             if (playerSection == null) {
                 handleNewPlayer(playerName, activeQuests);

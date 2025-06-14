@@ -3,7 +3,7 @@ package com.ordwen.odailyquests.commands.interfaces;
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.commands.interfaces.holder.CategoryHolder;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.Buttons;
-import com.ordwen.odailyquests.files.ConfigurationFile;
+import com.ordwen.odailyquests.files.implementations.ConfigurationFile;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.tools.TextFormatter;

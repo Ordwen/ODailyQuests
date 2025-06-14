@@ -1,7 +1,7 @@
 package com.ordwen.odailyquests.commands.admin.convert;
 
 import com.ordwen.odailyquests.ODailyQuests;
-import com.ordwen.odailyquests.files.ProgressionFile;
+import com.ordwen.odailyquests.files.implementations.ProgressionFile;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.SQLManager;
 import com.ordwen.odailyquests.quests.player.progression.storage.sql.sqlite.SQLiteManager;
 import com.ordwen.odailyquests.tools.PluginLogger;
@@ -14,7 +14,7 @@ public class YAMLtoSQLiteConverter extends SQLConverter {
         try {
             ODailyQuests.morePaperLib.scheduling().asyncScheduler().run(() -> {
 
-                final FileConfiguration progressionFile = ProgressionFile.getProgressionFileConfiguration();
+                final FileConfiguration progressionFile = ODailyQuests.INSTANCE.getFilesManager().getProgressionFile().getConfig();
                 final SQLManager sqlManager = new SQLiteManager();
 
                 convertData(progressionFile, sqlManager);

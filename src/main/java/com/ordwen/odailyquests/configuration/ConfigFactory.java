@@ -12,7 +12,7 @@ import com.ordwen.odailyquests.configuration.functionalities.progression.Title;
 import com.ordwen.odailyquests.configuration.functionalities.rewards.CategoriesRewards;
 import com.ordwen.odailyquests.configuration.functionalities.rewards.GlobalReward;
 import com.ordwen.odailyquests.configuration.integrations.*;
-import com.ordwen.odailyquests.files.ConfigurationFile;
+import com.ordwen.odailyquests.files.implementations.ConfigurationFile;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

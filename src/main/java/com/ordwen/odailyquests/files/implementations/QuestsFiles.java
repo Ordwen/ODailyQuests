@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.files;
+package com.ordwen.odailyquests.files.implementations;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -15,10 +15,10 @@ public class QuestsFiles {
 
     private static final Map<String, FileConfiguration> configurations = new HashMap<>();
 
-    private final ODailyQuests oDailyQuests;
+    private final ODailyQuests plugin;
 
-    public QuestsFiles(ODailyQuests oDailyQuests) {
-        this.oDailyQuests = oDailyQuests;
+    public QuestsFiles(ODailyQuests plugin) {
+        this.plugin = plugin;
     }
 
     public static FileConfiguration getQuestsConfigurationByCategory(String category) {
@@ -36,10 +36,10 @@ public class QuestsFiles {
     /**
      * Init quests files.
      */
-    public void loadQuestsFiles() {
+    public void load() {
         configurations.clear();
 
-        final File questsFolder = new File(oDailyQuests.getDataFolder(), "quests");
+        final File questsFolder = new File(plugin.getDataFolder(), "quests");
 
         if (!questsFolder.exists() || questsFolder.listFiles() == null || questsFolder.listFiles().length == 0) {
             questsFolder.mkdirs();
@@ -73,7 +73,7 @@ public class QuestsFiles {
         final String[] defaultFiles = {"global.yml", "easy.yml", "medium.yml", "hard.yml"};
 
         for (String fileName : defaultFiles) {
-            oDailyQuests.saveResource("quests/" + fileName, false);
+            plugin.saveResource("quests/" + fileName, false);
             PluginLogger.info(fileName + " created as default.");
         }
     }

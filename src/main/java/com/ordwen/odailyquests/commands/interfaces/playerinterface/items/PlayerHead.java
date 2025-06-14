@@ -1,7 +1,7 @@
 package com.ordwen.odailyquests.commands.interfaces.playerinterface.items;
 
 import com.ordwen.odailyquests.api.ODailyQuestsAPI;
-import com.ordwen.odailyquests.files.PlayerInterfaceFile;
+import com.ordwen.odailyquests.files.implementations.PlayerInterfaceFile;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.tools.TextFormatter;
 import com.ordwen.odailyquests.tools.PluginLogger;
