@@ -38,12 +38,11 @@ public class ActionBar implements IConfigurable {
 
     public void sendActionbarInternal(Player player, String questName) {
         if (isEnabled) {
-            final String playerBar = TextFormatter.format(player, this.text);
-
-            final String toSend = TextFormatter.format(playerBar
+            final String playerBar = TextFormatter.format(player, this.text
                     .replace("%player%", player.getDisplayName())
-                    .replace("%questName%", questName)
-            );
+                    .replace("%questName%", questName));
+
+            final String toSend = TextFormatter.format(playerBar);
             player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(toSend));
         }
     }
