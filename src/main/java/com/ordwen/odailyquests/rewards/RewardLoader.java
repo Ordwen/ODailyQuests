@@ -24,7 +24,6 @@ public class RewardLoader {
 
         final String message = TextFormatter.format(section.getString(".message"));
 
-
         return switch (rewardType) {
             case NONE -> new Reward(RewardType.NONE, 0, message);
             case COMMAND -> new Reward(RewardType.COMMAND, section.getStringList(".commands"), message);
@@ -38,10 +37,40 @@ public class RewardLoader {
                     yield new Reward(RewardType.NONE, 0, message);
                 }
 
-                yield new Reward(RewardType.COINS_ENGINE, currencyLabel, currencyDisplayName, section.getInt(".amount"), message);
+                final String amount = section.getString(".amount");
+                if (amount == null || amount.isEmpty()) {
+                    PluginLogger.error("Amount is missing in the configuration file for COINS_ENGINE reward.");
+                    yield new Reward(RewardType.NONE, 0, message);
+                }
+
+                int parsedAmount;
+                try {
+                    parsedAmount = Integer.parseInt(TextFormatter.format(amount));
+                } catch (NumberFormatException e) {
+                    PluginLogger.error("Amount is not a valid integer in the configuration file for COINS_ENGINE reward.");
+                    yield new Reward(RewardType.NONE, 0, message);
+                }
+
+                yield new Reward(RewardType.COINS_ENGINE, currencyLabel, currencyDisplayName, parsedAmount, message);
             }
 
-            default -> new Reward(rewardType, section.getDouble(".amount"), message);
+            default -> {
+                final String amount = section.getString(".amount");
+                if (amount == null || amount.isEmpty()) {
+                    PluginLogger.error("Amount is missing in the configuration file for COINS_ENGINE reward.");
+                    yield new Reward(RewardType.NONE, 0, message);
+                }
+
+                double parsedAmount;
+                try {
+                    parsedAmount = Double.parseDouble(TextFormatter.format(amount));
+                } catch (NumberFormatException e) {
+                    PluginLogger.error("Amount is not a valid number in the configuration file for " + rewardType + " reward.");
+                    yield new Reward(RewardType.NONE, 0, message);
+                }
+
+                yield new Reward(rewardType, parsedAmount, message);
+            }
         };
     }
 
