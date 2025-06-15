@@ -6,6 +6,8 @@ import com.ordwen.odailyquests.tools.TextFormatter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.Map;
+
 @SuppressWarnings("SpellCheckingInspection")
 public enum QuestsMessages {
 
@@ -122,5 +124,16 @@ public enum QuestsMessages {
         if (msg.trim().isEmpty()) return null;
 
         else return TextFormatter.format(player,Prefix.getPrefix() + msg);
+    }
+
+    public String getMessage(Player player, Map<String, String> placeholders) {
+        String msg = MessagesFile.getInstance().get(this.path, defaultMessage);
+        if (msg.trim().isEmpty()) return null;
+
+        for (Map.Entry<String, String> entry : placeholders.entrySet()) {
+            msg = msg.replace(entry.getKey(), entry.getValue());
+        }
+
+        return TextFormatter.format(player, Prefix.getPrefix() + msg);
     }
 }

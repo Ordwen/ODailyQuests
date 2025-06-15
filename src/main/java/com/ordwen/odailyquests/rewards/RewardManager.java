@@ -17,6 +17,8 @@ import org.bukkit.entity.Player;
 import su.nightexpress.coinsengine.api.CoinsEngineAPI;
 import su.nightexpress.coinsengine.api.currency.Currency;
 
+import java.util.Map;
+
 public class RewardManager {
 
     private RewardManager() {}
@@ -29,8 +31,8 @@ public class RewardManager {
     public static void sendAllRewardItems(String questName, Player player, Reward reward) {
         Debugger.write("RewardManager: sendAllRewardItems summoned by " + player.getName() + " for " + questName + ".");
 
-        final String msg = QuestsMessages.QUEST_ACHIEVED.getMessage(player);
-        if (msg != null) player.sendMessage(msg.replace("%questName%", questName));
+        final String msg = QuestsMessages.QUEST_ACHIEVED.getMessage(player, Map.of("%questName%", questName));
+        if (msg != null) player.sendMessage(msg);
 
         Title.sendTitle(player, questName);
         ActionBar.sendActionbar(player, questName);
