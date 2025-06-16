@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.files.implementations;
 
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.files.APluginFile;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -33,6 +34,26 @@ public class MessagesFile extends APluginFile {
             PluginLogger.error("An error occurred while loading the messages file.");
             PluginLogger.error(e.getMessage());
         }
+
+        boolean missingMessages = false;
+        for (QuestsMessages item : QuestsMessages.values()) {
+            if (config.getString(item.getPath()) == null) {
+                missingMessages = true;
+                config.set(item.getPath(), item.getDefault());
+            }
+        }
+
+        if (missingMessages) {
+            try {
+                config.save(file);
+            } catch (Exception e) {
+                PluginLogger.error("An error occurred while saving the messages file.");
+                PluginLogger.error(e.getMessage());
+            }
+
+            PluginLogger.warn("Some messages are missing in the messages file. Default messages have been added.");
+        }
+
         PluginLogger.fine("Messages file successfully loaded.");
     }
 

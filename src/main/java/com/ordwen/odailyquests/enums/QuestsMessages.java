@@ -136,4 +136,22 @@ public enum QuestsMessages {
 
         return TextFormatter.format(player, Prefix.getPrefix() + msg);
     }
+
+    /**
+     * Get the default value of the path.
+     *
+     * @return the default value of the path.
+     */
+    public String getDefault() {
+        return this.defaultMessage;
+    }
+
+    /**
+     * Get the path to the string.
+     *
+     * @return the path to the string.
+     */
+    public String getPath() {
+        return this.path;
+    }
 }
