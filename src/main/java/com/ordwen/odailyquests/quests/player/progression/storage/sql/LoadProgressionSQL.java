@@ -166,7 +166,7 @@ public class LoadProgressionSQL extends ProgressionLoader {
                             return false;
                         }
 
-                        if (!quest.isRandomRequired() && requiredAmount != Integer.parseInt(quest.getRequiredAmountRaw())) {
+                        if (!quest.isRandomRequiredAmount() && requiredAmount != Integer.parseInt(quest.getRequiredAmountRaw())) {
                             requiredAmountNotEqual(playerName);
                             return false;
                         }

@@ -41,18 +41,18 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
     /**
      * Constructs a new AbstractQuest with the specified parameters.
      *
-     * @param questIndex        the index of the quest.
-     * @param questName         the name of the quest.
-     * @param categoryName      the category of the quest.
-     * @param questDesc         the description of the quest.
-     * @param questType         the type of the quest.
-     * @param menuItem          the item used in the quest's menu.
-     * @param achievedItem      the item awarded for completing the quest.
-     * @param requiredAmountRaw the required amount of items needed for the quest.
-     * @param reward            the reward for completing the quest.
-     * @param requiredWorlds    the worlds required for the quest.
-     * @param requiredRegions   the regions required for the quest.
-     * @param protectionBypass  whether protection bypass is enabled for the quest.
+     * @param questIndex         the index of the quest.
+     * @param questName          the name of the quest.
+     * @param categoryName       the category of the quest.
+     * @param questDesc          the description of the quest.
+     * @param questType          the type of the quest.
+     * @param menuItem           the item used in the quest's menu.
+     * @param achievedItem       the item awarded for completing the quest.
+     * @param requiredAmountRaw  the required amount of items needed for the quest.
+     * @param reward             the reward for completing the quest.
+     * @param requiredWorlds     the worlds required for the quest.
+     * @param requiredRegions    the regions required for the quest.
+     * @param protectionBypass   whether protection bypass is enabled for the quest.
      * @param requiredPermission the permission required to undertake the quest.
      */
     protected AbstractQuest(int questIndex, String questName, String categoryName, List<String> questDesc, String questType, ItemStack menuItem, ItemStack achievedItem, String requiredAmountRaw, Reward reward, List<String> requiredWorlds, final List<String> requiredRegions, boolean protectionBypass, String requiredPermission) {
@@ -263,5 +263,14 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
      */
     public boolean isRandomRequired() {
         return isRandomRequired;
+    }
+
+    /**
+     * Check if the quest requires a random amount of items.
+     *
+     * @return true if the required amount is a range (e.g., "1-5"), false if it is a fixed number (e.g., "3").
+     */
+    public boolean isRandomRequiredAmount() {
+        return requiredAmountRaw.contains("-");
     }
 }
