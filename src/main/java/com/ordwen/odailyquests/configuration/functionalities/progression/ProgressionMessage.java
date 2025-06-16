@@ -40,7 +40,6 @@ public class ProgressionMessage implements IConfigurable {
         isEnabled = configurationFile.getConfig().getBoolean("progression_message.enabled");
 
         if (!isEnabled) {
-            PluginLogger.info("Progression message is disabled.");
             return;
         }
 
