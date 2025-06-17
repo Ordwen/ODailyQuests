@@ -5,7 +5,6 @@ import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsI
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.enums.QuestsPermissions;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -28,7 +27,7 @@ public class OpenCommand extends AdminCommandBase {
 
     @Override
     public String getPermission() {
-        return QuestsPermissions.QUESTS_ADMIN.getPermission();
+        return QuestsPermissions.QUESTS_ADMIN.get();
     }
 
     @Override

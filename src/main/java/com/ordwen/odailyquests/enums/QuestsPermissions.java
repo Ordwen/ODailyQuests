@@ -11,7 +11,7 @@ public enum QuestsPermissions {
     QUESTS_PLAYER_USE("odailyquests.use"),
     QUESTS_PLAYER_REROLL("odailyquests.reroll"),
     QUESTS_PLAYER_SHOW("odailyquests.show"),
-
+    QUESTS_PLAYER_BYPASS_SPAWNER("odailyquests.bypass.spawner"),
     ;
 
     private final String permission;
@@ -28,7 +28,7 @@ public enum QuestsPermissions {
      * Get permission.
      * @return permission.
      */
-    public String getPermission() {
+    public String get() {
         return this.permission;
     }
 }

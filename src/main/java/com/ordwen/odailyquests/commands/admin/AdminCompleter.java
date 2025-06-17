@@ -23,7 +23,7 @@ public class AdminCompleter implements TabCompleter {
 
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
-        if (!sender.hasPermission(QuestsPermissions.QUESTS_ADMIN.getPermission())) {
+        if (!sender.hasPermission(QuestsPermissions.QUESTS_ADMIN.get())) {
             return Collections.emptyList();
         }
 

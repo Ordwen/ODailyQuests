@@ -24,7 +24,7 @@ public class PRerollCommand extends PlayerCommandBase {
 
     @Override
     public String getPermission() {
-        return QuestsPermissions.QUESTS_PLAYER_REROLL.getPermission();
+        return QuestsPermissions.QUESTS_PLAYER_REROLL.get();
     }
 
     @Override

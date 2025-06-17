@@ -3,6 +3,7 @@ package com.ordwen.odailyquests.events.listeners.entity.custom.stackers;
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.integrations.RoseStackerEnabled;
+import com.ordwen.odailyquests.enums.QuestsPermissions;
 import com.ordwen.odailyquests.events.antiglitch.EntitySource;
 import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
 import dev.rosewood.rosestacker.event.EntityStackMultipleDeathEvent;
@@ -23,18 +24,19 @@ public class RoseStackerListener extends PlayerProgressor implements Listener {
         }
 
         final Entity entity = event.getStack().getEntity();
+        if (!(entity.getLastDamageCause() instanceof EntityDamageByEntityEvent damageEvent) || !(damageEvent.getDamager() instanceof Player player)) {
+            return;
+        }
 
-        if (EntitySource.isEntityFromSpawner(entity)) {
+        if (EntitySource.isEntityFromSpawner(entity) && !player.hasPermission(QuestsPermissions.QUESTS_PLAYER_BYPASS_SPAWNER.get())) {
             Debugger.write("EntityStackMultipleDeathEvent: Entity is from spawner, cancelling progression.");
             return;
         }
 
-        if (entity.getLastDamageCause() instanceof EntityDamageByEntityEvent damageEvent && damageEvent.getDamager() instanceof Player player) {
-            Debugger.write("EntityStackMultipleDeathEvent: onEntityUnstackEvent summoned by " + player.getName() + " for " + entity.getType() + ".");
+        Debugger.write("EntityStackMultipleDeathEvent: onEntityUnstackEvent summoned by " + player.getName() + " for " + entity.getType() + ".");
 
-            Bukkit.getScheduler().runTask(ODailyQuests.INSTANCE, () ->
-                    setPlayerQuestProgression(event, player, event.getEntityKillCount(), "KILL")
-            );
-        }
+        Bukkit.getScheduler().runTask(ODailyQuests.INSTANCE, () ->
+                setPlayerQuestProgression(event, player, event.getEntityKillCount(), "KILL")
+        );
     }
 }

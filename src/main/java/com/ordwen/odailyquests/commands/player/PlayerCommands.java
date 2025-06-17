@@ -30,7 +30,7 @@ public class PlayerCommands extends PlayerMessages implements CommandExecutor {
             return true;
         }
 
-        if (!sender.hasPermission(QuestsPermissions.QUESTS_PLAYER_USE.getPermission())) {
+        if (!sender.hasPermission(QuestsPermissions.QUESTS_PLAYER_USE.get())) {
             noPermission(sender);
             return true;
         }

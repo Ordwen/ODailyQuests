@@ -3,6 +3,7 @@ package com.ordwen.odailyquests.events.listeners.entity;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.integrations.RoseStackerEnabled;
 import com.ordwen.odailyquests.configuration.integrations.WildStackerEnabled;
+import com.ordwen.odailyquests.enums.QuestsPermissions;
 import com.ordwen.odailyquests.events.antiglitch.EntitySource;
 
 import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
@@ -12,6 +13,7 @@ import dev.rosewood.rosestacker.stack.StackedEntity;
 import io.lumine.mythic.bukkit.MythicBukkit;
 import io.lumine.mythic.core.mobs.ActiveMob;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -22,6 +24,8 @@ public class EntityDeathListener extends PlayerProgressor implements Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onEntityDeathEvent(EntityDeathEvent event) {
         final LivingEntity entity = event.getEntity();
+        final Player killer = entity.getKiller();
+        if (killer == null) return;
 
         if (PluginUtils.isPluginEnabled("MythicMobs")) {
             final ActiveMob mythicMob = MythicBukkit.inst().getMobManager().getActiveMob(entity.getUniqueId()).orElse(null);
@@ -31,7 +35,7 @@ public class EntityDeathListener extends PlayerProgressor implements Listener {
             }
         }
 
-        if (EntitySource.isEntityFromSpawner(entity)) {
+        if (EntitySource.isEntityFromSpawner(entity) && !killer.hasPermission(QuestsPermissions.QUESTS_PLAYER_BYPASS_SPAWNER.get())) {
             Debugger.write("EntityDeathListener: Entity is from spawner, cancelling progression.");
             return;
         }
@@ -50,10 +54,7 @@ public class EntityDeathListener extends PlayerProgressor implements Listener {
             }
         }
 
-        if (entity.getKiller() == null) return;
-
-        Debugger.write("EntityDeathListener: onEntityDeathEvent summoned by " + entity.getKiller().getName() + " for " + entity.getType() + ".");
-
-        setPlayerQuestProgression(event, entity.getKiller(), 1, "KILL");
+        Debugger.write("EntityDeathListener: onEntityDeathEvent summoned by " + killer.getName() + " for " + entity.getType() + ".");
+        setPlayerQuestProgression(event, killer, 1, "KILL");
     }
 }

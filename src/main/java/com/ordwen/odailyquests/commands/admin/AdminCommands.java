@@ -22,7 +22,7 @@ public class AdminCommands implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (!sender.hasPermission(QuestsPermissions.QUESTS_ADMIN.getPermission())) {
+        if (!sender.hasPermission(QuestsPermissions.QUESTS_ADMIN.get())) {
             noPermission(sender);
             return true;
         }

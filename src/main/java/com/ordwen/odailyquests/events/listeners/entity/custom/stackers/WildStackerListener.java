@@ -4,6 +4,7 @@ import com.bgsoftware.wildstacker.api.events.EntityUnstackEvent;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.integrations.WildStackerEnabled;
 
+import com.ordwen.odailyquests.enums.QuestsPermissions;
 import com.ordwen.odailyquests.events.antiglitch.EntitySource;
 import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
 import org.bukkit.entity.Entity;
@@ -18,18 +19,14 @@ public class WildStackerListener extends PlayerProgressor implements Listener {
     public void onWildStackerEntityUnstackEvent(EntityUnstackEvent event) {
         if (!WildStackerEnabled.isEnabled()) return;
         if (event.isCancelled()) return;
+        if (!(event.getUnstackSource() instanceof Player player)) return;
 
         final Entity entity = event.getEntity().getLivingEntity();
-
-        if (EntitySource.isEntityFromSpawner(entity)) {
+        if (EntitySource.isEntityFromSpawner(entity) && !player.hasPermission(QuestsPermissions.QUESTS_PLAYER_BYPASS_SPAWNER.get())) {
             Debugger.write("[EntityUnstackListener] Entity is from spawner, cancelling progression.");
             return;
         }
 
-        if (event.getUnstackSource() == null) return;
-
-        if (event.getUnstackSource() instanceof Player player) {
-            setPlayerQuestProgression(event, player, event.getAmount(), "KILL");
-        }
+        setPlayerQuestProgression(event, player, event.getAmount(), "KILL");
     }
 }

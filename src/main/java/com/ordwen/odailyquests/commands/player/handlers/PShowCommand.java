@@ -31,7 +31,7 @@ public class PShowCommand extends PlayerCommandBase {
 
     @Override
     public String getPermission() {
-        return QuestsPermissions.QUESTS_PLAYER_SHOW.getPermission();
+        return QuestsPermissions.QUESTS_PLAYER_SHOW.get();
     }
 
     @Override

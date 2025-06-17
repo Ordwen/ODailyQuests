@@ -27,7 +27,7 @@ public class CompleteCommand extends AdminCommandBase {
 
     @Override
     public String getPermission() {
-        return QuestsPermissions.QUESTS_ADMIN.getPermission();
+        return QuestsPermissions.QUESTS_ADMIN.get();
     }
 
     @Override
