@@ -2,6 +2,7 @@ package com.ordwen.odailyquests.commands.player;
 
 import com.ordwen.odailyquests.api.commands.player.PlayerCommandBase;
 import com.ordwen.odailyquests.api.commands.player.PlayerCommandRegistry;
+import com.ordwen.odailyquests.configuration.functionalities.CommandAliases;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -23,17 +24,24 @@ public class PlayerCompleter implements TabCompleter {
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
         if (args.length == 1) {
-            final List<String> subCommands = commandRegistry.getCommandHandlers().stream()
-                    .filter(cmd -> sender.hasPermission(cmd.getPermission()))
-                    .map(PlayerCommandBase::getName)
-                    .toList();
+            final List<String> suggestions = new ArrayList<>();
 
-            return StringUtil.copyPartialMatches(args[0], subCommands, new ArrayList<>());
+            for (PlayerCommandBase cmd : commandRegistry.getCommandHandlers()) {
+                if (!sender.hasPermission(cmd.getPermission())) continue;
+
+                // Main command name
+                suggestions.add(cmd.getName());
+
+                // Aliases
+                final List<String> aliases = CommandAliases.getSubcommandAliases(cmd.getName());
+                suggestions.addAll(aliases);
+            }
+
+            return StringUtil.copyPartialMatches(args[0], suggestions, new ArrayList<>());
         } else {
             final PlayerCommandBase subCommand = commandRegistry.getCommandHandler(args[0]);
-            if (subCommand == null) {
-                return Collections.emptyList();
-            }
+            if (subCommand == null) return Collections.emptyList();
+
             return subCommand.onTabComplete(sender, args);
         }
     }

@@ -1,14 +1,13 @@
 package com.ordwen.odailyquests.api.commands.player;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import com.ordwen.odailyquests.configuration.functionalities.CommandAliases;
+
+import java.util.*;
 
 /**
  * Registry for all player subcommands in the plugin.
  * <p>
- * This class extends {@link HashMap}, where each entry maps a subcommand name to its corresponding {@link PlayerCommandBase} handler.
+ * This class uses {@link HashMap}, where each entry maps a subcommand name to its corresponding {@link PlayerCommandBase} handler.
  * It provides utility methods to register and retrieve player commands.
  * <p>
  * Addons can use this registry to register their own player commands.
@@ -16,6 +15,7 @@ import java.util.Set;
 public class PlayerCommandRegistry {
 
     private final Map<String, PlayerCommandBase> handlers = new HashMap<>();
+    private final Map<String, String> aliases = new HashMap<>();
 
     /**
      * Registers a new player subcommand handler.
@@ -25,7 +25,14 @@ public class PlayerCommandRegistry {
      * @param handler the player command handler to register
      */
     public void registerCommand(PlayerCommandBase handler) {
-        handlers.put(handler.getName(), handler);
+        final String name = handler.getName().toLowerCase();
+        handlers.put(name, handler);
+
+        // Register aliases from config
+        final List<String> subAliases = CommandAliases.getSubcommandAliases(name);
+        for (String alias : subAliases) {
+            aliases.put(alias.toLowerCase(), name);
+        }
     }
 
     /**
@@ -35,7 +42,9 @@ public class PlayerCommandRegistry {
      * @return the corresponding {@link PlayerCommandBase}, or {@code null} if not found
      */
     public PlayerCommandBase getCommandHandler(String name) {
-        return handlers.get(name);
+        final String key = name.toLowerCase();
+        final String resolved = aliases.getOrDefault(key, key);
+        return handlers.get(resolved);
     }
 
     /**

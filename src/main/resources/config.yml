@@ -304,3 +304,44 @@ use_wildstacker: false
 # If you use RoseStacker on your server to group mobs, set this parameter to "true".
 # Otherwise, quests of type KILL may not progress.
 use_rosestacker: false
+
+# You can define aliases for the player command (/dailyquests) here.
+#
+# Important:
+# - These aliases apply only to the player command (/dailyquests), not to the admin command.
+# - Before adding an alias, make sure it's not already used by another plugin.
+# - Also check that the alias is not already listed here:
+#   https://ordwenplugins.gitbook.io/odailyquests/commands/player-commands#aliases
+#
+# Format: a list of strings. Example:
+# command-aliases:
+#   - daily
+#   - challenges
+#
+# For pratical reasons, editing this option need a server restart to take effect.
+command-aliases: []
+
+# You can define aliases for player subcommands (/dailyquests ...) here.
+#
+# Important:
+# - These aliases apply only to the player command (/dailyquests), not to admin commands.
+# - Subcommand aliases allow players to use alternative names like:
+#     /dailyquests list   -> /dailyquests show
+#     /dailyquests refresh     -> /dailyquests reroll
+# - Before adding an alias, make sure it’s not already used by another subcommand or plugin.
+#
+# Format: map where keys are the original subcommands, and values are lists of aliases.
+# Example:
+# subcommand-aliases:
+#   show:
+#     - list
+#     - view
+#   reroll:
+#     - re
+#     - refresh
+#
+# For practical reasons, editing this option need a server restart to take effect.
+subcommand-aliases:
+  me: []
+  show: []
+  reroll: []
