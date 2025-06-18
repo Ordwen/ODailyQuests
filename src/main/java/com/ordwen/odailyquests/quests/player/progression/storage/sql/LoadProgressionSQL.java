@@ -2,6 +2,7 @@ package com.ordwen.odailyquests.quests.player.progression.storage.sql;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
+import com.ordwen.odailyquests.configuration.essentials.Logs;
 import com.ordwen.odailyquests.configuration.essentials.PlayerDataLoadDelay;
 import com.ordwen.odailyquests.configuration.essentials.QuestsPerCategory;
 import com.ordwen.odailyquests.enums.SQLQuery;
@@ -118,7 +119,9 @@ public class LoadProgressionSQL extends ProgressionLoader {
             playerQuests.setTotalAchievedQuestsByCategory(categoryStats);
 
             activeQuests.put(playerName, playerQuests);
-            PluginLogger.info(playerName + "'s quests have been loaded.");
+            if (Logs.isEnabled()) {
+                PluginLogger.info(playerName + "'s quests have been loaded.");
+            }
 
             sendQuestStatusMessage(player, achievedQuests, playerQuests);
         }

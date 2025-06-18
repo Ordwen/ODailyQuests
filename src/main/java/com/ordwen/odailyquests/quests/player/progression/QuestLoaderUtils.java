@@ -94,8 +94,9 @@ public class QuestLoaderUtils {
         if (msg != null) player.sendMessage(msg);
 
         activeQuests.put(playerName, playerQuests);
-        PluginLogger.fine(playerName + " inserted into the array.");
-        PluginLogger.info(playerName + "'s quests have been renewed.");
+        if (Logs.isEnabled()) {
+            PluginLogger.info(playerName + "'s quests have been renewed.");
+        }
 
         Debugger.write("Quests of player " + playerName + " have been renewed.");
     }
