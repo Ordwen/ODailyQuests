@@ -29,11 +29,13 @@ public class PlayerCompleter implements TabCompleter {
             for (PlayerCommandBase cmd : commandRegistry.getCommandHandlers()) {
                 if (!sender.hasPermission(cmd.getPermission())) continue;
 
-                // Main command name
-                suggestions.add(cmd.getName());
-
-                // Aliases
                 final List<String> aliases = CommandAliases.getSubcommandAliases(cmd.getName());
+                if (CommandAliases.isKeepingOnlyAliases() && !aliases.isEmpty()) {
+                    suggestions.addAll(aliases);
+                    continue;
+                }
+
+                suggestions.add(cmd.getName());
                 suggestions.addAll(aliases);
             }
 

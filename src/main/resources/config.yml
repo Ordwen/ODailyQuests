@@ -345,3 +345,7 @@ subcommand-aliases:
   me: []
   show: []
   reroll: []
+
+# If you want to keep only the aliases in the tab completion of the subcommands.
+# The original command will not be displayed in the tab completion, BUT the player will still be able to use it.
+keep_only_aliases_in_completion: false

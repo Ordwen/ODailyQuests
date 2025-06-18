@@ -16,6 +16,8 @@ public class CommandAliases implements IConfigurable {
 
     private final ConfigurationFile configurationFile;
 
+    private boolean isKeepingOnlyAliases = false;
+
     public CommandAliases(ConfigurationFile configurationFile) {
         this.configurationFile = configurationFile;
     }
@@ -26,6 +28,8 @@ public class CommandAliases implements IConfigurable {
         for (String alias : aliases) {
             registerAlias(alias);
         }
+
+        isKeepingOnlyAliases = configurationFile.getConfig().getBoolean("keep_only_aliases_in_completion", false);
     }
 
     private void registerAlias(String alias) {
@@ -51,11 +55,19 @@ public class CommandAliases implements IConfigurable {
         return section.getStringList(subcommandName.toLowerCase());
     }
 
+    private boolean isKeepingOnlyAliasesInternal() {
+        return isKeepingOnlyAliases;
+    }
+
     private static CommandAliases getInstance() {
         return ConfigFactory.getConfig(CommandAliases.class);
     }
 
     public static List<String> getSubcommandAliases(String subcommandName) {
         return getInstance().getSubcommandAliasesInternal(subcommandName);
+    }
+
+    public static boolean isKeepingOnlyAliases() {
+        return getInstance().isKeepingOnlyAliasesInternal();
     }
 }
