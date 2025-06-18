@@ -12,14 +12,6 @@ import org.bukkit.entity.Player;
 public interface PlayerCommand {
 
     /**
-     * Executes the command logic when the command is invoked by a player.
-     *
-     * @param player the player executing the command
-     * @param args   the arguments passed to the command
-     */
-    void execute(Player player, String[] args);
-
-    /**
      * Gets the name of the command. This is used as the subcommand identifier (e.g., {@code /command <name>}).
      *
      * @return the subcommand name
@@ -32,4 +24,12 @@ public interface PlayerCommand {
      * @return the permission node as a string
      */
     String getPermission();
+
+    /**
+     * Executes the command logic when the command is invoked by a player.
+     *
+     * @param player the player executing the command
+     * @param args   the arguments passed to the command
+     */
+    void execute(Player player, String[] args);
 }

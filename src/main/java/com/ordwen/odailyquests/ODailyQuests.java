@@ -7,6 +7,7 @@ import com.ordwen.odailyquests.api.commands.player.PlayerCommandRegistry;
 import com.ordwen.odailyquests.api.quests.QuestTypeRegistry;
 import com.ordwen.odailyquests.commands.admin.convert.ConvertCommand;
 import com.ordwen.odailyquests.commands.admin.handlers.*;
+import com.ordwen.odailyquests.commands.player.handlers.MeCommand;
 import com.ordwen.odailyquests.commands.player.handlers.PRerollCommand;
 import com.ordwen.odailyquests.commands.player.handlers.PShowCommand;
 import com.ordwen.odailyquests.configuration.essentials.CheckForUpdate;
@@ -133,7 +134,7 @@ public final class ODailyQuests extends JavaPlugin {
         registerSubCommands();
 
         /* Load main commands */
-        getCommand("dquests").setExecutor(new PlayerCommands(interfacesManager, API.getPlayerCommandRegistry()));
+        getCommand("dquests").setExecutor(new PlayerCommands(API.getPlayerCommandRegistry()));
         getCommand("dqadmin").setExecutor(new AdminCommands(this, API.getAdminCommandRegistry()));
 
         /* Load Tab Completers */
@@ -232,6 +233,7 @@ public final class ODailyQuests extends JavaPlugin {
         final PlayerCommandRegistry playerCommandRegistry = API.getPlayerCommandRegistry();
 
         playerCommandRegistry.registerCommand(new PShowCommand(interfacesManager.getQuestsInterfaces()));
+        playerCommandRegistry.registerCommand(new MeCommand(interfacesManager.getPlayerQuestsInterface()));
         playerCommandRegistry.registerCommand(new PRerollCommand());
 
         final AdminCommandRegistry adminCommandRegistry = API.getAdminCommandRegistry();
