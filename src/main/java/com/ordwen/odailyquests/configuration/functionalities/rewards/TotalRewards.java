@@ -42,7 +42,7 @@ public class TotalRewards implements IConfigurable {
             for (String key : globalSection.getKeys(false)) {
                 final int questCount = Integer.parseInt(key);
                 final ConfigurationSection rewardSection = globalSection.getConfigurationSection(key);
-                final Reward reward = rewardLoader.getRewardFromSection(rewardSection, "total_rewards.yml", key);
+                final Reward reward = rewardLoader.getRewardFromSection(rewardSection, "totalRewards.yml", key);
                 globalTotalRewards.put(questCount, reward);
             }
         }
@@ -57,7 +57,7 @@ public class TotalRewards implements IConfigurable {
                 for (String key : categoryRewardsSection.getKeys(false)) {
                     final int questCount = Integer.parseInt(key);
                     final ConfigurationSection rewardSection = categoryRewardsSection.getConfigurationSection(key);
-                    final Reward reward = rewardLoader.getRewardFromSection(rewardSection, "total_rewards.yml", key);
+                    final Reward reward = rewardLoader.getRewardFromSection(rewardSection, "totalRewards.yml", key);
                     categoryRewards.put(questCount, reward);
                 }
                 categoryTotalRewards.put(category, categoryRewards);

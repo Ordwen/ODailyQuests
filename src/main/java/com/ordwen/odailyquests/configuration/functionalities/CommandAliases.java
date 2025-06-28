@@ -24,7 +24,7 @@ public class CommandAliases implements IConfigurable {
 
     @Override
     public void load() {
-        final List<String> aliases = configurationFile.getConfig().getStringList("command-aliases");
+        final List<String> aliases = configurationFile.getConfig().getStringList("command_aliases");
         for (String alias : aliases) {
             registerAlias(alias);
         }
@@ -49,7 +49,7 @@ public class CommandAliases implements IConfigurable {
     }
 
     private List<String> getSubcommandAliasesInternal(String subcommandName) {
-        final ConfigurationSection section = configurationFile.getConfig().getConfigurationSection("subcommand-aliases");
+        final ConfigurationSection section = configurationFile.getConfig().getConfigurationSection("subcommand_aliases");
         if (section == null) return List.of();
 
         return section.getStringList(subcommandName.toLowerCase());
