@@ -29,13 +29,13 @@
 # ==============================================================
 quests:
   1:
-    name: "&aCobblestone"
-    menu_item: COBBLESTONE
+    name: "&aStone"
+    menu_item: STONE
     description:
-      - "&bMine 32 cobblestones."
+      - "&bMine 32 stones."
       - "&bWin &c500$&b."
     quest_type: BREAK
-    required: COBBLESTONE
+    required: STONE
     required_amount: 32
     reward:
       reward_type: MONEY

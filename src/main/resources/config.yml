@@ -180,7 +180,7 @@ progress_bar:
 # ===========================================================
 
 # All blocks that have been placed by a player will not count towards the progress of a BREAK quest.
-store_placed_blocks: true
+store_placed_blocks: false
 
 # All blocks that have been broken by a player will not count towards the progress of a PLACE quest.
 #
@@ -257,9 +257,9 @@ interfaces:
 #
 # You can also use prefixes/suffixes to disable multiple worlds at once with the "?" character.
 # For example, "?_survival" will disable all worlds ending with "_survival".
-disabled_worlds:
-  - "world_nether"
-  - "world_the_end"
+disabled_worlds: []
+  # - "world_nether"
+  # - "world_the_end"
 
 # ===========================================================
 # INTEGRATIONS - Functionalities related to other plugins
@@ -289,7 +289,7 @@ disable_spawners_progression: false
 take_items_for_get_quests: false
 
 # Determines if the quest can be rerolled even if it has already been completed, when using the reroll command.
-reroll_only_if_not_achieved: true
+reroll_only_if_not_achieved: false
 
 # If you are using MythicMobs, you can set this parameter to "true" to share the mobs between players.
 #
