@@ -15,10 +15,10 @@ public class TotalRewardsFile extends APluginFile {
 
     @Override
     public void load() {
-        file = new File(plugin.getDataFolder(), "total_rewards.yml");
+        file = new File(plugin.getDataFolder(), "totalRewards.yml");
 
         if (!file.exists()) {
-            plugin.saveResource("total_rewards.yml", false);
+            plugin.saveResource("totalRewards.yml", false);
             PluginLogger.info("Total rewards file created.");
         }
 

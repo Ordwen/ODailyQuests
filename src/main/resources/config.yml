@@ -314,12 +314,12 @@ use_rosestacker: false
 #   https://ordwenplugins.gitbook.io/odailyquests/commands/player-commands#aliases
 #
 # Format: a list of strings. Example:
-# command-aliases:
+# command_aliases:
 #   - daily
 #   - challenges
 #
 # For pratical reasons, editing this option need a server restart to take effect.
-command-aliases: []
+command_aliases: []
 
 # You can define aliases for player subcommands (/dailyquests ...) here.
 #
@@ -332,7 +332,7 @@ command-aliases: []
 #
 # Format: map where keys are the original subcommands, and values are lists of aliases.
 # Example:
-# subcommand-aliases:
+# subcommand_aliases:
 #   show:
 #     - list
 #     - view
@@ -341,7 +341,7 @@ command-aliases: []
 #     - refresh
 #
 # For practical reasons, editing this option need a server restart to take effect.
-subcommand-aliases:
+subcommand_aliases:
   me: []
   show: []
   reroll: []
