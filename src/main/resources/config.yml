@@ -182,19 +182,15 @@ progress_bar:
 # All blocks that have been placed by a player will not count towards the progress of a BREAK quest.
 store_placed_blocks: false
 
+# All items dropped by a player will not count towards the progress of a PICKUP quest.
+store_dropped_items: false
+
 # All blocks that have been broken by a player will not count towards the progress of a PLACE quest.
 #
 # Warning: this option adds an NBT tag to the item(s) dropped by the block.
 # This means that its signature changes, and it will no longer be possible to stack them with unaffected items of the same type.
 # However, these items are still normally usable.
 store_broken_blocks: false
-
-# All items dropped by a player will not count towards the progress of a PICKUP quest.
-#
-# Warning: this option adds an NBT tag to the item dropped by the player.
-# This means that its signature changes, and it will no longer be possible to stack them with unaffected items of the same type.
-# However, these items are still normally usable.
-store_dropped_items: false
 
 # ===========================================================
 # CUSTOM ITEMS SUPPORT
