@@ -156,7 +156,6 @@ public class QuestsInterfaces {
             itemMeta.setLore(quest.getQuestDesc());
 
             itemMeta.getPersistentDataContainer().set(requiredKey, PersistentDataType.STRING, quest.getRequiredAmountRaw());
-
             itemStack.setItemMeta(itemMeta);
         }
         return itemStack;
@@ -199,23 +198,21 @@ public class QuestsInterfaces {
 
                 final List<String> lore = itemMeta.getLore();
                 if (lore != null) {
-                    lore.replaceAll(s -> s.replace("%progress%", String.valueOf(0)));
-                    lore.replaceAll(s -> s.replace("%progressBar%", getProgressBar(required)));
-                    lore.replaceAll(s -> s.replace("%required%", required));
-                    lore.replaceAll(s -> s.replace("%drawIn%", "~"));
-                    lore.replaceAll(s -> TextFormatter.format(player, s));
-                    itemMeta.setLore(lore);
+                    List<String> updatedLore = new ArrayList<>(lore);
+                    updatedLore.replaceAll(s -> s.replace("%progress%", String.valueOf(0)));
+                    updatedLore = safeReplaceAll(updatedLore, "%progressBar%", getProgressBar(required));
+                    updatedLore = safeReplaceAll(updatedLore, "%required%", required);
+                    updatedLore.replaceAll(s -> s.replace("%drawIn%", "~"));
+                    updatedLore.replaceAll(s -> TextFormatter.format(player, s));
+                    itemMeta.setLore(updatedLore);
                 }
 
                 if (itemMeta.hasDisplayName()) {
                     String displayName = itemMeta.getDisplayName();
-
-                    displayName = displayName
-                            .replace("%progress%", String.valueOf(0))
-                            .replace("%progressBar%", getProgressBar(required))
-                            .replace("%required%", required)
-                            .replace("%drawIn%", "~");
-
+                    displayName = displayName.replace("%progress%", String.valueOf(0));
+                    displayName = safeReplace(displayName, "%progressBar%", getProgressBar(required));
+                    displayName = safeReplace(displayName, "%required%", required);
+                    displayName = displayName.replace("%drawIn%", "~");
                     displayName = TextFormatter.format(player, displayName);
                     itemMeta.setDisplayName(displayName);
                 }
@@ -224,6 +221,17 @@ public class QuestsInterfaces {
             }
         }
         return inventory;
+    }
+
+    private String safeReplace(String input, String placeholder, String value) {
+        return value != null ? input.replace(placeholder, value) : input;
+    }
+
+    private List<String> safeReplaceAll(List<String> list, String placeholder, String value) {
+        if (value == null) return list;
+        final List<String> mutable = new ArrayList<>(list);
+        mutable.replaceAll(s -> s.replace(placeholder, value));
+        return mutable;
     }
 
     /**
@@ -235,6 +243,10 @@ public class QuestsInterfaces {
      * @return progress bar.
      */
     private String getProgressBar(String requiredAmountRaw) {
+        if (requiredAmountRaw == null || requiredAmountRaw.isEmpty()) {
+            return ProgressBar.getProgressBar(0, 1);
+        }
+
         if (requiredAmountRaw.contains("-")) {
             return ProgressBar.getProgressBar(0, 1);
         }
