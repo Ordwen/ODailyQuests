@@ -144,29 +144,44 @@ public class QuestCondition {
         if (section == null) return conditions;
 
         for (String key : section.getKeys(false)) {
-            ConfigurationSection conditionSection = section.getConfigurationSection(key);
-            if (conditionSection == null) continue;
-
-            String placeholder = conditionSection.getString("placeholder");
-            String operatorStr = conditionSection.getString("operator");
-            String expectedValue = conditionSection.getString("expected");
-            String errorMessage = conditionSection.getString("error_message", "Condition not met");
-
-            if (placeholder == null || operatorStr == null || expectedValue == null) {
-                PluginLogger.error("Invalid quest condition configuration: missing required fields");
-                continue;
+            QuestCondition condition = createConditionFromSection(section.getConfigurationSection(key), key);
+            if (condition != null) {
+                conditions.add(condition);
             }
-
-            ConditionOperator operator = ConditionOperator.fromString(operatorStr);
-            if (operator == null) {
-                PluginLogger.error("Invalid operator in quest condition: " + operatorStr);
-                continue;
-            }
-
-            conditions.add(new QuestCondition(placeholder, operator, expectedValue, errorMessage));
         }
 
         return conditions;
+    }
+
+    /**
+     * Creates a QuestCondition from a configuration section.
+     *
+     * @param conditionSection the configuration section for the condition
+     * @param key the key of the condition
+     * @return the created QuestCondition, or null if invalid
+     */
+    private static QuestCondition createConditionFromSection(ConfigurationSection conditionSection, String key) {
+        if (conditionSection == null) {
+            return null;
+        }
+
+        String placeholder = conditionSection.getString("placeholder");
+        String operatorStr = conditionSection.getString("operator");
+        String expectedValue = conditionSection.getString("expected");
+        String errorMessage = conditionSection.getString("error_message", "Condition not met");
+
+        if (placeholder == null || operatorStr == null || expectedValue == null) {
+            PluginLogger.error("Invalid quest condition configuration: missing required fields");
+            return null;
+        }
+
+        ConditionOperator operator = ConditionOperator.fromString(operatorStr);
+        if (operator == null) {
+            PluginLogger.error("Invalid operator in quest condition: " + operatorStr);
+            return null;
+        }
+
+        return new QuestCondition(placeholder, operator, expectedValue, errorMessage);
     }
 
     /**
