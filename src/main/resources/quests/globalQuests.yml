@@ -546,3 +546,22 @@ quests:
       currency_label: "quests_coins" # name from the CoinsEngine configuration file
       currency_display_name: "&6&lQuests Coins" # name that will be used in the reward message to the player
       amount: 500
+  # Example quest that requires the player to be VIP
+  37:
+    name: "&6&l[VIP] &aDiamonds"
+    menu_item: DIAMOND
+    description:
+      - "&bGet 50 diamonds."
+      - "&bWin &c5000$&b."
+    quest_type: GET
+    required: DIAMOND
+    required_amount: 50
+    conditions:
+      vip_condition:
+        placeholder: "%luckperms_in_group_vip%"
+        operator: "equals"
+        expected: "true"
+        error_message: "&cYou must be VIP to get this quest!"
+    reward:
+      reward_type: MONEY
+      amount: 5000
