@@ -10,8 +10,8 @@ import java.util.List;
 
 public class BasicQuest extends AbstractQuest {
 
-    public BasicQuest(int questIndex, String questName, String categoryName, List<String> questDesc, String questType, ItemStack menuItem, ItemStack achievedItem, int amountRequired, Reward reward, List<String> requiredWorlds, List<String> requiredRegions, boolean protectionBypass, boolean isUsingPlaceholders) {
-        super(questIndex, questName, categoryName, questDesc, questType, menuItem, achievedItem, amountRequired, reward, requiredWorlds, requiredRegions, protectionBypass, isUsingPlaceholders);
+    public BasicQuest(int questIndex, String questName, String categoryName, List<String> questDesc, String questType, ItemStack menuItem, ItemStack achievedItem, String requiredAmountRaw, Reward reward, List<String> requiredWorlds, List<String> requiredRegions, boolean protectionBypass, String requiredPermission, List<QuestCondition> conditions) {
+        super(questIndex, questName, categoryName, questDesc, questType, menuItem, achievedItem, requiredAmountRaw, reward, requiredWorlds, requiredRegions, protectionBypass, requiredPermission, conditions);
     }
 
     @Override
@@ -20,7 +20,7 @@ public class BasicQuest extends AbstractQuest {
     }
 
     @Override
-    public boolean canProgress(Event event) {
+    public boolean canProgress(Event event, Progression progression) {
         return false;
     }
 
