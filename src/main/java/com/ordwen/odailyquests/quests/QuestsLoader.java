@@ -2,13 +2,14 @@ package com.ordwen.odailyquests.quests;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.api.quests.QuestTypeRegistry;
+import com.ordwen.odailyquests.quests.conditions.QuestCondition;
 import com.ordwen.odailyquests.quests.getters.QuestItemGetter;
 import com.ordwen.odailyquests.quests.types.*;
 import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
 import com.ordwen.odailyquests.rewards.Reward;
 import com.ordwen.odailyquests.rewards.RewardLoader;
 import com.ordwen.odailyquests.rewards.RewardType;
-import com.ordwen.odailyquests.tools.ColorConvert;
+import com.ordwen.odailyquests.tools.TextFormatter;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
@@ -18,6 +19,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 public class QuestsLoader extends QuestItemGetter {
+
+    private static final String ACHIEVED_MENU_ITEM = "achieved_menu_item";
 
     private final RewardLoader rewardLoader = new RewardLoader();
     private final QuestTypeRegistry questTypeRegistry = ODailyQuests.INSTANCE.getAPI().getQuestTypeRegistry();
@@ -31,7 +34,7 @@ public class QuestsLoader extends QuestItemGetter {
      * @return the reward of the quest.
      */
     private Reward createReward(ConfigurationSection questSection, String fileName, String questIndex) {
-        if (!questSection.isConfigurationSection(".reward")) return new Reward(RewardType.NONE, 0);
+        if (!questSection.isConfigurationSection(".reward")) return new Reward(RewardType.NONE, 0, null);
         final ConfigurationSection rewardSection = questSection.getConfigurationSection(".reward");
 
         return rewardLoader.getRewardFromSection(rewardSection, fileName, questIndex);
@@ -48,14 +51,11 @@ public class QuestsLoader extends QuestItemGetter {
     private BasicQuest createBasicQuest(ConfigurationSection questSection, String fileName, int questIndex, String fileIndex) {
 
         /* quest name */
-        String questName = ColorConvert.convertColorCode(questSection.getString(".name"));
+        String questName = TextFormatter.format(questSection.getString(".name"));
 
         /* quest description */
         List<String> questDesc = questSection.getStringList(".description");
-        for (String string : questDesc) questDesc.set(questDesc.indexOf(string), ColorConvert.convertColorCode(string));
-
-        /* check if quest uses placeholders */
-        boolean usePlaceholders = questSection.getBoolean(".use_placeholders");
+        for (String string : questDesc) questDesc.set(questDesc.indexOf(string), TextFormatter.format(string));
 
         /* quest type */
         final String questType = questSection.getString(".quest_type");
@@ -65,8 +65,7 @@ public class QuestsLoader extends QuestItemGetter {
         }
 
         /* required amount */
-        int requiredAmount = !questSection.contains(".required_amount") ? 1 : questSection.getInt(".required_amount");
-        if (requiredAmount < 1) requiredAmount = 1;
+        final String requiredAmount = questSection.getString(".required_amount", "1");
 
         /* required worlds */
         final List<String> requiredWorlds = questSection.getStringList(".required_worlds");
@@ -76,6 +75,9 @@ public class QuestsLoader extends QuestItemGetter {
 
         /* protection bypass */
         final boolean protectionBypass = questSection.getBoolean(".protection_bypass");
+
+        /* required permission */
+        final String requiredPermission = questSection.getString(".required_permission");
 
         String presumedItem = questSection.getString(".menu_item");
         if (presumedItem == null) {
@@ -87,9 +89,9 @@ public class QuestsLoader extends QuestItemGetter {
         if (menuItem == null) return null;
 
         final ItemStack achievedItem;
-        if (questSection.isString("achieved_menu_item")) {
-            final String presumedAchievedItem = questSection.getString("achieved_menu_item");
-            achievedItem = getItemStackFromMaterial(presumedAchievedItem, fileName, fileIndex, "achieved_menu_item");
+        if (questSection.isString(ACHIEVED_MENU_ITEM)) {
+            final String presumedAchievedItem = questSection.getString(ACHIEVED_MENU_ITEM);
+            achievedItem = getItemStackFromMaterial(presumedAchievedItem, fileName, fileIndex, ACHIEVED_MENU_ITEM);
             if (achievedItem == null) return null;
         } else {
             achievedItem = menuItem;
@@ -98,8 +100,11 @@ public class QuestsLoader extends QuestItemGetter {
         /* reward */
         final Reward reward = createReward(questSection, fileName, fileIndex);
 
+        /* conditions */
+        final List<QuestCondition> conditions = QuestCondition.loadConditions(questSection.getConfigurationSection("conditions"));
+
         return new BasicQuest(questIndex, questName, fileName, questDesc, questType, menuItem,
-                achievedItem, requiredAmount, reward, requiredWorlds, requiredRegions, protectionBypass, usePlaceholders);
+                achievedItem, requiredAmount, reward, requiredWorlds, requiredRegions, protectionBypass, requiredPermission, conditions);
     }
 
     /**
@@ -112,7 +117,7 @@ public class QuestsLoader extends QuestItemGetter {
     public void loadQuests(FileConfiguration file, List<AbstractQuest> quests, String fileName) {
         final ConfigurationSection allQuestsSection = file.getConfigurationSection("quests");
         if (allQuestsSection == null) {
-            PluginLogger.error("Impossible to load " + fileName + " : there is no quests in " + fileName + " file !");
+            PluginLogger.error("Impossible to load " + fileName + ": there is no quests in " + fileName + " file!");
             return;
         }
 
