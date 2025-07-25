@@ -1,8 +1,10 @@
 package com.ordwen.odailyquests.tools.externals;
 
-import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.Buttons;
+import com.nexomc.nexo.api.NexoItems;
 import com.ordwen.odailyquests.configuration.integrations.ItemsAdderEnabled;
+import com.ordwen.odailyquests.configuration.integrations.NexoEnabled;
 import com.ordwen.odailyquests.configuration.integrations.OraxenEnabled;
+import com.ordwen.odailyquests.tools.ItemUtils;
 import com.ordwen.odailyquests.tools.Pair;
 import dev.lone.itemsadder.api.CustomStack;
 import io.th0rgal.oraxen.api.OraxenItems;
@@ -16,31 +18,56 @@ public abstract class ExternalItemGetter implements IExternalItemGetter {
 
     /**
      * Get an Oraxen item by its namespace.
+     *
      * @param namespace the namespace of the item
      * @return the ItemStack or null if it does not exist
      */
     @Override
     public Pair<String, ItemStack> getOraxenItem(String namespace) {
         if (!OraxenEnabled.isEnabled()) {
-            return new Pair<>("Oraxen is not enabled.", null);
+            return new Pair<>("Cannot find Oraxen. Is use_oraxen enabled in config?", null);
         }
 
-        if (!OraxenItems.exists(namespace)) {
-            return new Pair<>("The item " + namespace + " does not exist in Oraxen.", null);
+        try {
+            if (!OraxenItems.exists(namespace)) {
+                return new Pair<>("The item " + namespace + " does not exist in Oraxen.", null);
+            }
+
+            return new Pair<>("", OraxenItems.getItemById(namespace).build());
+        } catch (Exception e) {
+            return new Pair<>("Error getting Oraxen item " + namespace + ": " + e.getMessage(), null);
+        }
+    }
+
+    /**
+     * Get a Nexo item by its namespace.
+     *
+     * @param namespace the namespace of the item
+     * @return the ItemStack or null if it does not exist
+     */
+    @Override
+    public Pair<String, ItemStack> getNexoItem(String namespace) {
+        if (!NexoEnabled.isEnabled()) {
+            return new Pair<>("Cannot find Nexo. Is use_nexo enabled in config?", null);
         }
 
-        return new Pair<>("", OraxenItems.getItemById(namespace).build());
+        if (!NexoItems.exists(namespace)) {
+            return new Pair<>("The item " + namespace + " does not exist in Nexo.", null);
+        }
+
+        return new Pair<>("", NexoItems.itemFromId(namespace).build());
     }
 
     /**
      * Get an ItemsAdder item by its namespace.
+     *
      * @param namespace the namespace of the item
      * @return the ItemStack or null if it does not exist
      */
     @Override
     public Pair<String, ItemStack> getItemsAdderItem(String namespace) {
         if (!ItemsAdderEnabled.isEnabled()) {
-            return new Pair<>("ItemsAdder is not enabled.", null);
+            return new Pair<>("Cannot find ItemsAdder. Is use_itemsadder enabled in config?", null);
         }
 
         if (!namespace.contains(":")) {
@@ -56,6 +83,7 @@ public abstract class ExternalItemGetter implements IExternalItemGetter {
 
     /**
      * Get an MMOItems item by its namespace.
+     *
      * @param namespace the namespace of the item
      * @return the ItemStack or null if it does not exist
      */
@@ -86,11 +114,12 @@ public abstract class ExternalItemGetter implements IExternalItemGetter {
 
     /**
      * Get a custom head by its texture.
+     *
      * @param texture the texture of the head
      * @return the ItemStack textured or not
      */
     @Override
     public Pair<String, ItemStack> getCustomHead(String texture) {
-        return new Pair<>("", Buttons.getCustomHead(texture));
+        return new Pair<>("", ItemUtils.getCustomHead(texture));
     }
 }
