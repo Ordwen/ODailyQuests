@@ -54,6 +54,7 @@ repositories {
     maven { url = 'https://repo.magmaguy.com/releases/' }
     maven { url = 'https://repo.nightexpressdev.com/releases/' }
     maven { url = "https://repo.nexomc.com/releases/" }
+    maven { url = "https://repo.oraxen.com/releases" }
     maven { url = 'https://jitpack.io' }
 }
 
@@ -96,7 +97,7 @@ dependencies {
     compileOnly 'me.clip:placeholderapi:2.11.6'
 
     /* custom items */
-    compileOnly 'com.github.oraxen:oraxen:1.157.0'
+    compileOnly 'io.th0rgal:oraxen:1.191.0'
     compileOnly 'com.github.LoneDev6:API-ItemsAdder:3.6.3-beta-14'
     compileOnly 'com.nexomc:nexo:1.1.0'
     compileOnly 'net.Indyuce:MMOItems-API:6.9.2-SNAPSHOT'
