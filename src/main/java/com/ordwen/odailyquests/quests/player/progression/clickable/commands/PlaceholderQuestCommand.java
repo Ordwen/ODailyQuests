@@ -57,8 +57,8 @@ public class PlaceholderQuestCommand extends QuestCommand<PlaceholderQuest> {
     }
 
     private boolean validateNumericCondition(String placeholderValue) {
-        float currentValue = Float.parseFloat(placeholderValue);
-        float expectedValue = Float.parseFloat(quest.getExpectedValue());
+        float currentValue = Float.parseFloat(placeholderValue.replace(",", "."));
+        float expectedValue = Float.parseFloat(quest.getExpectedValue().replace(",", "."));
 
         return switch (quest.getConditionType()) {
             case GREATER_THAN -> currentValue > expectedValue;
