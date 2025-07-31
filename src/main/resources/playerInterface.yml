@@ -29,6 +29,11 @@ player_interface:
   # Available types : FILL, PLAYER_COMMAND, CONSOLE_COMMAND
   # Placeholders : %player%
   # More info on Wiki.
+  #
+  # SLOTS STARTS AT 1!
+
+  # Note: Items of type FILL will be displayed with an empty name and no lore, even if defined.
+  # If you want to display a name or lore, use PLAYER_COMMAND or CONSOLE_COMMAND types with an empty command list.
   # ========================================================
   quests: # set the position of quests items
     1: 12

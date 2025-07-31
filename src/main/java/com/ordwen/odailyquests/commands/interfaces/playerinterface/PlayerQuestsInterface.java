@@ -29,8 +29,8 @@ import java.util.regex.Pattern;
 
 public class PlayerQuestsInterface extends InterfaceItemGetter {
 
-    private static final String ERROR_OCCURRED = "An error occurred when loading the player interface.";
-    private static final String OUT_OF_BOUNDS = " is out of bounds.";
+    private static final String ERROR_OCCURRED = "An error occurred when loading the player interface. ";
+    private static final String OUT_OF_BOUNDS = " is out of bounds (slots must be between 1 and defined size).";
 
     private static final String PROGRESS = "%progress%";
     private static final String PROGRESS_BAR = "%progressBar%";
@@ -79,8 +79,7 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
     public void load() {
         final ConfigurationSection section = playerInterfaceFile.getConfig().getConfigurationSection("player_interface");
         if (section == null) {
-            PluginLogger.error(ERROR_OCCURRED);
-            PluginLogger.error("The playerInterface file is not correctly configured.");
+            PluginLogger.error(ERROR_OCCURRED + "The playerInterface file is not correctly configured.");
             return;
         }
 
@@ -88,8 +87,7 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
 
         final ConfigurationSection questsSection = section.getConfigurationSection("quests");
         if (questsSection == null) {
-            PluginLogger.error(ERROR_OCCURRED);
-            PluginLogger.error("The quests section is not defined in the playerInterface file.");
+            PluginLogger.error(ERROR_OCCURRED + "The quests section is not defined in the playerInterface file.");
             return;
         }
 
@@ -251,11 +249,10 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
      */
     private void addIntoBaseInventory(String element, List<Integer> slots, ItemStack item) {
         for (int slot : slots) {
-            if (slot >= 0 && slot <= size) {
+            if (slot > 0 && slot <= size) {
                 playerQuestsInventoryBase.setItem(slot - 1, item);
             } else {
-                PluginLogger.error(ERROR_OCCURRED);
-                PluginLogger.error("The slot defined for the item " + element + OUT_OF_BOUNDS);
+                PluginLogger.error(ERROR_OCCURRED + "The slot defined for the item " + element + OUT_OF_BOUNDS);
             }
         }
     }
@@ -517,14 +514,14 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
     private void placeItemInInventory(int questIndex, ItemStack itemStack, Inventory inventory) {
         final List<Integer> slots = slotQuests.get(questIndex);
         if (slots == null) {
-            PluginLogger.error(ERROR_OCCURRED + " Slot not defined for quest " + (questIndex + 1));
+            PluginLogger.error(ERROR_OCCURRED + "Slot not defined for quest " + (questIndex + 1));
             return;
         }
         for (int slot : slots) {
-            if (slot >= 0 && slot <= size) {
+            if (slot > 0 && slot <= size) {
                 inventory.setItem(slot - 1, itemStack);
             } else {
-                PluginLogger.error(ERROR_OCCURRED + " Slot " + slot + " for quest " + (questIndex + 1) + OUT_OF_BOUNDS);
+                PluginLogger.error(ERROR_OCCURRED + "Slot " + slot + " for quest " + (questIndex + 1) + OUT_OF_BOUNDS);
             }
         }
     }
@@ -542,8 +539,7 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
             final ItemStack itemCopy = entry.getValue().clone();
 
             if (slot < 0 || slot >= size) {
-                PluginLogger.error(ERROR_OCCURRED);
-                PluginLogger.error("A placeholder at slot " + slot + OUT_OF_BOUNDS);
+                PluginLogger.error(ERROR_OCCURRED + "An item with placeholders defined for slot " + (slot + 1) + OUT_OF_BOUNDS);
                 continue;
             }
 
