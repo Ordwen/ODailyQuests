@@ -15,6 +15,7 @@ import com.ordwen.odailyquests.events.listeners.integrations.itemsadder.CustomBl
 import com.ordwen.odailyquests.events.listeners.integrations.itemsadder.ItemsAdderLoadDataListener;
 import com.ordwen.odailyquests.events.listeners.integrations.nexo.NexoItemsLoadedListener;
 import com.ordwen.odailyquests.events.listeners.integrations.oraxen.OraxenItemsLoadedListener;
+import com.ordwen.odailyquests.events.listeners.item.custom.DropQueuePushListener;
 import com.ordwen.odailyquests.events.listeners.vote.VotifierListener;
 import com.ordwen.odailyquests.events.listeners.entity.*;
 import com.ordwen.odailyquests.events.listeners.entity.custom.mobs.EliteMobDeathListener;
@@ -134,6 +135,10 @@ public class EventsManager {
 
         if (PluginUtils.isPluginEnabled("Citizens")) {
             pluginManager.registerEvents(new CitizensHook(oDailyQuests.getInterfacesManager()), oDailyQuests);
+        }
+
+        if (PluginUtils.isPluginEnabled("eco")) {
+            pluginManager.registerEvents(new DropQueuePushListener(), oDailyQuests);
         }
     }
 }

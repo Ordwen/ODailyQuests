@@ -8,6 +8,7 @@ public enum QuestsPermissions {
 
     QUESTS_ADMIN("odailyquests.admin"),
 
+    QUESTS_PROGRESS("odailyquests.progress"),
     QUESTS_PLAYER_USE("odailyquests.use"),
     QUESTS_PLAYER_REROLL("odailyquests.reroll"),
     QUESTS_PLAYER_SHOW("odailyquests.show"),

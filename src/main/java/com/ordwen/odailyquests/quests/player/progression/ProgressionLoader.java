@@ -5,6 +5,7 @@ import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.essentials.JoinMessageDelay;
 import com.ordwen.odailyquests.configuration.essentials.QuestsPerCategory;
 import com.ordwen.odailyquests.enums.QuestsMessages;
+import com.ordwen.odailyquests.enums.QuestsPermissions;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.types.shared.EntityQuest;
@@ -33,7 +34,7 @@ public abstract class ProgressionLoader {
                 QuestsMessages.ALL_QUESTS_ACHIEVED_CONNECT.getMessage(player.getName()) :
                 QuestsMessages.QUESTS_IN_PROGRESS.getMessage(player.getName());
 
-        if (msg != null) {
+        if (msg != null && player.hasPermission(QuestsPermissions.QUESTS_PROGRESS.get())) {
             double delay = JoinMessageDelay.getDelay() * 20;
             ODailyQuests.morePaperLib.scheduling().entitySpecificScheduler(player).runDelayed(() -> player.sendMessage(msg), null, (long) delay);
         }

@@ -2,6 +2,7 @@ package com.ordwen.odailyquests.quests.player.progression;
 
 import com.ordwen.odailyquests.configuration.essentials.*;
 import com.ordwen.odailyquests.enums.QuestsMessages;
+import com.ordwen.odailyquests.enums.QuestsPermissions;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.categories.Category;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
@@ -91,7 +92,9 @@ public class QuestLoaderUtils {
         playerQuests.setTotalAchievedQuestsByCategory(totalAchievedQuestsByCategory);
 
         final String msg = QuestsMessages.QUESTS_RENEWED.getMessage(player);
-        if (msg != null) player.sendMessage(msg);
+        if (msg != null && player.hasPermission(QuestsPermissions.QUESTS_PROGRESS.get())) {
+            player.sendMessage(msg);
+        }
 
         activeQuests.put(playerName, playerQuests);
         if (Logs.isEnabled()) {
