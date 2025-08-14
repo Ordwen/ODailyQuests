@@ -229,10 +229,10 @@ public class PlayerProgressor {
             // check if type has changed
             final String previousType = pdc.getOrDefault(Antiglitch.PLACED_KEY, PersistentDataType.STRING, material.name());
             if (previousType.equals(material.name())) {
-                Debugger.write("BlockDropItemListener: onBlockDropItemEvent cancelled, material equal to previous type. Maybe BREAK type should be used instead?");
+                Debugger.write("PlayerProgressor: onBlockDropItemEvent cancelled, material equal to previous type. Maybe BREAK type should be used instead?");
                 return true;
             } else {
-                Debugger.write("BlockDropItemListener: onBlockDropItemEvent block type has changed (" + previousType + " -> " + material.name() + ").");
+                Debugger.write("PlayerProgressor: onBlockDropItemEvent block type has changed (" + previousType + " -> " + material.name() + ").");
             }
         }
         return false;
@@ -246,11 +246,11 @@ public class PlayerProgressor {
      * @param drops  list of dropped items
      */
     protected void handleDrops(Event event, Player player, List<Item> drops) {
-        Debugger.write("BlockDropItemListener: handleDrops summoned.");
+        Debugger.write("PlayerProgressor: handleDrops summoned.");
         for (Item item : drops) {
             final ItemStack droppedItem = item.getItemStack();
             final Material droppedMaterial = droppedItem.getType();
-            Debugger.write("BlockDropItemListener: handling drop: " + droppedMaterial + ".");
+            Debugger.write("PlayerProgressor: handling drop: " + droppedMaterial + ".");
 
             FarmingQuest.setCurrent(new ItemStack(droppedMaterial));
             setPlayerQuestProgression(event, player, droppedItem.getAmount(), "FARMING");
@@ -269,7 +269,7 @@ public class PlayerProgressor {
      */
     protected void storeBrokenBlockMetadata(Collection<? extends ItemStack> drops, Player player) {
         for (ItemStack drop : drops) {
-            Debugger.write("BlockDropItemListener: onBlockDropItemEvent storing broken block: " + drop.getType());
+            Debugger.write("PlayerProgressor: onBlockDropItemEvent storing broken block: " + drop.getType());
             final ItemMeta dropMeta = drop.getItemMeta();
             if (dropMeta == null) continue;
 

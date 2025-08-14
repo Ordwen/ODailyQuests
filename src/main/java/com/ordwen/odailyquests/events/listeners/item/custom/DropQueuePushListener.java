@@ -66,13 +66,15 @@ public class DropQueuePushListener extends PlayerProgressor implements Listener 
      */
     private boolean isAgeableAndFullyGrown(DropQueuePushEvent event, BlockData data, Material dataMaterial, Collection<? extends ItemStack> drops) {
         if (data instanceof Ageable ageable) {
-            Debugger.write("BlockDropItemListener: onBlockDropItemEvent ageable block: " + dataMaterial + ".");
+            Debugger.write("DropQueuePushListener: onBlockDropItemEvent ageable block: " + dataMaterial + ".");
 
             if (ageable.getAge() == ageable.getMaximumAge()) {
-                Debugger.write("BlockDropItemListener: onBlockDropItemEvent ageable block is mature.");
+                Debugger.write("DropQueuePushListener: onBlockDropItemEvent ageable block is mature.");
                 handleDrops(event, drops);
 
                 return true;
+            } else {
+                Debugger.write("DropQueuePushListener: onBlockDropItemEvent ageable block is not mature.");
             }
         }
         return false;
@@ -108,7 +110,7 @@ public class DropQueuePushListener extends PlayerProgressor implements Listener 
      */
     private void handleStoreBrokenBlocks(Collection<? extends ItemStack> drops, Player player, Material material) {
         if (material.isBlock() && Antiglitch.isStoreBrokenBlocks()) {
-            Debugger.write("BlockDropItemListener: onBlockDropItemEvent storing broken block.");
+            Debugger.write("DropQueuePushListener: onBlockDropItemEvent storing broken block.");
             storeBrokenBlockMetadata(drops, player);
         }
     }
