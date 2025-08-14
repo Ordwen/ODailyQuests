@@ -234,6 +234,8 @@ public class PlayerProgressor {
             } else {
                 Debugger.write("PlayerProgressor: onBlockDropItemEvent block type has changed (" + previousType + " -> " + material.name() + ").");
             }
+        }  else {
+            Debugger.write("BlockDropItemListener: onBlockDropItemEvent not storing placed blocks, or material is not a block.");
         }
         return false;
     }
