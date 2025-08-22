@@ -87,7 +87,7 @@ dependencies {
     compileOnly('net.citizensnpcs:citizens-main:2.0.35-SNAPSHOT') { exclude group: '*', module: '*' }
 
     /* mobs */
-    compileOnly 'io.lumine:Mythic-Dist:5.0.3-SNAPSHOT'
+    compileOnly 'io.lumine:Mythic-Dist:5.6.1'
     compileOnly 'com.magmaguy:EliteMobs:9.1.11'
 
     /* stackers */
