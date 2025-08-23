@@ -40,7 +40,7 @@ permissions:
     description: "Allows the player to use commands and see the player interface"
     default: op
   odailyquests.show:
-    description: "Allows the player to see all category interfarces"
+    description: "Allows the player to see all category interfaces"
     default: op
   odailyquests.reroll:
     description: "Allows the player to reroll quests"

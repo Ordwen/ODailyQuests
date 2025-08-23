@@ -26,7 +26,7 @@ public class Update230to300 extends ConfigUpdater {
             try {
                 config.save(configFile);
                 PluginLogger.warn("For stability reasons, the storage mode has been changed from H2 to SQLite.");
-                PluginLogger.warn("If you wish to migrate your data to SQLite, please use the converter (more information on the version changelog).");
+                PluginLogger.warn("The migration will be done automatically. If you encounter any issues, please contact support.");
             } catch (IOException e) {
                 PluginLogger.error("Error while saving the configuration file.");
                 PluginLogger.error(e.getMessage());

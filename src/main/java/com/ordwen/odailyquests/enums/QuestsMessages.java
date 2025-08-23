@@ -23,6 +23,9 @@ public enum QuestsMessages {
             &e/dqa customcomplete <player> <type> <amount> &a: complete a player quest from a custom type
             &e/dqa reset <quests/total> <player> &a: draw new quests for a player, or reset his total number of achieved quests.
             &e/dqa add total <player> <amount> &a: add a number of achieved quests to a player.
+            &e/dqa add total <category> <player> <amount> &a: add a number of achieved quests in a specific category to a player.
+            &e/dqa remove total <player> <amount> &a: remove a number of achieved quests to a player.
+            &e/dqa remove total <category> <player> <amount> &a: remove a number of achieved quests in a specific category to a player.
             &e/dqa reroll <player> <index> &a: draw a new quest for a player, at a specific index.
             &e/dqa show <player> &a: see quests of a player
             &e/dqa open <player> &a: force a player to open the quest interface
