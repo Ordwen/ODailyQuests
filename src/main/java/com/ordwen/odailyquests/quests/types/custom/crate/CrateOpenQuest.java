@@ -1,5 +1,6 @@
 package com.ordwen.odailyquests.quests.types.custom.crate;
 
+import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
@@ -30,6 +31,7 @@ public class CrateOpenQuest extends AbstractQuest {
     public boolean canProgress(@Nullable Event provided, Progression progression) {
         if (provided instanceof CrateOpenEvent event) {
             final String crate = event.getCrate().getName();
+            Debugger.write("CrateOpenQuest: canProgress checking crate " + crate);
             return expectedCrate.isEmpty() || expectedCrate.contains(crate.toLowerCase());
         }
 

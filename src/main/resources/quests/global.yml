@@ -594,3 +594,17 @@ quests:
       reward:
         reward_type: MONEY
         amount: 500
+
+    # example quest for CRATE_OPEN quest type
+    37:
+      name: "&6&lVote Crate"
+      menu_item: TRIPWIRE_HOOK
+      description:
+          - "&eOpen 3 Vote Crates."
+          - "&aWin &b5 000 &a$."
+      quest_type: CRATE_OPEN
+      required: "&6&lVote Crate"
+      required_amount: 3
+      reward:
+          reward_type: MONEY
+          amount: 5000
