@@ -410,8 +410,24 @@ quests:
       reward_type: MONEY
       amount: 50000
 
-  # example quest that is using Vault placeholders
+  # example quest that is using the required_regions parameter (with WorldGuard)
   25:
+    name: "&aCow Breeder"
+    menu_item: WHEAT
+    description:
+      - "&bBreed &e5 &bcows inside the &6Cow Farm&b region."
+      - "&bReward: &c$500&b."
+    quest_type: BREED
+    entity_type: COW
+    required_amount: 5
+    required_regions:
+      - cow_farm
+    reward:
+      reward_type: MONEY
+      amount: 500
+
+  # example quest that is using Vault placeholders
+  26:
     name: "Be rich"
     menu_item: PAPER
     description:
@@ -428,7 +444,7 @@ quests:
       amount: 50000
 
   # example quest that is using LuckPerms placeholders
-  26:
+  27:
     name: "Be a VIP"
     menu_item: GOLD_INGOT
     description:
@@ -446,7 +462,7 @@ quests:
         - "bc &6%player% &bis now a VIP!"
 
   # example quest that is using ItemsAdder
-  27:
+  28:
     name: "Get some Thanos dust"
     menu_item: "itemsadder:thanos_namespace:thanos_dust"
     description:
@@ -460,7 +476,7 @@ quests:
       amount: 50000
 
   # example quest that is using Oraxen
-  28:
+  29:
     name: "Get some Thanos dust"
     menu_item: "oraxen:thanos_dust"
     description:
@@ -474,7 +490,7 @@ quests:
       amount: 50000
 
   # example quest that is using MMOItems
-  29:
+  30:
     name: "Get some Thanos dust"
     menu_item: "mmoitems:thanos_category:thanos_dust"
     description:
@@ -488,7 +504,7 @@ quests:
       amount: 50000
 
   # example quest that is using a custom head
-  30:
+  31:
     name: "Get the Thanos head"
     menu_item: "customhead:8f217869a64e9f215d9cc44f5a8bd7d7ea08cd73d2f95b97dc78e3a38ae2fa23"
     description:
@@ -502,7 +518,7 @@ quests:
       amount: 50000
 
   # example quest that is using a custom model data
-  31:
+  32:
     name: "Get the Thanos head"
     menu_item: "custommodeldata:player_head:1234"
     description:
@@ -516,7 +532,7 @@ quests:
       amount: 50000
 
   # example quest that is using the achieved_menu_item parameter
-  32:
+  33:
     name: "&aStone"
     menu_item: STONE
     achieved_menu_item: "customhead:b5a3b49beec3ab23ae0b60dab56e9cc8fa16769a25830b5d8d6c46378f54430" # checkmark head
@@ -531,7 +547,7 @@ quests:
       amount: 500
 
   # example quest that is using the CoinsEngine reward type
-  33:
+  34:
     name: "&aStone"
     menu_item: STONE
     achieved_menu_item: "customhead:b5a3b49beec3ab23ae0b60dab56e9cc8fa16769a25830b5d8d6c46378f54430" # checkmark head
@@ -547,8 +563,8 @@ quests:
       currency_display_name: "&6&lQuests Coins" # name that will be used in the reward message to the player
       amount: 500
 
-    # example quest that is using required_permission parameter
-    34:
+    # example quest that is using required_permissions parameter
+    35:
       name: "&6&l[VIP] &aDiamonds"
       menu_item: DIAMOND
       description:
@@ -557,13 +573,13 @@ quests:
       quest_type: GET
       required: DIAMOND
       required_amount: 50
-      required_permission: "odailyquests.vip"
+      required_permissions: "odailyquests.vip"
       reward:
         reward_type: MONEY
         amount: 5000
 
     # example quest that is using a dynamic range for the required_amount
-    35:
+    36:
       name: "&aStone"
       menu_item: STONE
       description:
@@ -577,8 +593,8 @@ quests:
         amount: 500
 
     # example quest that is using the random_required parameter and a dynamic range for the required_amount
-    36:
-      name: "&a%displayName"
+    37:
+      name: "&a%displayName%"
       menu_item: STONE_PICKAXE
       description:
         - "&bMine %required% %displayName%."
@@ -596,7 +612,7 @@ quests:
         amount: 500
 
     # example quest for CRATE_OPEN quest type
-    37:
+    38:
       name: "&6&lVote Crate"
       menu_item: TRIPWIRE_HOOK
       description:

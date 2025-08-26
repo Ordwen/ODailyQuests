@@ -76,7 +76,7 @@ public class QuestsLoader extends QuestItemGetter {
         final boolean protectionBypass = questSection.getBoolean(".protection_bypass");
 
         /* required permission */
-        final String requiredPermission = questSection.getString(".required_permission");
+        final String requiredPermission = questSection.getString(".required_permissions");
 
         String presumedItem = questSection.getString(".menu_item");
         if (presumedItem == null) {
