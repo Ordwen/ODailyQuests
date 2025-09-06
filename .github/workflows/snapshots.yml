@@ -10,7 +10,6 @@ env:
   SNAPSHOT_BRANCH: 3.0.0
   JAVA_VERSION: '21'
 
-
 jobs:
   build-snapshot:
     runs-on: ubuntu-latest
@@ -43,16 +42,28 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Build (set Gradle version from CI)
-        run: ./gradlew clean build -x test
+      - name: Build (snapshot, shadowJar)
+        run: ./gradlew clean shadowJar -x test
         env:
           ORG_GRADLE_PROJECT_version: ${{ steps.meta.outputs.version }}
 
-      - name: Find JAR
-        id: findjar
+      - name: List built artifacts (debug)
         run: |
-          JAR=$(ls **/build/libs/*.jar | head -n1)
-          echo "jar=$JAR" >> $GITHUB_OUTPUT
+          echo "=== */build/libs contents ==="
+          find . -type f -path "*/build/libs/*" -maxdepth 1 -print | sed 's#^# -> #'
+          echo "================================"
+
+      - name: Collect JAR files
+        id: collect
+        run: |
+          FILES=$(find . -type f -path "*/build/libs/*.jar" \
+            ! -name "*-sources.jar" ! -name "*-javadoc.jar" -print | tr '\n' ' ')
+          if [ -z "$FILES" ]; then
+            echo "No JARs found under */build/libs/*.jar"
+            exit 1
+          fi
+          echo "files=$FILES" >> $GITHUB_OUTPUT
+          echo "Will upload: $FILES"
 
       - name: Create/Update prerelease (nightly)
         uses: softprops/action-gh-release@v2
@@ -65,7 +76,7 @@ jobs:
             Version: ${{ steps.meta.outputs.version }}
           draft: false
           prerelease: true
-          files: ${{ steps.findjar.outputs.jar }}
+          files: ${{ steps.collect.outputs.files }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -94,7 +105,7 @@ jobs:
             echo "No webhook configured, skipping Discord notification."
             exit 0
           fi
-          
+
           DESC="$(printf '%s\n\n**Download & notes:** %s' "$CHANGES" "$URL")"
           DESC="${DESC:0:1900}"
 
