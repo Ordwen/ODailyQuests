@@ -111,8 +111,8 @@ jobs:
           printf '\n__GH_LAST__\n' >> "$GITHUB_OUTPUT"
 
           printf 'body<<__GH_BODY__\n' >> "$GITHUB_OUTPUT"
-          printf '⚠️ Development snapshot (unsupported)\n' >> "$GITHUB_OUTPUT"
-          printf 'Commit: %s\n' "${{ github.sha }}" >> "$GITHUB_OUTPUT"
+          printf '⚠️ Development snapshot. Please report any issues you find.\n\n' >> "$GITHUB_OUTPUT"
+          printf 'Latest commit: %s\n' "${{ github.sha }}" >> "$GITHUB_OUTPUT"
           printf 'Version: %s\n\n' "${{ steps.meta.outputs.version }}" >> "$GITHUB_OUTPUT"
           printf '<details>\n' >> "$GITHUB_OUTPUT"
           printf '<summary><b>Changelog (%s commits)</b></summary>\n\n' "$COUNT" >> "$GITHUB_OUTPUT"
