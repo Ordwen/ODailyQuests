@@ -31,8 +31,8 @@ jobs:
         id: meta
         run: |
           SHA=$(git rev-parse --short HEAD)
-          echo "sha=$SHA" >> $GITHUB_OUTPUT
-          echo "version=3.0.0-SNAPSHOT+$SHA" >> $GITHUB_OUTPUT
+          echo "sha=$SHA" >> "$GITHUB_OUTPUT"
+          echo "version=3.0.0-SNAPSHOT+$SHA" >> "$GITHUB_OUTPUT"
 
       - name: Cache Gradle
         uses: actions/cache@v4
@@ -66,7 +66,7 @@ jobs:
             echo "No JARs found under */build/libs/*.jar"
             exit 1
           fi
-          echo "files=$FILES" >> $GITHUB_OUTPUT
+          echo "files=$FILES" >> "$GITHUB_OUTPUT"
           echo "Will upload: $FILES"
 
       - name: Fetch base branch
@@ -95,34 +95,29 @@ jobs:
 
       - name: Build changelogs
         id: changelog
+        shell: bash
         run: |
+          set -eo pipefail
           BASE=$(git merge-base origin/${{ env.BASE_BRANCH }} HEAD || true)
           if [ -z "$BASE" ]; then
             BASE=$(git rev-list --max-parents=0 HEAD | tail -n1)
           fi
 
-          {
-            echo "full<<__CHANGES_FULL__"
-            git log "$BASE..HEAD" --reverse --pretty=format:'- %h %s'
-            echo "__CHANGES_FULL__"
-          } >> "$GITHUB_OUTPUT"
+          printf 'full<<__GH_FULL__\n' >> "$GITHUB_OUTPUT"
+          git log "$BASE..HEAD" --reverse --pretty=format:'- %h %s' >> "$GITHUB_OUTPUT"
+          printf '\n__GH_FULL__\n' >> "$GITHUB_OUTPUT"
 
-          {
-            echo "last<<__CHANGES_LAST__"
-            git log -1 --pretty=format:'- %h %s' ${{ github.sha }}
-            echo "__CHANGES_LAST__"
-          } >> "$GITHUB_OUTPUT"
+          printf 'last<<__GH_LAST__\n' >> "$GITHUB_OUTPUT"
+          git log -1 --pretty=format:'- %h %s' ${{ github.sha }} >> "$GITHUB_OUTPUT"
+          printf '\n__GH_LAST__\n' >> "$GITHUB_OUTPUT"
 
-          {
-            echo "body<<__BODY__"
-            echo "⚠️ Development snapshot (unsupported)"
-            echo "Commit: ${{ github.sha }}"
-            echo "Version: ${{ steps.meta.outputs.version }}"
-            echo
-            echo "## Changes on ${{ env.SNAPSHOT_BRANCH }} since merge-base with ${{ env.BASE_BRANCH }}"
-            git log "$BASE..HEAD" --reverse --pretty=format:'- %h %s'
-            echo "__BODY__"
-          } >> "$GITHUB_OUTPUT"
+          printf 'body<<__GH_BODY__\n' >> "$GITHUB_OUTPUT"
+          printf '⚠️ Development snapshot (unsupported)\n' >> "$GITHUB_OUTPUT"
+          printf 'Commit: %s\n' "${{ github.sha }}" >> "$GITHUB_OUTPUT"
+          printf 'Version: %s\n\n' "${{ steps.meta.outputs.version }}" >> "$GITHUB_OUTPUT"
+          printf '## Changes on %s since merge-base with %s\n' "${{ env.SNAPSHOT_BRANCH }}" "${{ env.BASE_BRANCH }}" >> "$GITHUB_OUTPUT"
+          git log "$BASE..HEAD" --reverse --pretty=format:'- %h %s' >> "$GITHUB_OUTPUT"
+          printf '\n__GH_BODY__\n' >> "$GITHUB_OUTPUT"
 
       - name: Create/Update prerelease (nightly)
         uses: softprops/action-gh-release@v2
@@ -139,7 +134,7 @@ jobs:
       - name: Compute public release URL
         id: relurl
         run: |
-          echo "url=https://github.com/${GITHUB_REPOSITORY}/releases/tag/nightly-${{ env.SNAPSHOT_BRANCH }}" >> $GITHUB_OUTPUT
+          echo "url=https://github.com/${GITHUB_REPOSITORY}/releases/tag/nightly-${{ env.SNAPSHOT_BRANCH }}" >> "$GITHUB_OUTPUT"
 
       - name: Post Discord embed
         env:
