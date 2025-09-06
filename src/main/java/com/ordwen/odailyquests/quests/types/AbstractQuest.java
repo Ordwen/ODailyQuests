@@ -27,6 +27,7 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
     final List<String> questDesc;
     final String questType;
     final ItemStack menuItem;
+    final int menuItemAmount;
     final ItemStack achievedItem;
     final String requiredAmountRaw;
     final Reward reward;
@@ -47,6 +48,7 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
      * @param questDesc          the description of the quest.
      * @param questType          the type of the quest.
      * @param menuItem           the item used in the quest's menu.
+     * @param menuItemAmount     the amount of the menu item (default is 1).
      * @param achievedItem       the item awarded for completing the quest.
      * @param requiredAmountRaw  the required amount of items needed for the quest.
      * @param reward             the reward for completing the quest.
@@ -55,13 +57,14 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
      * @param protectionBypass   whether protection bypass is enabled for the quest.
      * @param requiredPermission the permission required to undertake the quest.
      */
-    protected AbstractQuest(int questIndex, String questName, String categoryName, List<String> questDesc, String questType, ItemStack menuItem, ItemStack achievedItem, String requiredAmountRaw, Reward reward, List<String> requiredWorlds, final List<String> requiredRegions, boolean protectionBypass, String requiredPermission) {
+    protected AbstractQuest(int questIndex, String questName, String categoryName, List<String> questDesc, String questType, ItemStack menuItem, int menuItemAmount, ItemStack achievedItem, String requiredAmountRaw, Reward reward, List<String> requiredWorlds, final List<String> requiredRegions, boolean protectionBypass, String requiredPermission) {
         this.questIndex = questIndex;
         this.questName = questName;
         this.categoryName = categoryName;
         this.questDesc = questDesc;
         this.questType = questType;
         this.menuItem = menuItem;
+        this.menuItemAmount = menuItemAmount;
         this.achievedItem = achievedItem;
         this.requiredAmountRaw = requiredAmountRaw;
         this.reward = reward;
@@ -85,6 +88,7 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
         this.questDesc = basicQuest.getQuestDesc();
         this.questType = basicQuest.getQuestType();
         this.menuItem = basicQuest.getMenuItem();
+        this.menuItemAmount = basicQuest.getMenuItemAmount();
         this.achievedItem = basicQuest.getAchievedItem();
         this.requiredAmountRaw = basicQuest.getRequiredAmountRaw();
         this.reward = basicQuest.getReward();
@@ -182,6 +186,15 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
      */
     public ItemStack getMenuItem() {
         return this.menuItem;
+    }
+
+    /**
+     * Get menu item amount.
+     *
+     * @return menu item amount.
+     */
+    public int getMenuItemAmount() {
+        return this.menuItemAmount;
     }
 
     /**

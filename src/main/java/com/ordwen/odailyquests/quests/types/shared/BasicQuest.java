@@ -26,6 +26,7 @@ public class BasicQuest extends AbstractQuest {
      * @param questDesc         the description of the quest.
      * @param questType         the type of the quest.
      * @param menuItem          the item used in the quest's menu.
+     * @param menuItemAmount    the amount of the menu item (default is 1).
      * @param achievedItem      the item awarded for completing the quest.
      * @param requiredAmountRaw the required amount of items needed for the quest.
      * @param reward            the reward for completing the quest.
@@ -34,8 +35,8 @@ public class BasicQuest extends AbstractQuest {
      * @param protectionBypass  whether protection bypass is enabled for the quest.
      * @param requiredPermission the permission required to undertake the quest.
      */
-    public BasicQuest(int questIndex, String questName, String categoryName, List<String> questDesc, String questType, ItemStack menuItem, ItemStack achievedItem, String requiredAmountRaw, Reward reward, List<String> requiredWorlds, List<String> requiredRegions, boolean protectionBypass, String requiredPermission) {
-        super(questIndex, questName, categoryName, questDesc, questType, menuItem, achievedItem, requiredAmountRaw, reward, requiredWorlds, requiredRegions, protectionBypass, requiredPermission);
+    public BasicQuest(int questIndex, String questName, String categoryName, List<String> questDesc, String questType, ItemStack menuItem, int menuItemAmount, ItemStack achievedItem, String requiredAmountRaw, Reward reward, List<String> requiredWorlds, List<String> requiredRegions, boolean protectionBypass, String requiredPermission) {
+        super(questIndex, questName, categoryName, questDesc, questType, menuItem, menuItemAmount, achievedItem, requiredAmountRaw, reward, requiredWorlds, requiredRegions, protectionBypass, requiredPermission);
     }
 
     /**

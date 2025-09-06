@@ -78,7 +78,8 @@ public class QuestsLoader extends QuestItemGetter {
         /* required permission */
         final String requiredPermission = questSection.getString(".required_permissions");
 
-        String presumedItem = questSection.getString(".menu_item");
+        /* menu item */
+        final String presumedItem = questSection.getString(".menu_item");
         if (presumedItem == null) {
             PluginLogger.configurationError(fileName, fileIndex, "menu_item", "The menu item is not defined.");
             return null;
@@ -87,6 +88,14 @@ public class QuestsLoader extends QuestItemGetter {
         final ItemStack menuItem = getItemStackFromMaterial(presumedItem, fileName, fileIndex, "menu_item");
         if (menuItem == null) return null;
 
+        /* menu item amount */
+        final int menuItemAmount = questSection.getInt(".menu_item_amount", 1);
+        if (menuItemAmount < 1 || menuItemAmount > 64) {
+            PluginLogger.configurationError(fileName, fileIndex, "menu_item_amount", "The menu item amount must be between 1 and 64.");
+            return null;
+        }
+
+        /* achieved menu item */
         final ItemStack achievedItem;
         if (questSection.isString(ACHIEVED_MENU_ITEM)) {
             final String presumedAchievedItem = questSection.getString(ACHIEVED_MENU_ITEM);
@@ -99,8 +108,7 @@ public class QuestsLoader extends QuestItemGetter {
         /* reward */
         final Reward reward = createReward(questSection, fileName, fileIndex);
 
-        return new BasicQuest(questIndex, questName, fileName, questDesc, questType, menuItem,
-                achievedItem, requiredAmount, reward, requiredWorlds, requiredRegions, protectionBypass, requiredPermission);
+        return new BasicQuest(questIndex, questName, fileName, questDesc, questType, menuItem, menuItemAmount, achievedItem, requiredAmount, reward, requiredWorlds, requiredRegions, protectionBypass, requiredPermission);
     }
 
     /**

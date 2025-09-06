@@ -406,6 +406,8 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
 
             configureItemMeta(itemMeta, quest, playerProgression, player, playerQuests);
             itemStack.setItemMeta(itemMeta);
+            itemStack.setAmount(quest.getMenuItemAmount());
+
             placeItemInInventory(i, itemStack, inventory);
 
             i++;
@@ -426,11 +428,11 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
     /**
      * Configure the ItemMeta of the item.
      *
-     * @param itemMeta          the item meta to configure.
-     * @param quest             the quest of the item.
-     * @param progression the player progression of the quest.
-     * @param player            the player.
-     * @param playerQuests      the player quests.
+     * @param itemMeta     the item meta to configure.
+     * @param quest        the quest of the item.
+     * @param progression  the player progression of the quest.
+     * @param player       the player.
+     * @param playerQuests the player quests.
      */
     private void configureItemMeta(ItemMeta itemMeta, AbstractQuest quest, Progression progression, Player player, PlayerQuests playerQuests) {
         final String displayName = TextFormatter.format(player, quest.getQuestName())
