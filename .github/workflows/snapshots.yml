@@ -65,6 +65,28 @@ jobs:
           echo "files=$FILES" >> $GITHUB_OUTPUT
           echo "Will upload: $FILES"
 
+      - name: Delete previous JAR assets on prerelease
+        uses: actions/github-script@v7
+        env:
+          TAG: nightly-${{ env.SNAPSHOT_BRANCH }}
+        with:
+          script: |
+            const tag = process.env.TAG;
+            const { owner, repo } = context.repo;
+            let release;
+            try {
+              release = await github.rest.repos.getReleaseByTag({ owner, repo, tag });
+            } catch (e) {
+              core.info(`No release found for tag ${tag} (first run?). Nothing to delete.`);
+              return;
+            }
+            for (const asset of release.data.assets) {
+              if (asset.name.endsWith('.jar')) {
+                core.info(`Deleting asset: ${asset.name} (${asset.id})`);
+                await github.rest.repos.deleteReleaseAsset({ owner, repo, asset_id: asset.id });
+              }
+            }
+
       - name: Create/Update prerelease (nightly)
         uses: softprops/action-gh-release@v2
         with:
