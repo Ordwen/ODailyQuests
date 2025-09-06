@@ -10,6 +10,7 @@ env:
   SNAPSHOT_BRANCH: 3.0.0
   JAVA_VERSION: '21'
 
+
 jobs:
   build-snapshot:
     runs-on: ubuntu-latest
@@ -79,7 +80,6 @@ jobs:
           echo "url=https://github.com/${GITHUB_REPOSITORY}/releases/tag/nightly-${{ env.SNAPSHOT_BRANCH }}" >> $GITHUB_OUTPUT
 
       - name: Post Discord embed
-        if: ${{ secrets.DISCORD_WEBHOOK_URL != '' }}
         env:
           WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
           VERSION: ${{ steps.meta.outputs.version }}
@@ -87,6 +87,11 @@ jobs:
           URL: ${{ steps.relurl.outputs.url }}
           CHANGES: ${{ steps.changelog.outputs.changes }}
         run: |
+          if [ -z "$WEBHOOK" ]; then
+            echo "No webhook configured, skipping Discord notification."
+            exit 0
+          fi
+          
           DESC="$(printf '%s\n\n**Download & notes:** %s' "$CHANGES" "$URL")"
           DESC="${DESC:0:1900}"
 
