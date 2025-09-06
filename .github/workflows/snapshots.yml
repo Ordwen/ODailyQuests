@@ -100,6 +100,7 @@ jobs:
         run: |
           set -eo pipefail
           RANGE="origin/${{ env.BASE_BRANCH }}..HEAD"
+          COUNT=$(git rev-list --count $RANGE || echo 0)
 
           printf 'full<<__GH_FULL__\n' >> "$GITHUB_OUTPUT"
           git log $RANGE --reverse --pretty=format:'- %h %s' >> "$GITHUB_OUTPUT" || true
@@ -110,12 +111,14 @@ jobs:
           printf '\n__GH_LAST__\n' >> "$GITHUB_OUTPUT"
 
           printf 'body<<__GH_BODY__\n' >> "$GITHUB_OUTPUT"
-          printf '⚠️ Development snapshot. Please report any issues you find.\n\n' >> "$GITHUB_OUTPUT"
+          printf '⚠️ Development snapshot (unsupported)\n' >> "$GITHUB_OUTPUT"
           printf 'Commit: %s\n' "${{ github.sha }}" >> "$GITHUB_OUTPUT"
           printf 'Version: %s\n\n' "${{ steps.meta.outputs.version }}" >> "$GITHUB_OUTPUT"
-          printf '## Changes on %s vs %s\n' "${{ env.SNAPSHOT_BRANCH }}" "${{ env.BASE_BRANCH }}" >> "$GITHUB_OUTPUT"
+          printf '<details>\n' >> "$GITHUB_OUTPUT"
+          printf '<summary><b>Changelog (%s commits)</b></summary>\n\n' "$COUNT" >> "$GITHUB_OUTPUT"
           git log $RANGE --reverse --pretty=format:'- %h %s' >> "$GITHUB_OUTPUT" || true
-          printf '\n__GH_BODY__\n' >> "$GITHUB_OUTPUT"
+          printf '\n</details>\n' >> "$GITHUB_OUTPUT"
+          printf '__GH_BODY__\n' >> "$GITHUB_OUTPUT"
 
       - name: Create/Update prerelease (nightly)
         uses: softprops/action-gh-release@v2
