@@ -6,6 +6,9 @@ on:
       - '3.0.0'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 env:
   SNAPSHOT_BRANCH: 3.0.0
   JAVA_VERSION: '21'
@@ -65,6 +68,24 @@ jobs:
           echo "files=$FILES" >> $GITHUB_OUTPUT
           echo "Will upload: $FILES"
 
+      - name: Get previous snapshot SHA from release
+        id: prev
+        uses: actions/github-script@v7
+        env:
+          TAG: nightly-${{ env.SNAPSHOT_BRANCH }}
+        with:
+          script: |
+            const tag = process.env.TAG;
+            const { owner, repo } = context.repo;
+            try {
+              const rel = await github.rest.repos.getReleaseByTag({ owner, repo, tag });
+              const body = rel.data.body || "";
+              const m = body.match(/LAST_SHA:\s*([0-9a-f]{7,40})/i);
+              core.setOutput('sha', m ? m[1] : '');
+            } catch {
+              core.setOutput('sha', '');
+            }
+
       - name: Delete previous JAR assets on prerelease
         uses: actions/github-script@v7
         env:
@@ -76,39 +97,55 @@ jobs:
             let release;
             try {
               release = await github.rest.repos.getReleaseByTag({ owner, repo, tag });
-            } catch (e) {
-              core.info(`No release found for tag ${tag} (first run?). Nothing to delete.`);
+            } catch {
               return;
             }
             for (const asset of release.data.assets) {
               if (asset.name.endsWith('.jar')) {
-                core.info(`Deleting asset: ${asset.name} (${asset.id})`);
                 await github.rest.repos.deleteReleaseAsset({ owner, repo, asset_id: asset.id });
               }
             }
+
+      - name: Build changelogs
+        id: changelog
+        run: |
+          CUR=${{ steps.meta.outputs.sha }}
+          PREV="${{ steps.prev.outputs.sha }}"
+          if [ -z "$PREV" ]; then
+            PREV=$(git rev-list --max-parents=0 HEAD | tail -n1)
+          fi
+          echo "full<<EOF" >> $GITHUB_OUTPUT
+          git log $PREV..HEAD --reverse --pretty=format:'- %h %s' >> $GITHUB_OUTPUT
+          echo "" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          echo "last<<EOF" >> $GITHUB_OUTPUT
+          git log -1 --pretty=format:'- %h %s' ${{ github.sha }} >> $GITHUB_OUTPUT
+          echo "" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          {
+            echo "body<<EOF"
+            echo "⚠️ Development snapshot (unsupported)"
+            echo "Commit: ${{ github.sha }}"
+            echo "Version: ${{ steps.meta.outputs.version }}"
+            echo
+            echo "## Changes"
+            git log $PREV..HEAD --reverse --pretty=format:'- %h %s'
+            echo
+            echo "<!-- LAST_SHA: ${CUR} -->"
+            echo "EOF"
+          } >> $GITHUB_OUTPUT
 
       - name: Create/Update prerelease (nightly)
         uses: softprops/action-gh-release@v2
         with:
           tag_name: nightly-${{ env.SNAPSHOT_BRANCH }}
           name: "Nightly ${{ env.SNAPSHOT_BRANCH }}"
-          body: |
-            ⚠️ Development snapshot (unsupported)
-            Commit: ${{ github.sha }}
-            Version: ${{ steps.meta.outputs.version }}
+          body: ${{ steps.changelog.outputs.body }}
           draft: false
           prerelease: true
           files: ${{ steps.collect.outputs.files }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build mini changelog (last 10 commits)
-        id: changelog
-        run: |
-          echo "changes<<EOF" >> $GITHUB_OUTPUT
-          git log -n 10 --pretty=format:'- %h %s' >> $GITHUB_OUTPUT
-          echo "" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Compute public release URL
         id: relurl
@@ -121,15 +158,12 @@ jobs:
           VERSION: ${{ steps.meta.outputs.version }}
           SHA: ${{ steps.meta.outputs.sha }}
           URL: ${{ steps.relurl.outputs.url }}
-          CHANGES: ${{ steps.changelog.outputs.changes }}
+          LAST: ${{ steps.changelog.outputs.last }}
         run: |
           if [ -z "$WEBHOOK" ]; then
-            echo "No webhook configured, skipping Discord notification."
             exit 0
           fi
-
-          DESC="$(printf '%s\n\n**Download & notes:** %s' "$CHANGES" "$URL")"
+          DESC="$(printf '%s\n\n**Download & notes:** %s' "$LAST" "$URL")"
           DESC="${DESC:0:1900}"
-
           curl -X POST -H "Content-Type: application/json" -d "$(jq -nc --arg v "$VERSION" --arg s "$SHA" --arg d "$DESC" --arg u "$URL" \
           '{embeds: [{title: ("ODailyQuests Snapshot " + $v), url: $u, description: $d, color: 16753920, footer: {text: ("Commit " + $s)}}]}')" "$WEBHOOK"
