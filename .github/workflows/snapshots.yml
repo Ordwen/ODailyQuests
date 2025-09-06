@@ -22,6 +22,11 @@ jobs:
       - uses: actions/checkout@v4
         with: { fetch-depth: 0 }
 
+      - name: Ensure full history
+        run: |
+          git fetch --no-tags --prune --unshallow || true
+          git fetch --no-tags --prune origin ${{ env.BASE_BRANCH }} --depth=0 || true
+
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -69,10 +74,6 @@ jobs:
           echo "files=$FILES" >> "$GITHUB_OUTPUT"
           echo "Will upload: $FILES"
 
-      - name: Fetch base branch
-        run: |
-          git fetch origin ${{ env.BASE_BRANCH }} --depth=1 || true
-
       - name: Delete previous JAR assets on prerelease
         uses: actions/github-script@v7
         env:
@@ -93,18 +94,15 @@ jobs:
               }
             }
 
-      - name: Build changelogs
+      - name: Build changelogs (only commits unique to branch)
         id: changelog
         shell: bash
         run: |
           set -eo pipefail
-          BASE=$(git merge-base origin/${{ env.BASE_BRANCH }} HEAD || true)
-          if [ -z "$BASE" ]; then
-            BASE=$(git rev-list --max-parents=0 HEAD | tail -n1)
-          fi
+          RANGE="origin/${{ env.BASE_BRANCH }}..HEAD"
 
           printf 'full<<__GH_FULL__\n' >> "$GITHUB_OUTPUT"
-          git log "$BASE..HEAD" --reverse --pretty=format:'- %h %s' >> "$GITHUB_OUTPUT"
+          git log $RANGE --reverse --pretty=format:'- %h %s' >> "$GITHUB_OUTPUT" || true
           printf '\n__GH_FULL__\n' >> "$GITHUB_OUTPUT"
 
           printf 'last<<__GH_LAST__\n' >> "$GITHUB_OUTPUT"
@@ -115,8 +113,8 @@ jobs:
           printf '⚠️ Development snapshot (unsupported)\n' >> "$GITHUB_OUTPUT"
           printf 'Commit: %s\n' "${{ github.sha }}" >> "$GITHUB_OUTPUT"
           printf 'Version: %s\n\n' "${{ steps.meta.outputs.version }}" >> "$GITHUB_OUTPUT"
-          printf '## Changes on %s since merge-base with %s\n' "${{ env.SNAPSHOT_BRANCH }}" "${{ env.BASE_BRANCH }}" >> "$GITHUB_OUTPUT"
-          git log "$BASE..HEAD" --reverse --pretty=format:'- %h %s' >> "$GITHUB_OUTPUT"
+          printf '## Changes on %s vs %s\n' "${{ env.SNAPSHOT_BRANCH }}" "${{ env.BASE_BRANCH }}" >> "$GITHUB_OUTPUT"
+          git log $RANGE --reverse --pretty=format:'- %h %s' >> "$GITHUB_OUTPUT" || true
           printf '\n__GH_BODY__\n' >> "$GITHUB_OUTPUT"
 
       - name: Create/Update prerelease (nightly)
