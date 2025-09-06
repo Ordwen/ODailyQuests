@@ -110,7 +110,7 @@ jobs:
           printf '\n__GH_LAST__\n' >> "$GITHUB_OUTPUT"
 
           printf 'body<<__GH_BODY__\n' >> "$GITHUB_OUTPUT"
-          printf '⚠️ Development snapshot (unsupported)\n' >> "$GITHUB_OUTPUT"
+          printf '⚠️ Development snapshot. Please report any issues you find.\n\n' >> "$GITHUB_OUTPUT"
           printf 'Commit: %s\n' "${{ github.sha }}" >> "$GITHUB_OUTPUT"
           printf 'Version: %s\n\n' "${{ steps.meta.outputs.version }}" >> "$GITHUB_OUTPUT"
           printf '## Changes on %s vs %s\n' "${{ env.SNAPSHOT_BRANCH }}" "${{ env.BASE_BRANCH }}" >> "$GITHUB_OUTPUT"
