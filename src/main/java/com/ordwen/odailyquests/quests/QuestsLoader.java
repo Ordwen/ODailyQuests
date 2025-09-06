@@ -90,8 +90,8 @@ public class QuestsLoader extends QuestItemGetter {
 
         /* menu item amount */
         final int menuItemAmount = questSection.getInt(".menu_item_amount", 1);
-        if (menuItemAmount < 1 || menuItemAmount > 64) {
-            PluginLogger.configurationError(fileName, fileIndex, "menu_item_amount", "The menu item amount must be between 1 and 64.");
+        if (menuItemAmount < 0 || menuItemAmount > 64) {
+            PluginLogger.configurationError(fileName, fileIndex, "menu_item_amount", "The menu item amount must be between 0 and 64.");
             return null;
         }
 

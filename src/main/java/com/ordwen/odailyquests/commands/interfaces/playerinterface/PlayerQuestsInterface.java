@@ -406,7 +406,13 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
 
             configureItemMeta(itemMeta, quest, playerProgression, player, playerQuests);
             itemStack.setItemMeta(itemMeta);
-            itemStack.setAmount(quest.getMenuItemAmount());
+
+            final int menuItemAmount = quest.getMenuItemAmount();
+            if (menuItemAmount == 0) {
+                itemStack.setAmount(playerProgression.getRequiredAmount());
+            } else {
+                itemStack.setAmount(menuItemAmount);
+            }
 
             placeItemInInventory(i, itemStack, inventory);
 
