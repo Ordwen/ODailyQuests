@@ -100,24 +100,29 @@ jobs:
           if [ -z "$BASE" ]; then
             BASE=$(git rev-list --max-parents=0 HEAD | tail -n1)
           fi
-          echo "full<<EOF" >> $GITHUB_OUTPUT
-          git log $BASE..HEAD --reverse --pretty=format:'- %h %s' >> $GITHUB_OUTPUT
-          echo "" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-          echo "last<<EOF" >> $GITHUB_OUTPUT
-          git log -1 --pretty=format:'- %h %s' ${{ github.sha }} >> $GITHUB_OUTPUT
-          echo "" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+
           {
-            echo "body<<EOF"
+            echo "full<<__CHANGES_FULL__"
+            git log "$BASE..HEAD" --reverse --pretty=format:'- %h %s'
+            echo "__CHANGES_FULL__"
+          } >> "$GITHUB_OUTPUT"
+
+          {
+            echo "last<<__CHANGES_LAST__"
+            git log -1 --pretty=format:'- %h %s' ${{ github.sha }}
+            echo "__CHANGES_LAST__"
+          } >> "$GITHUB_OUTPUT"
+
+          {
+            echo "body<<__BODY__"
             echo "⚠️ Development snapshot (unsupported)"
             echo "Commit: ${{ github.sha }}"
             echo "Version: ${{ steps.meta.outputs.version }}"
             echo
             echo "## Changes on ${{ env.SNAPSHOT_BRANCH }} since merge-base with ${{ env.BASE_BRANCH }}"
-            git log $BASE..HEAD --reverse --pretty=format:'- %h %s'
-            echo "EOF"
-          } >> $GITHUB_OUTPUT
+            git log "$BASE..HEAD" --reverse --pretty=format:'- %h %s'
+            echo "__BODY__"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Create/Update prerelease (nightly)
         uses: softprops/action-gh-release@v2
