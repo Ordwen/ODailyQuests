@@ -7,31 +7,13 @@ plugins {
 group = 'com.ordwen'
 version="3.0.0"
 
-// get the initial version from the project properties
-def initialVersion = project.hasProperty('version') ? project.version : '1.0.0'
-
-// get the current branch name
-def branchName = System.getenv("GIT_BRANCH") ?: 'SNAPSHOT'
-branchName = branchName.replaceFirst(/^origin\//, '')
-println "Branch: ${branchName}"
-
-// get Jenkins build number (if available)
-def buildNumber = System.getenv("BUILD_NUMBER") ?: "local"
-
-if (branchName.contains('master')) {
-    version = initialVersion // stable release
-} else if (branchName.contains('dev')) {
-    version = "${initialVersion}-SNAPSHOT"  // snapshot release
+def ciVersion = System.getenv("ORG_GRADLE_PROJECT_version")
+if (ciVersion != null && !ciVersion.trim().isEmpty()) {
+    version = ciVersion.trim()
+    println "Using CI-injected version: ${version}"
 } else {
-    version = "${initialVersion}-${branchName}"  // feature branch
+    println "Using local default version: ${version}"
 }
-
-// append build number for SNAPSHOT versions
-if (version.contains("SNAPSHOT") && buildNumber != "local") {
-    version = "${version}-b${buildNumber}"
-}
-
-println "Current version: ${version}"
 
 repositories {
     mavenCentral()
