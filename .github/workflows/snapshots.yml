@@ -11,6 +11,7 @@ permissions:
 
 env:
   SNAPSHOT_BRANCH: 3.0.0
+  BASE_BRANCH: master
   JAVA_VERSION: '21'
 
 jobs:
@@ -68,23 +69,9 @@ jobs:
           echo "files=$FILES" >> $GITHUB_OUTPUT
           echo "Will upload: $FILES"
 
-      - name: Get previous snapshot SHA from release
-        id: prev
-        uses: actions/github-script@v7
-        env:
-          TAG: nightly-${{ env.SNAPSHOT_BRANCH }}
-        with:
-          script: |
-            const tag = process.env.TAG;
-            const { owner, repo } = context.repo;
-            try {
-              const rel = await github.rest.repos.getReleaseByTag({ owner, repo, tag });
-              const body = rel.data.body || "";
-              const m = body.match(/LAST_SHA:\s*([0-9a-f]{7,40})/i);
-              core.setOutput('sha', m ? m[1] : '');
-            } catch {
-              core.setOutput('sha', '');
-            }
+      - name: Fetch base branch
+        run: |
+          git fetch origin ${{ env.BASE_BRANCH }} --depth=1 || true
 
       - name: Delete previous JAR assets on prerelease
         uses: actions/github-script@v7
@@ -109,13 +96,12 @@ jobs:
       - name: Build changelogs
         id: changelog
         run: |
-          CUR=${{ steps.meta.outputs.sha }}
-          PREV="${{ steps.prev.outputs.sha }}"
-          if [ -z "$PREV" ]; then
-            PREV=$(git rev-list --max-parents=0 HEAD | tail -n1)
+          BASE=$(git merge-base origin/${{ env.BASE_BRANCH }} HEAD || true)
+          if [ -z "$BASE" ]; then
+            BASE=$(git rev-list --max-parents=0 HEAD | tail -n1)
           fi
           echo "full<<EOF" >> $GITHUB_OUTPUT
-          git log $PREV..HEAD --reverse --pretty=format:'- %h %s' >> $GITHUB_OUTPUT
+          git log $BASE..HEAD --reverse --pretty=format:'- %h %s' >> $GITHUB_OUTPUT
           echo "" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
           echo "last<<EOF" >> $GITHUB_OUTPUT
@@ -128,10 +114,8 @@ jobs:
             echo "Commit: ${{ github.sha }}"
             echo "Version: ${{ steps.meta.outputs.version }}"
             echo
-            echo "## Changes"
-            git log $PREV..HEAD --reverse --pretty=format:'- %h %s'
-            echo
-            echo "<!-- LAST_SHA: ${CUR} -->"
+            echo "## Changes on ${{ env.SNAPSHOT_BRANCH }} since merge-base with ${{ env.BASE_BRANCH }}"
+            git log $BASE..HEAD --reverse --pretty=format:'- %h %s'
             echo "EOF"
           } >> $GITHUB_OUTPUT
 
