@@ -38,6 +38,7 @@ repositories {
     maven { url = 'https://repo.nexomc.com/releases/' }
     maven { url = 'https://repo.oraxen.com/releases' }
     maven { url = 'https://repo.auxilor.io/repository/maven-public/' }
+    maven { url = 'https://repo.fancyinnovations.com/releases' }
     maven { url = 'https://jitpack.io' }
 }
 
@@ -67,6 +68,7 @@ dependencies {
 
     /* npcs */
     compileOnly('net.citizensnpcs:citizens-main:2.0.35-SNAPSHOT') { exclude group: '*', module: '*' }
+    compileOnly 'de.oliver:FancyNpcs:2.7.0'
 
     /* mobs */
     compileOnly 'io.lumine:Mythic-Dist:5.6.1'

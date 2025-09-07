@@ -8,12 +8,13 @@ import com.ordwen.odailyquests.configuration.integrations.OraxenEnabled;
 import com.ordwen.odailyquests.events.listeners.crate.CrateOpenListener;
 import com.ordwen.odailyquests.events.listeners.customs.CustomFurnaceExtractListener;
 import com.ordwen.odailyquests.events.listeners.entity.custom.stackers.RoseStackerListener;
-import com.ordwen.odailyquests.events.listeners.integrations.citizens.CitizensHook;
+import com.ordwen.odailyquests.events.listeners.integrations.npcs.CitizensHook;
 import com.ordwen.odailyquests.events.listeners.integrations.customsuite.CropBreakListener;
 import com.ordwen.odailyquests.events.listeners.integrations.customsuite.FishingLootSpawnListener;
 import com.ordwen.odailyquests.events.listeners.integrations.itemsadder.CustomBlockBreakListener;
 import com.ordwen.odailyquests.events.listeners.integrations.itemsadder.ItemsAdderLoadDataListener;
 import com.ordwen.odailyquests.events.listeners.integrations.nexo.NexoItemsLoadedListener;
+import com.ordwen.odailyquests.events.listeners.integrations.npcs.FancyNpcsHook;
 import com.ordwen.odailyquests.events.listeners.integrations.oraxen.OraxenItemsLoadedListener;
 import com.ordwen.odailyquests.events.listeners.item.custom.DropQueuePushListener;
 import com.ordwen.odailyquests.events.listeners.vote.VotifierListener;
@@ -135,6 +136,10 @@ public class EventsManager {
 
         if (PluginUtils.isPluginEnabled("Citizens")) {
             pluginManager.registerEvents(new CitizensHook(oDailyQuests.getInterfacesManager()), oDailyQuests);
+        }
+
+        if (PluginUtils.isPluginEnabled("FancyNpcs")) {
+            pluginManager.registerEvents(new FancyNpcsHook(oDailyQuests.getInterfacesManager()), oDailyQuests);
         }
 
         if (PluginUtils.isPluginEnabled("eco")) {
