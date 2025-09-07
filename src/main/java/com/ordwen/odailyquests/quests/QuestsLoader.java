@@ -15,11 +15,14 @@ import org.bukkit.inventory.ItemStack;
 import com.ordwen.odailyquests.tools.PluginLogger;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
 import java.util.List;
 
 public class QuestsLoader extends QuestItemGetter {
 
     private static final String ACHIEVED_MENU_ITEM = "achieved_menu_item";
+    private static final String REQUIRED_PERMISSIONS = "required_permissions";
+    private static final String REQUIRED_PERMISSION = "required_permission";
 
     private final RewardLoader rewardLoader = new RewardLoader();
     private final QuestTypeRegistry questTypeRegistry = ODailyQuests.INSTANCE.getAPI().getQuestTypeRegistry();
@@ -50,10 +53,10 @@ public class QuestsLoader extends QuestItemGetter {
     private BasicQuest createBasicQuest(ConfigurationSection questSection, String fileName, int questIndex, String fileIndex) {
 
         /* quest name */
-        String questName = TextFormatter.format(questSection.getString(".name"));
+        final String questName = TextFormatter.format(questSection.getString(".name"));
 
         /* quest description */
-        List<String> questDesc = questSection.getStringList(".description");
+        final List<String> questDesc = questSection.getStringList(".description");
         for (String string : questDesc) questDesc.set(questDesc.indexOf(string), TextFormatter.format(string));
 
         /* quest type */
@@ -76,7 +79,16 @@ public class QuestsLoader extends QuestItemGetter {
         final boolean protectionBypass = questSection.getBoolean(".protection_bypass");
 
         /* required permission */
-        final String requiredPermission = questSection.getString(".required_permissions");
+        final List<String> requiredPermissions;
+        if (questSection.isString(REQUIRED_PERMISSIONS)) {
+            requiredPermissions = List.of(questSection.getString(REQUIRED_PERMISSIONS));
+        } else if (questSection.isList(REQUIRED_PERMISSIONS)) {
+            requiredPermissions = questSection.getStringList(REQUIRED_PERMISSIONS);
+        } else if (questSection.isString(REQUIRED_PERMISSION)) {
+            requiredPermissions = List.of(questSection.getString(REQUIRED_PERMISSION));
+        } else {
+            requiredPermissions = Collections.emptyList();
+        }
 
         /* menu item */
         final String presumedItem = questSection.getString(".menu_item");
@@ -108,7 +120,7 @@ public class QuestsLoader extends QuestItemGetter {
         /* reward */
         final Reward reward = createReward(questSection, fileName, fileIndex);
 
-        return new BasicQuest(questIndex, questName, fileName, questDesc, questType, menuItem, menuItemAmount, achievedItem, requiredAmount, reward, requiredWorlds, requiredRegions, protectionBypass, requiredPermission);
+        return new BasicQuest(questIndex, questName, fileName, questDesc, questType, menuItem, menuItemAmount, achievedItem, requiredAmount, reward, requiredWorlds, requiredRegions, protectionBypass, requiredPermissions);
     }
 
     /**

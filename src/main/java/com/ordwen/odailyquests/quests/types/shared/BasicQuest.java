@@ -33,10 +33,10 @@ public class BasicQuest extends AbstractQuest {
      * @param requiredWorlds    the worlds required for the quest.
      * @param requiredRegions   the regions required for the quest.
      * @param protectionBypass  whether protection bypass is enabled for the quest.
-     * @param requiredPermission the permission required to undertake the quest.
+     * @param requiredPermissions the permissions required to undertake the quest.
      */
-    public BasicQuest(int questIndex, String questName, String categoryName, List<String> questDesc, String questType, ItemStack menuItem, int menuItemAmount, ItemStack achievedItem, String requiredAmountRaw, Reward reward, List<String> requiredWorlds, List<String> requiredRegions, boolean protectionBypass, String requiredPermission) {
-        super(questIndex, questName, categoryName, questDesc, questType, menuItem, menuItemAmount, achievedItem, requiredAmountRaw, reward, requiredWorlds, requiredRegions, protectionBypass, requiredPermission);
+    public BasicQuest(int questIndex, String questName, String categoryName, List<String> questDesc, String questType, ItemStack menuItem, int menuItemAmount, ItemStack achievedItem, String requiredAmountRaw, Reward reward, List<String> requiredWorlds, List<String> requiredRegions, boolean protectionBypass, List<String> requiredPermissions) {
+        super(questIndex, questName, categoryName, questDesc, questType, menuItem, menuItemAmount, achievedItem, requiredAmountRaw, reward, requiredWorlds, requiredRegions, protectionBypass, requiredPermissions);
     }
 
     /**

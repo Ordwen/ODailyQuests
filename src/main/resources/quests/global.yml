@@ -573,7 +573,8 @@ quests:
       quest_type: GET
       required: DIAMOND
       required_amount: 50
-      required_permissions: "odailyquests.vip"
+      required_permissions:
+        - "odailyquests.vip"
       reward:
         reward_type: MONEY
         amount: 5000

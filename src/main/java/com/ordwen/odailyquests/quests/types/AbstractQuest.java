@@ -34,7 +34,7 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
     final List<String> requiredWorlds;
     final List<String> requiredRegions;
     final boolean protectionBypass;
-    final String requiredPermission;
+    final List<String> requiredPermissions;
 
     protected boolean isRandomRequired;
     protected final List<String> displayNames;
@@ -55,9 +55,9 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
      * @param requiredWorlds     the worlds required for the quest.
      * @param requiredRegions    the regions required for the quest.
      * @param protectionBypass   whether protection bypass is enabled for the quest.
-     * @param requiredPermission the permission required to undertake the quest.
+     * @param requiredPermissions the permissions required to undertake the quest.
      */
-    protected AbstractQuest(int questIndex, String questName, String categoryName, List<String> questDesc, String questType, ItemStack menuItem, int menuItemAmount, ItemStack achievedItem, String requiredAmountRaw, Reward reward, List<String> requiredWorlds, final List<String> requiredRegions, boolean protectionBypass, String requiredPermission) {
+    protected AbstractQuest(int questIndex, String questName, String categoryName, List<String> questDesc, String questType, ItemStack menuItem, int menuItemAmount, ItemStack achievedItem, String requiredAmountRaw, Reward reward, List<String> requiredWorlds, final List<String> requiredRegions, boolean protectionBypass, List<String> requiredPermissions) {
         this.questIndex = questIndex;
         this.questName = questName;
         this.categoryName = categoryName;
@@ -71,7 +71,7 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
         this.requiredWorlds = requiredWorlds;
         this.requiredRegions = requiredRegions;
         this.protectionBypass = protectionBypass;
-        this.requiredPermission = requiredPermission;
+        this.requiredPermissions = requiredPermissions;
 
         this.displayNames = new ArrayList<>();
     }
@@ -95,7 +95,7 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
         this.requiredWorlds = basicQuest.getRequiredWorlds();
         this.requiredRegions = basicQuest.getRequiredRegions();
         this.protectionBypass = basicQuest.isProtectionBypass();
-        this.requiredPermission = basicQuest.getRequiredPermission();
+        this.requiredPermissions = basicQuest.getRequiredPermissions();
 
         this.displayNames = new ArrayList<>();
     }
@@ -265,8 +265,8 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
      *
      * @return quest required permission.
      */
-    public String getRequiredPermission() {
-        return this.requiredPermission;
+    public List<String> getRequiredPermissions() {
+        return this.requiredPermissions;
     }
 
     /**
