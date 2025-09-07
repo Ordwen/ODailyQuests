@@ -2,8 +2,10 @@ package com.ordwen.odailyquests.quests.categories;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.QuestsPerCategory;
+import com.ordwen.odailyquests.configuration.essentials.SafetyMode;
 import com.ordwen.odailyquests.files.implementations.QuestsFiles;
 import com.ordwen.odailyquests.quests.QuestsLoader;
+import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -23,22 +25,24 @@ public class CategoriesLoader {
     public void loadCategories() {
         categories.clear();
 
+        final boolean safetyMode = SafetyMode.isSafetyModeEnabled();
+
         for (Map.Entry<String, Integer> entry : QuestsPerCategory.getAllAmounts().entrySet()) {
             final String categoryName = entry.getKey();
-            int requiredAmount = entry.getValue();
+            final int requiredAmount = entry.getValue();
 
             final Category category = new Category(categoryName);
             categories.put(categoryName, category);
 
             final FileConfiguration configFile = QuestsFiles.getQuestsConfigurationByCategory(categoryName);
-            if (configFile != null) {
-                questsLoader.loadQuests(configFile, category, categoryName);
-                if (!validateCategory(category, requiredAmount, categoryName)) {
-                    Bukkit.getPluginManager().disablePlugin(ODailyQuests.INSTANCE);
-                    return;
-                }
-            } else {
+            if (configFile == null) {
                 PluginLogger.error("Failed to load configuration file for " + categoryName + ". Plugin will be disabled.");
+                Bukkit.getPluginManager().disablePlugin(ODailyQuests.INSTANCE);
+                return;
+            }
+
+            questsLoader.loadQuests(configFile, category, categoryName);
+            if (!validateCategory(category, requiredAmount, categoryName, safetyMode)) {
                 Bukkit.getPluginManager().disablePlugin(ODailyQuests.INSTANCE);
                 return;
             }
@@ -53,16 +57,32 @@ public class CategoriesLoader {
      * @param categoryName   The name of the category (for logs).
      * @return true if valid, false otherwise.
      */
-    private boolean validateCategory(Category category, int requiredAmount, String categoryName) {
-        int totalQuests = category.size();
-        int noPermQuests = (int) category.stream().filter(q -> q.getRequiredPermission() == null).count();
+    private boolean validateCategory(Category category, int requiredAmount, String categoryName, boolean safetyMode) {
+        final int totalQuests = category.size();
+        final int publicQuests = (int) category
+                .stream()
+                .map(AbstractQuest::getRequiredPermissions)
+                .map(perms -> perms == null || perms.isEmpty())
+                .filter(Boolean::booleanValue)
+                .count();
 
-        if (totalQuests < requiredAmount || noPermQuests < requiredAmount) {
+        if (totalQuests < requiredAmount) {
             PluginLogger.error("Impossible to enable the plugin.");
             PluginLogger.error("You need at least " + requiredAmount + " quests in your " + categoryName + ".yml file.");
-            PluginLogger.error("Also, at least " + requiredAmount + " quest(s) must be accessible without permission.");
             return false;
         }
+
+        if (safetyMode) {
+            if (publicQuests < requiredAmount) {
+                PluginLogger.error("Impossible to enable the plugin.");
+                PluginLogger.error("Category '" + categoryName + "': only " + publicQuests + " public quest(s) but " + requiredAmount + " required (safety_mode=true).");
+                PluginLogger.error("Disable 'safety_mode' if you want permission-gated categories; " + "note players without permissions may end up with no quests.");
+                return false;
+            }
+        } else if (publicQuests == 0) {
+            PluginLogger.warn("Category '" + categoryName + "' has no public quests. " + "Players without permissions may receive 0 quests (safety_mode=false).");
+        }
+
         return true;
     }
 

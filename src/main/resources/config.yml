@@ -32,6 +32,13 @@ database:
 # Do not change this value unless you are sure of what you are doing.
 player_data_load_delay: 0.5
 
+# When enabled (default), the plugin will stop loading if a category does not have enough quests without permissions
+# to give every player the required amount of daily quests.
+#
+# Disable this if you want categories where all quests require permissions.
+# /!\ Players without permissions may then end up with no quests at all!
+safety_mode: true
+
 # Define the number of daily quests assigned to the player for each category.
 # Categories that are not listed here will not be loaded.
 #

@@ -107,6 +107,11 @@ public class QuestsManager implements Listener {
 
             for (int i = 0; i < requiredAmount; i++) {
                 final AbstractQuest quest = getRandomQuestForPlayer(quests.keySet(), category, player);
+                if (quest == null) {
+                    PluginLogger.warn("Not enough quests available to assign to " + player.getName() + " in category " + categoryName + ".");
+                    break;
+                }
+
                 final int questRequiredAmount = getDynamicRequiredAmount(quest.getRequiredAmountRaw());
                 final Progression progression = new Progression(questRequiredAmount, 0, false);
 
@@ -151,23 +156,45 @@ public class QuestsManager implements Listener {
     /**
      * Get a random quest that is not already in the player's quests.
      *
-     * @param currentQuests   the player's current quests
-     * @param availableQuests the available quests
-     * @return a quest
+     * @param currentQuests   the player's current quests.
+     * @param availableQuests the available quests.
+     * @return a random quest or null if none found.
      */
     public static AbstractQuest getRandomQuestForPlayer(Set<AbstractQuest> currentQuests, List<AbstractQuest> availableQuests, Player player) {
-        final List<AbstractQuest> filteredQuests = availableQuests.stream()
-                .filter(quest -> quest.getRequiredPermission() == null || player.hasPermission(quest.getRequiredPermission()))
-                .toList();
+        final List<AbstractQuest> filteredQuests = new ArrayList<>();
 
-        if (filteredQuests.isEmpty()) return null;
+        for (AbstractQuest quest : availableQuests) {
+            if (hasAllPermissions(player, quest.getRequiredPermissions()) && !currentQuests.contains(quest)) {
+                filteredQuests.add(quest);
+            }
+        }
 
-        AbstractQuest randomQuest;
-        do {
-            randomQuest = filteredQuests.get(random.nextInt(filteredQuests.size()));
-        } while (currentQuests.contains(randomQuest));
+        if (filteredQuests.isEmpty()) {
+            return null;
+        }
 
-        return randomQuest;
+        int randomIndex = random.nextInt(filteredQuests.size());
+        return filteredQuests.get(randomIndex);
+    }
+
+    /**
+     * Check if player has all required permissions.
+     *
+     * @param player      the player to check.
+     * @param permissions list of permissions.
+     * @return true if player has all permissions, false otherwise.
+     */
+    private static boolean hasAllPermissions(Player player, List<String> permissions) {
+        if (permissions == null || permissions.isEmpty()) {
+            return true;
+        }
+
+        for (String permission : permissions) {
+            if (!player.hasPermission(permission)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

@@ -33,6 +33,7 @@ public class Update230to300 extends ConfigUpdater {
             }
         }
 
+        setDefaultConfigItem("safety_mode", true, config, configFile, false);
         setDefaultConfigItem("join_message_delay", 1.0, config, configFile, false);
         setDefaultConfigItem("use_nexo", false, config, configFile, false);
         setDefaultConfigItem("renew_time", "00:00", config, configFile, false);
