@@ -23,6 +23,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -190,8 +191,14 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
             /* get slot(s) */
             final List<Integer> slots = getSlots(itemSection);
 
+            /* parse and validate item flags */
+            final List<ItemFlag> flags = getItemFlags(element, itemSection);
+            if (flags == null) {
+                continue;
+            }
+
             /* load item depending on its type */
-            loadItemType(elementSection, item, itemSection, slots);
+            loadItemType(elementSection, item, itemSection, slots, flags);
 
             /* add item to placeholders list if applicable */
             loadPlaceholderItem(slots, item);
@@ -215,6 +222,33 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
             slots = List.of(itemSection.getInt("slot"));
         }
         return slots;
+    }
+
+    /**
+     * Parse and validate item flags from configuration.
+     *
+     * @param element     name of the item element (for logging).
+     * @param itemSection configuration section of the item.
+     * @return list of ItemFlag, or null if an invalid flag has been found (error logged).
+     */
+    private @Nullable List<ItemFlag> getItemFlags(String element, ConfigurationSection itemSection) {
+        if (!itemSection.isList("flags")) {
+            return Collections.emptyList();
+        }
+        final List<String> rawFlags = itemSection.getStringList("flags");
+        final List<ItemFlag> flags = new ArrayList<>(rawFlags.size());
+
+        for (String f : rawFlags) {
+            if (f == null) continue;
+            final String normalized = f.trim().toUpperCase();
+            try {
+                flags.add(ItemFlag.valueOf(normalized));
+            } catch (IllegalArgumentException ex) {
+                configurationError(element, "item.flags", normalized + " is not a valid ItemFlag.");
+                return null;
+            }
+        }
+        return flags;
     }
 
     /**
@@ -309,8 +343,9 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
      * @param item           item to load.
      * @param itemSection    configuration section of the item.
      * @param slots          slots where the item should be added.
+     * @param flags          item flags to apply to the item.
      */
-    private void loadItemType(ConfigurationSection elementSection, ItemStack item, ConfigurationSection itemSection, List<Integer> slots) {
+    private void loadItemType(ConfigurationSection elementSection, ItemStack item, ConfigurationSection itemSection, List<Integer> slots, List<ItemFlag> flags) {
         final String itemType = elementSection.getString("type");
         switch (ItemType.valueOf(itemType)) {
             case FILL -> {
@@ -318,18 +353,21 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
                 if (fillItemMeta == null) return;
 
                 fillItemMeta.setDisplayName(ChatColor.RESET + "");
+                if (!flags.isEmpty()) {
+                    fillItemMeta.addItemFlags(flags.toArray(new ItemFlag[0]));
+                }
                 item.setItemMeta(fillItemMeta);
                 fillItems.add(item);
             }
 
             case CLOSE -> {
-                item.setItemMeta(getItemMeta(item, itemSection));
+                item.setItemMeta(getItemMeta(item, itemSection, flags));
                 closeItems.add(item);
             }
 
             case PLAYER_COMMAND -> {
                 final List<String> commands = elementSection.getStringList("commands");
-                item.setItemMeta(getItemMeta(item, itemSection));
+                item.setItemMeta(getItemMeta(item, itemSection, flags));
 
                 for (int slot : slots) {
                     playerCommandsItems.put(slot - 1, commands);
@@ -338,7 +376,7 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
 
             case CONSOLE_COMMAND -> {
                 final List<String> commands = elementSection.getStringList("commands");
-                item.setItemMeta(getItemMeta(item, itemSection));
+                item.setItemMeta(getItemMeta(item, itemSection, flags));
 
                 for (int slot : slots) {
                     consoleCommandsItems.put(slot - 1, commands);
@@ -576,13 +614,16 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
      *
      * @param itemStack item to load.
      * @param section   section of the item.
+     * @param flags     item flags to apply to the item.
      * @return ItemMeta of the item.
      */
-    private ItemMeta getItemMeta(ItemStack itemStack, ConfigurationSection section) {
+    private ItemMeta getItemMeta(ItemStack itemStack, ConfigurationSection section, List<ItemFlag> flags) {
         final ItemMeta meta = itemStack.getItemMeta();
         if (meta == null) return null;
 
-        if (section.contains("custom_model_data")) meta.setCustomModelData(section.getInt("custom_model_data"));
+        if (section.contains("custom_model_data")) {
+            meta.setCustomModelData(section.getInt("custom_model_data"));
+        }
 
         final String name = section.getString("name");
         if (name != null) {
@@ -594,6 +635,10 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
             lore.set(lore.indexOf(str), TextFormatter.format(str));
         }
         meta.setLore(lore);
+
+        if (flags != null && !flags.isEmpty()) {
+            meta.addItemFlags(flags.toArray(new ItemFlag[0]));
+        }
 
         return meta;
     }
