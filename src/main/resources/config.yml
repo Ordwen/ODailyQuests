@@ -152,6 +152,15 @@ title:
   text: "&aWell done, %player%"
   subtitle: "&aYou have completed the quest %questName% &a!" # Leave this field blank if you do not want a subtitle
 
+# Display a toast notification when a player completes a quest.
+# Available placeholders : %player% , %questName%
+toast:
+  enabled: false
+  frame: TASK # Frame type: TASK / GOAL / CHALLENGE
+  icon: DIAMOND # Icon displayed in the toast
+  # custom_model_data: 123 # Optional: custom model data for resource-pack icons
+  text: "&b&lQuest completed!\n%questName%" # Supports \n for new line
+
 # Set a message that will be displayed in the actionbar when a player completes a quest.
 # Available placeholders : %player% , %questName%
 actionbar:

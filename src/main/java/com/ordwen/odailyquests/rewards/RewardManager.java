@@ -2,6 +2,7 @@ package com.ordwen.odailyquests.rewards;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
+import com.ordwen.odailyquests.configuration.functionalities.progression.ToastNotification;
 import com.ordwen.odailyquests.externs.hooks.points.PlayerPointsHook;
 import com.ordwen.odailyquests.externs.hooks.points.TokenManagerHook;
 import com.ordwen.odailyquests.externs.hooks.eco.VaultHook;
@@ -35,6 +36,7 @@ public class RewardManager {
         if (msg != null) player.sendMessage(msg);
 
         Title.sendTitle(player, questName);
+        ToastNotification.sendToastNotification(player, questName);
         ActionBar.sendActionbar(player, questName);
         sendReward(player, reward);
     }
