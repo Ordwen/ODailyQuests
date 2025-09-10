@@ -41,6 +41,11 @@ public class Update230to300 extends ConfigUpdater {
         setDefaultConfigItem("player_data_load_delay", 0.5, config, configFile, false);
         setDefaultConfigItem("use_rosestacker", false, config, configFile, false);
 
+        setDefaultConfigItem("toast.enabled", false, config, configFile, false);
+        setDefaultConfigItem("toast.frame", "CHALLENGE", config, configFile, false);
+        setDefaultConfigItem("toast.icon", "BOOK", config, configFile, false);
+        setDefaultConfigItem("toast.text", "&b&lQuest completed!\\n%questName%", config, configFile, false);
+
         // as prefix is now used, set it empty for servers that already customized their messages
         setDefaultConfigItem("prefix", "", config, configFile, true);
 
