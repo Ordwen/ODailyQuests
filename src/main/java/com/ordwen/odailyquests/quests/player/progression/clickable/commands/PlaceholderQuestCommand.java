@@ -31,7 +31,9 @@ public class PlaceholderQuestCommand extends QuestCommand<PlaceholderQuest> {
         }
 
         final String placeholderValue = TextFormatter.format(player, quest.getPlaceholder());
-        boolean isValid = validateCondition(placeholderValue);
+        final String expectedValue = TextFormatter.format(player, quest.getExpectedValue());
+
+        final boolean isValid = validateCondition(placeholderValue, expectedValue);
 
         if (isValid) {
             completeQuest();
@@ -40,15 +42,15 @@ public class PlaceholderQuestCommand extends QuestCommand<PlaceholderQuest> {
         }
     }
 
-    private boolean validateCondition(String placeholderValue) {
+    private boolean validateCondition(String placeholderValue, String expectedValue) {
         try {
             return switch (quest.getConditionType()) {
-                case EQUALS -> placeholderValue.equals(quest.getExpectedValue());
-                case NOT_EQUALS -> !placeholderValue.equals(quest.getExpectedValue());
+                case EQUALS -> placeholderValue.equals(expectedValue);
+                case NOT_EQUALS -> !placeholderValue.equals(expectedValue);
                 case GREATER_THAN, GREATER_THAN_OR_EQUALS, LESS_THAN, LESS_THAN_OR_EQUALS ->
-                        validateNumericCondition(placeholderValue);
+                        validateNumericCondition(placeholderValue, expectedValue);
                 case DURATION_GREATER_THAN, DURATION_GREATER_THAN_OR_EQUALS, DURATION_LESS_THAN,
-                     DURATION_LESS_THAN_OR_EQUALS -> validateDurationCondition(placeholderValue);
+                     DURATION_LESS_THAN_OR_EQUALS -> validateDurationCondition(placeholderValue, expectedValue);
             };
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
             handleValidationError(placeholderValue);
@@ -56,22 +58,22 @@ public class PlaceholderQuestCommand extends QuestCommand<PlaceholderQuest> {
         }
     }
 
-    private boolean validateNumericCondition(String placeholderValue) {
-        float currentValue = Float.parseFloat(placeholderValue.replace(",", "."));
-        float expectedValue = Float.parseFloat(quest.getExpectedValue().replace(",", "."));
+    private boolean validateNumericCondition(String placeholderValue, String expectedValue) {
+        float current = Float.parseFloat(placeholderValue.replace(",", "."));
+        float expected = Float.parseFloat(expectedValue.replace(",", "."));
 
         return switch (quest.getConditionType()) {
-            case GREATER_THAN -> currentValue > expectedValue;
-            case GREATER_THAN_OR_EQUALS -> currentValue >= expectedValue;
-            case LESS_THAN -> currentValue < expectedValue;
-            case LESS_THAN_OR_EQUALS -> currentValue <= expectedValue;
+            case GREATER_THAN -> current > expected;
+            case GREATER_THAN_OR_EQUALS -> current >= expected;
+            case LESS_THAN -> current < expected;
+            case LESS_THAN_OR_EQUALS -> current <= expected;
             default -> false;
         };
     }
 
-    private boolean validateDurationCondition(String placeholderValue) {
+    private boolean validateDurationCondition(String placeholderValue, String expectedValue) {
         Duration currentDuration = parseDuration(placeholderValue);
-        Duration expectedDuration = parseDuration(quest.getExpectedValue());
+        Duration expectedDuration = parseDuration(expectedValue);
 
         return switch (quest.getConditionType()) {
             case DURATION_GREATER_THAN -> currentDuration.compareTo(expectedDuration) > 0;
