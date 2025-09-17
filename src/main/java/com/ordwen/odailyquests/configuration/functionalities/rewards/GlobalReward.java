@@ -14,6 +14,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import java.util.Collections;
+
 public class GlobalReward implements IConfigurable {
 
     private final ConfigurationFile configurationFile;
@@ -64,7 +66,7 @@ public class GlobalReward implements IConfigurable {
             final String msg = QuestsMessages.ALL_QUESTS_ACHIEVED.getMessage(playerName);
             if (msg != null) player.sendMessage(msg);
 
-            RewardManager.sendReward(Bukkit.getPlayer(playerName), reward);
+            RewardManager.sendReward(Bukkit.getPlayer(playerName), reward, Collections.emptyMap());
         }
     }
 

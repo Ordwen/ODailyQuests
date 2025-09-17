@@ -7,6 +7,8 @@ import com.ordwen.odailyquests.rewards.RewardManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import java.util.Collections;
+
 public class CategoryTotalRewardReachedListener implements Listener {
 
     @EventHandler
@@ -15,6 +17,6 @@ public class CategoryTotalRewardReachedListener implements Listener {
 
         final Reward reward = TotalRewards.getCategoryTotalReward(event.getCategory(), event.getCompletedInCategory());
         if (reward == null) return;
-        RewardManager.sendReward(event.getPlayer(), reward);
+        RewardManager.sendReward(event.getPlayer(), reward, Collections.emptyMap());
     }
 }

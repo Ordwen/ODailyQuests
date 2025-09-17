@@ -12,6 +12,7 @@ import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,7 +66,7 @@ public class CategoriesRewards implements IConfigurable {
                 player.sendMessage(msg.replace("%category%", category));
             }
 
-            RewardManager.sendReward(player, reward);
+            RewardManager.sendReward(player, reward, Collections.emptyMap());
         } else {
             PluginLogger.error("No reward found for category " + category);
         }

@@ -29,7 +29,7 @@ public class QuestCompletedListener implements Listener {
                 .replace("%required%", String.valueOf(progression.getRequiredAmount()))
                 .replace("%displayName%", DisplayName.getDisplayName(quest, progression.getSelectedRequiredIndex()));
 
-        RewardManager.sendAllRewardItems(formattedQuestName, player, quest.getReward());
+        RewardManager.sendQuestRewardItems(formattedQuestName, player, quest.getReward(), progression);
         ODailyQuestsAPI.getPlayerQuests(player.getName()).increaseCategoryAchievedQuests(quest.getCategoryName(), player);
     }
 }
