@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.commands.interfaces.playerinterface.items;
 
 import com.ordwen.odailyquests.api.ODailyQuestsAPI;
+import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.getters.InterfaceItemGetter;
 import com.ordwen.odailyquests.files.implementations.PlayerInterfaceFile;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.tools.TextFormatter;
@@ -17,10 +18,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class PlayerHead {
+public class PlayerHead extends InterfaceItemGetter {
 
     private static final String SLOT_PARAMETER = "slot";
-    
+
     private final PlayerInterfaceFile playerInterfaceFile;
 
     private boolean enabled;
@@ -47,7 +48,15 @@ public class PlayerHead {
         enabled = section.getBoolean(".enabled");
         if (!enabled) return;
 
-        head = new ItemStack(Material.PLAYER_HEAD, 1);
+        if (section.isString(".material")) {
+            final String material = section.getString(".material");
+            head = this.getItem(material, "player_head", ".material");
+        }
+
+        if (head == null) {
+            head = new ItemStack(Material.PLAYER_HEAD, 1);
+        }
+
         meta = (SkullMeta) head.getItemMeta();
         if (meta == null) return;
 
