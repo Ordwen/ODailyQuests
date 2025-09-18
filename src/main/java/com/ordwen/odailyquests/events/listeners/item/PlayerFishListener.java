@@ -11,7 +11,7 @@ import org.bukkit.event.player.PlayerFishEvent;
 
 public class PlayerFishListener extends PlayerProgressor implements Listener {
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerFishEvent(PlayerFishEvent event) {
         if (event.isCancelled()) {
             Debugger.write("PlayerFishListener: onPlayerFishEvent cancelled for " + event.getPlayer().getName() + ".");
@@ -22,7 +22,7 @@ public class PlayerFishListener extends PlayerProgressor implements Listener {
 
         if (event.getState() == PlayerFishEvent.State.CAUGHT_FISH && event.getCaught() instanceof Item item) {
             Debugger.write("PlayerFishListener: onPlayerFishEvent summoned by " + event.getPlayer().getName() + " for " + item.getItemStack().getType() + ".");
-            setPlayerQuestProgression(event, event.getPlayer(), 1, "FISH");
+            setPlayerQuestProgression(event, event.getPlayer(), item.getItemStack().getAmount(), "FISH");
         }
     }
 }
