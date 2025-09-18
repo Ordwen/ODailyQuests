@@ -6,24 +6,27 @@
 # %drawIn% is replaced by the time remaining before the next quests draw.
 # ======================================================
 player_interface:
-  size: 27
-  inventory_name: "&bMy quests"
+  size: 45
+  inventory_name: "#0057ff &l        Daily Quests"
   # disable the status of the quest if you want to handle it manually by placeholders
   disable_status: false
   # the 3 following lines will not be used if disable_status is set to true
   status: "&eStatus :"
-  progress: "&eIN PROGRESS (&a%progress%&e/&c%required%&e)"
-  achieved: "&aACHIEVED"
+  progress: "&b%progress%&3/&b%required%"
+  achieved: "&bCOMPLETED"
   # if you want to glow the item when the quest is achieved
   glowing_if_achieved: true
-  complete_get_type: "&eClick to complete this quest !"
+  complete_get_type: "&eClick to complete this quest!"
   player_head:
     enabled: true
     slot: 5
-    item_name: "&bYour quests"
+    # material: "nexo:odailyquests_head" # if you want to use a custom head from an external plugin
+    item_name: '&b%player_name%'
     item_description:
-      - "&eCompleted quests : &b%achieved%&e/&63"
-      - "&eNext draw in : &c%drawIn%"
+      - '&3Status: '
+      - ' &3&l| &7Completed quests: &b%achieved%&3/&b9'
+      - ' &3&l| &7Total completed quests: &b%odailyquests_total%'
+      - ' &3&l| &7New quests in: &b%drawIn%'
 
   # ========================================================
   # Available types : FILL, PLAYER_COMMAND, CONSOLE_COMMAND
@@ -37,128 +40,85 @@ player_interface:
   # ========================================================
   quests: # set the position of quests items
     1: 12
-    2: 14
-    3: 16
+    2: 21
+    3: 30
+    4: 14
+    5: 23
+    6: 32
+    7: 16
+    8: 25
+    9: 34
   items:
     0:
       type: CLOSE
       item:
-        material: REDSTONE_BLOCK
+        material: BARRIER
         name: "&cClose"
-        lore: []
-        slot: 27
+        lore: [ ]
+        slot: 37
     1:
       type: PLAYER_COMMAND
       item:
-        material: REDSTONE
-        name: "&cBack"
+        material: CUSTOM_HEAD
+        name: '&b&lInformations'
+        texture: cdcdee6d06df234b8e603328b96c57f3a312e79aabfc3be72a8b421878ed68cf
         lore:
-          - "&eGo back to menu."
-        slot: 19
-      commands:
-          - "menu"
-    2:
-      type: FILL
-      item:
-        material: GRAY_STAINED_GLASS_PANE
+          - ' &3&l| &7Everyday you get a new'
+          - ' &3&l| &7set of quests.'
+          - ''
+          - ' &3&l| &7Completing quests will'
+          - ' &3&l| &7give you money!'
+          - ''
+          - ' &8(&7!&8) &7Completing categories will'
+          - '  &7 give you extra rewards too'
+          - ''
         slot: 1
+    2:
+      type: PLAYER_COMMAND
+      item:
+        material: CUSTOM_HEAD
+        name: "&b&lDaily reroll"
+        texture: bc8def67a12622ead1decd3d89364257b531896d87e469813131ca235b5c7
+        lore:
+          - ' &3&l| &7Everyday you can change'
+          - ' &3&l| &7one of your quests for'
+          - ' &3&l| &7a different one'
+          - ''
+          - ' &8(&7!&8) &7/dq reroll <position>'
+        slot: 9
     3:
       type: FILL
       item:
-        material: GRAY_STAINED_GLASS_PANE
-        slot: 2
+        material: BLUE_STAINED_GLASS_PANE
+        slot:
+          - 2
+          - 3
+          - 4
+          - 6
+          - 7
+          - 8
+          - 10
+          - 18
+          - 19
+          - 27
+          - 28
+          - 36
+          - 38
+          - 39
+          - 40
+          - 41
+          - 42
+          - 43
+          - 44
+          - 45
     4:
       type: FILL
       item:
-        material: GRAY_STAINED_GLASS_PANE
-        slot: 3
-    5:
-      type: FILL
-      item:
-        material: GRAY_STAINED_GLASS_PANE
-        slot: 4
-    6:
-      type: FILL
-      item:
-        material: GRAY_STAINED_GLASS_PANE
-        slot: 6
-    7:
-      type: FILL
-      item:
-        material: GRAY_STAINED_GLASS_PANE
-        slot: 7
-    8:
-      type: FILL
-      item:
-        material: GRAY_STAINED_GLASS_PANE
-        slot: 8
-    9:
-      type: FILL
-      item:
-        material: GRAY_STAINED_GLASS_PANE
-        slot: 9
-    10:
-      type: FILL
-      item:
-        material: GRAY_STAINED_GLASS_PANE
-        slot: 10
-    11:
-      type: FILL
-      item:
-        material: GRAY_STAINED_GLASS_PANE
-        slot: 11
-    12:
-      type: FILL
-      item:
-        material: GRAY_STAINED_GLASS_PANE
-        slot: 13
-    13:
-      type: FILL
-      item:
-        material: GRAY_STAINED_GLASS_PANE
-        slot: 15
-    14:
-      type: FILL
-      item:
-        material: GRAY_STAINED_GLASS_PANE
-        slot: 17
-    15:
-      type: FILL
-      item:
-        material: GRAY_STAINED_GLASS_PANE
-        slot: 18
-    16:
-      type: FILL
-      item:
-        material: GRAY_STAINED_GLASS_PANE
-        slot: 20
-    17:
-      type: FILL
-      item:
-        material: GRAY_STAINED_GLASS_PANE
-        slot: 21
-    18:
-      type: FILL
-      item:
-        material: GRAY_STAINED_GLASS_PANE
-        slot: 22
-    19:
-      type: FILL
-      item:
-        material: GRAY_STAINED_GLASS_PANE
-        slot: 23
-    20:
-      type: FILL
-      item:
-        material: GRAY_STAINED_GLASS_PANE
-        slot: 24
-    21:
-      type: FILL
-      item:
-        material: GRAY_STAINED_GLASS_PANE
-        slot: 25
-    22:
-      type: FILL
-      item:
-        material: GRAY_STAINED_GLASS_PANE
-        slot: 26
+        material: CYAN_STAINED_GLASS_PANE
+        slot:
+          - 11
+          - 17
+          - 20
+          - 26
+          - 29
+          - 35

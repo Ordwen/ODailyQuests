@@ -70,7 +70,7 @@ public class QuestsFiles {
     }
 
     private void createDefaultQuestFiles() {
-        final String[] defaultFiles = {"global.yml", "easy.yml", "medium.yml", "hard.yml"};
+        final String[] defaultFiles = {"examples.yml", "easy.yml", "medium.yml", "hard.yml"};
 
         for (String fileName : defaultFiles) {
             plugin.saveResource("quests/" + fileName, false);

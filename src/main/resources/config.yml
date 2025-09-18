@@ -9,7 +9,7 @@ version: 3.0.0
 database_version: 2
 
 # prefix that will be displayed before every message from messages.yml
-prefix: "&7[&6O'DailyQuests&7] "
+prefix: '&3[&bO''DailyQuests&3] '
 
 # disable the logs when player quests are loaded or saved
 disable_logs: false
@@ -44,15 +44,15 @@ safety_mode: true
 #
 # The order in which categories are listed matters! Quests will be assigned in this order.
 #
-# The category name must exactly match the filename containing the quests (e.g., "global" refers to "global.yml").
+# The category name must exactly match the filename containing the quests (e.g., "easy" refers to "easy.yml").
 # You can create and configure as many categories as you want.
 #
 # More information here: https:////////////
 quests_per_category:
-  global: 3 # The player will receive 3 quests from the "global.yml" file.
-  #easy: 1
-  #medium: 1
-  #hard: 1
+  #examples: 9
+  easy: 3  # The player will receive 3 quests from the "easy.yml" file
+  medium: 3
+  hard: 3
 
 # Select the mode of timestamp.
 # ============================================================================
@@ -113,8 +113,8 @@ global_reward:
   enabled: true
   reward_type: COMMAND
   commands:
-    - "eco give %player% 5000"
-    - "give %player% diamond_block 32"
+    - "eco give %player% 2000"
+    - "give %player% iron_ingot 16"
 
 # Categories Rewards
 # Will be given when the player has completed all his daily quests of a precise category.
@@ -126,20 +126,20 @@ categories_rewards:
     enabled: true
     reward_type: COMMAND
     commands:
-      - "eco give %player% 1000"
-      - "give %player% gold_block 1"
+      - "eco give %player% 750"
+      - "give %player% diamond 1"
   medium:
     enabled: true
     reward_type: COMMAND
     commands:
-      - "eco give %player% 2000"
-      - "give %player% gold_block 2"
+      - "eco give %player% 1000"
+      - "give %player% diamond 2"
   hard:
     enabled: true
     reward_type: COMMAND
     commands:
-      - "eco give %player% 3000"
-      - "give %player% gold_block 3"
+      - "eco give %player% 1500"
+      - "give %player% diamond 3"
 
 # Set a title that will be displayed when a player completes a quest.
 # Reminder: 20 ticks is equal to one second.
@@ -150,7 +150,7 @@ title:
   stay: 70 # The default number of ticks for the title to stay.
   fadeOut: 20 # The default number of ticks for the title to fade out.
   text: "&aWell done, %player%"
-  subtitle: "&aYou have completed the quest %questName% &a!" # Leave this field blank if you do not want a subtitle
+  subtitle: "&aYou have completed the quest %questName%&a!" # Leave this field blank if you do not want a subtitle
 
 # Display a toast notification when a player completes a quest.
 # Available placeholders : %player% , %questName%
@@ -249,15 +249,15 @@ custom_types:
 interfaces:
   next_item_name: "&a&lNext Page"
   previous_item_name: "&e&lPrevious Page"
-  global:
-    inventory_name: "Quests - Global"
+  examples:
+    inventory_name: "Quests - Examples"
     empty_item: BLACK_STAINED_GLASS_PANE
   easy:
     inventory_name: "Quests - Easy"
-    empty_item: GREEN_STAINED_GLASS_PANE
+    empty_item: LIME_STAINED_GLASS_PANE
   medium:
     inventory_name: "Quests - Medium"
-    empty_item: YELLOW_STAINED_GLASS_PANE
+    empty_item: ORANGE_STAINED_GLASS_PANE
   hard:
     inventory_name: "Quests - Hard"
     empty_item: RED_STAINED_GLASS_PANE
@@ -284,10 +284,10 @@ disabled_worlds: []
 # For categories, the name must match the name of the category in the quests_per_category section.
 npcs:
   player: "&7Player Quests"
-  global: "&4Global Quests"
-  easy: "&a&lEasy &mQuests"
-  medium: "&e&lMedium &rQuests"
-  hard: "&cHard &b&lQuests"
+  examples: "&eExample Quests"
+  easy: "&a&lEasy Quests"
+  medium: "&6&lMedium Quests"
+  hard: "&c&lHard Quests"
 
 # If a player has two quests of the same type and with the same item/entity,
 # choose if they should progress simultaneously

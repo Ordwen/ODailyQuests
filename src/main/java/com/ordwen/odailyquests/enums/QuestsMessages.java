@@ -12,24 +12,24 @@ import java.util.Map;
 public enum QuestsMessages {
 
     PLAYER_HELP("player_help", """
-            &aPlayer commands:
-            &e/dq me &a: see your own quests
-            &e/dq reroll <index> &a: reroll a quest (requires permission)
-            &e/dq show <category> &a: see the quests of a category
+            &3&m---&3 Player commands &3&m---
+            &3> &b/dq, /dq me &3- &7see your own quests
+            &3> &b/dq reroll <index> &3- &7reroll a quest (requires permission)
+            &3> &b/dq show <category> &3- &7see the quests of a category
             """),
     ADMIN_HELP("admin_help", """
-            &cAdmin commands:
-            &e/dqa complete <player> <index> &a: complete a player quest
-            &e/dqa customcomplete <player> <type> <amount> &a: complete a player quest from a custom type
-            &e/dqa reset <quests/total> <player> &a: draw new quests for a player, or reset his total number of achieved quests.
-            &e/dqa add total <player> <amount> &a: add a number of achieved quests to a player.
-            &e/dqa add total <category> <player> <amount> &a: add a number of achieved quests in a specific category to a player.
-            &e/dqa remove total <player> <amount> &a: remove a number of achieved quests to a player.
-            &e/dqa remove total <category> <player> <amount> &a: remove a number of achieved quests in a specific category to a player.
-            &e/dqa reroll <player> <index> &a: draw a new quest for a player, at a specific index.
-            &e/dqa show <player> &a: see quests of a player
-            &e/dqa open <player> &a: force a player to open the quest interface
-            &e/dqa convert <old format> <new format> &a: convert the storage format of the plugin.
+            &c&m---&c Admin commands &c&m---
+            &3> &b/dqa complete <player> <index> &3- &7complete a player quest
+            &3> &b/dqa customcomplete <player> <type> <amount> &3- &7complete a player quest from a custom type
+            &3> &b/dqa reset <quests/total> <player> &3- &7draw new quests for a player, or reset his total number of achieved quests
+            &3> &b/dqa add total <player> <amount> &3- &7add a number of achieved quests to a player
+            &3> &b/dqa add total <category> <player> <amount> &3- &7add a number of achieved quests in a specific category to a player
+            &3> &b/dqa remove total <player> <amount> &3- &7remove a number of achieved quests to a player
+            &3> &b/dqa remove total <category> <player> <amount> &3- &7remove a number of achieved quests in a specific category to a player
+            &3> &b/dqa reroll <player> <index> &3- &7draw a new quest for a player, at a specific index
+            &3> &b/dqa show <player> &3- &7see quests of a player
+            &3> &b/dqa open <player> &3- &7force a player to open the quest interface
+            &3> &b/dqa convert <old format> <new format> &3- &7convert the storage format of the plugin
             """),
 
     NO_PERMISSION("no_permission", "&cYou don't have permission."),

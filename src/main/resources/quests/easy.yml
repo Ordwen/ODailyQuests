@@ -29,40 +29,377 @@
 # ==============================================================
 quests:
   1:
-    name: "&aStone"
-    menu_item: STONE
+    name: "&3Can’t see the ore for the rocks"
+    menu_item: STONE_PICKAXE
     description:
-      - "&bMine 32 stones."
-      - "&bWin &c500$&b."
+      - " &7ᴅɪꜰꜰɪᴄᴜʟᴛʏ: &aᴇᴀꜱʏ"
+      - ""
+      - "&3Task:"
+      - " &3&l| &7Mine %required% stone"
+      - ""
+      - "&3Progress:"
+      - " &3&l| %status%"
+      - ""
+      - "&3Reward:"
+      - " &3&l| &7250$"
+      - ""
     quest_type: BREAK
-    required: STONE
+    required: 
+      - COBBLESTONE
+      - STONE
     required_amount: 32
     reward:
       reward_type: MONEY
-      amount: 500
+      amount: 250
   2:
-    name: "&6&lGold blocks"
-    menu_item: GOLD_BLOCK
+    name: "&3Let’s get lumber-jacked!"
+    menu_item: STONE_AXE
     description:
-      - "&eGet 16 gold blocks."
-      - "&eWin &b&m32 diamond blocks."
-    quest_type: GET
-    required: GOLD_BLOCK
-    required_amount: 16
+      - " &7ᴅɪꜰꜰɪᴄᴜʟᴛʏ: &aᴇᴀꜱʏ"
+      - ""
+      - "&3Task:"
+      - " &3&l| &7Cut down %required% logs"
+      - ""
+      - "&3Progress:"
+      - " &3&l| %status%"
+      - ""
+      - "&3Reward:"
+      - " &3&l| &7250$"
+      - ""
+    quest_type: BREAK
+    required:
+      - OAK_LOG
+      - SPRUCE_LOG
+      - BIRCH_LOG
+      - JUNGLE_LOG
+      - ACACIA_LOG
+      - CHERRY_LOG
+      - PALE_OAK_LOG
+      - DARK_OAK_LOG
+      - MANGROVE_LOG
+      - CRIMSON_HYPHAE
+      - WARPED_HYPHAE
+      - STRIPPED_OAK_LOG
+      - STRIPPED_SPRUCE_LOG
+      - STRIPPED_BIRCH_LOG
+      - STRIPPED_JUNGLE_LOG
+      - STRIPPED_ACACIA_LOG
+      - STRIPPED_CHERRY_LOG
+      - STRIPPED_PALE_OAK_LOG
+      - STRIPPED_DARK_OAK_LOG
+      - STRIPPED_MANGROVE_LOG
+      - STRIPPED_CRIMSON_HYPHAE
+      - STRIPPED_WARPED_HYPHAE
+    required_amount: 20
     reward:
       reward_type: COMMAND
       commands:
-        - "msg %player% Hello !"
-        - "give %player% diamond_block 32"
+        - "eco give %player% 250"
   3:
-    name: "Too many zombies"
-    menu_item: ZOMBIE_HEAD
+    name: "&3Too many zombies"
+    menu_item: ZOMBIE_SPAWN_EGG
     description:
-      - "&cKill &65 &czombies."
-      - "&aWin &b500 &aTokens."
+      - " &7ᴅɪꜰꜰɪᴄᴜʟᴛʏ: &aᴇᴀꜱʏ"
+      - ""
+      - "&3Task:"
+      - " &3&l| &7Kill %required% zombies"
+      - ""
+      - "&3Progress:"
+      - " &3&l| %status%"
+      - ""
+      - "&3Reward:"
+      - " &3&l| &7250$"
+      - ""
     quest_type: KILL
     required: ZOMBIE
+    required_amount: 10
+    reward:
+      reward_type: MONEY
+      amount: 250
+  4:
+    name: "&3Call me a crop star"
+    menu_item: STONE_HOE
+    description:
+      - " &7ᴅɪꜰꜰɪᴄᴜʟᴛʏ: &aᴇᴀꜱʏ"
+      - ""
+      - "&3Task:"
+      - " &3&l| &7Farm %required% wheats"
+      - ""
+      - "&3Progress:"
+      - " &3&l| %status%"
+      - ""
+      - "&3Reward:"
+      - " &3&l| &7250$"
+      - ""
+    quest_type: FARMING
+    required: WHEAT
+    required_amount: 12
+    reward:
+      reward_type: MONEY
+      amount: 250
+  5:
+    name: "&3Crafting is a work of heart"
+    menu_item: BREAD
+    description:
+      - " &7ᴅɪꜰꜰɪᴄᴜʟᴛʏ: &aᴇᴀꜱʏ"
+      - ""
+      - "&3Task:"
+      - " &3&l| &7Craft %required% bread"
+      - ""
+      - "&3Progress:"
+      - " &3&l| %status%"
+      - ""
+      - "&3Reward:"
+      - " &3&l| &7250$"
+      - ""
+    quest_type: CRAFT
+    required: BREAD
     required_amount: 5
     reward:
-      reward_type: POINTS
-      amount: 500
+      reward_type: MONEY
+      amount: 250
+  6:
+    name: "&3Too many fishes"
+    menu_item: FISHING_ROD
+    description:
+      - " &7ᴅɪꜰꜰɪᴄᴜʟᴛʏ: &aᴇᴀꜱʏ"
+      - ""
+      - "&3Task:"
+      - " &3&l| &7Fish %required% cods"
+      - ""
+      - "&3Progress:"
+      - " &3&l| %status%"
+      - ""
+      - "&3Reward:"
+      - " &3&l| &7250$"
+      - ""
+    quest_type: FISH
+    required: 
+      - COD
+    required_amount: 4
+    reward:
+      reward_type: MONEY
+      amount: 250
+  7:
+    name: "&3Heat up the furnace!"
+    menu_item: FURNACE
+    description:
+      - " &7ᴅɪꜰꜰɪᴄᴜʟᴛʏ: &aᴇᴀꜱʏ"
+      - ""
+      - "&3Task:"
+      - " &3&l| &7Smelt %required% cobblestone/stone"
+      - ""
+      - "&3Progress:"
+      - " &3&l| %status%"
+      - ""
+      - "&3Reward:"
+      - " &3&l| &7250$"
+      - ""
+    quest_type: COOK
+    required: 
+      - STONE
+      - SMOOTH_STONE
+    required_amount: 16
+    reward:
+      reward_type: MONEY
+      amount: 250
+  8:
+    name: "&3Delivery guy"
+    menu_item: CHEST
+    description:
+      - " &7ᴅɪꜰꜰɪᴄᴜʟᴛʏ: &aᴇᴀꜱʏ"
+      - ""
+      - "&3Task:"
+      - " &3&l| &7Deliver %required% cobblestones"
+      - " &8(&7!&8) &7Click on quest once you have enought"
+      - ""
+      - "&3Progress:"
+      - " &3&l| %status%"
+      - ""
+      - "&3Reward:"
+      - " &3&l| &7250$"
+      - ""
+    quest_type: GET
+    required: COBBLESTONE
+    required_amount: 20
+    reward:
+      reward_type: MONEY
+      amount: 250
+  9:
+    name: "&3Snowball Fight"
+    menu_item: SNOWBALL
+    description:
+      - " &7ᴅɪꜰꜰɪᴄᴜʟᴛʏ: &aᴇᴀꜱʏ"
+      - ""
+      - "&3Task:"
+      - " &3&l| &7Throw %required% snowballs"
+      - ""
+      - "&3Progress:"
+      - " &3&l| %status%"
+      - ""
+      - "&3Reward:"
+      - " &3&l| &7250$"
+      - ""
+    quest_type: LAUNCH
+    required: SNOWBALL
+    required_amount: 12
+    reward:
+      reward_type: MONEY
+      amount: 250
+  10:
+    name: "&3Help heavy sheeps"
+    menu_item: WHITE_WOOL
+    description:
+      - " &7ᴅɪꜰꜰɪᴄᴜʟᴛʏ: &aᴇᴀꜱʏ"
+      - ""
+      - "&3Task:"
+      - " &3&l| &7Shear %required% sheeps"
+      - ""
+      - "&3Progress:"
+      - " &3&l| %status%"
+      - ""
+      - "&3Reward:"
+      - " &3&l| &7250$"
+      - ""
+    quest_type: SHEAR
+    required: SHEEP
+    required_amount: 2
+    reward:
+      reward_type: MONEY
+      amount: 250
+  11:
+    name: "&3Need some knowledge"
+    menu_item: EXPERIENCE_BOTTLE
+    description:
+      - " &7ᴅɪꜰꜰɪᴄᴜʟᴛʏ: &aᴇᴀꜱʏ"
+      - ""
+      - "&3Task:"
+      - " &3&l| &7Farm %required% XP levels"
+      - ""
+      - "&3Progress:"
+      - " &3&l| %status%"
+      - ""
+      - "&3Reward:"
+      - " &3&l| &7250$"
+      - ""
+    quest_type: EXP_LEVELS
+    required_amount: 3
+    reward:
+      reward_type: MONEY
+      amount: 250
+  12:
+    name: "&3Stay healthy"
+    menu_item: APPLE
+    description:
+      - " &7ᴅɪꜰꜰɪᴄᴜʟᴛʏ: &aᴇᴀꜱʏ"
+      - ""
+      - "&3Task:"
+      - " &3&l| &7Eat %required% apples"
+      - ""
+      - "&3Progress:"
+      - " &3&l| %status%"
+      - ""
+      - "&3Reward:"
+      - " &3&l| &7250$"
+      - ""
+    quest_type: CONSUME
+    required: APPLE
+    required_amount: 2
+    reward:
+      reward_type: MONEY
+      amount: 250
+
+  # -----Plugin Examples-----
+  # MythicMobs, more info here -> https://ordwenplugins.gitbook.io/odailyquests/~/changes/65/quests/available-types/other-plugin-types#mythicmobs-specificities
+  13:
+    name: "Too many zombies"
+    menu_item: WITHER_SKELETON_SKULL
+    description:
+      - " &7ᴅɪꜰꜰɪᴄᴜʟᴛʏ: &aᴇᴀꜱʏ"
+      - ""
+      - "&3Task:"
+      - " &3&l| &7Kill The Skeleton King"
+      - ""
+      - "&3Progress:"
+      - " &3&l| %status%"
+      - ""
+      - "&3Reward:"
+      - " &3&l| &7250$"
+      - ""
+    quest_type: MYTHIC_MOBS
+    entity_name: "SkeletonKing"
+    shared_mods: true
+    required_amount: 1
+    reward:
+      reward_type: MONEY
+      amount: 250
+
+  #EliteMobs, more info here -> https://ordwenplugins.gitbook.io/odailyquests/~/changes/65/quests/available-types/other-plugin-types#elitemobs-specificities
+  14:
+    name: "Too many zombies"
+    menu_item: CREEPER_SPAWN_EGG
+    description:
+      - " &7ᴅɪꜰꜰɪᴄᴜʟᴛʏ: &aᴇᴀꜱʏ"
+      - ""
+      - "&3Task:"
+      - " &3&l| &7Kill The Big Boss"
+      - ""
+      - "&3Progress:"
+      - " &3&l| %status%"
+      - ""
+      - "&3Reward:"
+      - " &3&l| &7250$"
+      - ""
+    quest_type: ELITE_MOBS
+    entity_name: "&cThe Big Boss"
+    required_amount: 1
+    reward:
+      reward_type: MONEY
+      amount: 250
+
+  #VotingPlugin, more info here -> https://ordwenplugins.gitbook.io/odailyquests/~/changes/65/quests/available-types#other-plugin-types
+  15:
+    name: "Too many zombies"
+    menu_item: TRIPWIRE_HOOK
+    description:
+      - " &7ᴅɪꜰꜰɪᴄᴜʟᴛʏ: &aᴇᴀꜱʏ"
+      - ""
+      - "&3Task:"
+      - " &3&l| &7Vote %required%x for our server"
+      - ""
+      - "&3Progress:"
+      - " &3&l| %status%"
+      - ""
+      - "&3Reward:"
+      - " &3&l| &7250$"
+      - ""
+    quest_type: NU_VOTIFIER
+    required_amount: 3
+    reward:
+      reward_type: MONEY
+      amount: 250
+
+  #PyroFishing
+  16:
+    name: "Custom fishes baby"
+    menu_item: COD
+    description:
+      - " &7ᴅɪꜰꜰɪᴄᴜʟᴛʏ: &aᴇᴀꜱʏ"
+      - ""
+      - "&3Task:"
+      - " &3&l| &7Fish %required% custom fishes"
+      - ""
+      - "&3Progress:"
+      - " &3&l| %status%"
+      - ""
+      - "&3Reward:"
+      - " &3&l| &7250$"
+      - ""
+    quest_type: PYRO_FISH
+    required:
+      - "bronze:1"  #"<category>:<id>"
+      - "silver:51"
+    required_amount: 1
+    reward:
+      reward_type: MONEY
+      amount: 250

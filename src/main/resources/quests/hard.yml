@@ -29,40 +29,324 @@
 # ==============================================================
 quests:
   1:
-    name: "&aStone"
-    menu_item: STONE
+    name: "&3Can’t see the ore for the rocks"
+    menu_item: DIAMOND_PICKAXE
     description:
-      - "&bMine 32 stones."
-      - "&bWin &c500$&b."
+      - " &7ᴅɪꜰꜰɪᴄᴜʟᴛʏ: &cʜᴀʀᴅ"
+      - ""
+      - "&3Task:"
+      - " &3&l| &7Mine %required% ancient debris"
+      - ""
+      - "&3Progress:"
+      - " &3&l| %status%"
+      - ""
+      - "&3Reward:"
+      - " &3&l| &7750$"
+      - ""
     quest_type: BREAK
-    required: STONE
-    required_amount: 32
+    required: 
+      - ANCIENT_DEBRIS
+    required_amount: 2
     reward:
       reward_type: MONEY
-      amount: 500
+      amount: 750
   2:
-    name: "&6&lGold blocks"
-    menu_item: GOLD_BLOCK
+    name: "&3Let’s get lumber-jacked!"
+    menu_item: DIAMOND_AXE
     description:
-      - "&eGet 16 gold blocks."
-      - "&eWin &b&m32 diamond blocks."
-    quest_type: GET
-    required: GOLD_BLOCK
-    required_amount: 16
+      - " &7ᴅɪꜰꜰɪᴄᴜʟᴛʏ: &cʜᴀʀᴅ"
+      - ""
+      - "&3Task:"
+      - " &3&l| &7Cut down %required% logs"
+      - ""
+      - "&3Progress:"
+      - " &3&l| %status%"
+      - ""
+      - "&3Reward:"
+      - " &3&l| &7750$"
+      - ""
+    quest_type: BREAK
+    required:
+      - OAK_LOG
+      - SPRUCE_LOG
+      - BIRCH_LOG
+      - JUNGLE_LOG
+      - ACACIA_LOG
+      - CHERRY_LOG
+      - PALE_OAK_LOG
+      - DARK_OAK_LOG
+      - MANGROVE_LOG
+      - CRIMSON_HYPHAE
+      - WARPED_HYPHAE
+      - STRIPPED_OAK_LOG
+      - STRIPPED_SPRUCE_LOG
+      - STRIPPED_BIRCH_LOG
+      - STRIPPED_JUNGLE_LOG
+      - STRIPPED_ACACIA_LOG
+      - STRIPPED_CHERRY_LOG
+      - STRIPPED_PALE_OAK_LOG
+      - STRIPPED_DARK_OAK_LOG
+      - STRIPPED_MANGROVE_LOG
+      - STRIPPED_CRIMSON_HYPHAE
+      - STRIPPED_WARPED_HYPHAE
+    required_amount: 112
     reward:
       reward_type: COMMAND
       commands:
-        - "msg %player% Hello !"
-        - "give %player% diamond_block 32"
+        - "eco give %player% 750"
   3:
-    name: "Too many zombies"
-    menu_item: ZOMBIE_HEAD
+    name: "&3Too many withers"
+    menu_item: WITHER_SKELETON_SPAWN_EGG
     description:
-      - "&cKill &65 &czombies."
-      - "&aWin &b500 &aTokens."
+      - " &7ᴅɪꜰꜰɪᴄᴜʟᴛʏ: &cʜᴀʀᴅ"
+      - ""
+      - "&3Task:"
+      - " &3&l| &7Kill %required% wither skeletons"
+      - ""
+      - "&3Progress:"
+      - " &3&l| %status%"
+      - ""
+      - "&3Reward:"
+      - " &3&l| &7750$"
+      - ""
     quest_type: KILL
-    required: ZOMBIE
-    required_amount: 5
+    required: WITHER_SKELETON
+    required_amount: 20
     reward:
-      reward_type: POINTS
-      amount: 500
+      reward_type: MONEY
+      amount: 750
+  4:
+    name: "&3Call me a crop star"
+    menu_item: DIAMOND_HOE
+    description:
+      - " &7ᴅɪꜰꜰɪᴄᴜʟᴛʏ: &cʜᴀʀᴅ"
+      - ""
+      - "&3Task:"
+      - " &3&l| &7Farm %required% crops (any)"
+      - ""
+      - "&3Progress:"
+      - " &3&l| %status%"
+      - ""
+      - "&3Reward:"
+      - " &3&l| &7750$"
+      - ""
+    quest_type: FARMING
+    required: 
+      - WHEAT
+      - BEETROOT
+      - CARROT
+      - POTATO
+      - POISONOUS_POTATO
+      - MELON_SLICE
+      - PUMPKIN
+      - TORCHFLOWER
+      - PITCHER_PLANT
+      - BAMBOO
+      - COCOA_BEANS
+      - SUGAR_CANE
+      - SWEET_BERRIES
+      - CACTUS
+      - KELP
+      - SEA_PICKLE
+      - GLOW_BERRIES
+      - NETHER_WART
+      - CHORUS_FRUIT
+      - CRIMSON_FUNGUS
+      - WARPED_FUNGUS
+      - BROWN_MUSHROOM
+      - RED_MUSHROOM
+    required_amount: 200
+    reward:
+      reward_type: MONEY
+      amount: 750
+  5:
+    name: "&3Crafting is a work of heart"
+    menu_item: FIREWORK_ROCKET
+    description:
+      - " &7ᴅɪꜰꜰɪᴄᴜʟᴛʏ: &cʜᴀʀᴅ"
+      - ""
+      - "&3Task:"
+      - " &3&l| &7Craft %required% fireworks"
+      - ""
+      - "&3Progress:"
+      - " &3&l| %status%"
+      - ""
+      - "&3Reward:"
+      - " &3&l| &7750$"
+      - ""
+    quest_type: CRAFT
+    required: FIREWORK_ROCKET
+    required_amount: 32
+    reward:
+      reward_type: MONEY
+      amount: 750
+  6:
+    name: "&3One man's trash is another man's treasure"
+    menu_item: FISHING_ROD
+    description:
+      - " &7ᴅɪꜰꜰɪᴄᴜʟᴛʏ: &cʜᴀʀᴅ"
+      - ""
+      - "&3Task:"
+      - " &3&l| &7Fish %required% items (any)"
+      - ""
+      - "&3Progress:"
+      - " &3&l| %status%"
+      - ""
+      - "&3Reward:"
+      - " &3&l| &7750$"
+      - ""
+    quest_type: FISH
+    required: 
+      - BOW
+      - ENCHANTED_BOOK
+      - FISHING_ROD
+      - NAME_TAG
+      - NAUTILUS_SHELL
+      - SADDLE
+      - LILY_PAD
+      - BOWL
+      - LEATHER
+      - LEATHER_BOOTS
+      - ROTTEN_FLESH
+      - STICK
+      - STRING
+      - POTION
+      - BONE
+      - INK_SAC
+      - TRIPWIRE_HOOK
+      - BAMBOO
+      - COCOA_BEANS
+    required_amount: 30
+    reward:
+      reward_type: MONEY
+      amount: 750
+  7:
+    name: "&3Heat up the furnace!"
+    menu_item: FURNACE
+    description:
+      - " &7ᴅɪꜰꜰɪᴄᴜʟᴛʏ: &cʜᴀʀᴅ"
+      - ""
+      - "&3Task:"
+      - " &3&l| &7Smelt %required% ores (any)"
+      - ""
+      - "&3Progress:"
+      - " &3&l| %status%"
+      - ""
+      - "&3Reward:"
+      - " &3&l| &7750$"
+      - ""
+    quest_type: COOK
+    required: 
+      - IRON_INGOT
+      - GOLD_INGOT
+      - COPPER_INGOT
+      - NETHERITE_SCRAP
+    required_amount: 16
+    reward:
+      reward_type: MONEY
+      amount: 750
+  8:
+    name: "&3Delivery guy"
+    menu_item: CHEST
+    description:
+      - " &7ᴅɪꜰꜰɪᴄᴜʟᴛʏ: &cʜᴀʀᴅ"
+      - ""
+      - "&3Task:"
+      - " &3&l| &7Deliver %required% emeralds"
+      - " &8(&7!&8) &7Click on quest once you have enought"
+      - ""
+      - "&3Progress:"
+      - " &3&l| %status%"
+      - ""
+      - "&3Reward:"
+      - " &3&l| &7750$"
+      - ""
+    quest_type: GET
+    required: EMERALD
+    required_amount: 8
+    reward:
+      reward_type: MONEY
+      amount: 750
+  9:
+    name: "&3It's a WAR!"
+    menu_item: WIND_CHARGE
+    description:
+      - " &7ᴅɪꜰꜰɪᴄᴜʟᴛʏ: &cʜᴀʀᴅ"
+      - ""
+      - "&3Task:"
+      - " &3&l| &7Throw %required% fire charges"
+      - ""
+      - "&3Progress:"
+      - " &3&l| %status%"
+      - ""
+      - "&3Reward:"
+      - " &3&l| &7750$"
+      - ""
+    quest_type: LAUNCH
+    required: WIND_CHARGE
+    required_amount: 4
+    reward:
+      reward_type: MONEY
+      amount: 750
+  10:
+    name: "&3Help heavy sheeps"
+    menu_item: WHITE_WOOL
+    description:
+      - " &7ᴅɪꜰꜰɪᴄᴜʟᴛʏ: &cʜᴀʀᴅ"
+      - ""
+      - "&3Task:"
+      - " &3&l| &7Shear %required% sheeps"
+      - ""
+      - "&3Progress:"
+      - " &3&l| %status%"
+      - ""
+      - "&3Reward:"
+      - " &3&l| &7750$"
+      - ""
+    quest_type: SHEAR
+    required: SHEEP
+    required_amount: 12
+    reward:
+      reward_type: MONEY
+      amount: 750
+  11:
+    name: "&3Use your knowledge"
+    menu_item: ENCHANTING_TABLE
+    description:
+      - " &7ᴅɪꜰꜰɪᴄᴜʟᴛʏ: &cʜᴀʀᴅ"
+      - ""
+      - "&3Task:"
+      - " &3&l| &7Enchant %required% items"
+      - ""
+      - "&3Progress:"
+      - " &3&l| %status%"
+      - ""
+      - "&3Reward:"
+      - " &3&l| &7750$"
+      - ""
+    quest_type: ENCHANT
+    required_amount: 2
+    reward:
+      reward_type: MONEY
+      amount: 750
+  12:
+    name: "&3Stay healthy"
+    menu_item: GOLDEN_APPLE
+    description:
+      - " &7ᴅɪꜰꜰɪᴄᴜʟᴛʏ: &cʜᴀʀᴅ"
+      - ""
+      - "&3Task:"
+      - " &3&l| &7Eat %required% golden apples"
+      - ""
+      - "&3Progress:"
+      - " &3&l| %status%"
+      - ""
+      - "&3Reward:"
+      - " &3&l| &7750$"
+      - ""
+    quest_type: CONSUME
+    required: GOLDEN_APPLE
+    required_amount: 1
+    reward:
+      reward_type: MONEY
+      amount: 750
