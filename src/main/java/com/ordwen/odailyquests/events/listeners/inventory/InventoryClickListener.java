@@ -20,6 +20,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.*;
 
+import java.util.List;
+
 public class InventoryClickListener extends ClickableChecker implements Listener {
 
     private final PlayerQuestsInterface playerQuestsInterface;
@@ -155,44 +157,93 @@ public class InventoryClickListener extends ClickableChecker implements Listener
     }
 
     /**
-     * Get the amount of traded items based on the click type.
+     * Calculate the number of traded items from the villager trade result slot.
+     * Takes into account single click vs bulk actions (Shift-click, Ctrl-click, hotbar move).
      *
-     * @param event             the inventory click event.
-     * @param clickedItem       the clicked item.
-     * @param merchantInventory the merchant inventory.
-     * @return the amount of traded items.
+     * @param event             the inventory click event
+     * @param clickedItem       the clicked item in the result slot
+     * @param merchantInventory the merchant inventory
+     * @return the total number of result items the player will actually receive
      */
     private int getTradeAmount(InventoryClickEvent event, ItemStack clickedItem, MerchantInventory merchantInventory) {
-        int amount = clickedItem.getAmount();
+        int perTradeResult = clickedItem.getAmount();
+        if (perTradeResult <= 0) return 0;
 
         final ClickType click = event.getClick();
-        if ((click == ClickType.SHIFT_RIGHT || click == ClickType.SHIFT_LEFT) && amount != 0) {
-            int maxTradable = getMaxTradeAmount(merchantInventory);
-            int capacity = fits(clickedItem, event.getView().getBottomInventory().getStorageContents());
-            if (capacity < maxTradable) {
-                maxTradable = ((capacity + amount - 1) / amount) * amount;
-            }
-            amount = maxTradable;
+        final InventoryAction action = event.getAction();
+
+        boolean bulk = (click == ClickType.SHIFT_LEFT || click == ClickType.SHIFT_RIGHT
+                || action == InventoryAction.MOVE_TO_OTHER_INVENTORY
+                || action == InventoryAction.HOTBAR_MOVE_AND_READD);
+
+        if (!bulk) {
+            // simple click: only one trade
+            return perTradeResult;
         }
-        return amount;
+
+        int tradesPossible = getMaxTradesPossible(merchantInventory);
+        if (tradesPossible <= 0) return 0;
+
+        int capacityItems = fits(clickedItem, event.getView().getBottomInventory().getStorageContents());
+        if (capacityItems <= 0) return 0;
+
+        int itemsIfUnlimitedSpace = tradesPossible * perTradeResult;
+
+        return Math.min(itemsIfUnlimitedSpace, capacityItems);
     }
 
     /**
-     * Get the maximum amount of items that can be traded in the current trade.
+     * Calculate the maximum number of trades that can be executed
+     * with the current recipe, based on recipe uses left and the
+     * available input ingredients in the merchant inventory.
      *
-     * @param inv the merchant inventory.
-     * @return the maximum amount of items that can be traded.
+     * @param inv the merchant inventory
+     * @return the maximum number of trades possible
      */
-    private int getMaxTradeAmount(MerchantInventory inv) {
-        if (inv.getSelectedRecipe() == null) return 0;
+    private int getMaxTradesPossible(MerchantInventory inv) {
+        final MerchantRecipe recipe = inv.getSelectedRecipe();
+        if (recipe == null) return 0;
 
-        int resultCount = inv.getSelectedRecipe().getResult().getAmount();
-        int materialCount = Integer.MAX_VALUE;
+        int usesLeft = recipe.getMaxUses() - recipe.getUses();
+        if (usesLeft <= 0) return 0;
 
-        for (ItemStack is : inv.getStorageContents())
-            if (is != null && is.getAmount() < materialCount) materialCount = is.getAmount();
+        final List<ItemStack> reqs = recipe.getIngredients();
+        final ItemStack req1 = !reqs.isEmpty() ? reqs.get(0) : null;
+        final ItemStack req2 = reqs.size() >= 2 ? reqs.get(1) : null;
 
-        return resultCount * materialCount;
+        final ItemStack in1 = inv.getItem(0);
+        final ItemStack in2 = inv.getItem(1);
+
+        int byIng1 = getIngredientCount(req1, in1, in2);
+        int byIng2 = getIngredientCount(req2, in1, in2);
+
+        int byIngredients = (byIng1 == Integer.MAX_VALUE && byIng2 == Integer.MAX_VALUE)
+                ? usesLeft
+                : Math.min(byIng1, byIng2);
+
+        return Math.min(byIngredients, usesLeft);
+    }
+
+    /**
+     * Calculate how many trades can be done with a specific required ingredient.
+     * Checks both input slots and returns the number of times this ingredient
+     * can satisfy the recipe requirement.
+     *
+     * @param required the required ingredient for the recipe
+     * @param in1      the first input slot of the merchant inventory
+     * @param in2      the second input slot of the merchant inventory
+     * @return the maximum number of trades possible with this ingredient,
+     *         or {@code Integer.MAX_VALUE} if the ingredient is not required
+     */
+    private int getIngredientCount(ItemStack required, ItemStack in1, ItemStack in2) {
+        if (required == null || required.getType() == Material.AIR) return Integer.MAX_VALUE;
+
+        int have = 0;
+        if (in1 != null && in1.isSimilar(required)) have = in1.getAmount();
+        else if (in2 != null && in2.isSimilar(required)) have = in2.getAmount();
+
+        if (have <= 0) return 0;
+        return have / Math.max(1, required.getAmount());
     }
 
     /**
