@@ -125,7 +125,8 @@ public class ProgressionMessage implements IConfigurable {
                 case BOSSBAR -> currentBossBars.computeIfAbsent(player, p -> {
                     final BossBar bossBar = Bukkit.getServer().createBossBar(toSend, barColor, barStyle);
                     bossBar.addPlayer(p);
-                    ODailyQuests.morePaperLib.scheduling().entitySpecificScheduler(p).runDelayed(() -> removeBossBar(p), null, 100L);
+                    final ProgressionMessage self = this; // keep current instance to avoid remaining boss bars after reload
+                    ODailyQuests.morePaperLib.scheduling().entitySpecificScheduler(p).runDelayed(() -> self.removeBossBarInternal(p), null, 100L);
                     return bossBar;
                 }).setTitle(toSend);
             }
@@ -142,6 +143,14 @@ public class ProgressionMessage implements IConfigurable {
             currentBossBars.get(player).removePlayer(player);
             currentBossBars.remove(player);
         }
+    }
+
+    /**
+     * Cleanup all boss bars from all players, for reload/shutdown.
+     */
+    public void cleanup() {
+        currentBossBars.forEach((p, bar) -> bar.removePlayer(p));
+        currentBossBars.clear();
     }
 
     private static ProgressionMessage getInstance() {

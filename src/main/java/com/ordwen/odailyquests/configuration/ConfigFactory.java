@@ -50,7 +50,14 @@ public class ConfigFactory {
         // functionalities
         configs.put(ActionBar.class, new ActionBar(configurationFile));
         configs.put(ProgressBar.class, new ProgressBar(configurationFile));
+
+        // if there was a previous ProgressionMessage config, clean it up first
+        final IConfigurable prev = configs.get(ProgressionMessage.class);
+        if (prev instanceof ProgressionMessage pm) {
+            pm.cleanup(); // remove existing boss bars
+        }
         configs.put(ProgressionMessage.class, new ProgressionMessage(configurationFile));
+
         configs.put(Title.class, new Title(configurationFile));
         configs.put(ToastNotification.class, new ToastNotification(configurationFile));
         configs.put(DisabledWorlds.class, new DisabledWorlds(configurationFile));
