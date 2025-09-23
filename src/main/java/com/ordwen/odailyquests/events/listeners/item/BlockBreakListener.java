@@ -19,22 +19,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 
-import java.util.Set;
-
 public class BlockBreakListener extends PlayerProgressor implements Listener {
-
-    private static final Set<Material> VERTICAL_PLANTS_UP = Set.of(
-            Material.SUGAR_CANE,
-            Material.CACTUS,
-            Material.BAMBOO,
-            Material.KELP_PLANT,
-            Material.TWISTING_VINES_PLANT
-    );
-
-    private static final Set<Material> VERTICAL_PLANTS_DOWN = Set.of(
-            Material.WEEPING_VINES_PLANT,
-            Material.CAVE_VINES_PLANT
-    );
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockBreakEvent(BlockBreakEvent event) {
@@ -44,12 +29,19 @@ public class BlockBreakListener extends PlayerProgressor implements Listener {
             return;
         }
 
-        final Player player = event.getPlayer();
         final Block block = event.getBlock();
         final Material material = block.getType();
-
         Debugger.write("BlockBreakListener: onBlockBreakEvent block type: " + material.name() + ".");
 
+        if (ItemsAdderEnabled.isEnabled()) {
+            final CustomBlock customBlock = CustomBlock.byAlreadyPlaced(block);
+            if (customBlock != null) {
+                Debugger.write("BlockBreakListener: onBlockBreakEvent cancelled due to ItemsAdder custom block.");
+                return;
+            }
+        }
+
+        // special cases for vertical plants
         if (VERTICAL_PLANTS_UP.contains(material)) {
             Debugger.write("BlockBreakListener: onBlockBreakEvent vertical plant detected (UP).");
             handleVerticalPlant(event, material, BlockFace.UP);
@@ -62,17 +54,9 @@ public class BlockBreakListener extends PlayerProgressor implements Listener {
             return;
         }
 
-        if (ItemsAdderEnabled.isEnabled()) {
-            final CustomBlock customBlock = CustomBlock.byAlreadyPlaced(block);
-            if (customBlock != null) {
-                Debugger.write("BlockBreakListener: onBlockBreakEvent cancelled due to ItemsAdder custom block.");
-                return;
-            }
-        }
-
-        boolean valid = canProgress(block);
-
-        if (valid) {
+        // generic cases (classic break)
+        if (canProgress(block)) {
+            final Player player = event.getPlayer();
             Debugger.write("BlockBreakListener: onBlockBreakEvent summoned by " + player.getName() + " for " + block.getType() + ".");
             setPlayerQuestProgression(event, player, 1, "BREAK");
         }
@@ -133,6 +117,7 @@ public class BlockBreakListener extends PlayerProgressor implements Listener {
         Debugger.write("BlockBreakListener: handleVerticalPlant found " + count + " vertical plant blocks.");
 
         if (count > 0) {
+            Debugger.write(count + " vertical plant blocks found.");
             setPlayerQuestProgression(event, event.getPlayer(), count, "FARMING");
         } else {
             Debugger.write("BlockBreakListener: handleVerticalPlant cancelled due to placed blocks.");

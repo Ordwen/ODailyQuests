@@ -31,6 +31,7 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Manages the progression of a player's quests.
@@ -39,6 +40,29 @@ import java.util.Map;
  * executing actions when a quest is completed, and handling various conditions like world, region, and permissions for progression.
  */
 public class PlayerProgressor {
+
+    protected static final Set<Material> VERTICAL_PLANTS_UP = Set.of(
+            Material.SUGAR_CANE,
+            Material.CACTUS,
+            Material.BAMBOO,
+            Material.KELP_PLANT,
+            Material.TWISTING_VINES_PLANT
+    );
+
+    protected static final Set<Material> VERTICAL_PLANTS_DOWN = Set.of(
+            Material.WEEPING_VINES_PLANT,
+            Material.CAVE_VINES_PLANT
+    );
+
+    /**
+     * Check if the given material is a vertical plant.
+     *
+     * @param m the material to check
+     * @return true if the material is a vertical plant, false otherwise
+     */
+    protected static boolean isVerticalPlant(Material m) {
+        return VERTICAL_PLANTS_UP.contains(m) || VERTICAL_PLANTS_DOWN.contains(m);
+    }
 
     /**
      * Set the player's progression for a specific quest type
@@ -118,8 +142,8 @@ public class PlayerProgressor {
         final int remaining = required - current;
         final int toAdd = Math.min(amount, remaining);
 
+        Debugger.write("QuestProgressUtils: increasing progression for " + questName + " by " + toAdd + ".");
         for (int i = 0; i < toAdd; i++) {
-            Debugger.write("QuestProgressUtils: increasing progression for " + questName + " by " + amount + ".");
             progression.increaseAdvancement();
         }
 
@@ -223,19 +247,26 @@ public class PlayerProgressor {
     protected boolean isPlayerPlacedBlock(Block block, Material material) {
         if (material.isBlock() && Antiglitch.isStorePlacedBlocks()) {
             final PersistentDataContainer pdc = new CustomBlockData(block, ODailyQuests.INSTANCE);
-            // check if type has changed
-            final String previousType = pdc.getOrDefault(Antiglitch.PLACED_KEY, PersistentDataType.STRING, material.name());
-            if (previousType.equals(material.name())) {
-                Debugger.write("PlayerProgressor: onBlockDropItemEvent cancelled, material equal to previous type. Maybe BREAK type should be used instead?");
+
+            if (!pdc.has(Antiglitch.PLACED_KEY, PersistentDataType.STRING)) {
+                Debugger.write("PlayerProgressor: isPlayerPlacedBlock no PLACED_KEY, not a placed block.");
+                return false;
+            }
+
+            final String previousType = pdc.get(Antiglitch.PLACED_KEY, PersistentDataType.STRING);
+            if (previousType != null && previousType.equals(material.name())) {
+                Debugger.write("PlayerProgressor: isPlayerPlacedBlock cancelled, block was placed (type=" + previousType + ").");
                 return true;
             } else {
-                Debugger.write("PlayerProgressor: onBlockDropItemEvent block type has changed (" + previousType + " -> " + material.name() + ").");
+                Debugger.write("PlayerProgressor: isPlayerPlacedBlock type changed (" + previousType + " -> " + material.name() + "), allow.");
+                return false;
             }
-        }  else {
-            Debugger.write("BlockDropItemListener: onBlockDropItemEvent not storing placed blocks, or material is not a block.");
+        } else {
+            Debugger.write("PlayerProgressor: isPlayerPlacedBlock not storing placed blocks, or material is not a block.");
+            return false;
         }
-        return false;
     }
+
 
     /**
      * Handle the dropped items and update the player progression.

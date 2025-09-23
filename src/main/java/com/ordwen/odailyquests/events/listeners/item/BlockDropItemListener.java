@@ -34,6 +34,11 @@ public class BlockDropItemListener extends PlayerProgressor implements Listener 
         final BlockData data = event.getBlockState().getBlockData();
         final Material dataMaterial = data.getMaterial();
 
+        if (isVerticalPlant(dataMaterial)) {
+            Debugger.write("BlockDropItemListener: onBlockDropItemEvent vertical plant detected, skipping drop handling.");
+            return;
+        }
+
         // fix attempt for eco plugins compatibility issue
         if (PluginUtils.isPluginEnabled("eco")) {
             Debugger.write("BlockDropItemListener: onBlockDropItemEvent eco is enabled, skipping.");
@@ -73,6 +78,11 @@ public class BlockDropItemListener extends PlayerProgressor implements Listener 
      * @return true if the block is ageable and fully grown, false otherwise
      */
     private boolean isAgeableAndFullyGrown(Event event, BlockData data, Material dataMaterial, Player player, List<Item> drops) {
+        if (isVerticalPlant(dataMaterial)) {
+            Debugger.write("BlockDropItemListener: onBlockDropItemEvent vertical plant detected, skipping ageable check.");
+            return false;
+        }
+
         if (data instanceof Ageable ageable) {
             Debugger.write("BlockDropItemListener: onBlockDropItemEvent ageable block: " + dataMaterial + ".");
 
