@@ -18,26 +18,31 @@ public class MythicMobDeathListener extends PlayerProgressor implements Listener
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onMythicMobsDeathEvent(MythicMobDeathEvent event) {
-        if (SharedMobs.isEnabled()) {
-            final ActiveMob.ThreatTable threatTable = event.getMob().getThreatTable();
+        final ActiveMob activeMob = event.getMob();
+        Debugger.write("MythicMobDeathEvent triggered for mob: " + activeMob.getDisplayName());
 
-            if (threatTable == null) {
-                Debugger.write("Threat table is null for mob: " + event.getMob().getDisplayName());
+        if (SharedMobs.isEnabled()) {
+            Debugger.write("SharedMobs is enabled, processing threat table for mob: " + activeMob.getDisplayName());
+            final ActiveMob.ThreatTable threatTable = activeMob.getThreatTable();
+
+            if (threatTable == null || threatTable.getAllThreatTargets().isEmpty()) {
+                Debugger.write("Threat table is null or empty for mob: " + activeMob.getDisplayName() + ", falling back to classic progression.");
+                if (event.getKiller() instanceof Player player) {
+                    setPlayerQuestProgression(event, player, 1, "MYTHIC_MOBS");
+                }
                 return;
             }
 
             final Set<AbstractEntity> targets = threatTable.getAllThreatTargets();
-
             for (AbstractEntity target : targets) {
                 if (target.getBukkitEntity() instanceof Player player) {
                     setPlayerQuestProgression(event, player, 1, "MYTHIC_MOBS");
                 }
             }
-
             return;
         }
 
-        if (event.getKiller() != null && event.getKiller() instanceof Player player) {
+        if (event.getKiller() instanceof Player player) {
             setPlayerQuestProgression(event, player, 1, "MYTHIC_MOBS");
         }
     }
