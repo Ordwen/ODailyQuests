@@ -41,9 +41,8 @@ public class BlockDropItemListener extends PlayerProgressor implements Listener 
 
         // fix attempt for eco plugins compatibility issue
         if (PluginUtils.isPluginEnabled("eco")) {
-            Debugger.write("BlockDropItemListener: onBlockDropItemEvent eco is enabled, skipping.");
+            Debugger.write("BlockDropItemListener: onBlockDropItemEvent eco is enabled. Setting current state for DropQueuePushListener.");
             DropQueuePushListener.setCurrentState(event.getBlockState());
-            return;
         }
 
         Debugger.write("BlockDropItemListener: onBlockDropItemEvent block data: " + dataMaterial.name() + ".");
