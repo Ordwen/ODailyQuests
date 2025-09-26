@@ -56,6 +56,7 @@ public class Update0to1 extends DatabaseUpdater {
         Debugger.write("Starting SQL data conversion...");
         final StorageMode currentMode = Database.getMode();
 
+        // necessary to load the H2 driver for some unknown reason
         try {
             Class.forName("org.h2.Driver");
             Debugger.write("H2 driver loaded successfully.");

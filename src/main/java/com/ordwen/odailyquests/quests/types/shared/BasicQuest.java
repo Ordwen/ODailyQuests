@@ -20,19 +20,19 @@ public class BasicQuest extends AbstractQuest {
     /**
      * Constructs a new BasicQuest with the specified parameters.
      *
-     * @param questIndex        the index of the quest.
-     * @param questName         the name of the quest.
-     * @param categoryName      the category of the quest.
-     * @param questDesc         the description of the quest.
-     * @param questType         the type of the quest.
-     * @param menuItem          the item used in the quest's menu.
-     * @param menuItemAmount    the amount of the menu item (default is 1).
-     * @param achievedItem      the item awarded for completing the quest.
-     * @param requiredAmountRaw the required amount of items needed for the quest.
-     * @param reward            the reward for completing the quest.
-     * @param requiredWorlds    the worlds required for the quest.
-     * @param requiredRegions   the regions required for the quest.
-     * @param protectionBypass  whether protection bypass is enabled for the quest.
+     * @param questIndex          the index of the quest.
+     * @param questName           the name of the quest.
+     * @param categoryName        the category of the quest.
+     * @param questDesc           the description of the quest.
+     * @param questType           the type of the quest.
+     * @param menuItem            the item used in the quest's menu.
+     * @param menuItemAmount      the amount of the menu item (default is 1).
+     * @param achievedItem        the item awarded for completing the quest.
+     * @param requiredAmountRaw   the required amount of items needed for the quest.
+     * @param reward              the reward for completing the quest.
+     * @param requiredWorlds      the worlds required for the quest.
+     * @param requiredRegions     the regions required for the quest.
+     * @param protectionBypass    whether protection bypass is enabled for the quest.
      * @param requiredPermissions the permissions required to undertake the quest.
      */
     public BasicQuest(int questIndex, String questName, String categoryName, List<String> questDesc, String questType, ItemStack menuItem, int menuItemAmount, ItemStack achievedItem, String requiredAmountRaw, Reward reward, List<String> requiredWorlds, List<String> requiredRegions, boolean protectionBypass, List<String> requiredPermissions) {
@@ -55,7 +55,7 @@ public class BasicQuest extends AbstractQuest {
      * In the case of a basic quest, progression is not allowed, so this method returns false.
      * </p>
      *
-     * @param event      the event that triggers progression.
+     * @param event       the event that triggers progression.
      * @param progression the progression information of the player.
      * @return false since basic quests do not support progression.
      */

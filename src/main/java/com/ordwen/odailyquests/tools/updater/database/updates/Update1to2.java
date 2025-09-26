@@ -39,6 +39,7 @@ Update1to2 extends DatabaseUpdater {
     @Override
     public void applyYAML() {
         final FileConfiguration config = progressionFile.getConfig();
+
         for (String playerUuid : config.getKeys(false)) {
             final ConfigurationSection playerSection = config.getConfigurationSection(playerUuid);
             if (playerSection == null) continue;
@@ -47,16 +48,11 @@ Update1to2 extends DatabaseUpdater {
             if (questsSection == null) continue;
 
             for (String questId : questsSection.getKeys(false)) {
-                ConfigurationSection questSection = questsSection.getConfigurationSection(questId);
+                final ConfigurationSection questSection = questsSection.getConfigurationSection(questId);
                 if (questSection == null) continue;
 
-                if (!questSection.contains("requiredAmount")) {
-                    questSection.set("requiredAmount", 0);
-                }
-
-                if (!questSection.contains("selectedRequired")) {
-                    questSection.set("selectedRequired", -1);
-                }
+                ensurePath(questSection, "requiredAmount", 0);
+                ensurePath(questSection, "selectedRequired", -1);
             }
         }
 
@@ -68,5 +64,11 @@ Update1to2 extends DatabaseUpdater {
         }
 
         PluginLogger.info("YAML database update 1 to 2 applied successfully.");
+    }
+
+    private static void ensurePath(ConfigurationSection section, String path, Object defaultValue) {
+        if (!section.contains(path)) {
+            section.set(path, defaultValue);
+        }
     }
 }
