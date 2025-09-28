@@ -3,6 +3,7 @@ package com.ordwen.odailyquests.events.listeners.inventory;
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
 import com.ordwen.odailyquests.configuration.essentials.CustomFurnaceResults;
+import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.events.customs.CustomFurnaceExtractEvent;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.clickable.ClickableChecker;
@@ -94,12 +95,19 @@ public class InventoryClickListener extends ClickableChecker implements Listener
      */
     private boolean handleVillagerTrading(InventoryClickEvent event, ItemStack clickedItem, QuestContext.Builder contextBuilder) {
         if (event.getInventory().getType() == InventoryType.MERCHANT && event.getSlotType() == InventoryType.SlotType.RESULT) {
+            Debugger.write("Detected villager trade action");
             final MerchantInventory merchantInventory = (MerchantInventory) event.getClickedInventory();
-            if (merchantInventory == null) return false;
+            if (merchantInventory == null) {
+                Debugger.write("Merchant Inventory is null");
+                return false;
+            }
 
             if (event.getClickedInventory().getHolder() instanceof Villager villager) {
                 int amount = getTradeAmount(event, clickedItem, merchantInventory);
-                if (amount == 0) return true;
+                Debugger.write("Trade amount is " + amount);
+                if (amount == 0) {
+                    return true;
+                }
 
                 final MerchantRecipe selectedRecipe = merchantInventory.getSelectedRecipe();
                 if (selectedRecipe != null) {
@@ -167,14 +175,19 @@ public class InventoryClickListener extends ClickableChecker implements Listener
      */
     private int getTradeAmount(InventoryClickEvent event, ItemStack clickedItem, MerchantInventory merchantInventory) {
         int perTradeResult = clickedItem.getAmount();
+        Debugger.write("Per trade result amount is " + perTradeResult);
         if (perTradeResult <= 0) return 0;
 
         final ClickType click = event.getClick();
+        Debugger.write("Click type is " + click.name());
         final InventoryAction action = event.getAction();
+        Debugger.write("Inventory action is " + action.name());
 
         boolean bulk = (click == ClickType.SHIFT_LEFT || click == ClickType.SHIFT_RIGHT
                 || action == InventoryAction.MOVE_TO_OTHER_INVENTORY
                 || action == InventoryAction.HOTBAR_MOVE_AND_READD);
+
+        Debugger.write("Bulk action is " + bulk);
 
         if (!bulk) {
             // simple click: only one trade
@@ -182,12 +195,15 @@ public class InventoryClickListener extends ClickableChecker implements Listener
         }
 
         int tradesPossible = getMaxTradesPossible(merchantInventory);
+        Debugger.write("Max trades possible is " + tradesPossible);
         if (tradesPossible <= 0) return 0;
 
         int capacityItems = fits(clickedItem, event.getView().getBottomInventory().getStorageContents());
+        Debugger.write("Capacity in player inventory is " + capacityItems);
         if (capacityItems <= 0) return 0;
 
         int itemsIfUnlimitedSpace = tradesPossible * perTradeResult;
+        Debugger.write("Items if unlimited space is " + itemsIfUnlimitedSpace);
 
         return Math.min(itemsIfUnlimitedSpace, capacityItems);
     }
