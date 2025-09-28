@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.quests.player.progression.clickable;
 
 import com.ordwen.odailyquests.api.ODailyQuestsAPI;
+import com.ordwen.odailyquests.configuration.functionalities.CompleteOnlyOnClick;
 import com.ordwen.odailyquests.configuration.functionalities.DisabledWorlds;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
@@ -66,7 +67,17 @@ public abstract class ClickableChecker extends PlayerProgressor {
         } else if (abstractQuest instanceof VillagerQuest villagerQuest && villager != null && villagerQuest.getQuestType().equals("VILLAGER_TRADE")) {
             return new VillagerTradeQuestCommand(context, progression, villagerQuest);
         }
+        if (CompleteOnlyOnClick.isEnabled() && isManualCompletionEligible(abstractQuest, progression, clickedItem)) {
+            return new ManualCompletionQuestCommand(context, progression, abstractQuest);
+        }
         return null;
+    }
+
+    private boolean isManualCompletionEligible(AbstractQuest quest, Progression progression, ItemStack clickedItem) {
+        if (progression.getAdvancement() < progression.getRequiredAmount()) {
+            return false;
+        }
+        return isAppropriateQuestMenuItem(clickedItem, quest.getMenuItem());
     }
 
     /**

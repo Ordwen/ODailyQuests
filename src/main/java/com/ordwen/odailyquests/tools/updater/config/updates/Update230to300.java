@@ -40,6 +40,7 @@ public class Update230to300 extends ConfigUpdater {
         setDefaultConfigItem("check_for_update", true, config, configFile, false);
         setDefaultConfigItem("player_data_load_delay", 0.5, config, configFile, false);
         setDefaultConfigItem("use_rosestacker", false, config, configFile, false);
+        setDefaultConfigItem("complete_only_on_click", false, config, configFile, false);
 
         setDefaultConfigItem("toast.enabled", false, config, configFile, false);
         setDefaultConfigItem("toast.frame", "CHALLENGE", config, configFile, false);

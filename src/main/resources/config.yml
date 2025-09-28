@@ -300,6 +300,9 @@ disable_spawners_progression: false
 # Determines if the player loses required items when completing a GET quest.
 take_items_for_get_quests: false
 
+# When enabled, quests that reach their required progression must be completed via the menu to grant rewards.
+complete_only_on_click: false
+
 # Determines if the quest can be rerolled even if it has already been completed, when using the reroll command.
 reroll_only_if_not_achieved: false
 

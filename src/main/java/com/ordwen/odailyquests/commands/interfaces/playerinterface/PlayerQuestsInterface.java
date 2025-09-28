@@ -3,6 +3,7 @@ package com.ordwen.odailyquests.commands.interfaces.playerinterface;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.ItemType;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.PlayerHead;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.items.getters.InterfaceItemGetter;
+import com.ordwen.odailyquests.configuration.functionalities.CompleteOnlyOnClick;
 import com.ordwen.odailyquests.files.implementations.PlayerInterfaceFile;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
@@ -547,6 +548,13 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
             ));
         }
 
+        if (shouldDisplayManualCompletionHint(playerProgression)) {
+            final String hint = getCompleteGetTypeStr();
+            if (hint != null && !hint.isEmpty()) {
+                lore.add(TextFormatter.format(player, hint));
+            }
+        }
+
         return lore;
     }
 
@@ -653,12 +661,27 @@ public class PlayerQuestsInterface extends InterfaceItemGetter {
     private String getQuestStatus(Progression progression, Player player) {
         if (progression.isAchieved()) {
             return TextFormatter.format(player, getAchievedStr());
+        } else if (shouldDisplayManualCompletionHint(progression)) {
+            final String hint = getCompleteGetTypeStr();
+            if (hint == null || hint.isEmpty()) {
+                return TextFormatter.format(player, getProgressStr()
+                        .replace(PROGRESS, String.valueOf(progression.getAdvancement()))
+                        .replace(REQUIRED, String.valueOf(progression.getRequiredAmount()))
+                        .replace(PROGRESS_BAR, ProgressBar.getProgressBar(progression.getAdvancement(), progression.getRequiredAmount())));
+            }
+            return TextFormatter.format(player, hint);
         } else {
             return TextFormatter.format(player, getProgressStr()
                     .replace(PROGRESS, String.valueOf(progression.getAdvancement()))
                     .replace(REQUIRED, String.valueOf(progression.getRequiredAmount()))
                     .replace(PROGRESS_BAR, ProgressBar.getProgressBar(progression.getAdvancement(), progression.getRequiredAmount())));
         }
+    }
+
+    private boolean shouldDisplayManualCompletionHint(Progression progression) {
+        return CompleteOnlyOnClick.isEnabled()
+                && !progression.isAchieved()
+                && progression.getAdvancement() >= progression.getRequiredAmount();
     }
 
     /**

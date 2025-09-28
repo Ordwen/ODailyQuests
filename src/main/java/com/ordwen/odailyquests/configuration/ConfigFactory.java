@@ -3,6 +3,7 @@ package com.ordwen.odailyquests.configuration;
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.*;
 import com.ordwen.odailyquests.configuration.functionalities.CommandAliases;
+import com.ordwen.odailyquests.configuration.functionalities.CompleteOnlyOnClick;
 import com.ordwen.odailyquests.configuration.functionalities.DisabledWorlds;
 import com.ordwen.odailyquests.configuration.functionalities.SpawnerProgression;
 import com.ordwen.odailyquests.configuration.functionalities.TakeItem;
@@ -63,6 +64,7 @@ public class ConfigFactory {
         configs.put(DisabledWorlds.class, new DisabledWorlds(configurationFile));
         configs.put(SpawnerProgression.class, new SpawnerProgression(configurationFile));
         configs.put(TakeItem.class, new TakeItem(configurationFile));
+        configs.put(CompleteOnlyOnClick.class, new CompleteOnlyOnClick(configurationFile));
         configs.put(CommandAliases.class, new CommandAliases(configurationFile));
 
         // rewards

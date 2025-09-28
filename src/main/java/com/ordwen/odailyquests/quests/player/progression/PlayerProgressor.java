@@ -8,6 +8,7 @@ import com.ordwen.odailyquests.api.events.QuestProgressEvent;
 import com.ordwen.odailyquests.configuration.essentials.Antiglitch;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.essentials.Synchronization;
+import com.ordwen.odailyquests.configuration.functionalities.CompleteOnlyOnClick;
 import com.ordwen.odailyquests.configuration.functionalities.DisabledWorlds;
 import com.ordwen.odailyquests.configuration.functionalities.progression.ProgressionMessage;
 import com.ordwen.odailyquests.enums.QuestsMessages;
@@ -149,6 +150,9 @@ public class PlayerProgressor {
 
         if (progression.getAdvancement() >= required) {
             Debugger.write("QuestProgressUtils: progression " + progression.getAdvancement() + " is greater than or equal to amount required " + progression.getRequiredAmount() + ".");
+            if (CompleteOnlyOnClick.isEnabled()) {
+                return;
+            }
             ODailyQuests.morePaperLib.scheduling().globalRegionalScheduler().runDelayed(() -> {
                 Debugger.write("QuestProgressUtils: QuestCompletedEvent is called.");
                 final QuestCompletedEvent completedEvent = new QuestCompletedEvent(player, progression, quest);
