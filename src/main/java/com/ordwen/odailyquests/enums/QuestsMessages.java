@@ -27,7 +27,7 @@ public enum QuestsMessages {
             &3> &b/dqa remove total <player> <amount> &3- &7remove a number of achieved quests to a player
             &3> &b/dqa remove total <category> <player> <amount> &3- &7remove a number of achieved quests in a specific category to a player
             &3> &b/dqa reroll <player> <index> &3- &7draw a new quest for a player, at a specific index
-            &3> &b/dqa set <player> <slot> <category> <quest> &3- &7assign a specific quest to a player
+            &3> &b/dqa set <player> <slot> <category> <file index> &3- &7assign a specific quest to a player
             &3> &b/dqa show <player> &3- &7see quests of a player
             &3> &b/dqa open <player> &3- &7force a player to open the quest interface
             &3> &b/dqa convert <old format> <new format> &3- &7convert the storage format of the plugin
