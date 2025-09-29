@@ -27,6 +27,12 @@ import java.util.*;
  */
 public class PlayerQuests {
 
+    public enum ReplaceResult {
+        SUCCESS,
+        INVALID_INDEX,
+        ALREADY_PRESENT
+    }
+
     /* timestamp of last quests renew */
     private final Long timestamp;
 
@@ -135,72 +141,207 @@ public class PlayerQuests {
     }
 
     /**
-     * Rerolls a quest for the player.
+     * Rerolls a quest for the player at the given index.
      * <p>
-     * A quest is rerolled only if it has not been achieved, and a new quest is assigned from the same category.
-     * <p>
-     * If the player has achieved the quest, rerolling is prevented, and a message is sent to the player.
+     * Workflow:
+     * <ol>
+     *   <li>Read the quest at {@code index} and its progression.</li>
+     *   <li>Validate that a reroll is allowed according to configuration and current progression.</li>
+     *   <li>Resolve the quest category and build a working set that excludes the quest being replaced.</li>
+     *   <li>Pick a random replacement quest (not already assigned and permitted for the player).</li>
+     *   <li>Rebuild the ordered map of quests, inserting a fresh progression for the new quest.</li>
+     *   <li>If the removed quest was achieved, update category/global counters accordingly.</li>
+     * </ol>
      *
-     * @param index  the index of the quest to reroll.
-     * @param player the player for whom the quest is being rerolled.
-     * @return {@code true} if the reroll was successful, {@code false} otherwise.
+     * <p><strong>Side effects:</strong> Mutates this instance's {@code quests} map,
+     * potentially updates achievement counters, and may send feedback messages to the player.
+     *
+     * @param index  zero-based slot of the quest to reroll (must be within bounds of the current ordered keys)
+     * @param player the player for whom the reroll is performed (used for permission checks and messaging)
+     * @return {@code true} if the reroll succeeded; {@code false} otherwise (e.g., reroll not allowed,
+     * no available quest, or category resolution error)
+     * @throws IndexOutOfBoundsException if {@code index} is out of range for the current quest list
      */
     public boolean rerollQuest(int index, Player player) {
-
+        // Snapshot ordered keys to address a specific slot consistently.
         final List<AbstractQuest> oldQuests = new ArrayList<>(this.quests.keySet());
         final AbstractQuest questToRemove = oldQuests.get(index);
         final Progression progressionToRemove = this.quests.get(questToRemove);
 
-        if (progressionToRemove.isAchieved() && RerollNotAchieved.isRerollIfNotAchieved()) {
+        // Guard: configuration may disallow rerolling already achieved quests.
+        if (!isRerollAllowed(progressionToRemove, player)) {
+            return false;
+        }
+
+        // Resolve category that must provide the replacement quest.
+        final String categoryName = questToRemove.getCategoryName();
+        final Category category = CategoriesLoader.getCategoryByName(categoryName);
+        if (category == null) {
+            logCategoryNullError();
+            return false;
+        }
+
+        // Work on a copy to avoid mutating the live key set while filtering.
+        final Set<AbstractQuest> currentWithoutRemoved = new HashSet<>(this.quests.keySet());
+        currentWithoutRemoved.remove(questToRemove);
+
+        // Pick a replacement quest not already assigned and allowed by permissions.
+        final AbstractQuest newQuest = QuestsManager.getRandomQuestForPlayer(currentWithoutRemoved, category, player);
+        if (newQuest == null) {
+            notifyNoAvailableQuests(player, categoryName);
+            return false;
+        }
+
+        // Rebuild the ordered map with the new quest (fresh progression) at the same position.
+        final LinkedHashMap<AbstractQuest, Progression> newPlayerQuests =
+                rebuildQuestsMap(oldQuests, questToRemove, newQuest);
+
+        // Apply the new map atomically.
+        this.quests.clear();
+        this.quests.putAll(newPlayerQuests);
+
+        // If the removed quest was previously achieved, adjust counters accordingly.
+        updateAchievementsAfterRerollIfNeeded(progressionToRemove, categoryName, questToRemove);
+        return true;
+    }
+
+    /**
+     * Checks whether the current configuration allows rerolling the given progression.
+     * If rerolling achieved quests is disallowed, a feedback message is sent to the player.
+     *
+     * @param progression progression of the quest being rerolled
+     * @param player      player to notify if rerolling is disallowed
+     * @return {@code true} if rerolling is allowed; {@code false} otherwise
+     */
+    private boolean isRerollAllowed(Progression progression, Player player) {
+        if (progression.isAchieved() && RerollNotAchieved.isRerollIfNotAchieved()) {
             final String msg = QuestsMessages.CANNOT_REROLL_IF_ACHIEVED.toString();
             if (msg != null) player.sendMessage(msg);
             return false;
         }
+        return true;
+    }
 
-        final String categoryName = questToRemove.getCategoryName();
-        final Category category = CategoriesLoader.getCategoryByName(categoryName);
+    /**
+     * Logs a consistent error when the quest's category cannot be resolved.
+     * This typically indicates a misconfiguration or a category that was removed.
+     */
+    private void logCategoryNullError() {
+        PluginLogger.error("An error occurred while rerolling a quest. The category is null.");
+        PluginLogger.error("If the problem persists, please contact the developer.");
+    }
 
-        if (category == null) {
-            PluginLogger.error("An error occurred while rerolling a quest. The category is null.");
-            PluginLogger.error("If the problem persists, please contact the developer.");
-            return false;
-        }
+    /**
+     * Notifies the player that no eligible replacement quest could be found in the given category.
+     *
+     * @param player       player to notify
+     * @param categoryName category where we attempted to pick a new quest
+     */
+    private void notifyNoAvailableQuests(Player player, String categoryName) {
+        final String msg = QuestsMessages.NO_AVAILABLE_QUESTS_IN_CATEGORY.toString();
+        if (msg != null) player.sendMessage(msg.replace("%category%", categoryName));
+    }
 
-        final Set<AbstractQuest> oldQuestsSet = this.quests.keySet();
-        oldQuestsSet.remove(questToRemove);
-
-        final AbstractQuest newQuest = QuestsManager.getRandomQuestForPlayer(oldQuestsSet, category, player);
-
-        final LinkedHashMap<AbstractQuest, Progression> newPlayerQuests = new LinkedHashMap<>();
+    /**
+     * Rebuilds an ordered {@link LinkedHashMap} of quests where the specified quest is replaced
+     * by {@code newQuest} with a fresh {@link Progression}. All other quests retain their existing
+     * {@link Progression} instances.
+     *
+     * @param oldQuests     snapshot of the previous quest order
+     * @param questToRemove quest to be replaced
+     * @param newQuest      quest to insert at the same position (with fresh progression)
+     * @return a new ordered map representing the updated assignment
+     */
+    private LinkedHashMap<AbstractQuest, Progression> rebuildQuestsMap(List<AbstractQuest> oldQuests, AbstractQuest questToRemove, AbstractQuest newQuest) {
+        final LinkedHashMap<AbstractQuest, Progression> map = new LinkedHashMap<>();
         for (AbstractQuest quest : oldQuests) {
             if (quest.equals(questToRemove)) {
-                final int requiredAmount = QuestsManager.getDynamicRequiredAmount(newQuest.getRequiredAmountRaw());
-                final Progression progression = new Progression(requiredAmount, 0, false);
-                newPlayerQuests.put(newQuest, progression);
+                map.put(newQuest, QuestsManager.createFreshProgression(newQuest));
             } else {
-                final Progression progression = this.quests.get(quest);
-                newPlayerQuests.put(quest, progression);
+                map.put(quest, this.quests.get(quest));
+            }
+        }
+        return map;
+    }
+
+    /**
+     * Adjusts achievement counters and category totals if the removed quest was achieved.
+     * <p>
+     * If the category had already reached its maximum completed count, no change is required.
+     * Otherwise, the category's achieved count is decremented and a debug message is emitted.
+     *
+     * @param removedProgression progression of the quest that was rerolled away
+     * @param categoryName       category name for counter adjustments
+     * @param questToRemove      quest that was removed (for category lookup)
+     */
+    private void updateAchievementsAfterRerollIfNeeded(Progression removedProgression, String categoryName, AbstractQuest questToRemove) {
+        if (!removedProgression.isAchieved()) return;
+
+        this.decreaseAchievedQuests();
+
+        final int achievedByCategory = this.achievedQuestsByCategory.get(categoryName);
+        final int totalForCategory = QuestsPerCategory.getAmountForCategory(categoryName);
+
+        // If the category was fully completed, there's nothing to decrement.
+        if (achievedByCategory >= totalForCategory) {
+            Debugger.write("All quests from category " + categoryName + " have been completed. Nothing to do.");
+            return;
+        }
+
+        this.achievedQuestsByCategory.put(questToRemove.getCategoryName(), achievedByCategory - 1);
+        Debugger.write("Quest removed from category " + categoryName + ". " +
+                "Quests completed: " + (achievedByCategory - 1) + "/" + totalForCategory + ".");
+    }
+
+    /**
+     * Replaces the quest stored at the provided index with a new quest instance.
+     * <p>
+     * The newly assigned quest starts with a fresh {@link Progression}, mirroring the behaviour of
+     * the daily quest draw. If the replaced quest was already achieved, the player's counters are
+     * adjusted accordingly.
+     *
+     * @param index    zero-based index of the quest to replace
+     * @param newQuest the quest that should replace the current one
+     * @return the result of the replacement attempt
+     */
+    public ReplaceResult setQuestAtIndex(int index, AbstractQuest newQuest) {
+        final List<AbstractQuest> orderedQuests = new ArrayList<>(this.quests.keySet());
+
+        if (quests.containsKey(newQuest)) {
+            return ReplaceResult.ALREADY_PRESENT;
+        }
+
+        if (index < 0 || index >= orderedQuests.size()) {
+            return ReplaceResult.INVALID_INDEX;
+        }
+
+        final AbstractQuest questToReplace = orderedQuests.get(index);
+        final Progression oldProgression = this.quests.get(questToReplace);
+
+        final LinkedHashMap<AbstractQuest, Progression> updatedQuests = new LinkedHashMap<>();
+        for (int i = 0; i < orderedQuests.size(); i++) {
+            final AbstractQuest quest = orderedQuests.get(i);
+            if (i == index) {
+                updatedQuests.put(newQuest, QuestsManager.createFreshProgression(newQuest));
+            } else {
+                updatedQuests.put(quest, this.quests.get(quest));
             }
         }
 
         this.quests.clear();
-        this.quests.putAll(newPlayerQuests);
+        this.quests.putAll(updatedQuests);
 
-        if (progressionToRemove.isAchieved()) {
+        if (oldProgression != null && oldProgression.isAchieved()) {
             this.decreaseAchievedQuests();
 
-            final int achievedByCategory = this.achievedQuestsByCategory.get(categoryName);
-
-            // check if the player has completed all quests from a category
-            if (achievedByCategory >= QuestsPerCategory.getAmountForCategory(categoryName)) {
-                Debugger.write("All quests from category " + categoryName + " have been completed. Nothing to do.");
-            } else {
-                this.achievedQuestsByCategory.put(questToRemove.getCategoryName(), achievedByCategory - 1);
-                Debugger.write("Quest removed from category " + categoryName + ". Quests completed: " + (achievedByCategory - 1) + "/" + QuestsPerCategory.getAmountForCategory(categoryName) + ".");
+            final String oldCategory = questToReplace.getCategoryName();
+            final int achievedByCategory = this.achievedQuestsByCategory.getOrDefault(oldCategory, 0);
+            if (achievedByCategory > 0) {
+                this.achievedQuestsByCategory.put(oldCategory, achievedByCategory - 1);
             }
         }
 
-        return true;
+        return ReplaceResult.SUCCESS;
     }
 
     /**

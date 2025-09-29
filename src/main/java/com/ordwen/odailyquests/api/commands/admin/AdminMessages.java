@@ -50,4 +50,12 @@ public abstract class AdminMessages {
         final String msg = QuestsMessages.INVALID_CATEGORY.toString();
         if (msg != null) sender.sendMessage(msg);
     }
+
+    /**
+     * Sends the invalid quest identifier message to the sender.
+     */
+    protected void invalidQuestId(CommandSender sender) {
+        final String msg = QuestsMessages.INVALID_QUEST_ID.toString();
+        if (msg != null) sender.sendMessage(msg);
+    }
 }

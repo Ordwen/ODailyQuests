@@ -247,6 +247,7 @@ public final class ODailyQuests extends JavaPlugin {
         adminCommandRegistry.registerCommand(new ConvertCommand());
         adminCommandRegistry.registerCommand(new AShowCommand(interfacesManager.getPlayerQuestsInterface()));
         adminCommandRegistry.registerCommand(new OpenCommand(interfacesManager.getPlayerQuestsInterface()));
+        adminCommandRegistry.registerCommand(new SetCommand());
     }
 
     /**

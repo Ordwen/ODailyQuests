@@ -27,6 +27,7 @@ public enum QuestsMessages {
             &3> &b/dqa remove total <player> <amount> &3- &7remove a number of achieved quests to a player
             &3> &b/dqa remove total <category> <player> <amount> &3- &7remove a number of achieved quests in a specific category to a player
             &3> &b/dqa reroll <player> <index> &3- &7draw a new quest for a player, at a specific index
+            &3> &b/dqa set <player> <slot> <category> <quest> &3- &7assign a specific quest to a player
             &3> &b/dqa show <player> &3- &7see quests of a player
             &3> &b/dqa open <player> &3- &7force a player to open the quest interface
             &3> &b/dqa convert <old format> <new format> &3- &7convert the storage format of the plugin
@@ -38,8 +39,10 @@ public enum QuestsMessages {
     INVALID_CATEGORY("invalid_category", "&cInvalid quest category."),
     INVALID_PLAYER("invalid_player", "&cThis player doesn't exist, or is offline."),
     INVALID_QUEST_ID("invalid_quest_id", "&cYou must specify a valid quest ID."),
+    QUEST_ALREADY_ASSIGNED("quest_already_assigned", "&cThis quest is already assigned to the player."),
     INVALID_QUEST_INDEX("invalid_quest_index", "&cThe specified index is invalid."),
     INVALID_AMOUNT("invalid_amount", "&cThe specified amount is invalid."),
+    PLAYER_QUESTS_NOT_LOADED("player_quests_not_loaded", "&cThe player's quests are not loaded yet. Please try again in a moment."),
 
     QUEST_ALREADY_ACHIEVED("already_achieved", "&cThis quest is already achieved."),
     QUESTS_IN_PROGRESS("quests_in_progress", "&eYou still have daily quests to complete !"),
@@ -48,6 +51,9 @@ public enum QuestsMessages {
     QUESTS_RENEWED_ADMIN("quests_renewed_admin", "&eYou have reset the quests of %target%."),
     QUEST_REROLLED("quest_rerolled", "&aYou have rerolled your quest number %index% !"),
     QUEST_REROLLED_ADMIN("quest_rerolled_admin", "&eYou have rerolled the quest number %index% of %target%."),
+    NO_AVAILABLE_QUESTS_IN_CATEGORY("no_available_quests_in_category", "&cThere are no available quests in this category to assign."),
+    QUEST_SET_ADMIN("quest_set_admin", "&eYou have set quest %quest_id% (%quest%&r&e) in slot %slot% for %target% in %category%."),
+    QUEST_SET_TARGET("quest_set_target", "&eAn admin set your quest number %slot% to %quest%&r&e (%quest_id%) in %category%."),
     ADD_TOTAL_ADMIN("add_total_admin", "&eYou have added %amount% to %target%'s total number of completed quests."),
     ADD_TOTAL_TARGET("add_total_target", "&eAn admin has added %amount% to your total number of completed quests."),
     ADD_TOTAL_CATEGORY_ADMIN("add_total_category_admin", "&eYou have added %amount% to %target%'s total number of completed quests in the category %category%."),

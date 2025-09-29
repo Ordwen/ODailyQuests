@@ -22,6 +22,7 @@ import java.util.List;
 public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
 
     final int questIndex;
+    final String fileIndex;
     final String questName;
     final String categoryName;
     final List<String> questDesc;
@@ -43,6 +44,7 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
      * Constructs a new AbstractQuest with the specified parameters.
      *
      * @param questIndex         the index of the quest.
+     * @param fileIndex          the file index of the quest.
      * @param questName          the name of the quest.
      * @param categoryName       the category of the quest.
      * @param questDesc          the description of the quest.
@@ -57,8 +59,9 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
      * @param protectionBypass   whether protection bypass is enabled for the quest.
      * @param requiredPermissions the permissions required to undertake the quest.
      */
-    protected AbstractQuest(int questIndex, String questName, String categoryName, List<String> questDesc, String questType, ItemStack menuItem, int menuItemAmount, ItemStack achievedItem, String requiredAmountRaw, Reward reward, List<String> requiredWorlds, final List<String> requiredRegions, boolean protectionBypass, List<String> requiredPermissions) {
+    protected AbstractQuest(int questIndex, String fileIndex, String questName, String categoryName, List<String> questDesc, String questType, ItemStack menuItem, int menuItemAmount, ItemStack achievedItem, String requiredAmountRaw, Reward reward, List<String> requiredWorlds, final List<String> requiredRegions, boolean protectionBypass, List<String> requiredPermissions) {
         this.questIndex = questIndex;
+        this.fileIndex = fileIndex;
         this.questName = questName;
         this.categoryName = categoryName;
         this.questDesc = questDesc;
@@ -83,6 +86,7 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
      */
     protected AbstractQuest(BasicQuest basicQuest) {
         this.questIndex = basicQuest.getQuestIndex();
+        this.fileIndex = basicQuest.getFileIndex();
         this.questName = basicQuest.getQuestName();
         this.categoryName = basicQuest.getCategoryName();
         this.questDesc = basicQuest.getQuestDesc();
@@ -150,6 +154,15 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
      */
     public int getQuestIndex() {
         return this.questIndex;
+    }
+
+    /**
+     * Get file index of quest.
+     *
+     * @return file index.
+     */
+    public String getFileIndex() {
+        return this.fileIndex;
     }
 
     /**

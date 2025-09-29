@@ -120,7 +120,7 @@ public class QuestsLoader extends QuestItemGetter {
         /* reward */
         final Reward reward = createReward(questSection, fileName, fileIndex);
 
-        return new BasicQuest(questIndex, questName, fileName, questDesc, questType, menuItem, menuItemAmount, achievedItem, requiredAmount, reward, requiredWorlds, requiredRegions, protectionBypass, requiredPermissions);
+        return new BasicQuest(questIndex, fileIndex, questName, fileName, questDesc, questType, menuItem, menuItemAmount, achievedItem, requiredAmount, reward, requiredWorlds, requiredRegions, protectionBypass, requiredPermissions);
     }
 
     /**
