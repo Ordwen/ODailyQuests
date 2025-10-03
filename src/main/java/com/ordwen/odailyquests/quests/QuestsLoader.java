@@ -2,6 +2,8 @@ package com.ordwen.odailyquests.quests;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.api.quests.QuestTypeRegistry;
+import com.ordwen.odailyquests.quests.conditions.ConditionOperator;
+import com.ordwen.odailyquests.quests.conditions.placeholder.PlaceholderCondition;
 import com.ordwen.odailyquests.quests.getters.QuestItemGetter;
 import com.ordwen.odailyquests.quests.types.*;
 import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
@@ -15,6 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import com.ordwen.odailyquests.tools.PluginLogger;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,6 +26,7 @@ public class QuestsLoader extends QuestItemGetter {
     private static final String ACHIEVED_MENU_ITEM = "achieved_menu_item";
     private static final String REQUIRED_PERMISSIONS = "required_permissions";
     private static final String REQUIRED_PERMISSION = "required_permission";
+    private static final String CONDITIONS = "conditions";
 
     private final RewardLoader rewardLoader = new RewardLoader();
     private final QuestTypeRegistry questTypeRegistry = ODailyQuests.INSTANCE.getAPI().getQuestTypeRegistry();
@@ -90,6 +94,10 @@ public class QuestsLoader extends QuestItemGetter {
             requiredPermissions = Collections.emptyList();
         }
 
+        /* conditions */
+        final List<PlaceholderCondition> placeholderConditions = parsePlaceholderConditions(questSection, fileName, fileIndex);
+        if (placeholderConditions == null) return null;
+
         /* menu item */
         final String presumedItem = questSection.getString(".menu_item");
         if (presumedItem == null) {
@@ -120,7 +128,7 @@ public class QuestsLoader extends QuestItemGetter {
         /* reward */
         final Reward reward = createReward(questSection, fileName, fileIndex);
 
-        return new BasicQuest(questIndex, fileIndex, questName, fileName, questDesc, questType, menuItem, menuItemAmount, achievedItem, requiredAmount, reward, requiredWorlds, requiredRegions, protectionBypass, requiredPermissions);
+        return new BasicQuest(questIndex, fileIndex, questName, fileName, questDesc, questType, menuItem, menuItemAmount, achievedItem, requiredAmount, reward, requiredWorlds, requiredRegions, protectionBypass, requiredPermissions, placeholderConditions);
     }
 
     /**
@@ -183,5 +191,59 @@ public class QuestsLoader extends QuestItemGetter {
         }
 
         return false;
+    }
+
+    private List<PlaceholderCondition> parsePlaceholderConditions(ConfigurationSection questSection, String fileName, String questIndex) {
+        if (!questSection.isConfigurationSection(CONDITIONS)) {
+            return Collections.emptyList();
+        }
+
+        final ConfigurationSection conditionsSection = questSection.getConfigurationSection(CONDITIONS);
+        if (conditionsSection == null) {
+            return Collections.emptyList();
+        }
+
+        final List<PlaceholderCondition> conditions = new ArrayList<>();
+
+        for (String key : conditionsSection.getKeys(false)) {
+            final ConfigurationSection conditionSection = conditionsSection.getConfigurationSection(key);
+            if (conditionSection == null) {
+                PluginLogger.configurationError(fileName, questIndex, CONDITIONS + "." + key, "The condition section is invalid.");
+                return null;
+            }
+
+            final String placeholder = conditionSection.getString("placeholder");
+            if (placeholder == null || placeholder.isEmpty()) {
+                PluginLogger.configurationError(fileName, questIndex, CONDITIONS + "." + key + ".placeholder", "The placeholder value is missing.");
+                return null;
+            }
+
+            final String operatorRaw = conditionSection.getString("operator");
+            if (operatorRaw == null || operatorRaw.isEmpty()) {
+                PluginLogger.configurationError(fileName, questIndex, CONDITIONS + "." + key + ".operator", "The condition operator is missing.");
+                return null;
+            }
+
+            final ConditionOperator conditionOperator;
+            try {
+                conditionOperator = ConditionOperator.valueOf(operatorRaw.toUpperCase());
+            } catch (IllegalArgumentException ex) {
+                PluginLogger.configurationError(fileName, questIndex, CONDITIONS + "." + key + ".operator", operatorRaw + " is not a valid operator.");
+                return null;
+            }
+
+            final Object expectedObject = conditionSection.get("expected");
+            if (expectedObject == null) {
+                PluginLogger.configurationError(fileName, questIndex, CONDITIONS + "." + key + ".expected", "The expected value is missing.");
+                return null;
+            }
+
+            final String expectedValue = String.valueOf(expectedObject);
+            final String errorMessage = conditionSection.getString("error_message");
+
+            conditions.add(new PlaceholderCondition(placeholder, conditionOperator, expectedValue, errorMessage));
+        }
+
+        return conditions;
     }
 }

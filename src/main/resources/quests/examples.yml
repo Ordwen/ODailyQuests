@@ -770,3 +770,30 @@ quests:
     reward:
       reward_type: MONEY
       amount: 250
+  # example quest that is using LuckPerms placeholders with conditions
+  31:
+    name: "&3A taste of wealth"
+    menu_item: DIAMOND
+    description:
+      - ""
+      - "&3Task:"
+      - " &3&l| &7Get 50 diamonds"
+      - ""
+      - "&3Progress:"
+      - " &3&l| %status%"
+      - ""
+      - "&3Reward:"
+      - " &3&l| &75000$"
+      - ""
+    quest_type: GET
+    required: DIAMOND
+    required_amount: 50
+    conditions:
+      vip_condition:
+        placeholder: "%luckperms_in_group_vip%"
+        operator: "equals"
+        expected: "true"
+        error_message: "&cYou must be VIP to get this quest!"
+    reward:
+      reward_type: MONEY
+      amount: 5000

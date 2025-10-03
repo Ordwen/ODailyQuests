@@ -1,7 +1,7 @@
 package com.ordwen.odailyquests.quests.types.inventory;
 
 import com.ordwen.odailyquests.ODailyQuests;
-import com.ordwen.odailyquests.quests.ConditionType;
+import com.ordwen.odailyquests.quests.conditions.ConditionOperator;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
@@ -17,7 +17,7 @@ import org.bukkit.persistence.PersistentDataType;
 public class PlaceholderQuest extends AbstractQuest {
 
     private String placeholder;
-    private ConditionType conditionType;
+    private ConditionOperator conditionOperator;
     private String expectedValue;
     private String errorMessage;
 
@@ -54,7 +54,13 @@ public class PlaceholderQuest extends AbstractQuest {
             PluginLogger.configurationError(file, index, "operator", "The operator of the placeholder is missing.");
             return false;
         }
-        conditionType = ConditionType.valueOf(operator);
+
+        try {
+            conditionOperator = ConditionOperator.valueOf(operator.toUpperCase());
+        } catch (IllegalArgumentException exception) {
+            PluginLogger.configurationError(file, index, "operator", operator + " is not a valid operator.");
+            return false;
+        }
 
         expectedValue = placeholderSection.getString(".expected");
         if (expectedValue == null) {
@@ -83,6 +89,7 @@ public class PlaceholderQuest extends AbstractQuest {
 
     /**
      * Get the placeholder required by the quest.
+     *
      * @return quest required placeholder.
      */
     public String getPlaceholder() {
@@ -91,14 +98,16 @@ public class PlaceholderQuest extends AbstractQuest {
 
     /**
      * Get the condition type required by the quest.
+     *
      * @return ConditionType object.
      */
-    public ConditionType getConditionType() {
-        return this.conditionType;
+    public ConditionOperator getConditionType() {
+        return this.conditionOperator;
     }
 
     /**
      * Get the expected value required by the quest.
+     *
      * @return quest expected value.
      */
     public String getExpectedValue() {

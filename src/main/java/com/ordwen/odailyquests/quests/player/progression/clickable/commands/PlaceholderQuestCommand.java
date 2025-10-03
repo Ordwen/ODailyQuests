@@ -1,27 +1,55 @@
 package com.ordwen.odailyquests.quests.player.progression.clickable.commands;
 
 import com.ordwen.odailyquests.enums.QuestsMessages;
+import com.ordwen.odailyquests.quests.conditions.ConditionOperator;
+import com.ordwen.odailyquests.quests.conditions.placeholder.PlaceholderConditionEvaluator;
+import com.ordwen.odailyquests.quests.conditions.placeholder.PlaceholderConditionResult;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.player.progression.clickable.QuestCommand;
 import com.ordwen.odailyquests.quests.player.progression.clickable.QuestContext;
 import com.ordwen.odailyquests.quests.types.inventory.PlaceholderQuest;
 import com.ordwen.odailyquests.tools.TextFormatter;
-import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
-import java.time.Duration;
-
+/**
+ * Command implementation for handling quests of type {@code PLACEHOLDER}.
+ * <p>
+ * This command evaluates a placeholder-based condition for the executing player.
+ * It checks whether PlaceholderAPI is available, resolves the placeholder and
+ * expected values, and compares them according to the quest's {@link ConditionOperator}.
+ * </p>
+ * <p>
+ * If the condition matches, the quest is completed. If the condition cannot be
+ * evaluated due to invalid input format, or if it does not match, the player
+ * receives appropriate feedback messages defined by the quest configuration.
+ * </p>
+ */
 public class PlaceholderQuestCommand extends QuestCommand<PlaceholderQuest> {
 
+    /**
+     * Creates a new command for evaluating a placeholder quest.
+     *
+     * @param context     the quest context providing execution details
+     * @param progression the current progression of the player
+     * @param quest       the placeholder quest being executed
+     */
     public PlaceholderQuestCommand(QuestContext context, Progression progression, PlaceholderQuest quest) {
         super(context, progression, quest);
     }
 
     /**
-     * Validate PLACEHOLDER quest type.
+     * Executes the validation of a placeholder quest.
+     * <ul>
+     *   <li>Ensures the player is allowed to progress in the quest.</li>
+     *   <li>Verifies that PlaceholderAPI is enabled.</li>
+     *   <li>Resolves and compares the placeholder value with the expected value.</li>
+     *   <li>Completes the quest if the condition is satisfied, or displays an
+     *       error message otherwise.</li>
+     * </ul>
      */
     @Override
     public void execute() {
-        final var player = context.getPlayer();
+        final Player player = context.getPlayer();
 
         if (!quest.isAllowedToProgress(player, quest)) return;
 
@@ -33,65 +61,32 @@ public class PlaceholderQuestCommand extends QuestCommand<PlaceholderQuest> {
         final String placeholderValue = TextFormatter.format(player, quest.getPlaceholder());
         final String expectedValue = TextFormatter.format(player, quest.getExpectedValue());
 
-        final boolean isValid = validateCondition(placeholderValue, expectedValue);
+        final PlaceholderConditionResult result = PlaceholderConditionEvaluator.evaluate(
+                quest.getConditionType(), placeholderValue, expectedValue);
 
-        if (isValid) {
+        if (result.invalidFormat()) {
+            handleValidationError(placeholderValue);
+            return;
+        }
+
+        if (result.matched()) {
             completeQuest();
         } else {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', quest.getErrorMessage()));
+            final String message = TextFormatter.format(player, quest.getErrorMessage());
+            if (message != null && !message.isEmpty()) {
+                player.sendMessage(message);
+            }
         }
+
     }
 
-    private boolean validateCondition(String placeholderValue, String expectedValue) {
-        try {
-            return switch (quest.getConditionType()) {
-                case EQUALS -> placeholderValue.equals(expectedValue);
-                case NOT_EQUALS -> !placeholderValue.equals(expectedValue);
-                case GREATER_THAN, GREATER_THAN_OR_EQUALS, LESS_THAN, LESS_THAN_OR_EQUALS ->
-                        validateNumericCondition(placeholderValue, expectedValue);
-                case DURATION_GREATER_THAN, DURATION_GREATER_THAN_OR_EQUALS, DURATION_LESS_THAN,
-                     DURATION_LESS_THAN_OR_EQUALS -> validateDurationCondition(placeholderValue, expectedValue);
-            };
-        } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
-            handleValidationError(placeholderValue);
-            return false;
-        }
-    }
-
-    private boolean validateNumericCondition(String placeholderValue, String expectedValue) {
-        float current = Float.parseFloat(placeholderValue.replace(",", "."));
-        float expected = Float.parseFloat(expectedValue.replace(",", "."));
-
-        return switch (quest.getConditionType()) {
-            case GREATER_THAN -> current > expected;
-            case GREATER_THAN_OR_EQUALS -> current >= expected;
-            case LESS_THAN -> current < expected;
-            case LESS_THAN_OR_EQUALS -> current <= expected;
-            default -> false;
-        };
-    }
-
-    private boolean validateDurationCondition(String placeholderValue, String expectedValue) {
-        Duration currentDuration = parseDuration(placeholderValue);
-        Duration expectedDuration = parseDuration(expectedValue);
-
-        return switch (quest.getConditionType()) {
-            case DURATION_GREATER_THAN -> currentDuration.compareTo(expectedDuration) > 0;
-            case DURATION_GREATER_THAN_OR_EQUALS -> currentDuration.compareTo(expectedDuration) >= 0;
-            case DURATION_LESS_THAN -> currentDuration.compareTo(expectedDuration) < 0;
-            case DURATION_LESS_THAN_OR_EQUALS -> currentDuration.compareTo(expectedDuration) <= 0;
-            default -> false;
-        };
-    }
-
-    private Duration parseDuration(String value) {
-        String[] parts = value.split(":");
-        return Duration.ofHours(Long.parseLong(parts[0]))
-                .plusMinutes(Long.parseLong(parts[1]))
-                .plusSeconds(Long.parseLong(parts[2]))
-                .plusMillis(Long.parseLong(parts[3]));
-    }
-
+    /**
+     * Handles the case where a placeholder value could not be parsed
+     * into a valid format (e.g., a number or duration).
+     * Displays a predefined error message to the player.
+     *
+     * @param placeholder the invalid placeholder value
+     */
     private void handleValidationError(String placeholder) {
         String message = QuestsMessages.PLACEHOLDER_NOT_NUMBER.toString();
         if (message != null) {

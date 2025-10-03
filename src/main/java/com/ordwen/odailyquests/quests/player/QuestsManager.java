@@ -5,6 +5,7 @@ import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.essentials.QuestsPerCategory;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.categories.Category;
+import com.ordwen.odailyquests.quests.conditions.placeholder.PlaceholderRuleSetEvaluator;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.types.shared.EntityQuest;
@@ -261,7 +262,9 @@ public class QuestsManager implements Listener {
         final List<AbstractQuest> filteredQuests = new ArrayList<>();
 
         for (AbstractQuest quest : availableQuests) {
-            if (hasAllPermissions(player, quest.getRequiredPermissions()) && !currentQuests.contains(quest)) {
+            if (hasAllPermissions(player, quest.getRequiredPermissions())
+                    && !currentQuests.contains(quest)
+                    && PlaceholderRuleSetEvaluator.evaluate(player, quest.getPlaceholderConditions(), false)) {
                 filteredQuests.add(quest);
             }
         }

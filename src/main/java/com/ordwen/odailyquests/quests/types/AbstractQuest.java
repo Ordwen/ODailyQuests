@@ -2,6 +2,7 @@ package com.ordwen.odailyquests.quests.types;
 
 
 import com.ordwen.odailyquests.api.quests.IQuest;
+import com.ordwen.odailyquests.quests.conditions.placeholder.PlaceholderCondition;
 import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
 import com.ordwen.odailyquests.quests.types.shared.BasicQuest;
 import com.ordwen.odailyquests.rewards.Reward;
@@ -40,6 +41,8 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
     protected boolean isRandomRequired;
     protected final List<String> displayNames;
 
+    private List<PlaceholderCondition> placeholderConditions;
+
     /**
      * Constructs a new AbstractQuest with the specified parameters.
      *
@@ -59,7 +62,7 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
      * @param protectionBypass   whether protection bypass is enabled for the quest.
      * @param requiredPermissions the permissions required to undertake the quest.
      */
-    protected AbstractQuest(int questIndex, String fileIndex, String questName, String categoryName, List<String> questDesc, String questType, ItemStack menuItem, int menuItemAmount, ItemStack achievedItem, String requiredAmountRaw, Reward reward, List<String> requiredWorlds, final List<String> requiredRegions, boolean protectionBypass, List<String> requiredPermissions) {
+    protected AbstractQuest(int questIndex, String fileIndex, String questName, String categoryName, List<String> questDesc, String questType, ItemStack menuItem, int menuItemAmount, ItemStack achievedItem, String requiredAmountRaw, Reward reward, List<String> requiredWorlds, final List<String> requiredRegions, boolean protectionBypass, List<String> requiredPermissions, List<PlaceholderCondition> placeholderConditions) {
         this.questIndex = questIndex;
         this.fileIndex = fileIndex;
         this.questName = questName;
@@ -75,6 +78,7 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
         this.requiredRegions = requiredRegions;
         this.protectionBypass = protectionBypass;
         this.requiredPermissions = requiredPermissions;
+        this.placeholderConditions = placeholderConditions;
 
         this.displayNames = new ArrayList<>();
     }
@@ -100,6 +104,7 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
         this.requiredRegions = basicQuest.getRequiredRegions();
         this.protectionBypass = basicQuest.isProtectionBypass();
         this.requiredPermissions = basicQuest.getRequiredPermissions();
+        this.placeholderConditions = basicQuest.getPlaceholderConditions();
 
         this.displayNames = new ArrayList<>();
     }
@@ -298,5 +303,23 @@ public abstract class AbstractQuest extends PlayerProgressor implements IQuest {
      */
     public boolean isRandomRequiredAmount() {
         return requiredAmountRaw.contains("-");
+    }
+
+    /**
+     * Get the list of placeholder conditions associated with this quest.
+     *
+     * @return the list of placeholder conditions.
+     */
+    public List<PlaceholderCondition> getPlaceholderConditions() {
+        return placeholderConditions;
+    }
+
+    /**
+     * Check if the quest has any placeholder conditions.
+     *
+     * @return true if there are placeholder conditions, false otherwise.
+     */
+    public boolean hasPlaceholderConditions() {
+        return !placeholderConditions.isEmpty();
     }
 }

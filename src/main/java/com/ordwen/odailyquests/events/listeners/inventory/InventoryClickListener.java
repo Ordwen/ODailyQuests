@@ -51,6 +51,11 @@ public class InventoryClickListener extends ClickableChecker implements Listener
         }
 
         final ItemStack clickedItem = event.getCurrentItem();
+        Debugger.write("Clicked item: " + (clickedItem != null ? clickedItem.getType().name() : "null"));
+        Debugger.write("Clicked item amount: " + (clickedItem != null ? clickedItem.getAmount() : "null"));
+        Debugger.write("Cursor item: " + (event.getCursor() != null ? event.getCursor().getType().name() : "null"));
+        Debugger.write("Cursor item amount: " + (event.getCursor() != null ? event.getCursor().getAmount() : "null"));
+
         if (clickedItem == null || clickedItem.getType() == Material.AIR) return;
 
         if (handleCustomFurnaceResult(event, action, clickedItem, player)) return;

@@ -5,12 +5,12 @@ import com.ordwen.odailyquests.configuration.essentials.QuestsPerCategory;
 import com.ordwen.odailyquests.configuration.essentials.SafetyMode;
 import com.ordwen.odailyquests.files.implementations.QuestsFiles;
 import com.ordwen.odailyquests.quests.QuestsLoader;
-import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CategoriesLoader {
@@ -61,9 +61,10 @@ public class CategoriesLoader {
         final int totalQuests = category.size();
         final int publicQuests = (int) category
                 .stream()
-                .map(AbstractQuest::getRequiredPermissions)
-                .map(perms -> perms == null || perms.isEmpty())
-                .filter(Boolean::booleanValue)
+                .filter(quest -> {
+                    List<String> permissions = quest.getRequiredPermissions();
+                    return (permissions == null || permissions.isEmpty()) && !quest.hasPlaceholderConditions();
+                })
                 .count();
 
         if (totalQuests < requiredAmount) {
@@ -76,7 +77,7 @@ public class CategoriesLoader {
             if (publicQuests < requiredAmount) {
                 PluginLogger.error("Impossible to enable the plugin.");
                 PluginLogger.error("Category '" + categoryName + "': only " + publicQuests + " public quest(s) but " + requiredAmount + " required (safety_mode=true).");
-                PluginLogger.error("Disable 'safety_mode' if you want permission-gated categories; " + "note players without permissions may end up with no quests.");
+                PluginLogger.error("Disable 'safety_mode' if you want permission- or condition-gated categories; note players without the required permissions or placeholders may end up with no quests.");
                 return false;
             }
         } else if (publicQuests == 0) {
