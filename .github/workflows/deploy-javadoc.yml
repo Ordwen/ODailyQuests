@@ -3,7 +3,8 @@ name: Generate and Deploy Javadoc
 on:
   push:
     branches:
-      - 3.0.0
+      - master
+      - 3.0.1
     paths:
       - 'src/**'
       - 'build.gradle'

@@ -3,14 +3,14 @@ name: Snapshots
 on:
   push:
     branches:
-      - '3.0.0'
+      - '3.0.1'
   workflow_dispatch:
 
 permissions:
   contents: write
 
 env:
-  SNAPSHOT_BRANCH: 3.0.0
+  SNAPSHOT_BRANCH: 3.0.1
   BASE_BRANCH: master
   JAVA_VERSION: '21'
 
