@@ -47,7 +47,7 @@ safety_mode: true
 # The category name must exactly match the filename containing the quests (e.g., "easy" refers to "easy.yml").
 # You can create and configure as many categories as you want.
 #
-# More information here: https:////////////
+# More information here: https://ordwenplugins.gitbook.io/odailyquests/quests/create-a-category
 quests_per_category:
   #examples: 9
   easy: 3  # The player will receive 3 quests from the "easy.yml" file
