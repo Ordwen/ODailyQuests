@@ -12,8 +12,8 @@ import com.ordwen.odailyquests.configuration.functionalities.rewards.CategoriesR
 import com.ordwen.odailyquests.configuration.functionalities.rewards.GlobalReward;
 import com.ordwen.odailyquests.configuration.functionalities.rewards.TotalRewards;
 import com.ordwen.odailyquests.configuration.integrations.*;
-import com.ordwen.odailyquests.files.implementations.FilesManager;
 import com.ordwen.odailyquests.files.implementations.ConfigurationFile;
+import com.ordwen.odailyquests.files.implementations.FilesManager;
 import com.ordwen.odailyquests.files.implementations.TotalRewardsFile;
 
 import java.util.LinkedHashMap;
@@ -25,62 +25,67 @@ public class ConfigFactory {
 
     private static final Map<Class<? extends IConfigurable>, IConfigurable> configs = new LinkedHashMap<>();
 
+    private static <T extends IConfigurable> void reg(Class<T> type, T instance) {
+        configs.put(type, instance);
+    }
+
     public static void registerConfigs(FilesManager filesManager) {
+        // cleanup stateful configs before re-registering (e.g. boss bars)
+        IConfigurable prev = configs.get(ProgressionMessage.class);
+        if (prev instanceof ProgressionMessage pm) {
+            pm.cleanup(); // remove existing boss bars
+        }
+
+        configs.clear();
+
         final ConfigurationFile configurationFile = filesManager.getConfigurationFile();
         final TotalRewardsFile totalRewardsFile = filesManager.getTotalRewardsFile();
 
         // essentials
-        configs.put(Prefix.class, new Prefix(configurationFile));
-        configs.put(Antiglitch.class, new Antiglitch(configurationFile));
-        configs.put(CustomFurnaceResults.class, new CustomFurnaceResults(configurationFile));
-        configs.put(CustomTypes.class, new CustomTypes(configurationFile));
-        configs.put(Database.class, new Database(configurationFile));
-        configs.put(PlayerDataLoadDelay.class, new PlayerDataLoadDelay(configurationFile));
-        configs.put(Debugger.class, new Debugger(configurationFile));
-        configs.put(JoinMessageDelay.class, new JoinMessageDelay(configurationFile));
-        configs.put(ReloadMessage.class, new ReloadMessage(configurationFile));
-        configs.put(Logs.class, new Logs(configurationFile));
-        configs.put(TimestampMode.class, new TimestampMode(configurationFile));
-        configs.put(SafetyMode.class, new SafetyMode(configurationFile));
-        configs.put(QuestsPerCategory.class, new QuestsPerCategory(configurationFile));
-        configs.put(RerollNotAchieved.class, new RerollNotAchieved(configurationFile));
-        configs.put(Synchronization.class, new Synchronization(configurationFile));
-        configs.put(RenewInterval.class, new RenewInterval(configurationFile));
-        configs.put(RenewTime.class, new RenewTime(configurationFile));
-        configs.put(CheckForUpdate.class, new CheckForUpdate(configurationFile));
+        reg(Prefix.class, new Prefix(configurationFile));
+        reg(Antiglitch.class, new Antiglitch(configurationFile));
+        reg(CustomFurnaceResults.class, new CustomFurnaceResults(configurationFile));
+        reg(CustomTypes.class, new CustomTypes(configurationFile));
+        reg(Database.class, new Database(configurationFile));
+        reg(PlayerDataLoadDelay.class, new PlayerDataLoadDelay(configurationFile));
+        reg(Debugger.class, new Debugger(configurationFile));
+        reg(JoinMessageDelay.class, new JoinMessageDelay(configurationFile));
+        reg(ReloadMessage.class, new ReloadMessage(configurationFile));
+        reg(Logs.class, new Logs(configurationFile));
+        reg(TimestampMode.class, new TimestampMode(configurationFile));
+        reg(SafetyMode.class, new SafetyMode(configurationFile));
+        reg(QuestsPerCategory.class, new QuestsPerCategory(configurationFile));
+        reg(RerollNotAchieved.class, new RerollNotAchieved(configurationFile));
+        reg(Synchronization.class, new Synchronization(configurationFile));
+        reg(RenewInterval.class, new RenewInterval(configurationFile));
+        reg(RenewTime.class, new RenewTime(configurationFile));
+        reg(CheckForUpdate.class, new CheckForUpdate(configurationFile));
 
         // functionalities
-        configs.put(ActionBar.class, new ActionBar(configurationFile));
-        configs.put(ProgressBar.class, new ProgressBar(configurationFile));
-
-        // if there was a previous ProgressionMessage config, clean it up first
-        final IConfigurable prev = configs.get(ProgressionMessage.class);
-        if (prev instanceof ProgressionMessage pm) {
-            pm.cleanup(); // remove existing boss bars
-        }
-        configs.put(ProgressionMessage.class, new ProgressionMessage(configurationFile));
-
-        configs.put(Title.class, new Title(configurationFile));
-        configs.put(ToastNotification.class, new ToastNotification(configurationFile));
-        configs.put(DisabledWorlds.class, new DisabledWorlds(configurationFile));
-        configs.put(SpawnerProgression.class, new SpawnerProgression(configurationFile));
-        configs.put(TakeItem.class, new TakeItem(configurationFile));
-        configs.put(CompleteOnlyOnClick.class, new CompleteOnlyOnClick(configurationFile));
-        configs.put(CommandAliases.class, new CommandAliases(configurationFile));
+        reg(ActionBar.class, new ActionBar(configurationFile));
+        reg(ProgressBar.class, new ProgressBar(configurationFile));
+        reg(ProgressionMessage.class, new ProgressionMessage(configurationFile));
+        reg(Title.class, new Title(configurationFile));
+        reg(ToastNotification.class, new ToastNotification(configurationFile));
+        reg(DisabledWorlds.class, new DisabledWorlds(configurationFile));
+        reg(SpawnerProgression.class, new SpawnerProgression(configurationFile));
+        reg(TakeItem.class, new TakeItem(configurationFile));
+        reg(CompleteOnlyOnClick.class, new CompleteOnlyOnClick(configurationFile));
+        reg(CommandAliases.class, new CommandAliases(configurationFile));
 
         // rewards
-        configs.put(CategoriesRewards.class, new CategoriesRewards(configurationFile));
-        configs.put(GlobalReward.class, new GlobalReward(configurationFile));
-        configs.put(TotalRewards.class, new TotalRewards(totalRewardsFile));
+        reg(CategoriesRewards.class, new CategoriesRewards(configurationFile));
+        reg(GlobalReward.class, new GlobalReward(configurationFile));
+        reg(TotalRewards.class, new TotalRewards(totalRewardsFile));
 
         // integrations
-        configs.put(ItemsAdderEnabled.class, new ItemsAdderEnabled(configurationFile));
-        configs.put(NPCNames.class, new NPCNames(configurationFile));
-        configs.put(OraxenEnabled.class, new OraxenEnabled(configurationFile));
-        configs.put(NexoEnabled.class, new NexoEnabled(configurationFile));
-        configs.put(SharedMobs.class, new SharedMobs(configurationFile));
-        configs.put(WildStackerEnabled.class, new WildStackerEnabled(configurationFile));
-        configs.put(RoseStackerEnabled.class, new RoseStackerEnabled(configurationFile));
+        reg(ItemsAdderEnabled.class, new ItemsAdderEnabled(configurationFile));
+        reg(NPCNames.class, new NPCNames(configurationFile));
+        reg(OraxenEnabled.class, new OraxenEnabled(configurationFile));
+        reg(NexoEnabled.class, new NexoEnabled(configurationFile));
+        reg(SharedMobs.class, new SharedMobs(configurationFile));
+        reg(WildStackerEnabled.class, new WildStackerEnabled(configurationFile));
+        reg(RoseStackerEnabled.class, new RoseStackerEnabled(configurationFile));
 
         // load all configs
         configs.values().forEach(IConfigurable::load);
