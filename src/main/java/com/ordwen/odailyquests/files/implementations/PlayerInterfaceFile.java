@@ -1,34 +1,25 @@
 package com.ordwen.odailyquests.files.implementations;
 
 import com.ordwen.odailyquests.ODailyQuests;
-import com.ordwen.odailyquests.files.APluginFile;
+import com.ordwen.odailyquests.files.base.APluginFile;
 import com.ordwen.odailyquests.tools.PluginLogger;
-import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.io.File;
-
-public class PlayerInterfaceFile extends APluginFile {
+public class PlayerInterfaceFile extends APluginFile<ODailyQuests> {
 
     public PlayerInterfaceFile(ODailyQuests plugin) {
-        super(plugin);
+        super(plugin, "playerInterface.yml");
     }
 
     @Override
-    public void load() {
-        file = new File(plugin.getDataFolder(), "playerInterface.yml");
+    protected void onLoadError(Exception e, boolean fileJustCreated) {
+        PluginLogger.error("An error occurred while loading the player interface file.");
+        PluginLogger.error(e.getMessage());
+    }
 
-        if (!file.exists()) {
-            plugin.saveResource("playerInterface.yml", false);
+    @Override
+    protected void onPostLoad(boolean fileJustCreated) {
+        if (fileJustCreated) {
             PluginLogger.info("Player interface file created.");
-        }
-
-        config = new YamlConfiguration();
-
-        try {
-            config.load(file);
-        } catch (Exception e) {
-            PluginLogger.error("An error occurred while loading the player interface file.");
-            PluginLogger.error(e.getMessage());
         }
         PluginLogger.fine("Player interface file successfully loaded.");
     }

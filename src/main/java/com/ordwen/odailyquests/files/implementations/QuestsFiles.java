@@ -1,10 +1,10 @@
 package com.ordwen.odailyquests.files.implementations;
 
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import com.ordwen.odailyquests.tools.PluginLogger;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,15 +13,20 @@ import java.util.Map;
 
 public class QuestsFiles {
 
-    private static final Map<String, FileConfiguration> configurations = new HashMap<>();
-
     private final ODailyQuests plugin;
+    private final Map<String, FileConfiguration> configurations = new HashMap<>();
 
     public QuestsFiles(ODailyQuests plugin) {
         this.plugin = plugin;
     }
 
-    public static FileConfiguration getQuestsConfigurationByCategory(String category) {
+    /**
+     * Returns the quests configuration for a given category.
+     *
+     * @param category the category name (file name without .yml)
+     * @return the configuration, or null if not found
+     */
+    public FileConfiguration getQuestsConfigurationByCategory(String category) {
         final FileConfiguration configuration = configurations.get(category);
         if (configuration == null) {
             PluginLogger.error("Impossible to find the configuration file for category " + category + ".");
@@ -34,21 +39,25 @@ public class QuestsFiles {
     }
 
     /**
-     * Init quests files.
+     * Load all quests files from the quests folder.
      */
     public void load() {
         configurations.clear();
 
         final File questsFolder = new File(plugin.getDataFolder(), "quests");
 
+        // Ensure the folder exists and has default files if empty
         if (!questsFolder.exists() || questsFolder.listFiles() == null || questsFolder.listFiles().length == 0) {
-            questsFolder.mkdirs();
+            if (!questsFolder.exists() && !questsFolder.mkdirs()) {
+                PluginLogger.error("Unable to create quests folder: " + questsFolder.getPath());
+                return;
+            }
             createDefaultQuestFiles();
         }
 
         final File[] questFiles = questsFolder.listFiles((dir, name) -> name.endsWith(".yml"));
         if (questFiles == null) {
-            PluginLogger.error("An error occurred while loading quests files.");
+            PluginLogger.error("An error occurred while listing quests files in folder " + questsFolder.getPath() + ".");
             PluginLogger.error("Please inform the developer.");
             return;
         }
@@ -60,9 +69,9 @@ public class QuestsFiles {
             try {
                 config.load(file);
                 configurations.put(category, config);
-                PluginLogger.fine(category + " quests file successfully loaded.");
+                PluginLogger.fine("Quests file for category '" + category + "' successfully loaded.");
             } catch (InvalidConfigurationException | IOException e) {
-                PluginLogger.error("An error occurred while loading the " + category + " quests file.");
+                PluginLogger.error("An error occurred while loading the quests file for category '" + category + "'.");
                 PluginLogger.error("Please inform the developer.");
                 PluginLogger.error(e.getMessage());
             }

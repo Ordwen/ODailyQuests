@@ -1,35 +1,26 @@
 package com.ordwen.odailyquests.files.implementations;
 
 import com.ordwen.odailyquests.ODailyQuests;
-import com.ordwen.odailyquests.files.APluginFile;
+import com.ordwen.odailyquests.files.base.APluginFile;
 import com.ordwen.odailyquests.tools.PluginLogger;
-import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.io.File;
-
-public class ProgressionFile extends APluginFile {
+public class ProgressionFile extends APluginFile<ODailyQuests> {
 
     public ProgressionFile(ODailyQuests plugin) {
-        super(plugin);
+        super(plugin, "progression.yml");
     }
 
     @Override
-    public void load() {
-        file = new File(plugin.getDataFolder(), "progression.yml");
+    protected void onLoadError(Exception e, boolean fileJustCreated) {
+        PluginLogger.error("An error occurred while loading the progression file.");
+        PluginLogger.error(e.getMessage());
+    }
 
-        if (!file.exists()) {
-            plugin.saveResource("progression.yml", false);
+    @Override
+    protected void onPostLoad(boolean fileJustCreated) {
+        if (fileJustCreated) {
             PluginLogger.info("Progression file created.");
         }
-
-        config = new YamlConfiguration();
-
-        try {
-            config.load(file);
-            PluginLogger.fine("Progression file successfully loaded (YAML).");
-        } catch (Exception e) {
-            PluginLogger.error("An error occurred while loading the progression file.");
-            PluginLogger.error(e.getMessage());
-        }
+        PluginLogger.fine("Progression file successfully loaded (YAML).");
     }
 }

@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.enums;
 
 import com.ordwen.odailyquests.configuration.essentials.Prefix;
+import com.ordwen.odailyquests.files.base.MessageKey;
 import com.ordwen.odailyquests.files.implementations.MessagesFile;
 import com.ordwen.odailyquests.tools.TextFormatter;
 import org.bukkit.Bukkit;
@@ -9,7 +10,7 @@ import org.bukkit.entity.Player;
 import java.util.Map;
 
 @SuppressWarnings("SpellCheckingInspection")
-public enum QuestsMessages {
+public enum QuestsMessages implements MessageKey {
 
     PLAYER_HELP("player_help", """
             &3&m---&3 Player commands &3&m---

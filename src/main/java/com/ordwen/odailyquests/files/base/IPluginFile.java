@@ -1,4 +1,4 @@
-package com.ordwen.odailyquests.files;
+package com.ordwen.odailyquests.files.base;
 
 import org.bukkit.configuration.file.FileConfiguration;
 

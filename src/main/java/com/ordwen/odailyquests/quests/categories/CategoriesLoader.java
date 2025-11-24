@@ -18,6 +18,11 @@ public class CategoriesLoader {
     private static final Map<String, Category> categories = new LinkedHashMap<>();
 
     private final QuestsLoader questsLoader = new QuestsLoader();
+    private final QuestsFiles questsFiles;
+
+    public CategoriesLoader(QuestsFiles questsFiles) {
+        this.questsFiles = questsFiles;
+    }
 
     /**
      * Load all quests from files.
@@ -34,7 +39,7 @@ public class CategoriesLoader {
             final Category category = new Category(categoryName);
             categories.put(categoryName, category);
 
-            final FileConfiguration configFile = QuestsFiles.getQuestsConfigurationByCategory(categoryName);
+            final FileConfiguration configFile = questsFiles.getQuestsConfigurationByCategory(categoryName);
             if (configFile == null) {
                 PluginLogger.error("Failed to load configuration file for " + categoryName + ". Plugin will be disabled.");
                 Bukkit.getPluginManager().disablePlugin(ODailyQuests.INSTANCE);
@@ -81,7 +86,7 @@ public class CategoriesLoader {
                 return false;
             }
         } else if (publicQuests == 0) {
-            PluginLogger.warn("Category '" + categoryName + "' has no public quests. " + "Players without permissions may receive 0 quests (safety_mode=false).");
+            PluginLogger.warn("Category '" + categoryName + "' has no public quests. Players without permissions may receive 0 quests (safety_mode=false).");
         }
 
         return true;

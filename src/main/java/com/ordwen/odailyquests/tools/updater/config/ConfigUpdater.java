@@ -1,7 +1,7 @@
 package com.ordwen.odailyquests.tools.updater.config;
 
 import com.ordwen.odailyquests.ODailyQuests;
-import com.ordwen.odailyquests.files.FilesManager;
+import com.ordwen.odailyquests.files.implementations.FilesManager;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.configuration.file.FileConfiguration;
 

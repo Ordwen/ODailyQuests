@@ -12,7 +12,7 @@ import com.ordwen.odailyquests.configuration.functionalities.rewards.CategoriesR
 import com.ordwen.odailyquests.configuration.functionalities.rewards.GlobalReward;
 import com.ordwen.odailyquests.configuration.functionalities.rewards.TotalRewards;
 import com.ordwen.odailyquests.configuration.integrations.*;
-import com.ordwen.odailyquests.files.FilesManager;
+import com.ordwen.odailyquests.files.implementations.FilesManager;
 import com.ordwen.odailyquests.files.implementations.ConfigurationFile;
 import com.ordwen.odailyquests.files.implementations.TotalRewardsFile;
 

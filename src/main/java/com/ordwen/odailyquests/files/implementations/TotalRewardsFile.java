@@ -1,35 +1,26 @@
 package com.ordwen.odailyquests.files.implementations;
 
 import com.ordwen.odailyquests.ODailyQuests;
-import com.ordwen.odailyquests.files.APluginFile;
+import com.ordwen.odailyquests.files.base.APluginFile;
 import com.ordwen.odailyquests.tools.PluginLogger;
-import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.io.File;
-
-public class TotalRewardsFile extends APluginFile {
+public class TotalRewardsFile extends APluginFile<ODailyQuests> {
 
     public TotalRewardsFile(ODailyQuests plugin) {
-        super(plugin);
+        super(plugin, "totalRewards.yml");
     }
 
     @Override
-    public void load() {
-        file = new File(plugin.getDataFolder(), "totalRewards.yml");
+    protected void onLoadError(Exception e, boolean fileJustCreated) {
+        PluginLogger.error("An error occurred while loading the total rewards file.");
+        PluginLogger.error(e.getMessage());
+    }
 
-        if (!file.exists()) {
-            plugin.saveResource("totalRewards.yml", false);
+    @Override
+    protected void onPostLoad(boolean fileJustCreated) {
+        if (fileJustCreated) {
             PluginLogger.info("Total rewards file created.");
         }
-
-        config = new YamlConfiguration();
-
-        try {
-            config.load(file);
-        } catch (Exception e) {
-            PluginLogger.error("An error occurred while loading the total rewards file.");
-            PluginLogger.error(e.getMessage());        }
-
-        PluginLogger.info("Total rewards file successfully loaded.");
+        PluginLogger.fine("Total rewards file successfully loaded.");
     }
 }

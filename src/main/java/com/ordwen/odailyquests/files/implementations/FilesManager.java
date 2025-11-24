@@ -1,24 +1,23 @@
-package com.ordwen.odailyquests.files;
+package com.ordwen.odailyquests.files.implementations;
 
 import com.ordwen.odailyquests.ODailyQuests;
-import com.ordwen.odailyquests.files.implementations.*;
 
 public class FilesManager {
-
-    private final ODailyQuests plugin;
 
     private final ConfigurationFile configurationFile;
     private final PlayerInterfaceFile playerInterfaceFile;
     private final TotalRewardsFile totalRewardsFile;
     private final ProgressionFile progressionFile;
+    private final MessagesFile messagesFile;
+    private final QuestsFiles questsFiles;
 
     public FilesManager(ODailyQuests plugin) {
-        this.plugin = plugin;
-
         this.configurationFile = new ConfigurationFile(plugin);
         this.playerInterfaceFile = new PlayerInterfaceFile(plugin);
         this.totalRewardsFile = new TotalRewardsFile(plugin);
         this.progressionFile = new ProgressionFile(plugin);
+        this.messagesFile = new MessagesFile(plugin);
+        this.questsFiles = new QuestsFiles(plugin);
     }
 
     /**
@@ -29,9 +28,8 @@ public class FilesManager {
         playerInterfaceFile.load();
         totalRewardsFile.load();
         progressionFile.load();
-
-        new MessagesFile(plugin).load();
-        new QuestsFiles(plugin).load();
+        messagesFile.load();
+        questsFiles.load();
     }
 
     public ConfigurationFile getConfigurationFile() {
@@ -48,5 +46,13 @@ public class FilesManager {
 
     public ProgressionFile getProgressionFile() {
         return progressionFile;
+    }
+
+    public MessagesFile getMessagesFile() {
+        return messagesFile;
+    }
+
+    public QuestsFiles getQuestsFiles() {
+        return questsFiles;
     }
 }

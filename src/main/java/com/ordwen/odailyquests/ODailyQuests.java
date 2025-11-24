@@ -15,6 +15,7 @@ import com.ordwen.odailyquests.events.restart.RestartHandler;
 import com.ordwen.odailyquests.externs.IntegrationsManager;
 import com.ordwen.odailyquests.commands.admin.AdminCommands;
 import com.ordwen.odailyquests.commands.player.PlayerCommands;
+import com.ordwen.odailyquests.files.implementations.FilesManager;
 import com.ordwen.odailyquests.reload.ReloadService;
 import com.ordwen.odailyquests.commands.admin.AdminCompleter;
 import com.ordwen.odailyquests.commands.player.PlayerCompleter;
@@ -22,7 +23,6 @@ import com.ordwen.odailyquests.commands.interfaces.InterfacesManager;
 import com.ordwen.odailyquests.commands.interfaces.InventoryClickListener;
 import com.ordwen.odailyquests.configuration.essentials.TimestampMode;
 import com.ordwen.odailyquests.events.EventsManager;
-import com.ordwen.odailyquests.files.*;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.player.progression.listeners.*;
 import com.ordwen.odailyquests.quests.player.progression.storage.DatabaseManager;
@@ -100,7 +100,7 @@ public final class ODailyQuests extends JavaPlugin {
         new ConfigUpdateManager(this).runUpdates();
 
         /* Init categories loader */
-        this.categoriesLoader = new CategoriesLoader();
+        this.categoriesLoader = new CategoriesLoader(filesManager.getQuestsFiles());
 
         /* Load class instances */
         this.interfacesManager = new InterfacesManager(this);

@@ -1,7 +1,7 @@
 package com.ordwen.odailyquests.tools.updater.database;
 
 import com.ordwen.odailyquests.ODailyQuests;
-import com.ordwen.odailyquests.files.FilesManager;
+import com.ordwen.odailyquests.files.implementations.FilesManager;
 import com.ordwen.odailyquests.files.implementations.ProgressionFile;
 import com.ordwen.odailyquests.quests.player.progression.storage.DatabaseManager;
 import com.ordwen.odailyquests.tools.PluginLogger;
