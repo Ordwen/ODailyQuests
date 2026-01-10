@@ -6,4 +6,5 @@ import org.bukkit.inventory.ItemStack;
 
 public interface IItemGetter {
     Pair<String, ItemStack> getCustomModelDataItem(Material material, int customModelData);
+    Pair<String, ItemStack> getItemModelItem(String itemModel);
 }

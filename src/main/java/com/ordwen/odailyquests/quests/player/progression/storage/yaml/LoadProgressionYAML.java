@@ -2,15 +2,12 @@ package com.ordwen.odailyquests.quests.player.progression.storage.yaml;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
-import com.ordwen.odailyquests.configuration.essentials.Logs;
-import com.ordwen.odailyquests.configuration.essentials.QuestsPerCategory;
 import com.ordwen.odailyquests.quests.player.progression.ProgressionLoader;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.player.progression.QuestLoaderUtils;
 import com.ordwen.odailyquests.files.implementations.ProgressionFile;
-import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -53,12 +50,26 @@ public class LoadProgressionYAML extends ProgressionLoader {
         });
     }
 
-    private void loadExistingPlayerData(String playerName, Map<String, PlayerQuests> activeQuests, Player player, ConfigurationSection playerSection, boolean sendStatusMessage) {
+    private void loadExistingPlayerData(
+            String playerName,
+            Map<String, PlayerQuests> activeQuests,
+            Player player,
+            ConfigurationSection playerSection,
+            boolean sendStatusMessage
+    ) {
         Debugger.write("Player " + playerName + " has data in progression file.");
 
         final long timestamp = playerSection.getLong(".timestamp");
         final int achievedQuests = playerSection.getInt(".achievedQuests");
         final int totalAchievedQuests = playerSection.getInt(".totalAchievedQuests");
+        final int recentRerolls = playerSection.getInt(".recentRolls");
+
+        final StoredPlayerProgression data = new StoredPlayerProgression(
+                timestamp,
+                achievedQuests,
+                totalAchievedQuests,
+                recentRerolls
+        );
 
         final Map<String, Integer> totalAchievedQuestsByCategory = new HashMap<>();
         final ConfigurationSection statsSection = playerSection.getConfigurationSection("totalAchievedQuestsByCategory");
@@ -68,31 +79,19 @@ public class LoadProgressionYAML extends ProgressionLoader {
             }
         }
 
-        if (QuestLoaderUtils.checkTimestamp(timestamp)) {
+        if (QuestLoaderUtils.checkTimestamp(data.timestamp())) {
             Debugger.write("Timestamp is too old for player " + playerName + ". " + NEW_QUESTS);
-            QuestLoaderUtils.loadNewPlayerQuests(playerName, activeQuests, totalAchievedQuestsByCategory, totalAchievedQuests);
+            QuestLoaderUtils.loadNewPlayerQuests(playerName, activeQuests, totalAchievedQuestsByCategory, data.totalAchievedQuests());
             return;
         }
 
         final LinkedHashMap<AbstractQuest, Progression> quests = loadPlayerQuestsFromConfig(playerName, playerSection);
         if (quests == null) {
-            QuestLoaderUtils.loadNewPlayerQuests(playerName, activeQuests, totalAchievedQuestsByCategory, totalAchievedQuests);
+            QuestLoaderUtils.loadNewPlayerQuests(playerName, activeQuests, totalAchievedQuestsByCategory, data.totalAchievedQuests());
             return;
         }
 
-        final PlayerQuests playerQuests = new PlayerQuests(timestamp, quests);
-        playerQuests.setAchievedQuests(achievedQuests);
-        playerQuests.setTotalAchievedQuests(totalAchievedQuests);
-        playerQuests.setTotalAchievedQuestsByCategory(totalAchievedQuestsByCategory);
-
-        activeQuests.put(playerName, playerQuests);
-        if (Logs.isEnabled()) {
-            PluginLogger.info(playerName + "'s quests have been loaded.");
-        }
-
-        if (sendStatusMessage) {
-            sendQuestStatusMessage(player, achievedQuests, playerQuests);
-        }
+        registerLoadedPlayerQuests(player, activeQuests, totalAchievedQuestsByCategory, quests, data, sendStatusMessage);
     }
 
     private LinkedHashMap<AbstractQuest, Progression> loadPlayerQuestsFromConfig(String playerName, ConfigurationSection playerSection) {
@@ -104,17 +103,12 @@ public class LoadProgressionYAML extends ProgressionLoader {
             return quests;
         }
 
-        int i = 1;
         for (String key : questsSection.getKeys(false)) {
-            if (i > QuestsPerCategory.getTotalQuestsAmount()) {
-                logExcessQuests(playerName);
-                break;
-            }
-
-            int questIndex = questsSection.getInt(key + ".index");
-            int advancement = questsSection.getInt(key + ".progression");
-            int requiredAmount = questsSection.getInt(key + ".requiredAmount");
-            int selectedRequired = questsSection.getInt(key + ".selectedRequired", -1);
+            final int questIndex = questsSection.getInt(key + ".index");
+            final String categoryName = questsSection.getString(key + ".category");
+            final int advancement = questsSection.getInt(key + ".progression");
+            final int requiredAmount = questsSection.getInt(key + ".requiredAmount");
+            final int selectedRequired = questsSection.getInt(key + ".selectedRequired", -1);
 
             // schema update check (1 to 2)
             if (requiredAmount == 0) {
@@ -122,9 +116,9 @@ public class LoadProgressionYAML extends ProgressionLoader {
                 return null;
             }
 
-            boolean isAchieved = questsSection.getBoolean(key + ".isAchieved");
+            final boolean isAchieved = questsSection.getBoolean(key + ".isAchieved");
 
-            final AbstractQuest quest = QuestLoaderUtils.findQuest(playerName, questIndex, Integer.parseInt(key));
+            final AbstractQuest quest = QuestLoaderUtils.findQuest(playerName, categoryName, questIndex, Integer.parseInt(key));
             if (quest == null) {
                 Debugger.write("Quest " + questIndex + " does not exist. " + NEW_QUESTS);
                 return null;
@@ -144,7 +138,6 @@ public class LoadProgressionYAML extends ProgressionLoader {
             }
 
             quests.put(quest, progression);
-            i++;
         }
 
         return quests;

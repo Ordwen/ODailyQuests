@@ -1,8 +1,6 @@
 package com.ordwen.odailyquests.tools;
 
 import com.ordwen.odailyquests.api.ODailyQuestsAPI;
-import com.ordwen.odailyquests.configuration.essentials.RenewInterval;
-import com.ordwen.odailyquests.configuration.essentials.RenewTime;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
@@ -32,21 +30,21 @@ public class TimerTask {
     }
 
     private void scheduleNextExecution(LocalDateTime start) {
-        final LocalTime renewTime = RenewTime.getRenewTime();
-        final Duration renewInterval = RenewInterval.getRenewInterval();
-        final ZoneId renewZoneId = RenewTime.getZoneId();
-
-        final ZonedDateTime zonedStart = start.atZone(ZoneId.systemDefault()).withZoneSameInstant(renewZoneId);
-        ZonedDateTime nextExecution = zonedStart.with(renewTime);
-
-        // add the interval until the next execution is after the start time
-        while (nextExecution.isBefore(zonedStart)) {
-            nextExecution = nextExecution.plus(renewInterval);
+        final RenewSchedule.Settings s = RenewSchedule.settings();
+        if (!RenewSchedule.isValid(s)) {
+            PluginLogger.error("Invalid renew schedule. Task not scheduled.");
+            return;
         }
 
-        final long initialDelay = Duration.between(ZonedDateTime.now(ZoneId.systemDefault()), nextExecution.withZoneSameInstant(ZoneId.systemDefault())).toNanos();
+        final ZonedDateTime now = start.atZone(ZoneId.systemDefault()).withZoneSameInstant(s.zone());
+        final ZonedDateTime next = RenewSchedule.nextExecutionAtOrAfter(now, s);
 
-        scheduledTask = scheduler.schedule(this::executeAndReschedule, initialDelay, TimeUnit.NANOSECONDS);
+        long initialDelayNanos = Duration.between(
+                ZonedDateTime.now(ZoneId.systemDefault()),
+                next.withZoneSameInstant(ZoneId.systemDefault())
+        ).toNanos();
+
+        scheduledTask = scheduler.schedule(this::executeAndReschedule, initialDelayNanos, TimeUnit.NANOSECONDS);
     }
 
     private void executeAndReschedule() {

@@ -797,3 +797,25 @@ quests:
     reward:
       reward_type: MONEY
       amount: 5000
+
+  # example quest that is using itemmodel on required item
+  32:
+    name: "&3A model citizen"
+    menu_item: ECHO_SHARD
+    description:
+      - ""
+      - "&3Task:"
+      - " &3&l| &7Deliver the modeled shard"
+      - ""
+      - "&3Progress:"
+      - " &3&l| %status%"
+      - ""
+      - "&3Reward:"
+      - " &3&l| &71000$"
+      - ""
+    quest_type: GET
+    required: "itemmodel:odailyquests:ancient_shard"
+    required_amount: 1
+    reward:
+      reward_type: MONEY
+      amount: 1000

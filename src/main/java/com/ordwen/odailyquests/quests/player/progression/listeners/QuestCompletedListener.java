@@ -4,7 +4,7 @@ import com.ordwen.odailyquests.api.ODailyQuestsAPI;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.api.events.QuestCompletedEvent;
 import com.ordwen.odailyquests.rewards.RewardManager;
-import com.ordwen.odailyquests.tools.DisplayName;
+import com.ordwen.odailyquests.tools.QuestPlaceholders;
 import com.ordwen.odailyquests.tools.TextFormatter;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -24,10 +24,14 @@ public class QuestCompletedListener implements Listener {
 
         progression.setAchieved();
 
-        final String formattedQuestName = TextFormatter
-                .format(player, quest.getQuestName())
-                .replace("%required%", String.valueOf(progression.getRequiredAmount()))
-                .replace("%displayName%", DisplayName.getDisplayName(quest, progression.getSelectedRequiredIndex()));
+        final String formattedQuestName = QuestPlaceholders.replaceQuestPlaceholders(
+                TextFormatter.format(player, quest.getQuestName()),
+                player,
+                quest,
+                progression,
+                null,
+                null
+        );
 
         RewardManager.sendQuestRewardItems(formattedQuestName, player, quest.getReward(), progression);
         ODailyQuestsAPI.getPlayerQuests(player.getName()).increaseCategoryAchievedQuests(quest.getCategoryName(), player);

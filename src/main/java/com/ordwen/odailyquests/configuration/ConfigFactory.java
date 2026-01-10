@@ -56,6 +56,7 @@ public class ConfigFactory {
         reg(SafetyMode.class, new SafetyMode(configurationFile));
         reg(QuestsPerCategory.class, new QuestsPerCategory(configurationFile));
         reg(RerollNotAchieved.class, new RerollNotAchieved(configurationFile));
+        reg(RerollMaximum.class, new RerollMaximum(configurationFile));
         reg(Synchronization.class, new Synchronization(configurationFile));
         reg(RenewInterval.class, new RenewInterval(configurationFile));
         reg(RenewTime.class, new RenewTime(configurationFile));

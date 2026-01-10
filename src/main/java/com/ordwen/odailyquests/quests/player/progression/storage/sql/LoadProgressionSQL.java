@@ -2,7 +2,6 @@ package com.ordwen.odailyquests.quests.player.progression.storage.sql;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
-import com.ordwen.odailyquests.configuration.essentials.Logs;
 import com.ordwen.odailyquests.configuration.essentials.PlayerDataLoadDelay;
 import com.ordwen.odailyquests.configuration.essentials.QuestsPerCategory;
 import com.ordwen.odailyquests.enums.SQLQuery;
@@ -55,9 +54,7 @@ public class LoadProgressionSQL extends ProgressionLoader {
             final String playerUuid = player.getUniqueId().toString();
 
             boolean hasStoredData = false;
-            long timestamp = 0;
-            int achievedQuests = 0;
-            int totalAchievedQuests = 0;
+            StoredPlayerProgression data = null;
 
             try (final Connection connection = sqlManager.getConnection();
                  final PreparedStatement preparedStatement = connection.prepareStatement(SQLQuery.LOAD_PLAYER.getQuery())) {
@@ -69,9 +66,18 @@ public class LoadProgressionSQL extends ProgressionLoader {
 
                     if (resultSet.next()) {
                         hasStoredData = true;
-                        timestamp = resultSet.getLong("player_timestamp");
-                        achievedQuests = resultSet.getInt("achieved_quests");
-                        totalAchievedQuests = resultSet.getInt("total_achieved_quests");
+
+                        final long timestamp = resultSet.getLong("player_timestamp");
+                        final int achievedQuests = resultSet.getInt("achieved_quests");
+                        final int totalAchievedQuests = resultSet.getInt("total_achieved_quests");
+                        final int recentRerolls = resultSet.getInt("recent_rerolls");
+
+                        data = new StoredPlayerProgression(
+                                timestamp,
+                                achievedQuests,
+                                totalAchievedQuests,
+                                recentRerolls
+                        );
 
                         Debugger.write(playerName + " has stored data.");
                     } else {
@@ -84,44 +90,38 @@ public class LoadProgressionSQL extends ProgressionLoader {
                 error(playerName, e.getMessage());
             }
 
-            if (hasStoredData) {
-                loadStoredData(player, activeQuests, timestamp, totalAchievedQuests, quests, achievedQuests, sendStatusMessage);
+            if (hasStoredData && data != null) {
+                loadStoredData(player, activeQuests, data, quests, sendStatusMessage);
             } else {
                 QuestLoaderUtils.loadNewPlayerQuests(playerName, activeQuests, new HashMap<>(), 0);
             }
         }, Duration.ofMillis(PlayerDataLoadDelay.getDelay()));
     }
 
-    private void loadStoredData(Player player, Map<String, PlayerQuests> activeQuests, long timestamp, int totalAchievedQuests, LinkedHashMap<AbstractQuest, Progression> quests, int achievedQuests, boolean sendStatusMessage) {
+    private void loadStoredData(
+            Player player,
+            Map<String, PlayerQuests> activeQuests,
+            StoredPlayerProgression data,
+            LinkedHashMap<AbstractQuest, Progression> quests,
+            boolean sendStatusMessage
+    ) {
         final String playerName = player.getName();
 
         Debugger.write(playerName + " has data in the database.");
 
         final Map<String, Integer> categoryStats = loadCategoryStats(player.getUniqueId().toString());
 
-        if (QuestLoaderUtils.checkTimestamp(timestamp)) {
-            QuestLoaderUtils.loadNewPlayerQuests(playerName, activeQuests, categoryStats, totalAchievedQuests);
-        } else {
-            if (!loadPlayerQuests(player, quests)) {
-                QuestLoaderUtils.loadNewPlayerQuests(playerName, activeQuests, categoryStats, totalAchievedQuests);
-                return;
-            }
-
-            final PlayerQuests playerQuests = new PlayerQuests(timestamp, quests);
-
-            playerQuests.setAchievedQuests(achievedQuests);
-            playerQuests.setTotalAchievedQuests(totalAchievedQuests);
-            playerQuests.setTotalAchievedQuestsByCategory(categoryStats);
-
-            activeQuests.put(playerName, playerQuests);
-            if (Logs.isEnabled()) {
-                PluginLogger.info(playerName + "'s quests have been loaded.");
-            }
-
-            if (sendStatusMessage) {
-                sendQuestStatusMessage(player, achievedQuests, playerQuests);
-            }
+        if (QuestLoaderUtils.checkTimestamp(data.timestamp())) {
+            QuestLoaderUtils.loadNewPlayerQuests(playerName, activeQuests, categoryStats, data.totalAchievedQuests());
+            return;
         }
+
+        if (!loadPlayerQuests(player, quests)) {
+            QuestLoaderUtils.loadNewPlayerQuests(playerName, activeQuests, categoryStats, data.totalAchievedQuests());
+            return;
+        }
+
+        registerLoadedPlayerQuests(player, activeQuests, categoryStats, quests, data, sendStatusMessage);
     }
 
     /**
@@ -132,7 +132,6 @@ public class LoadProgressionSQL extends ProgressionLoader {
      */
     private boolean loadPlayerQuests(Player player, LinkedHashMap<AbstractQuest, Progression> quests) {
         final String playerName = player.getName();
-
         Debugger.write("Entering loadPlayerQuests method for player " + playerName + ".");
 
         try (final Connection connection = sqlManager.getConnection();
@@ -142,63 +141,99 @@ public class LoadProgressionSQL extends ProgressionLoader {
 
             try (final ResultSet resultSet = preparedStatement.executeQuery()) {
                 int id = 1;
-                if (resultSet.next()) {
-                    do {
-                        final int questIndex = resultSet.getInt("quest_index");
-                        final int advancement = resultSet.getInt("advancement");
-                        final int requiredAmount = resultSet.getInt("required_amount");
-                        int selectedRequired = resultSet.getInt("selected_required");
-                        if (resultSet.wasNull()) {
-                            selectedRequired = -1;
-                        }
 
-                        // schema update check (1 to 2)
-                        if (requiredAmount == 0) {
-                            requiredAmountIsZero(playerName);
-                            return false;
-                        }
+                if (!resultSet.next()) {
+                    return handleNoQuestRows(playerName);
+                }
 
-                        final boolean isAchieved = resultSet.getBoolean("is_achieved");
-
-                        final AbstractQuest quest = QuestLoaderUtils.findQuest(playerName, questIndex, id);
-                        if (quest == null) {
-                            Debugger.write("Quest " + id + " does not exist. New quests will be drawn.");
-                            return false;
-                        }
-
-                        if (!quest.isRandomRequiredAmount() && requiredAmount != Integer.parseInt(quest.getRequiredAmountRaw())) {
-                            requiredAmountNotEqual(playerName);
-                            return false;
-                        }
-
-                        // check if random quest have data
-                        if (isSelectedRequiredInvalid(quest, selectedRequired, playerName)) return false;
-
-                        final Progression progression = new Progression(requiredAmount, advancement, isAchieved);
-                        if (selectedRequired != -1) {
-                            progression.setSelectedRequiredIndex(selectedRequired);
-                        }
-
-                        quests.put(quest, progression);
-                        id++;
-                    } while (resultSet.next() && id <= QuestsPerCategory.getTotalQuestsAmount());
-
-                    if (resultSet.next()) {
-                        logExcessQuests(playerName);
+                final int maxQuests = QuestsPerCategory.getTotalQuestsAmount(player);
+                do {
+                    if (!loadSingleQuestRow(resultSet, playerName, quests, id)) {
+                        return false;
                     }
-                }
+                    id++;
+                } while (resultSet.next() && id <= maxQuests);
 
-                if (id - 1 < QuestsPerCategory.getTotalQuestsAmount()) {
-                    PluginLogger.warn("Player " + playerName + " has less quests than expected. New quests will be drawn.");
-                    return false;
-                }
+                final int loadedQuests = id - 1;
+                Debugger.write("Loaded " + loadedQuests + " quests for " + playerName + " (config max: " + maxQuests + ").");
             }
         } catch (final SQLException e) {
             error(playerName, e.getMessage());
+            return false;
         }
 
         Debugger.write("Quests of player " + playerName + " have been loaded.");
         return true;
+    }
+
+    /**
+     * Handle case when no quest rows are returned.
+     */
+    private boolean handleNoQuestRows(String playerName) {
+        PluginLogger.warn("Player " + playerName + " has no stored quests. New quests will be drawn.");
+        return false; // always false: no quests = regenerate a full set
+    }
+
+    /**
+     * Load and validate a single quest row from the ResultSet.
+     */
+    private boolean loadSingleQuestRow(ResultSet resultSet, String playerName, LinkedHashMap<AbstractQuest, Progression> quests, int questId) throws SQLException {
+        final int questIndex = resultSet.getInt("quest_index");
+        final String categoryName = resultSet.getString("category");
+        final int advancement = resultSet.getInt("advancement");
+        final int requiredAmount = resultSet.getInt("required_amount");
+        int selectedRequired = resultSet.getInt("selected_required");
+        if (resultSet.wasNull()) {
+            selectedRequired = -1;
+        }
+
+        // schema update check (1 to 2)
+        if (requiredAmount == 0) {
+            requiredAmountIsZero(playerName);
+            return false;
+        }
+
+        final boolean isAchieved = resultSet.getBoolean("is_achieved");
+
+        final AbstractQuest quest = QuestLoaderUtils.findQuest(playerName, categoryName, questIndex, questId);
+        if (quest == null) {
+            Debugger.write("Quest " + questId + " does not exist. New quests will be drawn.");
+            return false;
+        }
+
+        if (!isRequiredAmountValid(quest, requiredAmount, playerName)) {
+            return false;
+        }
+
+        if (isSelectedRequiredInvalid(quest, selectedRequired, playerName)) {
+            return false;
+        }
+
+        addQuestProgression(quests, quest, requiredAmount, advancement, isAchieved, selectedRequired);
+        return true;
+    }
+
+    /**
+     * Validate that the required amount matches the quest definition when not random.
+     */
+    private boolean isRequiredAmountValid(AbstractQuest quest, int requiredAmount, String playerName) {
+        if (!quest.isRandomRequiredAmount() && requiredAmount != Integer.parseInt(quest.getRequiredAmountRaw())) {
+            requiredAmountNotEqual(playerName);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Add the quest progression entry to the map.
+     */
+    private void addQuestProgression(LinkedHashMap<AbstractQuest, Progression> quests, AbstractQuest quest, int requiredAmount, int advancement, boolean isAchieved, int selectedRequired) {
+        final Progression progression = new Progression(requiredAmount, advancement, isAchieved);
+        if (selectedRequired != -1) {
+            progression.setSelectedRequiredIndex(selectedRequired);
+        }
+
+        quests.put(quest, progression);
     }
 
     /**

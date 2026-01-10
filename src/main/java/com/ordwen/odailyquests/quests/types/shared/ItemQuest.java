@@ -1,13 +1,16 @@
 package com.ordwen.odailyquests.quests.types.shared;
 
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
+import com.ordwen.odailyquests.nms.NMSHandler;
 import com.ordwen.odailyquests.quests.getters.QuestItemGetter;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 
 import java.util.ArrayList;
@@ -334,6 +337,7 @@ public abstract class ItemQuest extends AbstractQuest {
             return !POTIONS_TYPES.contains(required.getType()) || potionEquals(required, provided);
         }
 
+        if (hasMatchingItemModel(required, provided)) return true;
         if (hasMatchingCustomModelData(required, provided)) return true;
 
         if (required.isSimilar(provided)) {
@@ -366,6 +370,49 @@ public abstract class ItemQuest extends AbstractQuest {
         if (!sameExtended) Debugger.write("ItemQuest:isRequiredItem: Potion is extended.");
 
         return sameType && sameUpgrade && sameExtended;
+    }
+
+    /**
+     * Checks whether both items declare the same custom {@code item_model} via reflection.
+     *
+     * @param required the required item
+     * @param provided the provided item
+     * @return {@code true} if models match; otherwise {@code false}
+     */
+    private boolean hasMatchingItemModel(ItemStack required, ItemStack provided) {
+        if (!required.hasItemMeta()) return false;
+
+        final ItemMeta requiredMeta = required.getItemMeta();
+        if (!NMSHandler.hasItemModel(requiredMeta)) return false;
+
+        Debugger.write("ItemQuest:isRequiredItem: Required item has item model.");
+
+        if (!provided.hasItemMeta()) {
+            Debugger.write("ItemQuest:isRequiredItem: Provided item has no meta to compare item model.");
+            return false;
+        }
+
+        final ItemMeta providedMeta = provided.getItemMeta();
+        if (!NMSHandler.hasItemModel(providedMeta)) {
+            Debugger.write("ItemQuest:isRequiredItem: Provided item does not have item model.");
+            return false;
+        }
+
+        final NamespacedKey requiredModel = NMSHandler.getItemModel(requiredMeta);
+        final NamespacedKey providedModel = NMSHandler.getItemModel(providedMeta);
+
+        if (requiredModel == null || providedModel == null) {
+            Debugger.write("ItemQuest:isRequiredItem: Unable to read item model from meta.");
+            return false;
+        }
+
+        if (/* required.getType() == provided.getType() && */ requiredModel.equals(providedModel)) {
+            Debugger.write("ItemQuest:isRequiredItem: Items share the same item model.");
+            return true;
+        }
+
+        Debugger.write("ItemQuest:isRequiredItem: Item models are different.");
+        return false;
     }
 
     /**

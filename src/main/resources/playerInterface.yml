@@ -39,15 +39,30 @@ player_interface:
   # If you want to display a name or lore, use PLAYER_COMMAND or CONSOLE_COMMAND types with an empty command list.
   # ========================================================
   quests: # set the position of quests items
-    1: 12
-    2: 21
-    3: 30
-    4: 14
-    5: 23
-    6: 32
-    7: 16
-    8: 25
-    9: 34
+    # Option 1: keep the legacy order-based positioning (quest 1 goes in slot 12, quest 2 in slot 21, etc.).
+    # 1: 12
+    # 2: 21
+    # 3: 30
+    # 4: 14
+    # 5: 23
+    # 6: 32
+    # 7: 16
+    # 8: 25
+    # 9: 34
+    # Option 2: define fixed slots per category (case-insensitive). Slots are consumed in the order quests are loaded.
+    categories:
+      easy:
+        - 12
+        - 21
+        - 30
+      medium:
+        - 14
+        - 23
+        - 32
+      hard:
+        - 16
+        - 25
+        - 34
   items:
     0:
       type: CLOSE

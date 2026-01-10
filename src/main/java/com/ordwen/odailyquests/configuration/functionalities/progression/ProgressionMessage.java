@@ -5,6 +5,7 @@ import com.ordwen.odailyquests.configuration.ConfigFactory;
 import com.ordwen.odailyquests.configuration.IConfigurable;
 import com.ordwen.odailyquests.enums.ProgressionMessageType;
 import com.ordwen.odailyquests.files.implementations.ConfigurationFile;
+import com.ordwen.odailyquests.tools.QuestPlaceholders;
 import com.ordwen.odailyquests.tools.TextFormatter;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import net.md_5.bungee.api.ChatMessageType;
@@ -111,13 +112,11 @@ public class ProgressionMessage implements IConfigurable {
         if (isEnabled) {
             final String parsedQuestName = TextFormatter.format(player, questName);
 
-            final String toSend = TextFormatter.format(player, message
+            final String parsedMessage = message
                     .replace("%player%", player.getDisplayName())
-                    .replace("%questName%", parsedQuestName)
-                    .replace("%progress%", String.valueOf(progression))
-                    .replace("%required%", String.valueOf(required))
-                    .replace("%progressBar%", ProgressBar.getProgressBar(progression, required))
-            );
+                    .replace("%questName%", parsedQuestName);
+
+            final String toSend = TextFormatter.format(player, QuestPlaceholders.replaceProgressPlaceholders(parsedMessage, progression, required));
 
             switch (progressionMessageType) {
                 case ACTIONBAR -> player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacy(toSend));

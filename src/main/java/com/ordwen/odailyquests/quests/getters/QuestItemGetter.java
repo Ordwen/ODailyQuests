@@ -35,6 +35,7 @@ public class QuestItemGetter extends ItemGetter implements IQuestItem {
             case "mmoitems" -> this.getMMOItemsItem(split[1], fileName, questIndex, parameter);
             case "customhead" -> this.getCustomHead(split[1], fileName, questIndex, parameter);
             case "custommodeldata" -> this.getCustomModelDataItem(split[1], fileName, questIndex, parameter);
+            case "itemmodel" -> this.getItemModelItem(split[1], fileName, questIndex, parameter);
             default -> null;
         };
     }
@@ -249,6 +250,25 @@ public class QuestItemGetter extends ItemGetter implements IQuestItem {
         }
 
         return requiredItem;
+    }
+
+    /**
+     * Builds an item initialized with a custom {@code item_model} using the default rare material placeholder.
+     *
+     * @param itemModel the namespaced identifier of the model to apply
+     * @param fileName  file name (for error reporting)
+     * @param questIndex quest index/key (for error reporting)
+     * @param parameter configuration parameter name
+     * @return an {@link ItemStack} with the model applied, or {@code null} on error
+     */
+    @Override
+    public ItemStack getItemModelItem(String itemModel, String fileName, String questIndex, String parameter) {
+        final Pair<String, ItemStack> result = super.getItemModelItem(itemModel);
+        if (!result.first().isEmpty()) {
+            PluginLogger.configurationError(fileName, questIndex, parameter, result.first());
+            return null;
+        }
+        return result.second();
     }
 
     /**

@@ -4,6 +4,8 @@ import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.tools.PluginLogger;
 import com.ordwen.odailyquests.tools.updater.database.updates.Update0to1;
 import com.ordwen.odailyquests.tools.updater.database.updates.Update1to2;
+import com.ordwen.odailyquests.tools.updater.database.updates.Update2to3;
+
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.LinkedHashMap;
@@ -19,6 +21,7 @@ public class DatabaseUpdateManager {
 
         updaters.put("1", new Update0to1(plugin));
         updaters.put("2", new Update1to2(plugin));
+        updaters.put("3", new Update2to3(plugin));
     }
 
     public void runUpdates() {

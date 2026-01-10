@@ -11,4 +11,5 @@ public interface IQuestItem {
     ItemStack getMMOItemsItem(String namespace, String fileName, String questIndex, String parameter);
     ItemStack getCustomHead(String texture, String fileName, String questIndex, String parameter);
     ItemStack getCustomModelDataItem(String customModelData, String fileName, String questIndex, String parameter);
+    ItemStack getItemModelItem(String itemModel, String fileName, String questIndex, String parameter);
 }

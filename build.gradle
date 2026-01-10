@@ -86,6 +86,7 @@ dependencies {
     compileOnly 'com.github.LoneDev6:API-ItemsAdder:3.6.3-beta-14'
     compileOnly 'com.nexomc:nexo:1.1.0'
     compileOnly 'net.Indyuce:MMOItems-API:6.9.2-SNAPSHOT'
+    compileOnly 'net.Indyuce:MMOCore-API:1.12.1-SNAPSHOT'
     compileOnly 'io.lumine:MythicLib-dist:1.5.2-SNAPSHOT'
     compileOnly 'net.momirealms:custom-crops:3.6.29'
     compileOnly 'net.momirealms:custom-fishing:2.3.4'

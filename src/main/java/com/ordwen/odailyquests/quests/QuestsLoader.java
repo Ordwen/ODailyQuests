@@ -2,7 +2,6 @@ package com.ordwen.odailyquests.quests;
 
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.api.quests.QuestTypeRegistry;
-import com.ordwen.odailyquests.nms.NMSHandler;
 import com.ordwen.odailyquests.quests.conditions.ConditionOperator;
 import com.ordwen.odailyquests.quests.conditions.placeholder.PlaceholderCondition;
 import com.ordwen.odailyquests.quests.getters.QuestItemGetter;
@@ -16,7 +15,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import com.ordwen.odailyquests.tools.PluginLogger;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -43,7 +41,6 @@ import java.util.Optional;
 public class QuestsLoader extends QuestItemGetter {
 
     private static final String ACHIEVED_MENU_ITEM = "achieved_menu_item";
-    private static final String ACHIEVED_MENU_ITEM_MODEL = "achieved_menu_item_model";
     private static final String REQUIRED_PERMISSIONS = "required_permissions";
     private static final String REQUIRED_PERMISSION = "required_permission";
     private static final String CONDITIONS = "conditions";
@@ -146,17 +143,11 @@ public class QuestsLoader extends QuestItemGetter {
             return null;
         }
 
-        /* menu item model */
-        applyMenuItemModel(questSection, menuItem);
-
         /* achieved menu item */
         final ItemStack achievedItem = createAchievedMenuItem(questSection, fileName, fileIndex, menuItem);
         if (achievedItem == null) {
             return null;
         }
-
-        /* achieved menu item model */
-        applyAchievedMenuItemModel(questSection, achievedItem);
 
         /* reward */
         final Reward reward = createReward(questSection, fileName, fileIndex);
@@ -256,24 +247,6 @@ public class QuestsLoader extends QuestItemGetter {
     }
 
     /**
-     * Applies a custom model ID to the menu item if the configuration
-     * specifies <code>menu_item_model</code>.
-     *
-     * @param questSection the quest configuration
-     * @param menuItem     the item whose model must be updated
-     */
-    private void applyMenuItemModel(ConfigurationSection questSection, ItemStack menuItem) {
-        final String menuItemModel = questSection.getString(".menu_item_model");
-        if (menuItemModel == null || menuItemModel.isEmpty()) {
-            return;
-        }
-
-        final ItemMeta menuItemMeta = menuItem.getItemMeta();
-        NMSHandler.trySetItemModel(menuItemMeta, menuItemModel);
-        menuItem.setItemMeta(menuItemMeta);
-    }
-
-    /**
      * Loads the menu item displayed when the quest is completed.
      * <p>
      * If not defined, the base menu item is reused.
@@ -297,24 +270,6 @@ public class QuestsLoader extends QuestItemGetter {
         }
 
         return getItemStackFromMaterial(presumedAchievedItem, fileName, fileIndex, ACHIEVED_MENU_ITEM);
-    }
-
-    /**
-     * Applies a custom model ID to the achieved menu item if the configuration
-     * specifies <code>achieved_menu_item_model</code>.
-     *
-     * @param questSection the quest configuration
-     * @param achievedItem the item whose model must be updated
-     */
-    private void applyAchievedMenuItemModel(ConfigurationSection questSection, ItemStack achievedItem) {
-        final String achievedItemModel = questSection.getString(ACHIEVED_MENU_ITEM_MODEL);
-        if (achievedItemModel == null || achievedItemModel.isEmpty()) {
-            return;
-        }
-
-        final ItemMeta achievedItemMeta = achievedItem.getItemMeta();
-        NMSHandler.trySetItemModel(achievedItemMeta, achievedItemModel);
-        achievedItem.setItemMeta(achievedItemMeta);
     }
 
     /**

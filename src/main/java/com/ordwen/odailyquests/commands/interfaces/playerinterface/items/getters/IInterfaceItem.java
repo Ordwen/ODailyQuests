@@ -11,6 +11,7 @@ public interface IInterfaceItem {
     ItemStack getMMOItemsItem(String namespace, String itemIndex, String parameter);
     ItemStack getCustomHead(String texture, String questIndex, String parameter);
     ItemStack getCustomModelDataItem(String customModelData, String questIndex, String parameter);
+    ItemStack getItemModelItem(String itemModel, String questIndex, String parameter);
 
     void configurationError(String itemIndex, String parameter, String reason);
 

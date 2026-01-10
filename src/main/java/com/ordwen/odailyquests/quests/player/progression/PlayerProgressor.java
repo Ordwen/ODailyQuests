@@ -16,7 +16,7 @@ import com.ordwen.odailyquests.externs.hooks.Protection;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.types.item.FarmingQuest;
-import com.ordwen.odailyquests.tools.DisplayName;
+import com.ordwen.odailyquests.tools.QuestPlaceholders;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -134,7 +134,7 @@ public class PlayerProgressor {
         if (QuestLoaderUtils.isTimeToRenew(player, QuestsManager.getActiveQuests())) return;
         if (!isAllowedToProgress(player, quest)) return;
 
-        final String questName = quest.getQuestName().replace("%displayName%", DisplayName.getDisplayName(quest, progression.getSelectedRequiredIndex()));
+        final String questName = QuestPlaceholders.replaceQuestPlaceholders(quest.getQuestName(), player, quest, progression, null, null);
 
         final int current = progression.getAdvancement();
         final int required = progression.getRequiredAmount();

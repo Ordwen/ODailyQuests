@@ -2,6 +2,7 @@ package com.ordwen.odailyquests.commands.player.handlers;
 
 import com.ordwen.odailyquests.api.commands.player.PlayerCommandBase;
 import com.ordwen.odailyquests.configuration.essentials.QuestsPerCategory;
+import com.ordwen.odailyquests.configuration.essentials.RerollMaximum;
 import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.enums.QuestsPermissions;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
@@ -61,8 +62,10 @@ public class PRerollCommand extends PlayerCommandBase {
 
         if (activeQuests.containsKey(playerName)) {
             final PlayerQuests playerQuests = activeQuests.get(playerName);
-            if (playerQuests.rerollQuest(index - 1, player)) {
-                rerollConfirm(index, player);
+            int count = playerQuests.getRecentlyRolled();
+            boolean canBypass = player.hasPermission(QuestsPermissions.QUESTS_PLAYER_BYPASS_REROLL_LIMIT.get());
+            if (playerQuests.rerollQuest(index - 1, player, canBypass)) {
+                rerollConfirm(index, RerollMaximum.getMaxRerolls()-(count+1), player);
             }
         }
     }
@@ -73,9 +76,9 @@ public class PRerollCommand extends PlayerCommandBase {
      * @param index  the index of the quest that was rerolled
      * @param target the player who had their quest rerolled
      */
-    private void rerollConfirm(int index, Player target) {
+    private void rerollConfirm(int index, int remaining, Player target) {
         final String msg = QuestsMessages.QUEST_REROLLED.toString();
-        if (msg != null) target.sendMessage(msg.replace("%index%", String.valueOf(index)));
+        if (msg != null) target.sendMessage(msg.replace("%index%", String.valueOf(index)).replace("%remaining%", String.valueOf(remaining)));
     }
 
     /**
@@ -88,9 +91,14 @@ public class PRerollCommand extends PlayerCommandBase {
 
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, String[] args) {
-        if (args.length == 2) {
+        if (args.length == 2 && sender instanceof Player player) {
+            final PlayerQuests playerQuests = QuestsManager.getActiveQuests().get(player.getName());
+            if (playerQuests == null) {
+                return Collections.emptyList();
+            }
+
             List<String> questNumbers = new ArrayList<>();
-            for (int i = 1; i <= QuestsPerCategory.getTotalQuestsAmount(); i++) {
+            for (int i = 1; i <= playerQuests.getQuests().size(); i++) {
                 questNumbers.add(String.valueOf(i));
             }
             return questNumbers;

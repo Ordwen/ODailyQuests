@@ -25,6 +25,7 @@ public class InterfaceItemGetter extends ItemGetter implements IInterfaceItem {
             case "mmoitems" -> this.getMMOItemsItem(split[1], itemIndex, parameter);
             case "customhead" -> this.getCustomHead(split[1], itemIndex, parameter);
             case "custommodeldata" -> this.getCustomModelDataItem(split[1], itemIndex, parameter);
+            case "itemmodel" -> this.getItemModelItem(split[1], itemIndex, parameter);
             default -> null;
         };
     }
@@ -158,6 +159,25 @@ public class InterfaceItemGetter extends ItemGetter implements IInterfaceItem {
         final Pair<String, ItemStack> result = super.getCustomModelDataItem(material, cmd);
         if (!result.first().isEmpty()) {
             configurationError(questIndex, parameter, result.first());
+            return null;
+        }
+
+        return result.second();
+    }
+
+    /**
+     * Get an item using a custom {@code item_model}.
+     *
+     * @param itemModel  the namespaced identifier of the model to apply (namespace optional)
+     * @param itemIndex  the index of the item in the file
+     * @param parameter  the parameter involved
+     * @return the ItemStack or null if the item cannot be loaded
+     */
+    @Override
+    public ItemStack getItemModelItem(String itemModel, String itemIndex, String parameter) {
+        final Pair<String, ItemStack> result = super.getItemModelItem(itemModel);
+        if (!result.first().isEmpty()) {
+            configurationError(itemIndex, parameter, result.first());
             return null;
         }
 

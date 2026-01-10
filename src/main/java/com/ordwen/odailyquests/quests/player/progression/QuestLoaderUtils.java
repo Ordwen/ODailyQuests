@@ -8,6 +8,7 @@ import com.ordwen.odailyquests.quests.categories.Category;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
+import com.ordwen.odailyquests.tools.RenewSchedule;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import com.ordwen.odailyquests.tools.PluginLogger;
@@ -33,20 +34,18 @@ public class QuestLoaderUtils {
 
         switch (mode) {
             case 1 -> {
-                final LocalTime renewTime = RenewTime.getRenewTime();
-                final ZoneId zone = RenewTime.getZoneId();
+                final RenewSchedule.Settings s = RenewSchedule.settings();
+                if (!RenewSchedule.isValid(s)) {
+                    PluginLogger.error(ChatColor.RED + "Renew schedule is invalid.");
+                    return false;
+                }
 
-                final ZonedDateTime lastRenew = Instant.ofEpochMilli(timestamp).atZone(zone);
-                final ZonedDateTime now = ZonedDateTime.now(zone);
+                final ZonedDateTime lastRenew = Instant.ofEpochMilli(timestamp).atZone(s.zone());
+                final ZonedDateTime now = ZonedDateTime.now(s.zone());
 
-                final ZonedDateTime todayRenew = ZonedDateTime.of(now.toLocalDate(), renewTime, zone);
-
-                final ZonedDateTime lastEffectiveRenew = now.isBefore(todayRenew)
-                        ? todayRenew.minusDays(1)
-                        : todayRenew;
-
-                return lastRenew.isBefore(lastEffectiveRenew);
+                return RenewSchedule.shouldRenewSince(lastRenew, now, s);
             }
+
             case 2 -> {
                 if (renewInterval != null) {
                     return System.currentTimeMillis() - timestamp >= renewInterval.toMillis();
@@ -54,6 +53,7 @@ public class QuestLoaderUtils {
                     PluginLogger.error(ChatColor.RED + "Impossible to check player quests timestamp. Renew interval is incorrect.");
                 }
             }
+
             default ->
                     PluginLogger.error(ChatColor.RED + "Impossible to load player quests timestamp. The selected mode is incorrect.");
         }
@@ -90,6 +90,7 @@ public class QuestLoaderUtils {
 
         playerQuests.setTotalAchievedQuests(totalAchievedQuests);
         playerQuests.setTotalAchievedQuestsByCategory(totalAchievedQuestsByCategory);
+        playerQuests.setRecentRerolls(0);
 
         final String msg = QuestsMessages.QUESTS_RENEWED.getMessage(player);
         if (msg != null && player.hasPermission(QuestsPermissions.QUESTS_PROGRESS.get())) {
@@ -156,6 +157,19 @@ public class QuestLoaderUtils {
         }
 
         return quest;
+    }
+
+    public static AbstractQuest findQuest(String playerName, String categoryName, int questIndex, int id) {
+        if (categoryName != null && !categoryName.isEmpty()) {
+            final Category category = CategoriesLoader.getCategoryByName(categoryName);
+            if (category == null) {
+                PluginLogger.warn("Category '" + categoryName + "' referenced in player " + playerName + " data no longer exists. New quests will be drawn for the player.");
+                return null;
+            }
+            return getQuestAtIndex(category, questIndex, playerName);
+        }
+
+        return findQuest(playerName, questIndex, id);
     }
 
     /**

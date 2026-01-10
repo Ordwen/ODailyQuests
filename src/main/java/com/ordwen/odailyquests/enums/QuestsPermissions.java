@@ -13,6 +13,7 @@ public enum QuestsPermissions {
     QUESTS_PLAYER_REROLL("odailyquests.reroll"),
     QUESTS_PLAYER_SHOW("odailyquests.show"),
     QUESTS_PLAYER_BYPASS_SPAWNER("odailyquests.bypass.spawner"),
+    QUESTS_PLAYER_BYPASS_REROLL_LIMIT("odailyquests.bypass.rerolllimit")
     ;
 
     private final String permission;

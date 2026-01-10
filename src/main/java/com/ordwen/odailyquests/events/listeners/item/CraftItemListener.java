@@ -22,17 +22,29 @@ public class CraftItemListener extends PlayerProgressor implements Listener {
      */
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onCraftItemEvent(CraftItemEvent event) {
-        if (event.isCancelled()) return;
+        if (event.isCancelled()) {
+            Debugger.write("CraftItemEvent cancelled");
+            return;
+        }
 
         final ItemStack current = event.getCurrentItem();
-        if (current == null) return;
+        if (current == null) {
+            Debugger.write("CraftItemEvent: current is null");
+            return;
+        }
 
         final Player player = (Player) event.getWhoClicked();
         final ItemStack result = resolveResultItem(event, current);
-        if (result == null) return;
+        if (result == null) {
+            Debugger.write("CraftItemEvent: result is null");
+            return;
+        }
 
         final int amount = computeRecipeAmount(event, player, result);
-        if (amount <= 0) return;
+        if (amount <= 0) {
+            Debugger.write("CraftItemEvent: amount = "  + amount + ", cancelling");
+            return;
+        }
 
         result.setAmount(amount);
 

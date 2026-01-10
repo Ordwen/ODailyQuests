@@ -29,15 +29,19 @@ public class SaveProgressionYAML {
     private void updateFile(String playerName, String playerUuid, PlayerQuests playerQuests) {
         final FileConfiguration config = progressionFile.getConfig();
 
-        long timestamp = playerQuests.getTimestamp();
-        int achievedQuests = playerQuests.getAchievedQuests();
-        int totalAchievedQuests = playerQuests.getTotalAchievedQuests();
+        config.set(playerUuid, null);
+
+        final long timestamp = playerQuests.getTimestamp();
+        final int achievedQuests = playerQuests.getAchievedQuests();
+        final int totalAchievedQuests = playerQuests.getTotalAchievedQuests();
+        final int recentRerolls = playerQuests.getRecentlyRolled();
 
         final Map<AbstractQuest, Progression> quests = playerQuests.getQuests();
 
         config.set(playerUuid + ".timestamp", timestamp);
         config.set(playerUuid + ".achievedQuests", achievedQuests);
         config.set(playerUuid + ".totalAchievedQuests", totalAchievedQuests);
+        config.set(playerUuid + ".recentRerolls", recentRerolls);
 
         int index = 1;
         for (Map.Entry<AbstractQuest, Progression> entry : quests.entrySet()) {
@@ -46,6 +50,7 @@ public class SaveProgressionYAML {
 
             final ConfigurationSection questSection = config.createSection(playerUuid + ".quests." + index);
             questSection.set("index", quest.getQuestIndex());
+            questSection.set("category", quest.getCategoryName());
             questSection.set("progression", progression.getAdvancement());
             questSection.set("requiredAmount", progression.getRequiredAmount());
             questSection.set("selectedRequired", progression.getSelectedRequiredIndex());

@@ -6,7 +6,7 @@ check_for_update: true
 
 # never touch these lines, used for the plugin auto update system
 version: 3.0.0
-database_version: 2
+database_version: 3
 
 # prefix that will be displayed before every message from messages.yml
 prefix: '&3[&bO''DailyQuests&3] '
@@ -46,6 +46,10 @@ safety_mode: true
 #
 # The category name must exactly match the filename containing the quests (e.g., "easy" refers to "easy.yml").
 # You can create and configure as many categories as you want.
+#
+# PlaceholderAPI support: you can set a placeholder instead of a fixed value (e.g. "%var_player_quest_slots%").
+# The placeholder must resolve to a whole number. When using placeholders, ensure that the quests files contain
+# enough entries for the maximum possible value and that PlaceholderAPI is installed.
 #
 # More information here: https://ordwenplugins.gitbook.io/odailyquests/quests/create-a-category
 quests_per_category:
@@ -309,6 +313,9 @@ complete_only_on_click: false
 
 # Determines if the quest can be rerolled even if it has already been completed, when using the reroll command.
 reroll_only_if_not_achieved: false
+
+# Determines max amount of times a player can reroll their quest in a day
+reroll_maximum: -1
 
 # If you are using MythicMobs, you can set this parameter to "true" to share the mobs between players.
 #

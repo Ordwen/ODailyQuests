@@ -16,6 +16,8 @@ import com.ordwen.odailyquests.events.listeners.integrations.itemsadder.ItemsAdd
 import com.ordwen.odailyquests.events.listeners.integrations.nexo.NexoItemsLoadedListener;
 import com.ordwen.odailyquests.events.listeners.integrations.npcs.FancyNpcsHook;
 import com.ordwen.odailyquests.events.listeners.integrations.oraxen.OraxenItemsLoadedListener;
+import com.ordwen.odailyquests.events.listeners.item.custom.CraftMMOItemListener;
+import com.ordwen.odailyquests.events.listeners.item.custom.CustomPlayerFishListener;
 import com.ordwen.odailyquests.events.listeners.item.custom.DropQueuePushListener;
 import com.ordwen.odailyquests.events.listeners.vote.VotifierListener;
 import com.ordwen.odailyquests.events.listeners.entity.*;
@@ -144,6 +146,14 @@ public class EventsManager {
 
         if (PluginUtils.isPluginEnabled("eco")) {
             pluginManager.registerEvents(new DropQueuePushListener(), oDailyQuests);
+        }
+
+        if (PluginUtils.isPluginEnabled("MMOCore")) {
+            pluginManager.registerEvents(new CustomPlayerFishListener(), oDailyQuests);
+        }
+
+        if (PluginUtils.isPluginEnabled("MMOItems")) {
+            pluginManager.registerEvents(new CraftMMOItemListener(), oDailyQuests);
         }
     }
 }

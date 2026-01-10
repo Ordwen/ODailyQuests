@@ -52,12 +52,13 @@ public abstract class SQLConverter {
                 }
 
                 int questIndex = progressionSection.getInt(".index");
+                final String categoryName = progressionSection.getString(".category");
                 int advancement = progressionSection.getInt(".progression");
                 int requiredAmount = progressionSection.getInt(".requiredAmount");
                 boolean isAchieved = progressionSection.getBoolean(".isAchieved");
 
                 final Progression progression = new Progression(requiredAmount, advancement, isAchieved);
-                final AbstractQuest quest = QuestLoaderUtils.findQuest(playerUuid, questIndex, Integer.parseInt(string));
+                final AbstractQuest quest = QuestLoaderUtils.findQuest(playerUuid, categoryName, questIndex, Integer.parseInt(string));
                 if (quest == null) {
                     error("SQLConverter, 62 - The quest is null.");
                     return;

@@ -50,7 +50,7 @@ public enum QuestsMessages implements MessageKey {
     ALL_QUESTS_ACHIEVED_CONNECT("all_quests_achieved_connect", "&aYou have completed all your daily quests !"),
     QUESTS_RENEWED("quests_renewed", "&aYou have new daily quests to complete !"),
     QUESTS_RENEWED_ADMIN("quests_renewed_admin", "&eYou have reset the quests of %target%."),
-    QUEST_REROLLED("quest_rerolled", "&aYou have rerolled your quest number %index% !"),
+    QUEST_REROLLED("quest_rerolled", "&aYou have rerolled your quest number %index% -- %remaining% rerolls left!"),
     QUEST_REROLLED_ADMIN("quest_rerolled_admin", "&eYou have rerolled the quest number %index% of %target%."),
     NO_AVAILABLE_QUESTS_IN_CATEGORY("no_available_quests_in_category", "&cThere are no available quests in this category to assign."),
     QUEST_SET_ADMIN("quest_set_admin", "&eYou have set quest %quest_id% (%quest%&r&e) in slot %slot% for %target% in %category%."),
@@ -92,6 +92,7 @@ public enum QuestsMessages implements MessageKey {
 
     CANNOT_COMPLETE_QUEST_WITH_OFF_HAND("cannot_complete_quest_with_off_hand", "&cAll required items must be in your inventory, not in your off hand."),
     CANNOT_REROLL_IF_ACHIEVED("cannot_reroll_if_achieved", "&cYou can't reroll a quest that you have already achieved!"),
+    CANNOT_REROLL_IF_MAX("cannot_reroll_if_max", "&cYou can't reroll any more quests!"),
 
     PLUGIN_RELOADED("plugin_reloaded", "&aThe plugin has been reloaded successfully!"),
     ERROR_INVENTORY("error_inventory", "&cAn error occurred while opening the inventory."),

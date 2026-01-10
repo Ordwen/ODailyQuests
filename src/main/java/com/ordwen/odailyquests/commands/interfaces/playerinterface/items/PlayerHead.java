@@ -7,7 +7,7 @@ import com.ordwen.odailyquests.nms.NMSHandler;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.tools.TextFormatter;
 import com.ordwen.odailyquests.tools.PluginLogger;
-import com.ordwen.odailyquests.tools.TimeRemain;
+import com.ordwen.odailyquests.tools.QuestPlaceholders;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -115,11 +115,8 @@ public class PlayerHead extends InterfaceItemGetter {
             int index = lore.indexOf(string);
             string = TextFormatter.format(player, string);
 
-
             final PlayerQuests playerQuests = ODailyQuestsAPI.getPlayerQuests(player.getName());
-            lore.set(index, TextFormatter.format(string)
-                    .replace("%achieved%", String.valueOf(playerQuests.getAchievedQuests()))
-                    .replace("%drawIn%", TimeRemain.timeRemain(player.getName())));
+            lore.set(index, QuestPlaceholders.replaceQuestPlaceholders(TextFormatter.format(string), player, null, null, playerQuests, null));
         }
 
         clone.setLore(lore);
