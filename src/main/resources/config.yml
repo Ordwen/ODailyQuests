@@ -209,6 +209,9 @@ store_placed_blocks: false
 # All items dropped by a player will not count towards the progress of a PICKUP quest.
 store_dropped_items: false
 
+# Time in seconds during which the dropped items are stored.
+dropped_items_ttl_seconds: 10
+
 # All blocks that have been broken by a player will not count towards the progress of a PLACE quest.
 #
 # Warning: this option adds an NBT tag to the item(s) dropped by the block.

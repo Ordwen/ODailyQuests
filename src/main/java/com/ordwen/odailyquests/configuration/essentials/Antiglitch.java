@@ -11,12 +11,15 @@ public class Antiglitch implements IConfigurable {
     public static final NamespacedKey BROKEN_KEY = new NamespacedKey(ODailyQuests.INSTANCE, "odq_broken");
     public static final NamespacedKey PLACED_KEY = new NamespacedKey(ODailyQuests.INSTANCE, "odq_placed");
     public static final NamespacedKey DROPPED_KEY = new NamespacedKey(ODailyQuests.INSTANCE, "odq_dropped");
+    public static final NamespacedKey DROP_UNTIL_KEY = new NamespacedKey(ODailyQuests.INSTANCE, "odq_drop_until");
 
     private final ConfigurationFile configurationFile;
 
     private boolean storePlacedBlocks;
     private boolean storeBrokenBlocks;
+
     private boolean storeDroppedItems;
+    private int droppedItemsTtlSeconds;
 
     public Antiglitch(ConfigurationFile configurationFile) {
         this.configurationFile = configurationFile;
@@ -27,6 +30,7 @@ public class Antiglitch implements IConfigurable {
         storePlacedBlocks = configurationFile.getConfig().getBoolean("store_placed_blocks");
         storeBrokenBlocks = configurationFile.getConfig().getBoolean("store_broken_blocks");
         storeDroppedItems = configurationFile.getConfig().getBoolean("store_dropped_items");
+        droppedItemsTtlSeconds = Math.max(1, configurationFile.getConfig().getInt("dropped_items_ttl_seconds", 10));
     }
 
     private static Antiglitch getInstance() {
@@ -58,5 +62,9 @@ public class Antiglitch implements IConfigurable {
      */
     public static boolean isStoreDroppedItems() {
         return getInstance().storeDroppedItems;
+    }
+
+    public static long getDroppedItemsTtlMillis() {
+        return getInstance().droppedItemsTtlSeconds * 1000L;
     }
 }
