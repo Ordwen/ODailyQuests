@@ -16,6 +16,9 @@ import com.ordwen.odailyquests.events.listeners.integrations.itemsadder.ItemsAdd
 import com.ordwen.odailyquests.events.listeners.integrations.nexo.NexoItemsLoadedListener;
 import com.ordwen.odailyquests.events.listeners.integrations.npcs.FancyNpcsHook;
 import com.ordwen.odailyquests.events.listeners.integrations.oraxen.OraxenItemsLoadedListener;
+import com.ordwen.odailyquests.events.listeners.item.antiglitch.ItemDespawnListener;
+import com.ordwen.odailyquests.events.listeners.item.antiglitch.ItemMergeListener;
+import com.ordwen.odailyquests.events.listeners.item.antiglitch.PlayerDropItemListener;
 import com.ordwen.odailyquests.events.listeners.item.custom.CraftMMOItemListener;
 import com.ordwen.odailyquests.events.listeners.item.custom.CustomPlayerFishListener;
 import com.ordwen.odailyquests.events.listeners.item.custom.DropQueuePushListener;
@@ -85,15 +88,17 @@ public class EventsManager {
         pluginManager.registerEvents(new SmithItemListener(), oDailyQuests);
         pluginManager.registerEvents(new EnchantItemListener(), oDailyQuests);
         pluginManager.registerEvents(new FurnaceExtractListener(), oDailyQuests);
-        pluginManager.registerEvents(new PickupItemListener(), oDailyQuests);
         pluginManager.registerEvents(new PlayerFishListener(), oDailyQuests);
         pluginManager.registerEvents(new PlayerItemConsumeListener(), oDailyQuests);
         pluginManager.registerEvents(new ProjectileLaunchListener(), oDailyQuests);
         pluginManager.registerEvents(new InventoryClickListener(oDailyQuests.getInterfacesManager().getPlayerQuestsInterface()), oDailyQuests);
         pluginManager.registerEvents(new BlockDropItemListener(), oDailyQuests);
         pluginManager.registerEvents(new PlayerHarvestBlockListener(), oDailyQuests);
-        pluginManager.registerEvents(new PlayerDropItemListener(), oDailyQuests);
         pluginManager.registerEvents(new StructureGrowListener(), oDailyQuests);
+        pluginManager.registerEvents(new PlayerDropItemListener(), oDailyQuests);
+        pluginManager.registerEvents(new PickupItemListener(), oDailyQuests);
+        pluginManager.registerEvents(new ItemMergeListener(), oDailyQuests);
+        pluginManager.registerEvents(new ItemDespawnListener(), oDailyQuests);
 
         // inventory events
         pluginManager.registerEvents(new InventoryCloseListener(), oDailyQuests);
