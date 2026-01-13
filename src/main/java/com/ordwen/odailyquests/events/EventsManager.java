@@ -7,212 +7,153 @@ import com.ordwen.odailyquests.configuration.integrations.NexoEnabled;
 import com.ordwen.odailyquests.configuration.integrations.OraxenEnabled;
 import com.ordwen.odailyquests.events.listeners.crate.CrateOpenListener;
 import com.ordwen.odailyquests.events.listeners.customs.CustomFurnaceExtractListener;
-import com.ordwen.odailyquests.events.listeners.entity.*;
-import com.ordwen.odailyquests.events.listeners.entity.custom.mobs.EliteMobDeathListener;
-import com.ordwen.odailyquests.events.listeners.entity.custom.mobs.MythicMobDeathListener;
 import com.ordwen.odailyquests.events.listeners.entity.custom.stackers.RoseStackerListener;
-import com.ordwen.odailyquests.events.listeners.entity.custom.stackers.WildStackerListener;
-import com.ordwen.odailyquests.events.listeners.global.*;
+import com.ordwen.odailyquests.events.listeners.integrations.npcs.CitizensHook;
 import com.ordwen.odailyquests.events.listeners.integrations.customsuite.CropBreakListener;
 import com.ordwen.odailyquests.events.listeners.integrations.customsuite.FishingLootSpawnListener;
 import com.ordwen.odailyquests.events.listeners.integrations.itemsadder.CustomBlockBreakListener;
 import com.ordwen.odailyquests.events.listeners.integrations.itemsadder.ItemsAdderLoadDataListener;
 import com.ordwen.odailyquests.events.listeners.integrations.nexo.NexoItemsLoadedListener;
-import com.ordwen.odailyquests.events.listeners.integrations.npcs.CitizensHook;
 import com.ordwen.odailyquests.events.listeners.integrations.npcs.FancyNpcsHook;
 import com.ordwen.odailyquests.events.listeners.integrations.oraxen.OraxenItemsLoadedListener;
-import com.ordwen.odailyquests.events.listeners.inventory.InventoryClickListener;
-import com.ordwen.odailyquests.events.listeners.inventory.InventoryCloseListener;
-import com.ordwen.odailyquests.events.listeners.item.*;
 import com.ordwen.odailyquests.events.listeners.item.custom.CraftMMOItemListener;
 import com.ordwen.odailyquests.events.listeners.item.custom.CustomPlayerFishListener;
 import com.ordwen.odailyquests.events.listeners.item.custom.DropQueuePushListener;
 import com.ordwen.odailyquests.events.listeners.vote.VotifierListener;
+import com.ordwen.odailyquests.events.listeners.entity.*;
+import com.ordwen.odailyquests.events.listeners.entity.custom.mobs.EliteMobDeathListener;
+import com.ordwen.odailyquests.events.listeners.entity.custom.stackers.WildStackerListener;
+import com.ordwen.odailyquests.events.listeners.entity.custom.mobs.MythicMobDeathListener;
+import com.ordwen.odailyquests.events.listeners.global.*;
+import com.ordwen.odailyquests.events.listeners.inventory.InventoryClickListener;
+import com.ordwen.odailyquests.events.listeners.inventory.InventoryCloseListener;
+import com.ordwen.odailyquests.events.listeners.item.*;
 import com.ordwen.odailyquests.tools.PluginUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 
-/**
- * Centralizes the registration of all Bukkit event listeners used by the plugin.
- */
 public class EventsManager {
 
     private final ODailyQuests oDailyQuests;
 
-    /**
-     * Creates a new events manager bound to the main plugin instance.
-     *
-     * @param plugin the main plugin instance used to register listeners
-     */
-    public EventsManager(ODailyQuests plugin) {
-        this.oDailyQuests = plugin;
+    public EventsManager(ODailyQuests oDailyQuests) {
+        this.oDailyQuests = oDailyQuests;
     }
 
     /**
-     * Registers all event listeners used by the plugin.
-     * <p>
-     * This method acts as the single entry point for listener registration
-     * and delegates the actual work to specialized registration methods
-     * grouped by functional area.
+     * Registers all events.
      */
     public void registerListeners() {
-        final PluginManager pm = Bukkit.getPluginManager();
 
-        registerEntityListeners(pm);
-        registerGlobalListeners(pm);
-        registerItemAndInventoryListeners(pm);
-        registerCustomListeners(pm);
-        registerIntegrationListeners(pm);
-    }
+        final PluginManager pluginManager = Bukkit.getPluginManager();
+        // entity events
+        pluginManager.registerEvents(new EntityBreedListener(), oDailyQuests);
+        pluginManager.registerEvents(new EntityTameListener(), oDailyQuests);
+        pluginManager.registerEvents(new ShearEntityListener(), oDailyQuests);
+        pluginManager.registerEvents(new EntityDeathListener(), oDailyQuests);
+        pluginManager.registerEvents(new SpawnerSpawnListener(), oDailyQuests);
 
-    /**
-     * Registers listeners related to entity lifecycle and entity-based actions.
-     * <p>
-     * This includes both vanilla entity events and optional integrations
-     * with external mob or stacking plugins when available.
-     *
-     * @param pm the Bukkit plugin manager
-     */
-    private void registerEntityListeners(PluginManager pm) {
-        registerAll(pm,
-                new EntityBreedListener(),
-                new EntityTameListener(),
-                new ShearEntityListener(),
-                new EntityDeathListener(),
-                new SpawnerSpawnListener()
-        );
+        if (PluginUtils.isPluginEnabled("EliteMobs")) {
+            pluginManager.registerEvents(new EliteMobDeathListener(), oDailyQuests);
+        }
 
-        registerIf(pm, "EliteMobs", new EliteMobDeathListener());
-        registerIf(pm, "MythicMobs", new MythicMobDeathListener());
-        registerIf(pm, "WildStacker", new WildStackerListener());
-        registerIf(pm, "RoseStacker", new RoseStackerListener());
-    }
+        if (PluginUtils.isPluginEnabled("MythicMobs")) {
+            pluginManager.registerEvents(new MythicMobDeathListener(), oDailyQuests);
+        }
 
-    /**
-     * Registers global listeners related to player state and world interactions.
-     * <p>
-     * These listeners are always registered and do not depend on external plugins.
-     *
-     * @param pm the Bukkit plugin manager
-     */
-    private void registerGlobalListeners(PluginManager pm) {
-        registerAll(pm,
-                new BucketFillListener(),
-                new PlayerExpChangeListener(),
-                new PlayerLevelChangeListener(),
-                new PlayerInteractListener(),
-                new PlayerInteractEntityListener(),
-                new PlayerDeathListener(),
-                new PlayerRespawnListener()
-        );
-    }
+        if (PluginUtils.isPluginEnabled("WildStacker")) {
+            pluginManager.registerEvents(new WildStackerListener(), oDailyQuests);
+        }
 
-    /**
-     * Registers listeners related to items, blocks, inventories, and crafting.
-     * <p>
-     * This includes both item interactions and inventory-related listeners.
-     *
-     * @param pm the Bukkit plugin manager
-     */
-    private void registerItemAndInventoryListeners(PluginManager pm) {
-        registerAll(pm,
-                new BlockBreakListener(),
-                new BlockPlaceListener(),
-                new CraftItemListener(),
-                new SmithItemListener(),
-                new EnchantItemListener(),
-                new FurnaceExtractListener(),
-                new PickupItemListener(),
-                new PlayerFishListener(),
-                new PlayerItemConsumeListener(),
-                new ProjectileLaunchListener(),
-                new InventoryClickListener(oDailyQuests.getInterfacesManager().getPlayerQuestsInterface()),
-                new BlockDropItemListener(),
-                new PlayerHarvestBlockListener(),
-                new PlayerDropItemListener(),
-                new StructureGrowListener(),
-                new InventoryCloseListener()
-        );
-    }
+        if (PluginUtils.isPluginEnabled("RoseStacker")) {
+            pluginManager.registerEvents(new RoseStackerListener(), oDailyQuests);
+        }
 
-    /**
-     * Registers listeners for custom internal features.
-     * <p>
-     * These listeners are only registered when at least one related
-     * custom integration or configuration flag is enabled.
-     *
-     * @param pm the Bukkit plugin manager
-     */
-    private void registerCustomListeners(PluginManager pm) {
+        // global events
+        pluginManager.registerEvents(new BucketFillListener(), oDailyQuests);
+        pluginManager.registerEvents(new PlayerExpChangeListener(), oDailyQuests);
+        pluginManager.registerEvents(new PlayerLevelChangeListener(), oDailyQuests);
+        pluginManager.registerEvents(new PlayerInteractListener(), oDailyQuests);
+        pluginManager.registerEvents(new PlayerInteractEntityListener(), oDailyQuests);
+        pluginManager.registerEvents(new PlayerDeathListener(), oDailyQuests);
+        pluginManager.registerEvents(new PlayerRespawnListener(), oDailyQuests);
+
+        // item events
+        pluginManager.registerEvents(new BlockBreakListener(), oDailyQuests);
+        pluginManager.registerEvents(new BlockPlaceListener(), oDailyQuests);
+        pluginManager.registerEvents(new CraftItemListener(), oDailyQuests);
+        pluginManager.registerEvents(new SmithItemListener(), oDailyQuests);
+        pluginManager.registerEvents(new EnchantItemListener(), oDailyQuests);
+        pluginManager.registerEvents(new FurnaceExtractListener(), oDailyQuests);
+        pluginManager.registerEvents(new PickupItemListener(), oDailyQuests);
+        pluginManager.registerEvents(new PlayerFishListener(), oDailyQuests);
+        pluginManager.registerEvents(new PlayerItemConsumeListener(), oDailyQuests);
+        pluginManager.registerEvents(new ProjectileLaunchListener(), oDailyQuests);
+        pluginManager.registerEvents(new InventoryClickListener(oDailyQuests.getInterfacesManager().getPlayerQuestsInterface()), oDailyQuests);
+        pluginManager.registerEvents(new BlockDropItemListener(), oDailyQuests);
+        pluginManager.registerEvents(new PlayerHarvestBlockListener(), oDailyQuests);
+        pluginManager.registerEvents(new PlayerDropItemListener(), oDailyQuests);
+        pluginManager.registerEvents(new StructureGrowListener(), oDailyQuests);
+
+        // inventory events
+        pluginManager.registerEvents(new InventoryCloseListener(), oDailyQuests);
+
+        // custom events
         if (ItemsAdderEnabled.isEnabled()
                 || OraxenEnabled.isEnabled()
                 || NexoEnabled.isEnabled()
                 || CustomFurnaceResults.isEnabled()) {
-            pm.registerEvents(new CustomFurnaceExtractListener(), oDailyQuests);
+            pluginManager.registerEvents(new CustomFurnaceExtractListener(), oDailyQuests);
         }
-    }
 
-    /**
-     * Registers listeners related to third-party plugin integrations.
-     * <p>
-     * Each listener is conditionally registered depending on the presence
-     * of the corresponding external plugin.
-     *
-     * @param pm the Bukkit plugin manager
-     */
-    private void registerIntegrationListeners(PluginManager pm) {
+        // other plugins events
         if (ItemsAdderEnabled.isEnabled()) {
-            registerAll(pm,
-                    new ItemsAdderLoadDataListener(oDailyQuests),
-                    new CustomBlockBreakListener()
-            );
+            pluginManager.registerEvents(new ItemsAdderLoadDataListener(oDailyQuests), oDailyQuests);
+            pluginManager.registerEvents(new CustomBlockBreakListener(), oDailyQuests);
         }
 
         if (OraxenEnabled.isEnabled()) {
-            pm.registerEvents(new OraxenItemsLoadedListener(oDailyQuests), oDailyQuests);
+            pluginManager.registerEvents(new OraxenItemsLoadedListener(oDailyQuests), oDailyQuests);
         }
 
         if (NexoEnabled.isEnabled()) {
-            pm.registerEvents(new NexoItemsLoadedListener(oDailyQuests), oDailyQuests);
+            pluginManager.registerEvents(new NexoItemsLoadedListener(oDailyQuests), oDailyQuests);
         }
 
-        registerIf(pm, "CustomCrops", new CropBreakListener());
-        registerIf(pm, "CustomFishing", new FishingLootSpawnListener());
-        registerIf(pm, "Votifier", new VotifierListener());
-        registerIf(pm, "ExcellentCrates", new CrateOpenListener());
-        registerIf(pm, "Citizens", new CitizensHook(oDailyQuests.getInterfacesManager()));
-        registerIf(pm, "FancyNpcs", new FancyNpcsHook(oDailyQuests.getInterfacesManager()));
-        registerIf(pm, "eco", new DropQueuePushListener());
-        registerIf(pm, "MMOCore", new CustomPlayerFishListener());
-        registerIf(pm, "MMOItems", new CraftMMOItemListener());
-    }
-
-    /**
-     * Registers a listener only if the given plugin is enabled on the server.
-     *
-     * @param pm         the Bukkit plugin manager
-     * @param pluginName the name of the plugin to check
-     * @param listener   the listener to register if the plugin is enabled
-     */
-    private void registerIf(PluginManager pm, String pluginName, Listener listener) {
-        if (PluginUtils.isPluginEnabled(pluginName)) {
-            pm.registerEvents(listener, oDailyQuests);
+        if (PluginUtils.isPluginEnabled("CustomCrops")) {
+            pluginManager.registerEvents(new CropBreakListener(), oDailyQuests);
         }
-    }
 
-    /**
-     * Registers multiple listeners in a single call.
-     * <p>
-     * This utility method exists to reduce boilerplate and keep
-     * registration code concise and readable.
-     *
-     * @param pm        the Bukkit plugin manager
-     * @param listeners the listeners to register
-     */
-    private void registerAll(PluginManager pm, Listener... listeners) {
-        for (Listener listener : listeners) {
-            pm.registerEvents(listener, oDailyQuests);
+        if (PluginUtils.isPluginEnabled("CustomFishing")) {
+            pluginManager.registerEvents(new FishingLootSpawnListener(), oDailyQuests);
+        }
+
+        if (PluginUtils.isPluginEnabled("Votifier")) {
+            pluginManager.registerEvents(new VotifierListener(), oDailyQuests);
+        }
+
+        if (PluginUtils.isPluginEnabled("ExcellentCrates")) {
+            pluginManager.registerEvents(new CrateOpenListener(), oDailyQuests);
+        }
+
+        if (PluginUtils.isPluginEnabled("Citizens")) {
+            pluginManager.registerEvents(new CitizensHook(oDailyQuests.getInterfacesManager()), oDailyQuests);
+        }
+
+        if (PluginUtils.isPluginEnabled("FancyNpcs")) {
+            pluginManager.registerEvents(new FancyNpcsHook(oDailyQuests.getInterfacesManager()), oDailyQuests);
+        }
+
+        if (PluginUtils.isPluginEnabled("eco")) {
+            pluginManager.registerEvents(new DropQueuePushListener(), oDailyQuests);
+        }
+
+        if (PluginUtils.isPluginEnabled("MMOCore")) {
+            pluginManager.registerEvents(new CustomPlayerFishListener(), oDailyQuests);
+        }
+
+        if (PluginUtils.isPluginEnabled("MMOItems")) {
+            pluginManager.registerEvents(new CraftMMOItemListener(), oDailyQuests);
         }
     }
 }
