@@ -3,6 +3,7 @@ package com.ordwen.odailyquests.quests.player;
 import com.ordwen.odailyquests.ODailyQuests;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.essentials.QuestsPerCategory;
+import com.ordwen.odailyquests.events.antiglitch.BrokenBlocksAntiglitch;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.categories.Category;
 import com.ordwen.odailyquests.quests.conditions.placeholder.PlaceholderRuleSetEvaluator;
@@ -109,6 +110,7 @@ public class QuestsManager implements Listener {
      *   <li>Fetches the player's {@link PlayerQuests} from {@link #activeQuests}.</li>
      *   <li>If found, persists progression then removes the entry.</li>
      *   <li>If not found, logs a warning (unexpected state).</li>
+     *   <li>Clears anti-glitch data for this player via {@link BrokenBlocksAntiglitch}.</li>
      * </ol>
      *
      * @param event Bukkit player quit event
@@ -134,6 +136,9 @@ public class QuestsManager implements Listener {
 
         plugin.getDatabaseManager().saveProgressionForPlayer(playerName, playerUUID, playerQuests);
         activeQuests.remove(playerName);
+
+        // Clear anti-glitch data for this player
+        BrokenBlocksAntiglitch.clear(event.getPlayer());
 
         Debugger.write("Player " + playerName + " removed from the array.");
     }

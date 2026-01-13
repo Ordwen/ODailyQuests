@@ -2,6 +2,7 @@ package com.ordwen.odailyquests.events.listeners.item.custom;
 
 import com.ordwen.odailyquests.configuration.essentials.Antiglitch;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
+import com.ordwen.odailyquests.events.antiglitch.BrokenBlocksAntiglitch;
 import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
 import com.ordwen.odailyquests.quests.types.item.FarmingQuest;
 import com.willfp.eco.core.events.DropQueuePushEvent;
@@ -103,21 +104,19 @@ public class DropQueuePushListener extends PlayerProgressor implements Listener 
     }
 
     /**
-     * Stores metadata on a collection of dropped {@link ItemStack}s to mark them
-     * as broken by the specified player.
-     * <p>
-     * This version is used when the drops are already {@link ItemStack}s, such as in
-     * virtual drop systems like {@link DropQueuePushEvent}.
+     * Records "recently broken" drops for PLACE anti-glitch when the drops are already
+     * provided as {@link ItemStack}s (virtual drop systems).
      *
      * @param drops    the collection of dropped {@link ItemStack}s
      * @param player   the player who broke the block
      * @param material the material of the block that was broken
      */
     private void handleStoreBrokenBlocks(Collection<? extends ItemStack> drops, Player player, Material material) {
-        if (material.isBlock() && Antiglitch.isStoreBrokenBlocks()) {
-            Debugger.write("DropQueuePushListener: onBlockDropItemEvent storing broken block.");
-            storeBrokenBlockMetadata(drops, player);
-        }
+        if (!material.isBlock()) return;
+        if (!Antiglitch.isStoreBrokenBlocks()) return;
+
+        Debugger.write("DropQueuePushListener: recording broken block drops for anti-glitch.");
+        BrokenBlocksAntiglitch.recordBrokenDropsFromStacks(player, drops);
     }
 
     public static void setCurrentState(BlockState currentState) {

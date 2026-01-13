@@ -16,7 +16,10 @@ public class Antiglitch implements IConfigurable {
     private final ConfigurationFile configurationFile;
 
     private boolean storePlacedBlocks;
+
     private boolean storeBrokenBlocks;
+    private int brokenBlocksPlaceWindowSeconds;
+    private int brokenBlocksMaxMaterialsPerPlayer;
 
     private boolean storeDroppedItems;
     private int droppedItemsTtlSeconds;
@@ -28,7 +31,11 @@ public class Antiglitch implements IConfigurable {
     @Override
     public void load() {
         storePlacedBlocks = configurationFile.getConfig().getBoolean("store_placed_blocks");
+
         storeBrokenBlocks = configurationFile.getConfig().getBoolean("store_broken_blocks");
+        brokenBlocksPlaceWindowSeconds = Math.max(1, configurationFile.getConfig().getInt("broken_blocks_place_window_seconds", 20));
+        brokenBlocksMaxMaterialsPerPlayer = Math.max(8, configurationFile.getConfig().getInt("broken_blocks_max_materials_per_player", 32));
+
         storeDroppedItems = configurationFile.getConfig().getBoolean("store_dropped_items");
         droppedItemsTtlSeconds = Math.max(1, configurationFile.getConfig().getInt("dropped_items_ttl_seconds", 10));
     }
@@ -53,6 +60,14 @@ public class Antiglitch implements IConfigurable {
      */
     public static boolean isStoreBrokenBlocks() {
         return getInstance().storeBrokenBlocks;
+    }
+
+    public static long getBrokenBlocksPlaceWindowMillis() {
+        return getInstance().brokenBlocksPlaceWindowSeconds * 1000L;
+    }
+
+    public static int getBrokenBlocksMaxMaterialsPerPlayer() {
+        return getInstance().brokenBlocksMaxMaterialsPerPlayer;
     }
 
     /**

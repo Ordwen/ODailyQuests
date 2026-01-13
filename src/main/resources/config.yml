@@ -198,26 +198,62 @@ progress_bar:
   completed_color: "&a"
   remaining_color: "&7"
 
+
 # ===========================================================
-# ANTI-GLITCH PART
-# Here you can prevent some abuse from players, by storing the items they have used.
+# ANTI-GLITCH
+# -----------------------------------------------------------
+# This section helps prevent common quest abuse patterns
+# (drop/pickup loops, break/place loops, player-made farms).
+#
+# IMPORTANT NOTES:
+# - No ItemStack NBT / PDC is added (full compatibility & stacking preserved)
+# - All mechanisms are lightweight, in-memory, and strictly bounded
+# - Each option is independent and can be enabled separately
 # ===========================================================
 
-# All blocks that have been placed by a player will not count towards the progress of a BREAK quest.
+# -----------------------------------------------------------
+# BREAK anti-glitch
+# -----------------------------------------------------------
+# Blocks placed by a player will NOT count towards BREAK quest progression.
+#
+# Example prevented abuse:
+# - Place a block repeatedly and break it to farm BREAK quests
 store_placed_blocks: false
 
-# All items dropped by a player will not count towards the progress of a PICKUP quest.
+# -----------------------------------------------------------
+# PICKUP anti-glitch
+# -----------------------------------------------------------
+# Items dropped by a player will NOT count towards PICKUP quest progression
+# for any player who picks them up shortly after.
+#
+# Example prevented abuse:
+# - Drop and immediately pick up the same item
+# - Drop items to another player so they can complete PICKUP quests
 store_dropped_items: false
 
-# Time in seconds during which the dropped items are stored.
+# Time window (in seconds) during which a dropped item is considered "recent"
+# and ignored for PICKUP quest progression.
 dropped_items_ttl_seconds: 10
 
-# All blocks that have been broken by a player will not count towards the progress of a PLACE quest.
+# -----------------------------------------------------------
+# PLACE anti-glitch (break -> place)
+# -----------------------------------------------------------
+# Blocks obtained from a recent block break by a player will NOT count
+# towards that same player's PLACE quest progression when placed.
 #
-# Warning: this option adds an NBT tag to the item(s) dropped by the block.
-# This means that its signature changes, and it will no longer be possible to stack them with unaffected items of the same type.
-# However, these items are still normally usable.
+# Example prevented abuse:
+# - Break a natural block and immediately place it back
+#   to farm PLACE quests
 store_broken_blocks: false
+
+# Time window (in seconds) during which broken blocks are considered "recent"
+# for PLACE anti-glitch.
+broken_blocks_place_window_seconds: 20
+
+# Maximum number of different materials tracked per player at once.
+# This is a hard safety cap to guarantee constant memory usage.
+broken_blocks_max_materials_per_player: 32
+
 
 # ===========================================================
 # CUSTOM ITEMS SUPPORT

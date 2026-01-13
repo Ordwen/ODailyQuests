@@ -290,26 +290,4 @@ public class PlayerProgressor {
             setPlayerQuestProgression(event, player, droppedItem.getAmount(), "FARMING");
         }
     }
-
-    /**
-     * Adds persistent metadata to each {@link ItemStack} in the given collection to
-     * indicate that the block was broken by the specified player.
-     * <p>
-     * This metadata is used by anti-glitch mechanisms to track legitimate block drops
-     * and prevent duplication or exploitation.
-     *
-     * @param drops  the collection of dropped {@link ItemStack}s
-     * @param player the player who broke the original block
-     */
-    protected void storeBrokenBlockMetadata(Collection<? extends ItemStack> drops, Player player) {
-        for (ItemStack drop : drops) {
-            Debugger.write("PlayerProgressor: onBlockDropItemEvent storing broken block: " + drop.getType());
-            final ItemMeta dropMeta = drop.getItemMeta();
-            if (dropMeta == null) continue;
-
-            final PersistentDataContainer pdc = dropMeta.getPersistentDataContainer();
-            pdc.set(Antiglitch.BROKEN_KEY, PersistentDataType.STRING, player.getUniqueId().toString());
-            drop.setItemMeta(dropMeta);
-        }
-    }
 }

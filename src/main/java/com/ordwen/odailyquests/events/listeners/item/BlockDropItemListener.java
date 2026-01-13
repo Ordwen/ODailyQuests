@@ -2,6 +2,7 @@ package com.ordwen.odailyquests.events.listeners.item;
 
 import com.ordwen.odailyquests.configuration.essentials.Antiglitch;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
+import com.ordwen.odailyquests.events.antiglitch.BrokenBlocksAntiglitch;
 import com.ordwen.odailyquests.events.listeners.item.custom.DropQueuePushListener;
 import com.ordwen.odailyquests.quests.player.progression.PlayerProgressor;
 import com.ordwen.odailyquests.tools.PluginUtils;
@@ -15,7 +16,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDropItemEvent;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
@@ -96,25 +96,23 @@ public class BlockDropItemListener extends PlayerProgressor implements Listener 
     }
 
     /**
-     * Converts dropped in-world items to {@link ItemStack}s and stores metadata
-     * indicating the block was broken by the specified player.
+     * Records recently broken block drops for PLACE anti-glitch.
      * <p>
-     * This method is used in event contexts where drops are {@link Item} entities,
-     * such as {@link org.bukkit.event.block.BlockDropItemEvent}.
+     * This does NOT modify ItemStacks or entities.
+     * It delegates to {@link BrokenBlocksAntiglitch}, which uses a bounded,
+     * in-memory counter per player/material.
+     * </p>
      *
-     * @param drops    the list of dropped {@link Item} entities from the event
-     * @param player   the player who broke the block
-     * @param material the material of the block that was broken
+     * @param drops   the list of dropped item entities
+     * @param player  the player who broke the block
+     * @param material the material of the broken block
      */
     private void handleStoreBrokenBlocks(List<Item> drops, Player player, Material material) {
-        if (material.isBlock() && Antiglitch.isStoreBrokenBlocks()) {
-            Debugger.write("BlockDropItemListener: onBlockDropItemEvent storing broken block.");
+        if (!material.isBlock()) return;
+        if (!Antiglitch.isStoreBrokenBlocks()) return;
 
-            final List<ItemStack> itemStacks = drops.stream()
-                    .map(Item::getItemStack)
-                    .toList();
+        Debugger.write("BlockDropItemListener: recording broken block drops for anti-glitch.");
 
-            storeBrokenBlockMetadata(itemStacks, player);
-        }
+        BrokenBlocksAntiglitch.recordBrokenDrops(player, drops);
     }
 }
