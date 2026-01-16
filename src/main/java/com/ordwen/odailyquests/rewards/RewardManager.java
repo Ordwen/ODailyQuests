@@ -19,6 +19,7 @@ import org.bukkit.entity.Player;
 import su.nightexpress.coinsengine.api.CoinsEngineAPI;
 import su.nightexpress.coinsengine.api.currency.Currency;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -76,8 +77,8 @@ public class RewardManager {
                 "%questName%", questName
         );
 
-        // Deliver the reward
-        sendReward(player, reward, placeholders);
+        final double rewardAmount = ensureProgressionRewardAmount(reward, progression);
+        sendReward(player, reward, placeholders, rewardAmount);
     }
 
     /**
@@ -88,25 +89,64 @@ public class RewardManager {
      * @param placeholders optional placeholders to expand in command or message rewards
      */
     public static void sendReward(Player player, Reward reward, Map<String, String> placeholders) {
+        sendReward(player, reward, placeholders, null);
+    }
+
+    /**
+     * Sends the configured reward to the player with an optional resolved amount.
+     *
+     * @param player         the player receiving the reward
+     * @param reward         the reward configuration
+     * @param placeholders   optional placeholders to expand in command or message rewards
+     * @param resolvedAmount resolved amount to use, or {@code null} to compute it
+     */
+    public static void sendReward(Player player, Reward reward, Map<String, String> placeholders, Double resolvedAmount) {
         if (reward.getRewardType() == RewardType.NONE) return;
 
         Debugger.write("RewardManager: sendQuestReward summoned by " + player.getName() + " for " + reward.getRewardType());
 
+        final double rewardAmount = resolvedAmount != null ? resolvedAmount : reward.resolveRewardAmount();
+        final Map<String, String> expandedPlaceholders = new HashMap<>();
+        if (placeholders != null && !placeholders.isEmpty()) {
+            expandedPlaceholders.putAll(placeholders);
+        }
+        expandedPlaceholders.put(REWARD_AMOUNT, String.valueOf(rewardAmount));
+
         switch (reward.getRewardType()) {
-            case COMMAND -> handleCommandReward(player, reward, placeholders);
-            case EXP_LEVELS -> handleExpLevelsReward(player, reward);
-            case EXP_POINTS -> handleExpPointsReward(player, reward);
-            case MONEY -> handleMoneyReward(player, reward);
-            case POINTS -> handlePointsReward(player, reward);
-            case COINS_ENGINE -> handleCoinsEngineReward(player, reward);
+            case COMMAND -> handleCommandReward(player, reward, expandedPlaceholders);
+            case EXP_LEVELS -> handleExpLevelsReward(player, rewardAmount);
+            case EXP_POINTS -> handleExpPointsReward(player, rewardAmount);
+            case MONEY -> handleMoneyReward(player, rewardAmount);
+            case POINTS -> handlePointsReward(player, rewardAmount);
+            case COINS_ENGINE -> handleCoinsEngineReward(player, reward, rewardAmount);
             default -> rewardTypeError(player, reward.getRewardType());
         }
 
         // Custom reward message (optional)
         final String custom = reward.getMessage();
         if (custom != null && !custom.isEmpty()) {
-            player.sendMessage(TextFormatter.format(custom.replace("%player%", player.getName())));
+            player.sendMessage(expandPlaceholders(player, custom, expandedPlaceholders));
         }
+    }
+
+    /**
+     * Ensures that the progression object has a reward amount set.
+     * If not, it sets it to the resolved reward amount from the reward configuration.
+     *
+     * @param reward      the reward configuration
+     * @param progression the progression object
+     * @return the ensured reward amount
+     */
+    private static double ensureProgressionRewardAmount(Reward reward, Progression progression) {
+        if (progression == null) {
+            return reward.resolveRewardAmount();
+        }
+
+        if (!progression.hasRewardAmount()) {
+            progression.setRewardAmount(reward.resolveRewardAmount());
+        }
+
+        return progression.getRewardAmount();
     }
 
     /* -------------------- Reward handlers -------------------- */
@@ -143,66 +183,67 @@ public class RewardManager {
     /**
      * Handles rewards of type {@link RewardType#EXP_LEVELS}.
      */
-    private static void handleExpLevelsReward(Player player, Reward reward) {
+    private static void handleExpLevelsReward(Player player, double amount) {
         ODailyQuests.morePaperLib.scheduling().entitySpecificScheduler(player)
                 .run(() -> {
-                    player.giveExpLevels((int) reward.getRewardAmount());
-                    Debugger.write("RewardManager: Given " + reward.getRewardAmount() + " EXP levels to " + player.getName() + ".");
+                    player.giveExpLevels((int) amount);
+                    Debugger.write("RewardManager: Given " + amount + " EXP levels to " + player.getName() + ".");
                 }, null);
-        sendMsgAmount(player, QuestsMessages.REWARD_EXP_LEVELS, reward.getRewardAmount());
+        sendMsgAmount(player, QuestsMessages.REWARD_EXP_LEVELS, amount);
     }
 
     /**
      * Handles rewards of type {@link RewardType#EXP_POINTS}.
      */
-    private static void handleExpPointsReward(Player player, Reward reward) {
+    private static void handleExpPointsReward(Player player, double amount) {
         ODailyQuests.morePaperLib.scheduling().entitySpecificScheduler(player)
                 .run(() -> {
-                    player.giveExp((int) reward.getRewardAmount());
-                    Debugger.write("RewardManager: Given " + reward.getRewardAmount() + " EXP points to " + player.getName() + ".");
+                    player.giveExp((int) amount);
+                    Debugger.write("RewardManager: Given " + amount + " EXP points to " + player.getName() + ".");
                 }, null);
-        sendMsgAmount(player, QuestsMessages.REWARD_EXP_POINTS, reward.getRewardAmount());
+        sendMsgAmount(player, QuestsMessages.REWARD_EXP_POINTS, amount);
     }
 
     /**
      * Handles rewards of type {@link RewardType#MONEY}.
      * Uses Vault API if available.
      */
-    private static void handleMoneyReward(Player player, Reward reward) {
+    private static void handleMoneyReward(Player player, double amount) {
         if (VaultHook.getEconomy() == null) {
-            rewardTypeErrorWithVault(player, reward.getRewardType());
+            rewardTypeErrorWithVault(player, RewardType.MONEY);
             return;
         }
-        VaultHook.getEconomy().depositPlayer(player, reward.getRewardAmount());
-        Debugger.write("RewardManager: Given " + reward.getRewardAmount() + " money to " + player.getName() + ".");
-        sendMsgAmount(player, QuestsMessages.REWARD_MONEY, reward.getRewardAmount());
+
+        VaultHook.getEconomy().depositPlayer(player, amount);
+        Debugger.write("RewardManager: Given " + amount + " money to " + player.getName() + ".");
+        sendMsgAmount(player, QuestsMessages.REWARD_MONEY, amount);
     }
 
     /**
      * Handles rewards of type {@link RewardType#POINTS}.
      * Uses TokenManager or PlayerPoints if available.
      */
-    private static void handlePointsReward(Player player, Reward reward) {
+    private static void handlePointsReward(Player player, double amount) {
         if (TokenManagerHook.getTokenManagerAPI() != null) {
-            TokenManagerHook.getTokenManagerAPI().addTokens(player, (int) reward.getRewardAmount());
-            Debugger.write("RewardManager: Given " + reward.getRewardAmount() + " points to " + player.getName() + " via TokenManager.");
-            sendMsgAmount(player, QuestsMessages.REWARD_POINTS, reward.getRewardAmount());
+            TokenManagerHook.getTokenManagerAPI().addTokens(player, (int) amount);
+            Debugger.write("RewardManager: Given " + amount + " points to " + player.getName() + " via TokenManager.");
+            sendMsgAmount(player, QuestsMessages.REWARD_POINTS, amount);
             return;
         }
         if (PlayerPointsHook.isPlayerPointsSetup()) {
-            PlayerPointsHook.getPlayerPointsAPI().give(player.getUniqueId(), (int) reward.getRewardAmount());
-            Debugger.write("RewardManager: Given " + reward.getRewardAmount() + " points to " + player.getName() + " via PlayerPoints.");
-            sendMsgAmount(player, QuestsMessages.REWARD_POINTS, reward.getRewardAmount());
+            PlayerPointsHook.getPlayerPointsAPI().give(player.getUniqueId(), (int) amount);
+            Debugger.write("RewardManager: Given " + amount + " points to " + player.getName() + " via PlayerPoints.");
+            sendMsgAmount(player, QuestsMessages.REWARD_POINTS, amount);
             return;
         }
-        rewardTypeErrorNoPoints(player, reward.getRewardType());
+        rewardTypeErrorNoPoints(player, RewardType.POINTS);
     }
 
     /**
      * Handles rewards of type {@link RewardType#COINS_ENGINE}.
      * Uses the CoinsEngine API to give currency to the player.
      */
-    private static void handleCoinsEngineReward(Player player, Reward reward) {
+    private static void handleCoinsEngineReward(Player player, Reward reward, double amount) {
         if (!PluginUtils.isPluginEnabled("CoinsEngine")) {
             rewardTypeError(player, reward.getRewardType());
             return;
@@ -214,12 +255,12 @@ public class RewardManager {
             return;
         }
 
-        CoinsEngineAPI.addBalance(player, currency, reward.getRewardAmount());
-        Debugger.write("RewardManager: Given " + reward.getRewardAmount() + " " + reward.getRewardCurrency() + " to " + player.getName() + " via CoinsEngine.");
+        CoinsEngineAPI.addBalance(player, currency, amount);
+        Debugger.write("RewardManager: Given " + amount + " " + reward.getRewardCurrency() + " to " + player.getName() + " via CoinsEngine.");
         sendMsgAmountAndCurrency(
                 player,
                 QuestsMessages.REWARD_COINS_ENGINE,
-                reward.getRewardAmount(),
+                amount,
                 TextFormatter.format(reward.getRewardCurrencyDisplayName())
         );
     }

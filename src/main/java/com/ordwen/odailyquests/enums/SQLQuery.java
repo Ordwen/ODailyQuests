@@ -24,6 +24,7 @@ public enum SQLQuery {
                     `category` VARCHAR(50) DEFAULT NULL,
                     `advancement` INT NOT NULL,
                     `required_amount` INT NOT NULL,
+                    `reward_amount` DOUBLE DEFAULT NULL,
                     `is_achieved` BIT NOT NULL,
                     `selected_required` INT DEFAULT NULL,
                     PRIMARY KEY (`primary_key`),
@@ -46,18 +47,19 @@ public enum SQLQuery {
                 ON DUPLICATE KEY UPDATE
                     `player_timestamp` = VALUES(`player_timestamp`),
                     `achieved_quests` = VALUES(`achieved_quests`),
-                    `total_achieved_quests` = VALUES(`total_achieved_quests`);
+                    `total_achieved_quests` = VALUES(`total_achieved_quests`),
                     `recent_rerolls` = VALUES(`recent_rerolls`);
             """),
 
     MYSQL_SAVE_PROGRESS("""
-                INSERT INTO `odq_progression` (`player_uuid`, `player_quest_id`, `quest_index`, `category`, `advancement`, `required_amount`, `is_achieved`, `selected_required`)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO `odq_progression` (`player_uuid`, `player_quest_id`, `quest_index`, `category`, `advancement`, `required_amount`, `reward_amount`, `is_achieved`, `selected_required`)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ON DUPLICATE KEY UPDATE
                     `quest_index` = VALUES(`quest_index`),
                     `category` = VALUES(`category`),
                     `advancement` = VALUES(`advancement`),
                     `required_amount` = VALUES(`required_amount`),
+                    `reward_amount` = VALUES(`reward_amount`),
                     `is_achieved` = VALUES(`is_achieved`),
                     `selected_required` = VALUES(`selected_required`);
             """),
@@ -101,6 +103,7 @@ public enum SQLQuery {
                     category TEXT,
                     advancement INTEGER NOT NULL,
                     required_amount INTEGER NOT NULL,
+                    reward_amount REAL,
                     is_achieved INTEGER NOT NULL,
                     selected_required INTEGER,
                     UNIQUE (player_uuid, player_quest_id)
@@ -122,8 +125,8 @@ public enum SQLQuery {
             """),
 
     SQLITE_SAVE_PROGRESS("""
-                INSERT OR REPLACE INTO `odq_progression` (`player_uuid`, `player_quest_id`, `quest_index`, `category`, `advancement`, `required_amount`, `is_achieved`, `selected_required`)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+                INSERT OR REPLACE INTO `odq_progression` (`player_uuid`, `player_quest_id`, `quest_index`, `category`, `advancement`, `required_amount`, `reward_amount`, `is_achieved`, `selected_required`)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
             """),
 
     SQLITE_SAVE_PLAYER_CATEGORY_STATS("""

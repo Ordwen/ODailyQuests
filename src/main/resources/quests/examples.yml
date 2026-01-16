@@ -819,3 +819,144 @@ quests:
     reward:
       reward_type: MONEY
       amount: 1000
+  # example quest that is using a random reward amount range
+  33:
+    name: "&3Tame more wolves !"
+    menu_item: BONE
+    description:
+      - ""
+      - "&3Task:"
+      - " &3&l| &7Tame %required% wolves"
+      - ""
+      - "&3Progress:"
+      - " &3&l| %status%"
+      - ""
+      - "&3Reward:"
+      - " &3&l| &7%rewardAmount%$"
+      - ""
+    quest_type: TAME
+    required: WOLF
+    required_amount: 1
+    reward:
+      reward_type: MONEY
+      amount: "50-100"
+
+  # -----Plugin Examples-----
+  # MythicMobs, more info here -> https://ordwenplugins.gitbook.io/odailyquests/quests/available-types/other-plugin-types#mythicmobs-specificities
+  34:
+    name: "Too many zombies"
+    menu_item: WITHER_SKELETON_SKULL
+    description:
+      - " &7ᴅɪꜰꜰɪᴄᴜʟᴛʏ: &aᴇᴀꜱʏ"
+      - ""
+      - "&3Task:"
+      - " &3&l| &7Kill The Skeleton King"
+      - ""
+      - "&3Progress:"
+      - " &3&l| %status%"
+      - ""
+      - "&3Reward:"
+      - " &3&l| &7250$"
+      - ""
+    quest_type: MYTHIC_MOBS
+    entity_name: "SkeletonKing"
+    shared_mods: true
+    required_amount: 1
+    reward:
+      reward_type: MONEY
+      amount: 250
+
+  #EliteMobs, more info here -> https://ordwenplugins.gitbook.io/odailyquests/quests/available-types/other-plugin-types#elitemobs-specificities
+  35:
+    name: "Too many zombies"
+    menu_item: CREEPER_SPAWN_EGG
+    description:
+      - " &7ᴅɪꜰꜰɪᴄᴜʟᴛʏ: &aᴇᴀꜱʏ"
+      - ""
+      - "&3Task:"
+      - " &3&l| &7Kill The Big Boss"
+      - ""
+      - "&3Progress:"
+      - " &3&l| %status%"
+      - ""
+      - "&3Reward:"
+      - " &3&l| &7250$"
+      - ""
+    quest_type: ELITE_MOBS
+    entity_name: "&cThe Big Boss"
+    required_amount: 1
+    reward:
+      reward_type: MONEY
+      amount: 250
+
+  #VotingPlugin, more info here -> https://ordwenplugins.gitbook.io/odailyquests/quests/available-types#other-plugin-types
+  36:
+    name: "Too many zombies"
+    menu_item: TRIPWIRE_HOOK
+    description:
+      - " &7ᴅɪꜰꜰɪᴄᴜʟᴛʏ: &aᴇᴀꜱʏ"
+      - ""
+      - "&3Task:"
+      - " &3&l| &7Vote %required%x for our server"
+      - ""
+      - "&3Progress:"
+      - " &3&l| %status%"
+      - ""
+      - "&3Reward:"
+      - " &3&l| &7250$"
+      - ""
+    quest_type: NU_VOTIFIER
+    required_amount: 3
+    reward:
+      reward_type: MONEY
+      amount: 250
+
+  #PyroFishing, more info here -> https://ordwenplugins.gitbook.io/odailyquests/quests/available-types/other-plugin-types#pyro_fish
+  # /!\ Requires the associated (free) addon! -> https://github.com/Ordwen/ODQ-PyroFishingPro/releases
+  37:
+    name: "Custom fishes baby"
+    menu_item: COD
+    description:
+      - " &7ᴅɪꜰꜰɪᴄᴜʟᴛʏ: &aᴇᴀꜱʏ"
+      - ""
+      - "&3Task:"
+      - " &3&l| &7Fish %required% custom fishes"
+      - ""
+      - "&3Progress:"
+      - " &3&l| %status%"
+      - ""
+      - "&3Reward:"
+      - " &3&l| &7250$"
+      - ""
+    quest_type: PYRO_FISH
+    required:
+      - "bronze:1"  #"<category>:<id>"
+      - "silver:51"
+    required_amount: 1
+    reward:
+      reward_type: MONEY
+      amount: 250
+
+  #EvenMoreFish, more info here -> https://ordwenplugins.gitbook.io/odailyquests/quests/available-types/other-plugin-types#emf_fish
+  38:
+    name: "Custom fishes baby 2"
+    menu_item: COD
+    description:
+      - ""
+      - "&3Task:"
+      - " &3&l| &7Fish %required% custom fishes"
+      - ""
+      - "&3Progress:"
+      - " &3&l| %status%"
+      - ""
+      - "&3Reward:"
+      - " &3&l| &7250$"
+      - ""
+    quest_type: EMF_FISH
+    required:
+      - "Grass Carp"
+      - "Rockfish"
+    required_amount: 1
+    reward:
+      reward_type: MONEY
+      amount: 250

@@ -40,8 +40,14 @@ public abstract class SQLManager {
      * Close database connection.
      */
     public void close() {
-        if (this.hikariDataSource != null && !this.hikariDataSource.isClosed()) {
-            this.hikariDataSource.close();
+        if (this.hikariDataSource != null) {
+            try {
+                if (!this.hikariDataSource.isClosed()) {
+                    this.hikariDataSource.close();
+                }
+            } finally {
+                this.hikariDataSource = null;
+            }
         }
     }
 

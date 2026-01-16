@@ -3,9 +3,26 @@ package com.ordwen.odailyquests.quests.player.progression;
 public class Progression {
 
     private final int requiredAmount;
+    private Double rewardAmount;
     private int advancement;
     private boolean isAchieved;
     private int selectedRequiredIndex;
+
+
+    /**
+     * Progression constructor.
+     *
+     * @param rewardAmount reward amount for this quest.
+     * @param advancement  progression of quest.
+     * @param isAchieved   status of quest.
+     */
+    public Progression(int requiredAmount, double rewardAmount, int advancement, boolean isAchieved) {
+        this.requiredAmount = requiredAmount;
+        this.rewardAmount = null;
+        this.rewardAmount = rewardAmount;
+        this.advancement = advancement;
+        this.isAchieved = isAchieved;
+    }
 
     /**
      * Progression constructor.
@@ -58,6 +75,33 @@ public class Progression {
      */
     public int getRequiredAmount() {
         return this.requiredAmount;
+    }
+
+    /**
+     * Get reward amount of quest.
+     *
+     * @return reward amount.
+     */
+    public double getRewardAmount() {
+        return rewardAmount == null ? 0 : rewardAmount;
+    }
+
+    /**
+     * Check if reward amount is defined.
+     *
+     * @return true if reward amount is defined.
+     */
+    public boolean hasRewardAmount() {
+        return rewardAmount != null;
+    }
+
+    /**
+     * Set reward amount of quest.
+     *
+     * @param rewardAmount reward amount.
+     */
+    public void setRewardAmount(double rewardAmount) {
+        this.rewardAmount = rewardAmount;
     }
 
     /**

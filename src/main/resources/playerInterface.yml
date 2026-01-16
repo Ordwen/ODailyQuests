@@ -13,7 +13,8 @@ player_interface:
   # the 3 following lines will not be used if disable_status is set to true
   status: "&eStatus :"
   progress: "&b%progress%&3/&b%required%"
-  achieved: "&bCOMPLETED"
+  achieved: "&bCOMPLETED" # used in both player interface and placeholder
+  not_achieved: "&cNOT COMPLETED" # only used in placeholder, not in the interface
   # if you want to glow the item when the quest is achieved
   glowing_if_achieved: true
   complete_get_type: "&eClick to complete this quest!"

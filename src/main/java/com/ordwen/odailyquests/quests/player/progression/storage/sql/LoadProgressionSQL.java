@@ -239,6 +239,12 @@ public class LoadProgressionSQL extends ProgressionLoader {
         final String categoryName = resultSet.getString("category");
         final int advancement = resultSet.getInt("advancement");
         final int requiredAmount = resultSet.getInt("required_amount");
+
+        Double rewardAmount = resultSet.getDouble("reward_amount");
+        if (resultSet.wasNull()) {
+            rewardAmount = null;
+        }
+
         int selectedRequired = resultSet.getInt("selected_required");
         if (resultSet.wasNull()) {
             selectedRequired = -1;
@@ -266,7 +272,7 @@ public class LoadProgressionSQL extends ProgressionLoader {
             return false;
         }
 
-        addQuestProgression(quests, quest, requiredAmount, advancement, isAchieved, selectedRequired);
+        addQuestProgression(quests, quest, requiredAmount, rewardAmount, advancement, isAchieved, selectedRequired);
         return true;
     }
 
@@ -294,18 +300,36 @@ public class LoadProgressionSQL extends ProgressionLoader {
      * @param quests           the target map to populate
      * @param quest            the quest definition
      * @param requiredAmount   the required amount for completion
+     * @param rewardAmount     the reward amount, or null if not defined
      * @param advancement      the current advancement value
      * @param isAchieved       whether the quest is marked as achieved
      * @param selectedRequired the selected required index, or -1 when not applicable
      */
-    private void addQuestProgression(LinkedHashMap<AbstractQuest, Progression> quests, AbstractQuest quest, int requiredAmount, int advancement, boolean isAchieved, int selectedRequired) {
-        final Progression progression = new Progression(requiredAmount, advancement, isAchieved);
+    private void addQuestProgression(LinkedHashMap<AbstractQuest, Progression> quests, AbstractQuest quest, int requiredAmount, Double rewardAmount, int advancement, boolean isAchieved, int selectedRequired) {
+        final double resolvedRewardAmount = resolveRewardAmount(quest, rewardAmount);
+        final Progression progression = new Progression(requiredAmount, resolvedRewardAmount, advancement, isAchieved);
         if (selectedRequired != -1) {
             progression.setSelectedRequiredIndex(selectedRequired);
         }
 
         quests.put(quest, progression);
     }
+
+    /**
+     * Resolves the reward amount for a quest, using the stored value if present.
+     *
+     * @param quest              the quest definition
+     * @param storedRewardAmount the stored reward amount, or null if not defined
+     * @return the resolved reward amount
+     */
+    private double resolveRewardAmount(AbstractQuest quest, Double storedRewardAmount) {
+        if (storedRewardAmount != null) {
+            return storedRewardAmount;
+        }
+
+        return quest.getReward().resolveRewardAmount();
+    }
+
 
     /**
      * Loads per-category achieved quest statistics for a player.

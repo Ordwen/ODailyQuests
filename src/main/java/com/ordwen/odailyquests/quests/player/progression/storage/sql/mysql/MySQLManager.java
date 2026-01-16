@@ -65,6 +65,7 @@ public class MySQLManager extends SQLManager {
      * - creates or updates required tables
      */
     public void setupDatabase() {
+        close();
         initHikariCP();
 
         testConnection();

@@ -16,16 +16,18 @@ public final class QuestPlaceholders {
     private static final String ACHIEVED = "%achieved%";
     private static final String DRAW_IN = "%drawIn%";
     private static final String STATUS = "%status%";
+    private static final String REWARD_AMOUNT = "%rewardAmount%";
 
     private QuestPlaceholders() {
     }
 
-    public static String replaceProgressPlaceholders(String input, int progress, int required) {
+    public static String replaceProgressPlaceholders(String input, int progress, int required, double rewardAmount) {
         if (input == null) {
             return null;
         }
 
-        return input.replace(PROGRESS, String.valueOf(progress))
+        return input.replace(REWARD_AMOUNT, String.valueOf(rewardAmount))
+                .replace(PROGRESS, String.valueOf(progress))
                 .replace(REQUIRED, String.valueOf(required))
                 .replace(PROGRESS_BAR, ProgressBar.getProgressBar(progress, required));
     }
@@ -45,7 +47,7 @@ public final class QuestPlaceholders {
         String result = input;
 
         if (progression != null) {
-            result = replaceProgressPlaceholders(result, progression.getAdvancement(), progression.getRequiredAmount());
+            result = replaceProgressPlaceholders(result, progression.getAdvancement(), progression.getRequiredAmount(), progression.getRequiredAmount());
         }
 
         if (quest != null && progression != null) {

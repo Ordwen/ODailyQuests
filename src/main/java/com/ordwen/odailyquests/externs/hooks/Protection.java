@@ -5,6 +5,8 @@ import com.ordwen.odailyquests.tools.PluginLogger;
 import com.ordwen.odailyquests.tools.PluginUtils;
 import com.palmergames.bukkit.towny.object.TownyPermission;
 import com.palmergames.bukkit.towny.utils.PlayerCacheUtil;
+import com.plotsquared.bukkit.util.BukkitUtil;
+import com.plotsquared.core.plot.Plot;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.LocalPlayer;
 import com.sk89q.worldguard.WorldGuard;
@@ -28,6 +30,8 @@ public class Protection {
     private static boolean isWorldguardEnabled = false;
     private static WorldGuardPlatform wgPlatform = null;
 
+    private static boolean isPlotsquaredEnabled = false;
+
     public void load() {
         if (PluginUtils.isPluginEnabled("Towny")) {
             setTownyEnabled();
@@ -38,6 +42,11 @@ public class Protection {
             setWorldGuardPlatform(WorldGuard.getInstance().getPlatform());
             setWorldGuardEnabled();
             PluginLogger.info("WorldGuard detected, hook enabled.");
+        }
+
+        if (PluginUtils.isPluginEnabled("PlotSquared")) {
+            setPlotSquaredEnabled();
+            PluginLogger.info("PlotSquared detected, hook enabled.");
         }
     }
 
@@ -83,6 +92,22 @@ public class Protection {
     }
 
     /**
+     * Check if PlotSquared is enabled.
+     *
+     * @return true if PlotSquared is enabled, false otherwise
+     */
+    public static boolean isPlotSquaredEnabled() {
+        return isPlotsquaredEnabled;
+    }
+
+    /**
+     * Set PlotSquared enabled.
+     */
+    public static void setPlotSquaredEnabled() {
+        isPlotsquaredEnabled = true;
+    }
+
+    /**
      * Apply all checks related to world building permissions.
      * Currently supporting Towny.
      *
@@ -92,12 +117,14 @@ public class Protection {
      */
     public static boolean canBuild(Player player, Block block, String flag) {
         Debugger.write("Protection: canBuild summoned.");
-        if (!isTownyEnabled() && !isWorldGuardEnabled()) {
+        if (!isTownyEnabled() && !isWorldGuardEnabled() && !isPlotSquaredEnabled()) {
             Debugger.write("Protection: canBuild no hooks enabled.");
             return true;
         }
 
-        return checkTowny(player, block) && checkWg(player, block, flag);
+        return checkTowny(player, block)
+                && checkWg(player, block, flag)
+                && checkPlotSquared(player, block);
     }
 
     /**
@@ -126,7 +153,7 @@ public class Protection {
      * @param block  the block
      * @return true if the player can build, false otherwise
      */
-    public static boolean checkWg(Player player, Block block, String flag) {
+    private static boolean checkWg(Player player, Block block, String flag) {
         if (!isWorldGuardEnabled()) return true;
 
         Debugger.write("Protection: checkWg summoned.");
@@ -154,6 +181,46 @@ public class Protection {
         Debugger.write("Protection: checkWg result: " + canBuild);
 
         return canBuild;
+    }
+
+    /**
+     * Check if the player can build at the location using PlotSquared.
+     *
+     * @param player involved player
+     * @param block  involved block
+     * @return true if the player can build, false otherwise
+     */
+    private static boolean checkPlotSquared(Player player, Block block) {
+        if (!isPlotSquaredEnabled()) return true;
+
+        Debugger.write("Protection: checkPlotSquared summoned.");
+
+        final com.plotsquared.core.location.Location location = BukkitUtil.adapt(block.getLocation());
+
+        // check for road
+        if (location.isPlotRoad()) {
+            Debugger.write("Protection: checkPlotSquared location is road, cannot build.");
+            return false;
+        }
+
+        // check for plot
+        if (location.isPlotArea()) {
+            Debugger.write("Protection: checkPlotSquared location is plot area.");
+
+            final Plot plot = location.getPlot();
+            if (plot == null) {
+                Debugger.write("Protection: checkPlotSquared plot is null.");
+                return true;
+            }
+
+            if (!plot.isAdded(player.getUniqueId())) {
+                Debugger.write("Protection: checkPlotSquared player not added to plot.");
+                return false;
+            }
+        }
+
+        Debugger.write("Protection: checkPlotSquared player can build.");
+        return true;
     }
 
     /**

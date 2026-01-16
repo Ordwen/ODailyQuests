@@ -246,7 +246,8 @@ public class QuestsManager implements Listener {
      */
     public static Progression createFreshProgression(AbstractQuest quest) {
         final int requiredAmount = getDynamicRequiredAmount(quest.getRequiredAmountRaw());
-        final Progression progression = new Progression(requiredAmount, 0, false);
+        final double rewardAmount = quest.getReward().resolveRewardAmount();
+        final Progression progression = new Progression(requiredAmount, rewardAmount, 0, false);
 
         if (quest.isRandomRequired()) {
             progression.setSelectedRequiredIndex(getRandomIndexFrom(quest));

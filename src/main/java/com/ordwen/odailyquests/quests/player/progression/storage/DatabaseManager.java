@@ -24,19 +24,14 @@ public class DatabaseManager {
     }
 
     public void load() {
+        close();
+        this.sqlManager = null;
+        this.yamlManager = null;
+
         switch (Database.getMode()) {
-            case MYSQL -> {
-                this.sqlManager = new MySQLManager();
-                this.yamlManager = null;
-            }
-            case SQLITE -> {
-                this.sqlManager = new SQLiteManager();
-                this.yamlManager = null;
-            }
-            case YAML -> {
-                this.yamlManager = new YamlManager(plugin.getFilesManager().getProgressionFile());
-                this.sqlManager = null;
-            }
+            case MYSQL -> this.sqlManager = new MySQLManager();
+            case SQLITE -> this.sqlManager = new SQLiteManager();
+            case YAML -> this.yamlManager = new YamlManager(plugin.getFilesManager().getProgressionFile());
         }
     }
 

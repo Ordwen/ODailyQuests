@@ -103,12 +103,13 @@ public class ProgressionMessage implements IConfigurable {
     /**
      * Send progression message.
      *
-     * @param player      to send.
-     * @param questName   name of the achieved quest.
-     * @param progression progression of the quest.
-     * @param required    required progression of the quest.
+     * @param player       to send.
+     * @param questName    name of the achieved quest.
+     * @param progression  progression of the quest.
+     * @param required     required progression of the quest.
+     * @param rewardAmount amount of reward granted.
      */
-    public void sendProgressionMessageInternal(Player player, String questName, int progression, int required) {
+    public void sendProgressionMessageInternal(Player player, String questName, int progression, int required, double rewardAmount) {
         if (isEnabled) {
             final String parsedQuestName = TextFormatter.format(player, questName);
 
@@ -116,10 +117,11 @@ public class ProgressionMessage implements IConfigurable {
                     .replace("%player%", player.getDisplayName())
                     .replace("%questName%", parsedQuestName);
 
-            final String toSend = TextFormatter.format(player, QuestPlaceholders.replaceProgressPlaceholders(parsedMessage, progression, required));
+            final String toSend = TextFormatter.format(player, QuestPlaceholders.replaceProgressPlaceholders(parsedMessage, progression, required, rewardAmount));
 
             switch (progressionMessageType) {
-                case ACTIONBAR -> player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacy(toSend));
+                case ACTIONBAR ->
+                        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacy(toSend));
                 case CHAT -> player.sendMessage(toSend);
                 case BOSSBAR -> currentBossBars.computeIfAbsent(player, p -> {
                     final BossBar bossBar = Bukkit.getServer().createBossBar(toSend, barColor, barStyle);
@@ -156,7 +158,7 @@ public class ProgressionMessage implements IConfigurable {
         return ConfigFactory.getConfig(ProgressionMessage.class);
     }
 
-    public static void sendProgressionMessage(Player player, String questName, int progression, int required) {
-        getInstance().sendProgressionMessageInternal(player, questName, progression, required);
+    public static void sendProgressionMessage(Player player, String questName, int progression, int required, double rewardAmount) {
+        getInstance().sendProgressionMessageInternal(player, questName, progression, required, rewardAmount);
     }
 }

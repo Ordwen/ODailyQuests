@@ -185,8 +185,10 @@ public class SaveProgressionSQL {
                     progressionStatement.setString(4, quest.getCategoryName());
                     progressionStatement.setInt(5, progression.getAdvancement());
                     progressionStatement.setInt(6, progression.getRequiredAmount());
-                    progressionStatement.setBoolean(7, progression.isAchieved());
-                    progressionStatement.setInt(8, progression.getSelectedRequiredIndex());
+                    progressionStatement.setDouble(7, resolveRewardAmount(quest, progression));
+                    progressionStatement.setBoolean(8, progression.isAchieved());
+                    progressionStatement.setInt(9, progression.getSelectedRequiredIndex());
+
                     progressionStatement.addBatch();
 
                     Debugger.write("Quest number " + index + " saved for player " + playerName);
@@ -230,5 +232,22 @@ public class SaveProgressionSQL {
         } finally {
             conn.setAutoCommit(oldAutoCommit);
         }
+    }
+
+    /**
+     * Resolve and cache the reward amount for a quest progression.
+     *
+     * @param quest       the quest.
+     * @param progression the progression.
+     * @return the resolved reward amount.
+     */
+    private double resolveRewardAmount(AbstractQuest quest, Progression progression) {
+        if (progression.hasRewardAmount()) {
+            return progression.getRewardAmount();
+        }
+
+        final double resolved = quest.getReward().resolveRewardAmount();
+        progression.setRewardAmount(resolved);
+        return resolved;
     }
 }

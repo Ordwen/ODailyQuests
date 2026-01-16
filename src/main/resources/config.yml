@@ -6,7 +6,7 @@ check_for_update: true
 
 # never touch these lines, used for the plugin auto update system
 version: 3.0.0
-database_version: 3
+database_version: 4
 
 # prefix that will be displayed before every message from messages.yml
 prefix: '&3[&bO''DailyQuests&3] '

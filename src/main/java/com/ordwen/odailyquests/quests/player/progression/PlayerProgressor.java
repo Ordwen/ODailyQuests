@@ -162,7 +162,7 @@ public class PlayerProgressor {
             return;
         }
 
-        ProgressionMessage.sendProgressionMessage(player, questName, progression.getAdvancement(), progression.getRequiredAmount());
+        ProgressionMessage.sendProgressionMessage(player, questName, progression.getAdvancement(), progression.getRequiredAmount(), progression.getRewardAmount());
     }
 
     /**

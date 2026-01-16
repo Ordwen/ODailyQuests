@@ -15,6 +15,7 @@ import com.ordwen.odailyquests.events.restart.RestartHandler;
 import com.ordwen.odailyquests.externs.IntegrationsManager;
 import com.ordwen.odailyquests.commands.admin.AdminCommands;
 import com.ordwen.odailyquests.commands.player.PlayerCommands;
+import com.ordwen.odailyquests.quests.types.custom.items.EMFFishQuest;
 import com.ordwen.odailyquests.reload.ReloadService;
 import com.ordwen.odailyquests.commands.admin.AdminCompleter;
 import com.ordwen.odailyquests.commands.player.PlayerCompleter;
@@ -211,6 +212,7 @@ public final class ODailyQuests extends JavaPlugin {
         questTypeRegistry.registerQuestType("COOK", CookQuest.class);
         questTypeRegistry.registerQuestType("ENCHANT", EnchantQuest.class);
         questTypeRegistry.registerQuestType("FISH", FishQuest.class);
+        questTypeRegistry.registerQuestType("EMF_FISH", EMFFishQuest.class);
         questTypeRegistry.registerQuestType("FARMING", FarmingQuest.class);
 
         /* inventory quests */

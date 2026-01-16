@@ -108,6 +108,9 @@ public class LoadProgressionYAML extends ProgressionLoader {
             final String categoryName = questsSection.getString(key + ".category");
             final int advancement = questsSection.getInt(key + ".progression");
             final int requiredAmount = questsSection.getInt(key + ".requiredAmount");
+            final Double rewardAmount = questsSection.isSet(key + ".rewardAmount")
+                    ? questsSection.getDouble(key + ".rewardAmount")
+                    : null;
             final int selectedRequired = questsSection.getInt(key + ".selectedRequired", -1);
 
             // schema update check (1 to 2)
@@ -132,7 +135,8 @@ public class LoadProgressionYAML extends ProgressionLoader {
             // check if random quest have data
             if (isSelectedRequiredInvalid(quest, selectedRequired, playerName)) return null;
 
-            final Progression progression = new Progression(requiredAmount, advancement, isAchieved);
+            final double resolvedRewardAmount = resolveRewardAmount(quest, rewardAmount);
+            final Progression progression = new Progression(requiredAmount, resolvedRewardAmount, advancement, isAchieved);
             if (selectedRequired != -1) {
                 progression.setSelectedRequiredIndex(selectedRequired);
             }
@@ -141,5 +145,20 @@ public class LoadProgressionYAML extends ProgressionLoader {
         }
 
         return quests;
+    }
+
+    /**
+     * Resolve the reward amount for a quest.
+     *
+     * @param quest              the quest to resolve the reward for.
+     * @param storedRewardAmount the stored reward amount, if any.
+     * @return the resolved reward amount.
+     */
+    private double resolveRewardAmount(AbstractQuest quest, Double storedRewardAmount) {
+        if (storedRewardAmount != null) {
+            return storedRewardAmount;
+        }
+
+        return quest.getReward().resolveRewardAmount();
     }
 }

@@ -46,11 +46,19 @@ public class RewardLoader {
                     yield new Reward(RewardType.NONE, 0, message);
                 }
 
-                int parsedAmount;
+                final String formattedAmount = TextFormatter.format(amount);
+                final double[] range = parseAmountRange(formattedAmount, fileName, rewardType, questIndex);
+                if (range != null) {
+                    yield new Reward(RewardType.COINS_ENGINE, currencyLabel, currencyDisplayName, range[0], range[1], message);
+                } else if (formattedAmount.contains("-")) {
+                    yield new Reward(RewardType.NONE, 0, message);
+                }
+
+                double parsedAmount;
                 try {
-                    parsedAmount = Integer.parseInt(TextFormatter.format(amount));
+                    parsedAmount = Double.parseDouble(TextFormatter.format(amount));
                 } catch (NumberFormatException e) {
-                    PluginLogger.error("Amount is not a valid integer in the configuration file for COINS_ENGINE reward.");
+                    PluginLogger.error("Amount is not a valid number in the configuration file for COINS_ENGINE reward.");
                     yield new Reward(RewardType.NONE, 0, message);
                 }
 
@@ -60,13 +68,21 @@ public class RewardLoader {
             default -> {
                 final String amount = section.getString(".amount");
                 if (amount == null || amount.isEmpty()) {
-                    PluginLogger.error("Amount is missing in the configuration file for COINS_ENGINE reward.");
+                    PluginLogger.error("Amount is missing in the configuration file for " + rewardType + " reward.");
+                    yield new Reward(RewardType.NONE, 0, message);
+                }
+
+                final String formattedAmount = TextFormatter.format(amount);
+                final double[] range = parseAmountRange(formattedAmount, fileName, rewardType, questIndex);
+                if (range != null) {
+                    yield new Reward(rewardType, range[0], range[1], message);
+                } else if (formattedAmount.contains("-")) {
                     yield new Reward(RewardType.NONE, 0, message);
                 }
 
                 double parsedAmount;
                 try {
-                    parsedAmount = Double.parseDouble(TextFormatter.format(amount));
+                    parsedAmount = Double.parseDouble(formattedAmount);
                 } catch (NumberFormatException e) {
                     PluginLogger.error("Amount is not a valid number in the configuration file for " + rewardType + " reward.");
                     yield new Reward(RewardType.NONE, 0, message);
@@ -75,6 +91,44 @@ public class RewardLoader {
                 yield new Reward(rewardType, parsedAmount, message);
             }
         };
+    }
+
+    /**
+     * Parse an amount range from a string in the format "min-max".
+     *
+     * @param amount     the amount string.
+     * @param fileName   the name of the file where the amount is defined.
+     * @param rewardType the type of reward.
+     * @param questIndex the index of the quest in the file.
+     * @return an array containing the minimum and maximum amounts, or null if parsing failed.
+     */
+    private double[] parseAmountRange(String amount, String fileName, RewardType rewardType, String questIndex) {
+        if (!amount.contains("-")) {
+            return null;
+        }
+
+        String[] parts = amount.split("-");
+        if (parts.length != 2) {
+            configurationError(fileName, "amount", "Amount range must follow min-max format.", questIndex);
+            return null;
+        }
+
+        double min;
+        double max;
+        try {
+            min = Double.parseDouble(parts[0].trim());
+            max = Double.parseDouble(parts[1].trim());
+        } catch (NumberFormatException e) {
+            configurationError(fileName, "amount", "Amount range values must be numbers for " + rewardType + " reward.", questIndex);
+            return null;
+        }
+
+        if (min > max) {
+            configurationError(fileName, "amount", "Amount range minimum is greater than maximum for " + rewardType + " reward.", questIndex);
+            return null;
+        }
+
+        return new double[]{min, max};
     }
 
     /**
