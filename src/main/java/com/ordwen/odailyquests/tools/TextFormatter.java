@@ -1,6 +1,10 @@
 package com.ordwen.odailyquests.tools;
 
+import com.ordwen.odailyquests.ODailyQuests;
 import me.clip.placeholderapi.PlaceholderAPI;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -14,6 +18,16 @@ public class TextFormatter {
 
     private static final Pattern HEX_PATTERN = Pattern.compile("#[a-fA-F0-9]{6}");
     private static boolean placeholderAPIEnabled = false;
+
+    private static MiniMessage MINI_MESSAGE = null;
+    private static BukkitAudiences AUDIENCES = null;
+    private static boolean isMiniMessage = false;
+
+    public static void checkIfMiniMessage() {
+        MINI_MESSAGE = MiniMessage.miniMessage();
+        AUDIENCES = BukkitAudiences.create(ODailyQuests.INSTANCE);
+        isMiniMessage = true;
+    }
 
     /**
      * Enable or disable the use of PlaceholderAPI.
@@ -88,5 +102,10 @@ public class TextFormatter {
             matcher = HEX_PATTERN.matcher(message);
         }
         return message;
+    }
+
+    private static void sendMiniMessage(Player player, String message) {
+        final Component component = MINI_MESSAGE.deserialize(message);
+        AUDIENCES.player(player).sendMessage(component);
     }
 }

@@ -184,6 +184,8 @@ public final class ODailyQuests extends JavaPlugin {
 
         PluginLogger.info("Plugin is started!");
         checkForSpigotUpdate();
+
+        TextFormatter.checkIfMiniMessage();
     }
 
     /**
