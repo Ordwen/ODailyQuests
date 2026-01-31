@@ -57,16 +57,59 @@ public abstract class SQLManager {
      * @return database Connection.
      */
     public Connection getConnection() {
-        if (this.hikariDataSource != null && !this.hikariDataSource.isClosed()) {
-            try {
-                return this.hikariDataSource.getConnection();
-            } catch (SQLException e) {
-                PluginLogger.error(e.getMessage());
-            }
+        Debugger.write("[SQLManager#getConnection] START");
+
+        if (this.hikariDataSource == null) {
+            Debugger.write("[SQLManager#getConnection] hikariDataSource=null -> return null");
+            return null;
         }
-        return null;
+
+        Debugger.write("[SQLManager#getConnection] hikariDataSource!=null, isClosed? checking...");
+        boolean closed;
+        try {
+            closed = this.hikariDataSource.isClosed();
+        } catch (Exception ex) {
+            Debugger.write("[SQLManager#getConnection] ERROR while checking isClosed(): " + ex.getMessage());
+            PluginLogger.error(ex.getMessage());
+            return null;
+        }
+
+        Debugger.write("[SQLManager#getConnection] hikariDataSource.isClosed()=" + closed);
+        if (closed) {
+            Debugger.write("[SQLManager#getConnection] hikariDataSource closed -> return null");
+            return null;
+        }
+
+        Debugger.write("[SQLManager#getConnection] Attempting hikariDataSource.getConnection()...");
+        long t = System.nanoTime();
+        try {
+            Connection conn = this.hikariDataSource.getConnection();
+            Debugger.write("[SQLManager#getConnection] getConnection() OK in " + ((System.nanoTime() - t) / 1_000_000L) + "ms"
+                    + " | conn=" + safeConnId(conn)
+                    + " | autoCommit=" + safeAutoCommit(conn));
+            return conn;
+        } catch (SQLException e) {
+            Debugger.write("[SQLManager#getConnection] getConnection() FAILED in " + ((System.nanoTime() - t) / 1_000_000L) + "ms: " + e.getMessage());
+            PluginLogger.error(e.getMessage());
+            return null;
+        } finally {
+            Debugger.write("[SQLManager#getConnection] END");
+        }
     }
 
+    private static String safeConnId(Connection c) {
+        if (c == null) return "null";
+        return c.getClass().getSimpleName() + "@" + Integer.toHexString(System.identityHashCode(c));
+    }
+
+    private static String safeAutoCommit(Connection c) {
+        if (c == null) return "null";
+        try {
+            return String.valueOf(c.getAutoCommit());
+        } catch (SQLException e) {
+            return "error:" + e.getMessage();
+        }
+    }
     /**
      * Test database connection.
      */
