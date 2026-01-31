@@ -111,7 +111,7 @@ dependencies {
     compileOnly 'com.github.NuVotifier:NuVotifier:2.7.2'
 
     /* crates */
-    compileOnly 'su.nightexpress.excellentcrates:ExcellentCrates:6.0.0'
+    compileOnly 'su.nightexpress.excellentcrates:ExcellentCrates:6.6.1'
 
     /* compatibility libs */
     compileOnly 'com.willfp:eco:6.76.2'
