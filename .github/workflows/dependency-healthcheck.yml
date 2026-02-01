@@ -38,14 +38,13 @@ jobs:
 
       - name: Ensure lockfiles exist
         run: |
-          if [ ! -d "gradle/dependency-locks" ]; then
-            echo "Missing gradle/dependency-locks. Run './gradlew --write-locks' and commit the result."
+          if [ ! -d "gradle.lockfile" ]; then
+            echo "Missing gradle.lockfile. Run './gradlew dependencies --write-locks' and commit it."
             exit 1
           fi
 
       - name: Compile with fresh dependencies (no cache)
         run: |
-          ./gradlew --version
           ./gradlew clean classes \
             --refresh-dependencies \
             --no-build-cache \
