@@ -1,0 +1,58 @@
+name: Dependency Healthcheck
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Weekly on Monday at 04:00 UTC
+    - cron: "0 4 * * 1"
+  push:
+    branches:
+      - master
+      - "3.0.3"
+    paths:
+      - "build.gradle"
+      - "settings.gradle"
+      - "gradle/**"
+      - "gradlew"
+      - "gradlew.bat"
+      - ".github/workflows/dependency-healthcheck.yml"
+
+env:
+  JAVA_VERSION: "21"
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=-Xmx2g"
+
+jobs:
+  fresh-compile-check:
+    name: Fresh deps compile check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: Make Gradle wrapper executable
+        run: chmod +x ./gradlew
+
+      - name: Compile with fresh dependencies (no cache)
+        run: |
+          ./gradlew --version
+          ./gradlew clean classes \
+            --refresh-dependencies \
+            --no-build-cache \
+            --stacktrace \
+            --warning-mode all
+
+      - name: Compile with locked dependencies
+        run: |
+          ./gradlew clean classes \
+            --locked-dependencies \
+            --refresh-dependencies \
+            --no-build-cache \
+            --stacktrace \
+            --warning-mode all
