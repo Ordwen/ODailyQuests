@@ -18,6 +18,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 
 public class BlockBreakListener extends PlayerProgressor implements Listener {
 
@@ -78,7 +79,7 @@ public class BlockBreakListener extends PlayerProgressor implements Listener {
             }
 
             final PersistentDataContainer pdc = new CustomBlockData(block, ODailyQuests.INSTANCE);
-            if (pdc.has(Antiglitch.PLACED_KEY)) {
+            if (pdc.has(Antiglitch.PLACED_KEY, PersistentDataType.STRING)) {
                 if (KGeneratorsHook.isKGeneratorsLocation(block.getLocation())) {
                     Debugger.write("BlockBreakListener: onBlockBreakEvent processing KGenerators generator.");
                 } else {
@@ -137,7 +138,7 @@ public class BlockBreakListener extends PlayerProgressor implements Listener {
         }
 
         final PersistentDataContainer pdc = new CustomBlockData(block, ODailyQuests.INSTANCE);
-        if (pdc.has(Antiglitch.PLACED_KEY)) {
+        if (pdc.has(Antiglitch.PLACED_KEY, PersistentDataType.STRING)) {
             Debugger.write("BlockBreakListener: isBlockCountable cancelled due to placed block.");
             return false;
         }
