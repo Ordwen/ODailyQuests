@@ -38,7 +38,7 @@ jobs:
 
       - name: Ensure lockfiles exist
         run: |
-          if [ ! -d "gradle.lockfile" ]; then
+          if [ ! -f "gradle.lockfile" ]; then
             echo "Missing gradle.lockfile. Run './gradlew dependencies --write-locks' and commit it."
             exit 1
           fi
