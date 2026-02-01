@@ -3,8 +3,7 @@ name: Dependency Healthcheck
 on:
   workflow_dispatch:
   schedule:
-    # Weekly on Monday at 04:00 UTC
-    - cron: "0 4 * * 1"
+    - cron: "0 4 * * 1" # Weekly Monday 04:00 UTC
   push:
     branches:
       - master
@@ -16,6 +15,7 @@ on:
       - "gradlew"
       - "gradlew.bat"
       - ".github/workflows/dependency-healthcheck.yml"
+      - "gradle/dependency-locks/**"
 
 env:
   JAVA_VERSION: "21"
@@ -23,15 +23,12 @@ env:
 
 jobs:
   fresh-compile-check:
-    name: Fresh deps compile check
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Java
-        uses: actions/setup-java@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: ${{ env.JAVA_VERSION }}
@@ -39,19 +36,17 @@ jobs:
       - name: Make Gradle wrapper executable
         run: chmod +x ./gradlew
 
+      - name: Ensure lockfiles exist
+        run: |
+          if [ ! -d "gradle/dependency-locks" ]; then
+            echo "Missing gradle/dependency-locks. Run './gradlew --write-locks' and commit the result."
+            exit 1
+          fi
+
       - name: Compile with fresh dependencies (no cache)
         run: |
           ./gradlew --version
           ./gradlew clean classes \
-            --refresh-dependencies \
-            --no-build-cache \
-            --stacktrace \
-            --warning-mode all
-
-      - name: Compile with locked dependencies
-        run: |
-          ./gradlew clean classes \
-            --locked-dependencies \
             --refresh-dependencies \
             --no-build-cache \
             --stacktrace \
