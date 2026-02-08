@@ -13,6 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -34,7 +35,7 @@ public class CustomBlockBreakListener extends PlayerProgressor implements Listen
 
         if (Antiglitch.isStorePlacedBlocks()) {
             final PersistentDataContainer pdc = new CustomBlockData(block, ODailyQuests.INSTANCE);
-            if (pdc.has(Antiglitch.PLACED_KEY)) {
+            if (pdc.has(Antiglitch.PLACED_KEY, PersistentDataType.STRING)) {
                 valid.set(false);
             }
         }

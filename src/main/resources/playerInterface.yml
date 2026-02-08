@@ -21,6 +21,7 @@ player_interface:
     enabled: true
     slot: 5
     # material: "nexo:odailyquests_head" # if you want to use a custom head from an external plugin
+    # item_model: "odailyquests:player_head" # if you want to use a custom item model
     item_name: '&b%player_name%'
     item_description:
       - '&3Status: '
