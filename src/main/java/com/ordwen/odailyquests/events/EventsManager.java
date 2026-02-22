@@ -126,7 +126,6 @@ public class EventsManager {
         registerIfPluginEnabled("RoseStacker", () -> pluginManager.registerEvents(new RoseStackerListener(), oDailyQuests));
         registerIfPluginEnabled("CustomCrops", () -> pluginManager.registerEvents(new CropBreakListener(), oDailyQuests));
         registerIfPluginEnabled("CustomFishing", () -> pluginManager.registerEvents(new FishingLootSpawnListener(), oDailyQuests));
-        registerIfPluginEnabled("Votifier", () -> pluginManager.registerEvents(new VotifierListener(), oDailyQuests));
         registerIfPluginEnabled("ExcellentCrates", () -> pluginManager.registerEvents(new CrateOpenListener(), oDailyQuests));
         registerIfPluginEnabled("Citizens", () -> pluginManager.registerEvents(new CitizensHook(oDailyQuests.getInterfacesManager()), oDailyQuests));
         registerIfPluginEnabled("FancyNpcs", () -> pluginManager.registerEvents(new FancyNpcsHook(oDailyQuests.getInterfacesManager()), oDailyQuests));
@@ -134,11 +133,25 @@ public class EventsManager {
         registerIfPluginEnabled("MMOCore", () -> pluginManager.registerEvents(new CustomPlayerFishListener(), oDailyQuests));
         registerIfPluginEnabled("MMOItems", () -> pluginManager.registerEvents(new CraftMMOItemListener(), oDailyQuests));
         registerIfPluginEnabled("EvenMoreFish", () -> pluginManager.registerEvents(new EMFFishCaughtListener(), oDailyQuests));
+
+        registerIfAnyPluginEnabled(
+                () -> pluginManager.registerEvents(new VotifierListener(), oDailyQuests),
+                "Votifier", "VotifierPlus", "NuVotifier"
+        );
     }
 
     private void registerIfPluginEnabled(final String pluginName, final Runnable registerAction) {
         if (!PluginUtils.isPluginEnabled(pluginName)) return;
         registerSafely(registerAction, pluginName);
+    }
+
+    private void registerIfAnyPluginEnabled(final Runnable registerAction, final String... pluginNames) {
+        for (String pluginName : pluginNames) {
+            if (PluginUtils.isPluginEnabled(pluginName)) {
+                registerSafely(registerAction, pluginName);
+                return; // register only once
+            }
+        }
     }
 
     private void registerSafely(final Runnable registerAction, final String prettyName) {
