@@ -5,6 +5,7 @@ import com.ordwen.odailyquests.api.ODailyQuestsAPI;
 import com.ordwen.odailyquests.api.events.AllCategoryQuestsCompletedEvent;
 import com.ordwen.odailyquests.api.events.CategoryTotalRewardReachedEvent;
 import com.ordwen.odailyquests.api.events.TotalRewardReachedEvent;
+import com.ordwen.odailyquests.configuration.essentials.CategoryGroupsLoader;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.essentials.QuestsPerCategory;
 import com.ordwen.odailyquests.configuration.essentials.RerollMaximum;
@@ -35,24 +36,46 @@ public class PlayerQuests {
         ALREADY_PRESENT
     }
 
-    /* timestamp of last quests renew */
-    private final Long timestamp;
+    /* timestamps of last quests renew, by group name */
+    private final Map<String, Long> timestampsByGroup;
 
     private int achievedQuests;
     private int totalAchievedQuests;
-    private int recentRerolls;
+    private final Map<String, Integer> recentRerollsByGroup = new HashMap<>();
     private final Map<AbstractQuest, Progression> quests;
     private final Map<String, Integer> achievedQuestsByCategory = new HashMap<>();
     private final Map<String, Integer> totalAchievedQuestsByCategory = new HashMap<>();
 
     /**
-     * Constructs a new PlayerQuests object with the provided timestamp and a map of quests with their progress.
+     * Constructs a new PlayerQuests object with the provided timestamps and a map of quests with their progress.
      *
-     * @param timestamp the last time the player's quests were renewed.
-     * @param quests    a map of quests and their respective progression.
+     * @param timestampsByGroup the timestamps of last renewal, keyed by group name
+     * @param quests            a map of quests and their respective progression.
      */
+    public PlayerQuests(Map<String, Long> timestampsByGroup, Map<AbstractQuest, Progression> quests) {
+        this.timestampsByGroup = new HashMap<>(timestampsByGroup);
+        this.quests = quests;
+        this.achievedQuests = 0;
+        this.totalAchievedQuests = 0;
+
+        setAchievedQuestsByCategory();
+    }
+
+    /**
+     * Legacy constructor for backward compatibility.
+     * Creates a PlayerQuests with a single timestamp applied to all groups.
+     *
+     * @param timestamp the last time the player's quests were renewed (applied to all groups)
+     * @param quests    a map of quests and their respective progression.
+     * @deprecated Use {@link #PlayerQuests(Map, Map)} instead
+     */
+    @Deprecated
     public PlayerQuests(Long timestamp, Map<AbstractQuest, Progression> quests) {
-        this.timestamp = timestamp;
+        this.timestampsByGroup = new HashMap<>();
+        // Apply the timestamp to all configured groups
+        for (String groupName : CategoryGroupsLoader.getGroupNames()) {
+            this.timestampsByGroup.put(groupName, timestamp);
+        }
         this.quests = quests;
         this.achievedQuests = 0;
         this.totalAchievedQuests = 0;
@@ -78,12 +101,48 @@ public class PlayerQuests {
     }
 
     /**
-     * Gets the player's timestamp.
+     * Gets the player's timestamp for the legacy/default group.
+     * For backward compatibility, returns the first available timestamp.
      *
      * @return the timestamp of the player's last quest renew.
+     * @deprecated Use {@link #getTimestamp(String)} with a specific group name
      */
+    @Deprecated
     public Long getTimestamp() {
-        return this.timestamp;
+        if (this.timestampsByGroup.isEmpty()) {
+            return 0L;
+        }
+        // Return the first timestamp for backward compatibility
+        return this.timestampsByGroup.values().iterator().next();
+    }
+
+    /**
+     * Gets the player's timestamp for a specific group.
+     *
+     * @param groupName the name of the category group
+     * @return the timestamp of the player's last quest renew for that group, or 0 if not found
+     */
+    public Long getTimestamp(String groupName) {
+        return this.timestampsByGroup.getOrDefault(groupName, 0L);
+    }
+
+    /**
+     * Gets all timestamps by group.
+     *
+     * @return an unmodifiable map of group name to timestamp
+     */
+    public Map<String, Long> getTimestampsByGroup() {
+        return Collections.unmodifiableMap(this.timestampsByGroup);
+    }
+
+    /**
+     * Sets the timestamp for a specific group.
+     *
+     * @param groupName the name of the category group
+     * @param timestamp the new timestamp
+     */
+    public void setTimestamp(String groupName, Long timestamp) {
+        this.timestampsByGroup.put(groupName, timestamp);
     }
 
     /**
@@ -177,13 +236,14 @@ public class PlayerQuests {
             return false;
         }
 
-        // Guard: configuration may set a maximum amount of rerolled quests.
-        if (!bypassMax && !isRerollAllowedMaximum(player)) {
-            return false;
-        }
-
         // Resolve category that must provide the replacement quest.
         final String categoryName = questToRemove.getCategoryName();
+        final String groupName = CategoryGroupsLoader.getGroupNameForCategory(categoryName);
+
+        // Guard: configuration may set a maximum amount of rerolled quests.
+        if (!bypassMax && !isRerollAllowedMaximum(player, groupName)) {
+            return false;
+        }
         final Category category = CategoriesLoader.getCategoryByName(categoryName);
         if (category == null) {
             logCategoryNullError();
@@ -209,8 +269,8 @@ public class PlayerQuests {
         this.quests.clear();
         this.quests.putAll(newPlayerQuests);
 
-        // Increment recently rerolled count
-        if (!bypassMax) addRecentReroll(1);
+        // Increment recently rerolled count for this group
+        if (!bypassMax) addRecentReroll(groupName, 1);
 
         // If the removed quest was previously achieved, adjust counters accordingly.
         updateAchievementsAfterRerollIfNeeded(progressionToRemove, categoryName, questToRemove);
@@ -238,11 +298,13 @@ public class PlayerQuests {
      * Checks whether the player can afford another reroll based on current configuration.
      * If already rerolled max amount of quests, a feedback message is sent to the player.
      *
-     * @param player player to notify if rerolling is disallowed
+     * @param player    player to notify if rerolling is disallowed
+     * @param groupName the group to check rerolls for
      * @return {@code true} if rerolling is allowed; {@code false} otherwise
      */
-    private boolean isRerollAllowedMaximum(Player player) {
+    private boolean isRerollAllowedMaximum(Player player, String groupName) {
         int max = RerollMaximum.getMaxRerolls();
+        int recentRerolls = getRecentRerolls(groupName);
         if (max > 0 && recentRerolls >= max) {
             final String msg = QuestsMessages.CANNOT_REROLL_IF_MAX.toString();
             if (msg != null) player.sendMessage(msg);
@@ -409,12 +471,27 @@ public class PlayerQuests {
     }
 
     /**
-     * Set number of recently rerolled quests.
+     * Set number of recently rerolled quests for a specific group.
      *
+     * @param groupName     the group name
      * @param recentRerolls total number of rerolled quests to set.
      */
+    public void setRecentRerolls(String groupName, int recentRerolls) {
+        this.recentRerollsByGroup.put(groupName, recentRerolls);
+    }
+
+    /**
+     * Set number of recently rerolled quests for all groups.
+     * For backward compatibility, applies to all groups.
+     *
+     * @param recentRerolls total number of rerolled quests to set.
+     * @deprecated Use {@link #setRecentRerolls(String, int)} with a specific group name
+     */
+    @Deprecated
     public void setRecentRerolls(int recentRerolls) {
-        this.recentRerolls = recentRerolls;
+        for (String groupName : CategoryGroupsLoader.getGroupNames()) {
+            this.recentRerollsByGroup.put(groupName, recentRerolls);
+        }
     }
 
     /**
@@ -447,12 +524,27 @@ public class PlayerQuests {
     }
 
     /**
-     * Add number of recent rolled quests.
+     * Add number of recent rolled quests for a specific group.
+     *
+     * @param groupName the group name
+     * @param i         number of rerolled quests to add.
+     */
+    public void addRecentReroll(String groupName, int i) {
+        this.recentRerollsByGroup.merge(groupName, i, Integer::sum);
+    }
+
+    /**
+     * Add number of recent rolled quests to all groups.
+     * For backward compatibility.
      *
      * @param i number of rerolled quests to add.
+     * @deprecated Use {@link #addRecentReroll(String, int)} with a specific group name
      */
+    @Deprecated
     public void addRecentReroll(int i) {
-        this.recentRerolls += i;
+        for (String groupName : CategoryGroupsLoader.getGroupNames()) {
+            this.recentRerollsByGroup.merge(groupName, i, Integer::sum);
+        }
     }
 
     /**
@@ -509,10 +601,33 @@ public class PlayerQuests {
     }
 
     /**
-     * Get number of recently rolled quests.
+     * Get number of recently rolled quests for all groups combined.
+     * For backward compatibility.
+     *
+     * @deprecated Use {@link #getRecentRerolls(String)} with a specific group name
      */
+    @Deprecated
     public int getRecentlyRolled() {
-        return this.recentRerolls;
+        return this.recentRerollsByGroup.values().stream().mapToInt(Integer::intValue).sum();
+    }
+
+    /**
+     * Get number of recently rolled quests for a specific group.
+     *
+     * @param groupName the group name
+     * @return the number of recent rerolls for that group
+     */
+    public int getRecentRerolls(String groupName) {
+        return this.recentRerollsByGroup.getOrDefault(groupName, 0);
+    }
+
+    /**
+     * Get all recent rerolls by group.
+     *
+     * @return an unmodifiable map of group name to reroll count
+     */
+    public Map<String, Integer> getRecentRerollsByGroup() {
+        return Collections.unmodifiableMap(this.recentRerollsByGroup);
     }
 
     /**

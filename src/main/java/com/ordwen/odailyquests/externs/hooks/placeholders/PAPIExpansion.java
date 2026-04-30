@@ -2,9 +2,11 @@ package com.ordwen.odailyquests.externs.hooks.placeholders;
 
 import com.ordwen.odailyquests.api.ODailyQuestsAPI;
 import com.ordwen.odailyquests.commands.interfaces.playerinterface.PlayerQuestsInterface;
+import com.ordwen.odailyquests.configuration.essentials.CategoryGroupsLoader;
 import com.ordwen.odailyquests.configuration.integrations.PapiPlaceholders;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.categories.Category;
+import com.ordwen.odailyquests.quests.categories.CategoryGroup;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
@@ -83,6 +85,12 @@ public class PAPIExpansion extends PlaceholderExpansion {
             placeholdersList.add("%odailyquests_total_" + categoryKey + "%");
         }
 
+        // Group-specific placeholders
+        for (String groupName : CategoryGroupsLoader.getGroupNames()) {
+            placeholdersList.add("%odailyquests_drawin_" + groupName + "%");
+            placeholdersList.add("%odailyquests_achieved_group_" + groupName + "%");
+        }
+
         return placeholdersList;
     }
 
@@ -104,7 +112,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
         final Map<String, Function<String, String>> placeholders = new HashMap<>();
         placeholders.put("total", placeholder -> getTotalAchievedQuests(placeholder, playerQuests));
         placeholders.put("achieved", placeholder -> String.valueOf(playerQuests.getAchievedQuests()));
-        placeholders.put("drawin", placeholder -> TimeRemain.timeRemain(playerName));
+        placeholders.put("drawin", placeholder -> getTimeRemaining(placeholder, playerName));
         placeholders.put("interface", placeholder -> getInterfaceMessage(placeholder, player, playerQuests));
         placeholders.put("progressbar", placeholder -> getProgressBar(placeholder, playerQuests));
         placeholders.put("progress", placeholder -> String.valueOf(getPlayerQuestProgression(placeholder, playerQuests)));
@@ -114,6 +122,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
         placeholders.put("status", placeholder -> getQuestStatus(placeholder, playerQuests));
         placeholders.put("requiredamount", placeholder -> getPlayerQuestRequiredAmount(placeholder, playerQuests));
         placeholders.put("requireddisplayname", placeholder -> getPlayerQuestDisplayName(placeholder, playerQuests));
+        placeholders.put("achieved_group", placeholder -> getAchievedForGroup(placeholder, playerQuests));
 
         for (Map.Entry<String, Function<String, String>> entry : placeholders.entrySet()) {
             if (params.startsWith(entry.getKey())) {
@@ -469,5 +478,65 @@ public class PAPIExpansion extends PlaceholderExpansion {
         return getQuestCtxByIndex(playerQuests, idx0.getAsInt())
                 .map(ctx -> DisplayName.getDisplayName(ctx.quest(), ctx.progression().getSelectedRequiredIndex()))
                 .orElse(INVALID_INDEX);
+    }
+
+    /**
+     * Retrieves the time remaining before the next quests draw.
+     * Supports both global and group-specific placeholders.
+     * <p>
+     * Supported formats:
+     * <ul>
+     *   <li>{@code drawin} - global time remaining</li>
+     *   <li>{@code drawin_<groupName>} - time remaining for a specific group</li>
+     * </ul>
+     *
+     * @param params     the placeholder parameters
+     * @param playerName the player's name
+     * @return the time remaining as a formatted string
+     */
+    private String getTimeRemaining(String params, String playerName) {
+        if (params.equals("drawin")) {
+            return TimeRemain.timeRemain(playerName);
+        }
+
+        if (params.startsWith("drawin_")) {
+            final String groupName = params.substring("drawin_".length());
+            final String result = TimeRemain.timeRemainForGroup(playerName, groupName);
+            return result != null ? result : INVALID_PLACEHOLDER;
+        }
+
+        return INVALID_PLACEHOLDER;
+    }
+
+    /**
+     * Retrieves the number of achieved quests for a specific category group.
+     * <p>
+     * Format: {@code achieved_group_<groupName>}
+     *
+     * @param params       the placeholder parameters
+     * @param playerQuests the player's quests
+     * @return the number of achieved quests in the group's categories
+     */
+    private String getAchievedForGroup(String params, PlayerQuests playerQuests) {
+        if (!params.startsWith("achieved_group_")) {
+            return INVALID_PLACEHOLDER;
+        }
+
+        final String groupName = params.substring("achieved_group_".length());
+        final CategoryGroup group = CategoryGroupsLoader.getGroup(groupName);
+        if (group == null) {
+            return INVALID_PLACEHOLDER;
+        }
+
+        // Count achieved quests in all categories of this group
+        int achieved = 0;
+        for (Map.Entry<AbstractQuest, Progression> entry : playerQuests.getQuests().entrySet()) {
+            final String categoryName = entry.getKey().getCategoryName();
+            if (group.containsCategory(categoryName) && entry.getValue().isAchieved()) {
+                achieved++;
+            }
+        }
+
+        return String.valueOf(achieved);
     }
 }

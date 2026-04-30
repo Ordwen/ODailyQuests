@@ -5,6 +5,7 @@ import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.essentials.QuestsPerCategory;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.categories.Category;
+import com.ordwen.odailyquests.quests.categories.CategoryGroup;
 import com.ordwen.odailyquests.quests.conditions.placeholder.PlaceholderRuleSetEvaluator;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.progression.Progression;
@@ -170,6 +171,47 @@ public class QuestsManager implements Listener {
                 final AbstractQuest quest = getRandomQuestForPlayer(quests.keySet(), category, player);
                 if (quest == null) {
                     Debugger.write("Not enough quests available to assign to " + player.getName() + " in category " + categoryName + ".");
+                    break;
+                }
+
+                final Progression progression = createFreshProgression(quest);
+                quests.put(quest, progression);
+            }
+        }
+
+        return quests;
+    }
+
+    /**
+     * Selects random quests for a player for a specific category group only.
+     * <p>
+     * This is used when a specific group's quests need to be renewed independently.
+     *
+     * @param player the target player (used for permission checks)
+     * @param group  the category group to select quests for
+     * @return an ordered map of quests to their initial progression
+     */
+    public static Map<AbstractQuest, Progression> selectRandomQuestsForGroup(Player player, CategoryGroup group) {
+        final Map<AbstractQuest, Progression> quests = new LinkedHashMap<>();
+
+        final Map<String, Integer> resolvedAmounts = QuestsPerCategory.resolveAllFor(player);
+
+        for (String categoryName : group.getCategoryNames()) {
+            final Category category = CategoriesLoader.getCategoryByName(categoryName);
+            if (category == null) {
+                Debugger.write("Category " + categoryName + " not found for group " + group.getName() + ".");
+                continue;
+            }
+
+            int requiredAmount = resolvedAmounts.getOrDefault(categoryName, 0);
+            if (requiredAmount <= 0) {
+                continue;
+            }
+
+            for (int i = 0; i < requiredAmount; i++) {
+                final AbstractQuest quest = getRandomQuestForPlayer(quests.keySet(), category, player);
+                if (quest == null) {
+                    Debugger.write("Not enough quests available to assign to " + player.getName() + " in category " + categoryName + " (group " + group.getName() + ").");
                     break;
                 }
 

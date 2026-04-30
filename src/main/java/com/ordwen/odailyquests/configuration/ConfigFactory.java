@@ -48,6 +48,7 @@ public class ConfigFactory {
         configs.put(Synchronization.class, new Synchronization(configurationFile));
         configs.put(RenewInterval.class, new RenewInterval(configurationFile));
         configs.put(RenewTime.class, new RenewTime(configurationFile));
+        configs.put(CategoryGroupsLoader.class, new CategoryGroupsLoader(configurationFile));
         configs.put(CheckForUpdate.class, new CheckForUpdate(configurationFile));
 
         // functionalities
@@ -87,9 +88,9 @@ public class ConfigFactory {
         // load all configs
         configs.values().forEach(IConfigurable::load);
 
-        // reload the timer task
-        if (ODailyQuests.INSTANCE.timerTask != null) {
-            ODailyQuests.INSTANCE.timerTask.reload();
+        // reload the timer manager
+        if (ODailyQuests.INSTANCE.timerManager != null) {
+            ODailyQuests.INSTANCE.timerManager.reload();
         }
     }
 

@@ -5,6 +5,7 @@ import com.ordwen.odailyquests.enums.QuestsMessages;
 import com.ordwen.odailyquests.enums.QuestsPermissions;
 import com.ordwen.odailyquests.quests.categories.CategoriesLoader;
 import com.ordwen.odailyquests.quests.categories.Category;
+import com.ordwen.odailyquests.quests.categories.CategoryGroup;
 import com.ordwen.odailyquests.quests.types.AbstractQuest;
 import com.ordwen.odailyquests.quests.player.PlayerQuests;
 import com.ordwen.odailyquests.quests.player.QuestsManager;
@@ -62,6 +63,46 @@ public class QuestLoaderUtils {
     }
 
     /**
+     * Check if it is time to redraw quests for a player for a specific category group.
+     *
+     * @param timestamp player timestamp for this group
+     * @param group     the category group to check
+     * @return true if it's time to redraw quests for this group
+     */
+    public static boolean checkTimestamp(long timestamp, CategoryGroup group) {
+        final int mode = TimestampMode.getTimestampMode();
+
+        switch (mode) {
+            case 1 -> {
+                final RenewSchedule.Settings s = group.toScheduleSettings(mode);
+                if (!RenewSchedule.isValid(s)) {
+                    PluginLogger.error(ChatColor.RED + "Renew schedule is invalid for group '" + group.getName() + "'.");
+                    return false;
+                }
+
+                final ZonedDateTime lastRenew = Instant.ofEpochMilli(timestamp).atZone(s.zone());
+                final ZonedDateTime now = ZonedDateTime.now(s.zone());
+
+                return RenewSchedule.shouldRenewSince(lastRenew, now, s);
+            }
+
+            case 2 -> {
+                final Duration renewInterval = group.getRenewInterval();
+                if (renewInterval != null) {
+                    return System.currentTimeMillis() - timestamp >= renewInterval.toMillis();
+                } else {
+                    PluginLogger.error(ChatColor.RED + "Impossible to check player quests timestamp for group '" + group.getName() + "'. Renew interval is incorrect.");
+                }
+            }
+
+            default ->
+                    PluginLogger.error(ChatColor.RED + "Impossible to load player quests timestamp. The selected mode is incorrect.");
+        }
+
+        return false;
+    }
+
+    /**
      * Load quests for a player with no data.
      *
      * @param playerName   player name.
@@ -103,6 +144,88 @@ public class QuestLoaderUtils {
         }
 
         Debugger.write("Quests of player " + playerName + " have been renewed.");
+    }
+
+    /**
+     * Load quests for a player for a specific category group only.
+     * This is used for group-specific renewal where each group has its own schedule.
+     *
+     * @param playerName                    player name
+     * @param activeQuests                  all active quests
+     * @param totalAchievedQuestsByCategory total achieved quests by category
+     * @param totalAchievedQuests           total achieved quests overall
+     * @param group                         the category group to renew
+     */
+    public static void loadNewPlayerQuestsForGroup(String playerName, Map<String, PlayerQuests> activeQuests,
+                                                    Map<String, Integer> totalAchievedQuestsByCategory,
+                                                    int totalAchievedQuests, CategoryGroup group) {
+        Debugger.write("Entering loadNewPlayerQuestsForGroup method for player " + playerName + " and group " + group.getName() + ".");
+
+        final Player player = Bukkit.getPlayer(playerName);
+        if (player == null) {
+            Debugger.write("Player " + playerName + " is null. Impossible to renew quests for group " + group.getName() + ".");
+            PluginLogger.warn("It seems that " + playerName + " disconnected before the end of the quest renewal.");
+            return;
+        }
+
+        PlayerQuests playerQuests = activeQuests.get(playerName);
+        if (playerQuests == null) {
+            Debugger.write("PlayerQuests for " + playerName + " is null. Creating new player quests.");
+            // If no existing quests, load all quests normally
+            loadNewPlayerQuests(playerName, activeQuests, totalAchievedQuestsByCategory, totalAchievedQuests);
+            return;
+        }
+
+        // Get the existing quests and keep those not in this group
+        final Map<AbstractQuest, Progression> existingQuests = playerQuests.getQuests();
+        final LinkedHashMap<AbstractQuest, Progression> newQuests = new LinkedHashMap<>();
+
+        // Keep quests from other groups
+        for (Map.Entry<AbstractQuest, Progression> entry : existingQuests.entrySet()) {
+            final AbstractQuest quest = entry.getKey();
+            final String categoryName = quest.getCategoryName();
+
+            if (!group.containsCategory(categoryName)) {
+                // This quest is not in the group being renewed, keep it
+                newQuests.put(quest, entry.getValue());
+            }
+        }
+
+        // Select new random quests for categories in this group
+        final Map<AbstractQuest, Progression> groupQuests = QuestsManager.selectRandomQuestsForGroup(player, group);
+        newQuests.putAll(groupQuests);
+
+        // Update the timestamp for this group
+        final long newTimestamp = TimestampMode.getTimestampMode() == 1 ?
+                Calendar.getInstance().getTimeInMillis() : System.currentTimeMillis();
+
+        // Create new PlayerQuests with updated timestamps
+        final Map<String, Long> updatedTimestamps = new HashMap<>(playerQuests.getTimestampsByGroup());
+        updatedTimestamps.put(group.getName(), newTimestamp);
+
+        final PlayerQuests newPlayerQuests = new PlayerQuests(updatedTimestamps, newQuests);
+        newPlayerQuests.setTotalAchievedQuests(totalAchievedQuests);
+        newPlayerQuests.setTotalAchievedQuestsByCategory(totalAchievedQuestsByCategory);
+
+        // Copy rerolls from other groups, reset for this group
+        for (Map.Entry<String, Integer> rerollEntry : playerQuests.getRecentRerollsByGroup().entrySet()) {
+            if (!rerollEntry.getKey().equals(group.getName())) {
+                newPlayerQuests.setRecentRerolls(rerollEntry.getKey(), rerollEntry.getValue());
+            }
+        }
+        newPlayerQuests.setRecentRerolls(group.getName(), 0);
+
+        final String msg = QuestsMessages.QUESTS_RENEWED.getMessage(player);
+        if (msg != null && player.hasPermission(QuestsPermissions.QUESTS_PROGRESS.get())) {
+            player.sendMessage(msg.replace("%group%", group.getName()));
+        }
+
+        activeQuests.put(playerName, newPlayerQuests);
+        if (Logs.isEnabled()) {
+            PluginLogger.info(playerName + "'s quests for group '" + group.getName() + "' have been renewed.");
+        }
+
+        Debugger.write("Quests of player " + playerName + " for group " + group.getName() + " have been renewed.");
     }
 
     /**

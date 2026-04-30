@@ -68,7 +68,7 @@ public final class ODailyQuests extends JavaPlugin {
      */
     private InterfacesManager interfacesManager;
     private FilesManager filesManager;
-    public TimerTask timerTask;
+    public TimerManager timerManager;
     private ReloadService reloadService;
     private CategoriesLoader categoriesLoader;
     private DatabaseManager databaseManager;
@@ -175,11 +175,12 @@ public final class ODailyQuests extends JavaPlugin {
 
         /* Init delayed task to draw new quests */
         if (TimestampMode.getTimestampMode() == 1) {
-            if (timerTask != null) {
-                timerTask.stop();
+            if (timerManager != null) {
+                timerManager.stop();
             }
 
-            timerTask = new TimerTask(LocalDateTime.now());
+            timerManager = new TimerManager();
+            timerManager.start(LocalDateTime.now());
         }
 
         PluginLogger.info("Plugin is started!");
@@ -283,9 +284,9 @@ public final class ODailyQuests extends JavaPlugin {
     @Override
     public void onDisable() {
         if (restartHandler != null) restartHandler.setServerStopping();
-        if (timerTask != null) {
-            timerTask.stop();
-            timerTask = null;
+        if (timerManager != null) {
+            timerManager.stop();
+            timerManager = null;
         }
 
         /* Avoid errors on reload */

@@ -97,6 +97,50 @@ renew_time_zone: "SystemDefault"
 # Remember to surround the value with double quotes, otherwise it will not work!
 renew_interval: "1d"
 
+# ============================================================================
+# CATEGORY GROUPS - Optional advanced feature
+# ============================================================================
+# Define groups of categories with different renewal schedules.
+# Each group can have its own renew_time, renew_interval, and time zone.
+#
+# When this section is defined, the global renew_time and renew_interval above
+# are ignored in favor of per-group settings.
+#
+# If this section is commented out or empty, all categories will use the
+# global settings above (default behavior).
+#
+# IMPORTANT: Each category must belong to exactly one group. Categories not
+# listed in any group will cause an error at startup.
+#
+# Example configuration with daily and weekly quest groups:
+# category_groups:
+#   daily:
+#     categories:
+#       - easy
+#       - medium
+#     renew_time: "00:00"
+#     renew_interval: "1d"
+#     renew_time_zone: "SystemDefault"  # optional, defaults to SystemDefault
+#   weekly:
+#     categories:
+#       - hard
+#     renew_time: "00:00"
+#     renew_interval: "7d"
+#
+# Uncomment and modify below to enable category groups:
+# category_groups:
+#   daily:
+#     categories:
+#       - easy
+#       - medium
+#     renew_time: "00:00"
+#     renew_interval: "1d"
+#   weekly:
+#     categories:
+#       - hard
+#     renew_time: "00:00"
+#     renew_interval: "7d"
+
 # Delay in seconds before the status message is displayed when a player joins the server.
 # Corresponds to quests_in_progress and all_quests_achieved_connect messages.
 join_message_delay: 1.0

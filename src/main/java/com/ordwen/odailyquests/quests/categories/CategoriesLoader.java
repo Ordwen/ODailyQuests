@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.quests.categories;
 
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.configuration.essentials.CategoryGroupsLoader;
 import com.ordwen.odailyquests.configuration.essentials.QuestAmountSetting;
 import com.ordwen.odailyquests.configuration.essentials.QuestsPerCategory;
 import com.ordwen.odailyquests.configuration.essentials.SafetyMode;
@@ -34,6 +35,7 @@ public class CategoriesLoader {
             final Integer requiredAmount = setting.getStaticAmount();
 
             final Category category = new Category(categoryName);
+            category.setGroupName(CategoryGroupsLoader.getGroupNameForCategory(categoryName));
             categories.put(categoryName, category);
 
             final FileConfiguration configFile = QuestsFiles.getQuestsConfigurationByCategory(categoryName);

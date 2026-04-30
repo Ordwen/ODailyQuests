@@ -1,6 +1,7 @@
 package com.ordwen.odailyquests.quests.player.progression;
 
 import com.ordwen.odailyquests.ODailyQuests;
+import com.ordwen.odailyquests.configuration.essentials.CategoryGroupsLoader;
 import com.ordwen.odailyquests.configuration.essentials.Debugger;
 import com.ordwen.odailyquests.configuration.essentials.JoinMessageDelay;
 import com.ordwen.odailyquests.configuration.essentials.Logs;
@@ -26,12 +27,54 @@ public abstract class ProgressionLoader {
     protected static final String NEW_QUESTS = "New quests will be drawn.";
     protected static final String CONFIG_CHANGE = "This can happen if the quest has been modified in the config file.";
 
+    /**
+     * Represents stored player progression data loaded from database.
+     * Supports both legacy (single timestamp) and multi-group (timestamps by group) modes.
+     */
     public record StoredPlayerProgression(
             long timestamp,
             int achievedQuests,
             int totalAchievedQuests,
-            int recentRerolls
+            int recentRerolls,
+            Map<String, Long> timestampsByGroup,
+            Map<String, Integer> recentRerollsByGroup
     ) {
+        /**
+         * Legacy constructor for backward compatibility.
+         */
+        public StoredPlayerProgression(long timestamp, int achievedQuests, int totalAchievedQuests, int recentRerolls) {
+            this(timestamp, achievedQuests, totalAchievedQuests, recentRerolls, null, null);
+        }
+
+        /**
+         * Gets the timestamps by group, falling back to legacy timestamp if not available.
+         */
+        public Map<String, Long> getEffectiveTimestampsByGroup() {
+            if (timestampsByGroup != null && !timestampsByGroup.isEmpty()) {
+                return timestampsByGroup;
+            }
+            // Legacy mode: distribute the single timestamp to all groups
+            Map<String, Long> result = new HashMap<>();
+            for (String groupName : CategoryGroupsLoader.getGroupNames()) {
+                result.put(groupName, timestamp);
+            }
+            return result;
+        }
+
+        /**
+         * Gets the recent rerolls by group, falling back to legacy rerolls if not available.
+         */
+        public Map<String, Integer> getEffectiveRecentRerollsByGroup() {
+            if (recentRerollsByGroup != null && !recentRerollsByGroup.isEmpty()) {
+                return recentRerollsByGroup;
+            }
+            // Legacy mode: distribute the single reroll count to all groups
+            Map<String, Integer> result = new HashMap<>();
+            for (String groupName : CategoryGroupsLoader.getGroupNames()) {
+                result.put(groupName, recentRerolls);
+            }
+            return result;
+        }
     }
 
     protected void registerLoadedPlayerQuests(
@@ -44,11 +87,18 @@ public abstract class ProgressionLoader {
     ) {
         final String playerName = player.getName();
 
-        final PlayerQuests playerQuests = new PlayerQuests(data.timestamp(), quests);
+        // Use timestamps by group for multi-group support
+        final Map<String, Long> timestampsByGroup = data.getEffectiveTimestampsByGroup();
+        final PlayerQuests playerQuests = new PlayerQuests(timestampsByGroup, quests);
         playerQuests.setAchievedQuests(data.achievedQuests());
         playerQuests.setTotalAchievedQuests(data.totalAchievedQuests());
         playerQuests.setTotalAchievedQuestsByCategory(categoryStats);
-        playerQuests.setRecentRerolls(data.recentRerolls());
+
+        // Set rerolls by group
+        final Map<String, Integer> rerollsByGroup = data.getEffectiveRecentRerollsByGroup();
+        for (Map.Entry<String, Integer> entry : rerollsByGroup.entrySet()) {
+            playerQuests.setRecentRerolls(entry.getKey(), entry.getValue());
+        }
 
         activeQuests.put(playerName, playerQuests);
 
