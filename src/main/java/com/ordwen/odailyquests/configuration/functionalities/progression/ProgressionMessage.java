@@ -121,7 +121,7 @@ public class ProgressionMessage implements IConfigurable {
 
             switch (progressionMessageType) {
                 case ACTIONBAR ->
-                        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacy(toSend));
+                        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(toSend));
                 case CHAT -> player.sendMessage(toSend);
                 case BOSSBAR -> currentBossBars.computeIfAbsent(player, p -> {
                     final BossBar bossBar = Bukkit.getServer().createBossBar(toSend, barColor, barStyle);

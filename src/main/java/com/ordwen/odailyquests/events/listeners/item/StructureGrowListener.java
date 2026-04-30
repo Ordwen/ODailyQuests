@@ -10,6 +10,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 
 public class StructureGrowListener implements Listener {
 
@@ -26,7 +27,7 @@ public class StructureGrowListener implements Listener {
             for (int i = 0; i < event.getBlocks().size(); i++) {
                 final Block block = event.getBlocks().get(i).getBlock();
                 final PersistentDataContainer pdc = new CustomBlockData(block, ODailyQuests.INSTANCE);
-                if (pdc.has(Antiglitch.PLACED_KEY)) {
+                if (pdc.has(Antiglitch.PLACED_KEY, PersistentDataType.STRING)) {
                     Debugger.write("StructureGrowListener: block at coordinates " + block.getX() + ", " + block.getY() + ", " + block.getZ() + " is a placed block. Removing metadataKey.");
                     block.removeMetadata("odailyquests:placed", ODailyQuests.INSTANCE);
                 }

@@ -19,5 +19,6 @@ public class VotifierListener extends PlayerProgressor implements Listener {
 
         if (player == null) return;
         setPlayerQuestProgression(event, player, 1, "NU_VOTIFIER");
+        setPlayerQuestProgression(event, player, 1, "VOTIFIER_PLUS");
     }
 }
